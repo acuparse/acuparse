@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="a9b59372-140f-4883-96d6-dbe30aec2624" name="weather" url="http://weather.maxpower.co">
+        <fileTransfer host="weather.maxpower.co" port="22" privateKey="D:\MPCO OC\maxpower.co\keys\Root\openSSH" rootFolder="/var/www/html" accessType="SFTP" passphrase="dfe4df99dfc8dfc6df9adfdfdfd9df9bdf9b" username="root" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
