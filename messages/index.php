@@ -6,18 +6,7 @@
 
 if (!empty($_POST)) {
 
-    $MACADDRESS = '24C86E0479FB';
-
-    // DATABASE CONFIG:
-    $db_host="localhost";
-    $db_username="root";
-    $db_password="Summer01";
-    $db_name="weather";
-// Create Connection
-    $conn = mysqli_connect($db_host, $db_username, $db_password, $db_name);
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
+    require '/var/www/html/inc/config.php';
 
     if (isset($_POST['id']) && $_POST['id'] == $MACADDRESS) {
 
