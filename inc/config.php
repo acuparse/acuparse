@@ -21,7 +21,7 @@ $PRESSURE_OFFSET = 127;
 
 // DATABASE CONFIG:
 $db_host="localhost"; // DB Host
-$db_name="weather"; // DB Name
+$db_name="acuparse"; // DB Name
 $db_username="root"; // Username
 $db_password="Summer01"; // Password
 // Create Connection
