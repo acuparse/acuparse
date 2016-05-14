@@ -148,6 +148,39 @@ if (!empty($_POST)) {
             $sql = "INSERT INTO `humidity` (`humidity`) VALUES ('$humidity')";
             $result = mysqli_query($conn, $sql);
         }
+
+        else if ($_POST['mt'] == 'tower') {
+
+            // Under Trailer Sensor
+            if ($_POST['sensor'] == '11638') {
+                // Temperature
+                sscanf($_POST['temperature'], "A0%02d%d", $a, $b);
+                $tempC = $a . "." . $b;
+
+                // Humidity
+                sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
+                $humidity = $a . "." . $b;
+
+                // Insert into DB
+                $sql = "INSERT INTO `under_trailer` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
+                $result = mysqli_query($conn, $sql);
+            }
+
+            // Under Tubby Sensor
+            /*else if ($_POST['sensor'] == '') {
+                // Temperature
+                sscanf($_POST['temperature'], "A0%02d%d", $a, $b);
+                $tempC = $a . "." . $b;
+
+                // Humidity
+                sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
+                $humidity = $a . "." . $b;
+
+                // Insert into DB
+                $sql = "INSERT INTO `under_tubby` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
+                $result = mysqli_query($conn, $sql);
+            }*/
+        }
     }
 
     // Repost the data to MBW
