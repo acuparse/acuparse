@@ -118,8 +118,9 @@ function get_current_weather() {
 
 
     // Feels Like
-    //$feelsF= .3634 + (.9986 * $tempF) + (4.7711 * $relH) - (.1140 * $tempF * $relH) - (.0009 * ($tempF**2)) - (.0207 * ($relH**2)) + (.0007 * $relH * ($tempF**2)) + (.0003 * $tempF * ($relH**2));
-    //$feelsC = ($feelsF - 32) / 1.8;
+    $feelsF= .3634 + (.9986 * $tempF) + (4.7711 * $relH) - (.1140 * $tempF * $relH) - (.0009 * ($tempF**2)) - (.0207 * ($relH**2)) + (.0007 * $relH * ($tempF**2)) + (.0003 * $tempF * ($relH**2));
+    $feelsF = round($feelsF, 2);
+    $feelsC = round(($feelsF - 32) / 1.8, 2);
     ?>
 
     <div class="row">
@@ -134,6 +135,10 @@ function get_current_weather() {
                         <tr>
                             <td><strong>Current Temperature:</strong></td>
                             <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Feels Like:</strong></td>
+                            <td><?php echo $feelsC; ?>&#8451; (<?php echo $feelsF; ?>&#8457;)</td>
                         </tr>
                         <tr>
                             <td><strong>Highest Temperature:</strong></td>
