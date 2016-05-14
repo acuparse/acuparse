@@ -17,7 +17,7 @@ $sql = "SELECT `speedms` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $windS_ms = $result['speedms'];
 $windS_kmh = $windS_ms * 3.6;
-$windS_mph = 2.23694 * $windS_ms;
+$windS_mph = $windS_ms * 2.23694;
 
 // Process Wind Direction
 $sql = "SELECT `degrees` FROM `winddirection` ORDER BY `timestamp` DESC LIMIT 1";
@@ -39,20 +39,18 @@ $humidity = $result['humidity'];
 $sql = "SELECT `raw` FROM `rainfall` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $rain = $result['raw'];
+$rainin = $rain / 2540;
+$rainmm = $rain / 1000;
 
 $sql = "SELECT SUM(`raw`) AS `rainfall_total` FROM rainfall WHERE DATE(`timestamp`) = CURDATE()";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $total_rainfall = $result['rainfall_total'];
+$total_rainfallin = $total_rainfall / 2540;
+$total_rainfallmm = $total_rainfall /1000;
 
 // Calculate Dew Point
 $dewptC = ((pow(($humidity / 100), 0.125)) * (112 + 0.9 * $tempC) + (0.1 * $tempC) - 112);
 $dewptF = ($dewptC * 9/5) + 32;
-
-// Send data to wunderground
-$wu_query_url = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=' . $wu_id . '&PASSWORD=' . $wu_password;
-$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&windspeedmph=' . $windS_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rain . '&dailyrainin=' . $total_rainfall;
-$wu_query_static = '&dateutc=now&softwaretype=other&action=updateraw';
-$wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
 
 // Convert wind direction into degrees
 switch ($windDEG) {
@@ -107,8 +105,19 @@ switch ($windDEG) {
 }
 
 // Save to DB
-$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windDEG`, `windD`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rain`, `total_rain`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_mph', '$windS_kmh', '$windDEG', '$windD', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rain', '$total_rainfall', '$wu_query', '$wu_query_result')";
+$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windDEG`, `windD`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rain`, `total_rain`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windDEG', '$windD', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rain', '$total_rainfall', '$wu_query', '$wu_query_result')";
 $result = mysqli_query($conn, $sql);
+
+// Change rain to 0 until fixed
+
+$rainin = 0;
+$total_rainfallin = 0;
+
+// Send data to wunderground
+$wu_query_url = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=' . $wu_id . '&PASSWORD=' . $wu_password;
+$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&windspeedmph=' . $windS_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rainin . '&dailyrainin=' . $total_rainfallin;
+$wu_query_static = '&dateutc=now&softwaretype=other&action=updateraw';
+$wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
 
 // Log
 syslog(LOG_DEBUG,"Message: $wu_query");

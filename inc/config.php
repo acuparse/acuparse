@@ -14,7 +14,7 @@ $wu_id = 'IALBERTA517';
 $wu_password = 'P0pc0rn';
 
 // Bridge Config
-$MACADDRESS = '24C86E0479FB';
+$MACADDRESS = '24C86E0479FB'; //Acurite Bridge MAC Address
 
 // Pressure Offset from Sea Level
 $PRESSURE_OFFSET = 127;

@@ -118,7 +118,6 @@ if (!empty($_POST)) {
             // Rainfall
             sscanf($_POST['rainfall'], "A0%02d%d", $a, $b);
             $rain = $a . "." . $b;
-            $rain = $rain / 2540;
 
             // Insert into DB
             $sql = "INSERT INTO `rainfall` (`raw`) VALUES ('$rain')";
