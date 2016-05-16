@@ -104,20 +104,20 @@ switch ($windDEG) {
         break;
 }
 
-// Save to DB
-$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windDEG`, `windD`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rain`, `total_rain`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windDEG', '$windD', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rain', '$total_rainfall', '$wu_query', '$wu_query_result')";
-$result = mysqli_query($conn, $sql);
+// Change rain to 0 when sending to WU until fixed
 
-// Change rain to 0 until fixed
-
-$rainin = 0;
-$total_rainfallin = 0;
+$rainin_wu = 0;
+$total_rainfallin_wu = 0;
 
 // Send data to wunderground
 $wu_query_url = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=' . $wu_id . '&PASSWORD=' . $wu_password;
-$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&windspeedmph=' . $windS_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rainin . '&dailyrainin=' . $total_rainfallin;
+$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&windspeedmph=' . $windS_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rainin_wu . '&dailyrainin=' . $total_rainfallin_wu;
 $wu_query_static = '&dateutc=now&softwaretype=other&action=updateraw';
 $wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
+
+// Save to DB
+$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windDEG`, `windD`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rain`, `total_rain`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windDEG', '$windD', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rain', '$total_rainfall', '$wu_query', '$wu_query_result')";
+$result = mysqli_query($conn, $sql);
 
 // Log
 syslog(LOG_DEBUG,"Message: $wu_query");

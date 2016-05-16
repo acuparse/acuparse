@@ -130,20 +130,29 @@ if (!empty($_POST)) {
             // Wind Speed
             sscanf($_POST['windspeed'], "A0%02d%d", $a, $b);
             $windS_ms = $a . "." . $b;
+            syslog(LOG_DEBUG,"Weather Station WindSpeed: $a - $b");
             // Insert into DB
             $sql = "INSERT INTO `windspeed` (`speedms`) VALUES ('$windS_ms')";
             $result = mysqli_query($conn, $sql);
 
             // Temperature
-            sscanf($_POST['temperature'], "A0%02d%d", $a, $b);
-            $tempC = $a . "." . $b;
+            sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
+            syslog(LOG_DEBUG,"Weather Station Temp: $operator$a.$b");
+            if ($operator == 0) {
+                $tempC = $a . "." . $b;
+            }
+            else {
+                $tempC = "-" . $a . "." . $b;
+            }
+
             // Insert into DB
             $sql = "INSERT INTO `temperature` (`tempc`) VALUES ('$tempC')";
             $result = mysqli_query($conn, $sql);
 
             // Humidity
             sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
-            $humidity = $a . "." . $b;
+            $humidity = $a;
+            syslog(LOG_DEBUG,"Weather Station relH: $a");
             // Insert into DB
             $sql = "INSERT INTO `humidity` (`humidity`) VALUES ('$humidity')";
             $result = mysqli_query($conn, $sql);
@@ -154,13 +163,20 @@ if (!empty($_POST)) {
             // Under Trailer Sensor
             if ($_POST['sensor'] == '11638') {
                 // Temperature
-                sscanf($_POST['temperature'], "A0%02d%d", $a, $b);
-                $tempC = $a . "." . $b;
+                sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
+                syslog(LOG_DEBUG,"Under Trailer Temp: $operator$a.$b");
+                if ($operator == 0) {
+                    $tempC = $a . "." . $b;
+                }
+                else {
+                    $tempC = "-" . $a . "." . $b;
+                }
 
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
-                $humidity = $a . "." . $b;
-
+                $humidity = $a;
+                syslog(LOG_DEBUG,"Under Trailer relH: $a");
+                
                 // Insert into DB
                 $sql = "INSERT INTO `under_trailer` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
                 $result = mysqli_query($conn, $sql);
@@ -169,8 +185,13 @@ if (!empty($_POST)) {
             // Under Tubby Sensor
             /*else if ($_POST['sensor'] == '') {
                 // Temperature
-                sscanf($_POST['temperature'], "A0%02d%d", $a, $b);
-                $tempC = $a . "." . $b;
+                sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
+                if ($operator == 0) {
+                    $tempC = $a . "." . $b;
+                }
+                else {
+                    $tempC = "-" . $a . "." . $b;
+                }
 
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);

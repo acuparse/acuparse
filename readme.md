@@ -1,0 +1,1 @@
+Script for reading and parsing data from aculink bridge

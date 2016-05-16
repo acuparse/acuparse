@@ -6,20 +6,18 @@
 function get_current_weather() {
     require '/var/www/html/inc/config.php';
 
+    // Master Weather Station
     $sql = "SELECT * FROM `weather` ORDER BY `reported` DESC LIMIT 1";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 
     $time = $result['reported'];
     $time = strtotime($time);
-    $time = date('j M Y @ H:i', $time);
+    $time = date('j M Y @ H:i:s T', $time);
 
     $tempC = $result['tempC'];
     $tempF = $result['tempF'];
-    #$feelsC = $result['feelsC'];
-    #$feelsF = $result['feelsF'];
-    $windSms = $result['windSms'];
     $windSmph = $result['windSmph'];
-    $windSkm = $result['windSkmh'];
+    $windSkmh = $result['windSkmh'];
     $windD = $result['windD'];
     $relH = $result['relH'];
     $pressurehPa = $result['pressurehPa'];
@@ -32,7 +30,7 @@ function get_current_weather() {
     $rain_totalmm = $result['total_rain'];
 
     // Wind Direction
-    // Convert wind direction into degrees
+    // Convert wind direction into text
     switch ($windD) {
         case 'N':
             $windD = 'North';
@@ -53,7 +51,7 @@ function get_current_weather() {
             $windD = 'East-Southeast';
             break;
         case 'SE':
-            $windD = 'South East';
+            $windD = 'South-East';
             break;
         case 'SSE':
             $windD = 'South-Southeast';
@@ -65,7 +63,7 @@ function get_current_weather() {
             $windD = 'South-Southwest';
             break;
         case 'SW':
-            $windD = 'South West';
+            $windD = 'South-West';
             break;
         case 'WSW':
             $windD = 'West-Southwest';
@@ -77,7 +75,7 @@ function get_current_weather() {
             $windD = 'West-Northwest';
             break;
         case 'NW':
-            $windD = 'North West';
+            $windD = 'North-West';
             break;
         case 'NNW':
             $windD = 'North-Northwest';
@@ -85,9 +83,13 @@ function get_current_weather() {
     }
 
     // Peak Windspeed
-    $sql = "SELECT MAX(speedms) AS `max_windsms` FROM `windspeed` WHERE DATE(`timestamp`) = CURDATE()";
+    $sql = "SELECT `timestamp`, `speedms` FROM `windspeed` WHERE `speedms` = (SELECT MAX(speedms) FROM `windspeed` WHERE DATE(`timestamp`) = CURDATE()) AND DATE(`timestamp`) = CURDATE()";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-    $max_windSms = $result['max_windsms'];
+    $max_wind_recorded = $result['timestamp'];
+    $max_wind_recorded = strtotime($max_wind_recorded);
+    $max_wind_recorded = date('H:i:s T', $max_wind_recorded);
+
+    $max_windSms = $result['speedms'];
     $max_windSkmh = round($max_windSms * 3.6, 2);
     $max_windSmph = round($max_windSms * 2.23694, 2);
 
@@ -99,15 +101,25 @@ function get_current_weather() {
     $avg_windSmph = round($avg_windSms * 2.23694, 2);
 
     // High Temp
-    $sql = "SELECT MAX(tempc) AS `max_tempc`, `timestamp` FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()";
+    $sql = "SELECT `timestamp`, `tempc` FROM `temperature` WHERE `tempc` = (SELECT MAX(tempc) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()) AND DATE(`timestamp`) = CURDATE()";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-    $tempC_high = $result['max_tempc'];
-    $tempF_high = $tempC_high * 9/5 + 32;
+    $high_temp_recorded = $result['timestamp'];
+    $high_temp_recorded = strtotime($high_temp_recorded);
+    $high_temp_recorded = date('H:i:s T', $high_temp_recorded);
+
+    $tempC_high = $result['tempc'];
+    $tempC_high = round($tempC_high, 2);
+    $tempF_high = round($tempC_high * 9/5 + 32, 2);
 
     // Low Temp
-    $sql = "SELECT MIN(tempc) AS `min_tempc`, `timestamp` FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()";
+    $sql = "SELECT `timestamp`, `tempc` FROM `temperature` WHERE `tempc` = (SELECT MIN(tempc) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()) AND DATE(`timestamp`) = CURDATE()";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-    $tempC_low = $result['min_tempc'];
+    $low_temp_recorded = $result['timestamp'];
+    $low_temp_recorded = strtotime($low_temp_recorded);
+    $low_temp_recorded = date('H:i:s T', $low_temp_recorded);
+
+    $tempC_low = $result['tempc'];
+    $tempC_low = round($tempC_low, 2);
     $tempF_low = $tempC_low * 9/5 + 32;
 
     // Average Temp
@@ -116,37 +128,47 @@ function get_current_weather() {
     $tempC_avg = round($result['avg_tempc'], 2);
     $tempF_avg = $tempC_avg * 9/5 + 32;
 
+    // Wind Chill
+    if ($tempC <= 10 && $windSkmh >= 4.8){
+        $feelsC = 13.12 + (0.6215 * $tempC) - (11.37 * ($windSkmh**0.16)) + ((0.3965 * $tempC) * ($windSkmh**0.16));
+        $feelsC = round($feelsC, 2);
+        $feelsF = round($feelsC * 9/5 + 32, 2);
+    }
 
-    // Feels Like
-    $feelsF= .3634 + (.9986 * $tempF) + (4.7711 * $relH) - (.1140 * $tempF * $relH) - (.0009 * ($tempF**2)) - (.0207 * ($relH**2)) + (.0007 * $relH * ($tempF**2)) + (.0003 * $tempF * ($relH**2));
-    $feelsF = round($feelsF, 2);
-    $feelsC = round(($feelsF - 32) / 1.8, 2);
-    ?>
+    elseif ($tempF >= 80 && $relH >= 40) {
+        // Heat Index
+        $feelsF = -42.379 + (2.04901523 * $tempF) + (10.14333127 * $relH) - (0.22475541 * $tempF * $relH) - (6.83783 * (10**-3) * ($tempF**2)) - (5.481717 * (10**-2) * ($relH**2)) + (1.22874 * (10**-3) * ($tempF**2) * $relH) + (8.5282 * (10**-4) * $tempF * ($relH**2)) - (1.99 * (10**-6) * ($tempF**2) * ($relH**2));
+        $feelsF = round($feelsF, 2);
+        $feelsC = round(($feelsF - 32) / 1.8, 2);
+    }
+
+?>
 
     <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
+        <div class="col-lg-6">
+            <h2>Weather Station:</h2>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <tbody>
                         <tr>
                             <td><strong>Reported at:</strong></td>
-                            <td><?php echo $time, date('T'); ?></td>
+                            <td><?php echo $time; ?></td>
                         </tr>
                         <tr>
                             <td><strong>Current Temperature:</strong></td>
                             <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
                         </tr>
-                        <tr>
+                        <?php if (isset($feelsC)){echo '<tr>
                             <td><strong>Feels Like:</strong></td>
                             <td><?php echo $feelsC; ?>&#8451; (<?php echo $feelsF; ?>&#8457;)</td>
-                        </tr>
+                        </tr>';} ?>
                         <tr>
                             <td><strong>Highest Temperature:</strong></td>
-                            <td><?php echo $tempC_high; ?>&#8451; (<?php echo $tempF_high; ?>&#8457;)</td>
+                            <td><?php echo $tempC_high; ?>&#8451; (<?php echo $tempF_high; ?>&#8457;) @ <?php echo $high_temp_recorded; ?></td>
                         </tr>
                         <tr>
                             <td><strong>Lowest Temperature:</strong></td>
-                            <td><?php echo $tempC_low; ?>&#8451; (<?php echo $tempF_low; ?>&#8457;)</td>
+                            <td><?php echo $tempC_low, '&#8451; (', $tempF_low, '&#8457;) @ ', $low_temp_recorded; ?></td>
                         </tr>
                         <tr>
                             <td><strong>Average Temperature:</strong></td>
@@ -158,11 +180,11 @@ function get_current_weather() {
                         </tr>
                         <tr>
                             <td><strong>Wind Speed:</strong></td>
-                            <td><?php echo $windSkm , ' km/h (', $windSmph, ' mph)';?></td>
+                            <td><?php echo $windSkmh , ' km/h (', $windSmph, ' mph)';?></td>
                         </tr>
                         <tr>
                             <td><strong>Peak Wind Speed:</strong></td>
-                            <td><?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)';?></td>
+                            <td><?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?></td>
                         </tr>
                         <tr>
                             <td><strong>Average Wind Speed:</strong></td>
@@ -192,8 +214,119 @@ function get_current_weather() {
                 </table>
             </div>
         </div>
+<?php
+/*
+    // Inside Temp Sensor
+    $sql = "SELECT * FROM `under_trailer` ORDER BY `timestamp` DESC LIMIT 1";
+    $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+
+    $time = $result['timestamp'];
+    $time = strtotime($time);
+    $time = date('j M Y @ H:i:s T', $time);
+    $tempC = $result['tempC'];
+    $tempF = $tempC * 9/5 + 32;
+    $relH = $result['relH'];
+
+?>
+
+        <div class="col-lg-6">
+            <h2>Inside Trailer:</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td><strong>Reported at:</strong></td>
+                        <td><?php echo $time; ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Current Temperature:</strong></td>
+                        <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Relative Humidity:</strong></td>
+                        <td><?php echo $relH, '%'; ?></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<?php
+
+        // Under Tubby Sensor
+        $sql = "SELECT * FROM `under_tubby` ORDER BY `timestamp` DESC LIMIT 1";
+        $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+
+        $time = $result['timestamp'];
+        $time = strtotime($time);
+        $time = date('H:i:s T', $time);
+        $tempC = $result['tempC'];
+        $tempF = $tempC * 9/5 + 32;
+        $relH = $result['relH'];
+
+?>
+
+        <div class="col-lg-6">
+            <h2>Under Tubby:</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td><strong>Reported at:</strong></td>
+                        <td><?php echo $time; ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Current Temperature:</strong></td>
+                        <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Relative Humidity:</strong></td>
+                        <td><?php echo $relH, '%'; ?></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
-    <?php
+<?php
+*/
+    // Under Trailer Sensor
+    $sql = "SELECT * FROM `under_trailer` ORDER BY `timestamp` DESC LIMIT 1";
+    $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+
+    $time = $result['timestamp'];
+    $time = strtotime($time);
+    $time = date('j M Y @ H:i:s T', $time);
+    $tempC = $result['tempC'];
+    $tempF = $tempC * 9/5 + 32;
+    $relH = $result['relH'];
+
+?>
+
+        <div class="col-lg-6">
+            <h2>Under Trailer:</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td><strong>Reported at:</strong></td>
+                            <td><?php echo $time; ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Current Temperature:</strong></td>
+                            <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Relative Humidity:</strong></td>
+                            <td><?php echo $relH, '%'; ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<?php
 
 }
