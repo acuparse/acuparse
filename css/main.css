@@ -7,6 +7,7 @@ body {
 
 body {
     padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+
 }
 
 .row { 
@@ -129,3 +130,11 @@ footer {
 .margin-bottom-20 { margin-bottom: 2.0em; }
 .margin-bottom-25 { margin-bottom: 2.5em; }
 .margin-bottom-30 { margin-bottom: 3.0em; }
+
+.wi {
+    font-size: 18px;
+}
+
+.weather_row {
+    font-size: 18px;
+}

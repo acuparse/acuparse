@@ -21,12 +21,12 @@ $PRESSURE_OFFSET = 127;
 
 // 5N1 Sensor Config
 $sensor_5n1_id = '01360';
-$sensor_5n1_name = 'Weather Station';
+$sensor_5n1_name = 'Master Station';
 
-// Tower Sensor Contower1fig
-$tower_sensors_active = 1; // Comment out if no tower sensors
+// Tower Sensor Config
+$tower_sensors_active = 1; // 1 for yes, 0 for no
 
-// Uncomment active sensors, must be at least 1 if active
+// Uncomment active sensors
 
 // Tower Sensor 1
 $sensor_tower1_id = '11638'; // ID from tower sensor
@@ -39,7 +39,6 @@ $sensor_tower1_name = 'Under Trailer'; // Sensor name
 // Tower Sensor 3
 //sensor_$tower3_id = ''; // ID from tower sensor
 //sensor_$tower3_name = ''; // Sensor name
-
 
 
 // DATABASE CONFIG:

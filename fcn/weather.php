@@ -12,7 +12,7 @@ function get_current_weather() {
 
     $time = $result['reported'];
     $time = strtotime($time);
-    $time = date('j M Y @ H:i:s T', $time);
+    $time = date('j M Y @ H:i:s', $time);
 
     $tempC = $result['tempC'];
     $tempF = $result['tempF'];
@@ -28,70 +28,15 @@ function get_current_weather() {
     // Still needs tweaking!!
     $rainin = $result['rain'] / 2540;
     $rainmm = $result['rain'] / 1000;
-
-
     $rain_totalin = $result['total_rain'] * 0.039370;
     $rain_totalmm = $result['total_rain'];
-
-    // Wind Direction
-    // Convert wind direction into text
-    switch ($windD) {
-        case 'N':
-            $windTXT = 'North';
-            break;
-        case 'NNE':
-            $windTXT = 'North-Northeast';
-            break;
-        case 'NE':
-            $windTXT = 'North East';
-            break;
-        case 'ENE':
-            $windTXT = 'East-Northeast';
-            break;
-        case 'E':
-            $windTXT = 'East';
-            break;
-        case 'ESE':
-            $windTXT = 'East-Southeast';
-            break;
-        case 'SE':
-            $windTXT = 'South-East';
-            break;
-        case 'SSE':
-            $windTXT = 'South-Southeast';
-            break;
-        case 'S':
-            $windTXT = 'South';
-            break;
-        case 'SSW':
-            $windTXT = 'South-Southwest';
-            break;
-        case 'SW':
-            $windTXT = 'South-West';
-            break;
-        case 'WSW':
-            $windTXT = 'West-Southwest';
-            break;
-        case 'W':
-            $windTXT = 'West';
-            break;
-        case 'WNW':
-            $windTXT = 'West-Northwest';
-            break;
-        case 'NW':
-            $windTXT = 'North-West';
-            break;
-        case 'NNW':
-            $windTXT = 'North-Northwest';
-            break;
-    }
 
     // Peak Windspeed
     $sql = "SELECT `timestamp`, `speedMS` FROM `windspeed` WHERE `speedMS` = (SELECT MAX(speedMS) FROM `windspeed` WHERE DATE(`timestamp`) = CURDATE()) AND DATE(`timestamp`) = CURDATE()";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $max_wind_recorded = $result['timestamp'];
     $max_wind_recorded = strtotime($max_wind_recorded);
-    $max_wind_recorded = date('H:i:s T', $max_wind_recorded);
+    $max_wind_recorded = date('H:i:s', $max_wind_recorded);
 
     $max_windSms = $result['speedMS'];
     $max_windSkmh = round($max_windSms * 3.6, 2);
@@ -109,7 +54,7 @@ function get_current_weather() {
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $high_temp_recorded = $result['timestamp'];
     $high_temp_recorded = strtotime($high_temp_recorded);
-    $high_temp_recorded = date('H:i:s T', $high_temp_recorded);
+    $high_temp_recorded = date('H:i:s', $high_temp_recorded);
 
     $tempC_high = $result['tempC'];
     $tempF_high = round($tempC_high * 9/5 + 32, 2);
@@ -120,7 +65,7 @@ function get_current_weather() {
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $low_temp_recorded = $result['timestamp'];
     $low_temp_recorded = strtotime($low_temp_recorded);
-    $low_temp_recorded = date('H:i:s T', $low_temp_recorded);
+    $low_temp_recorded = date('H:i:s', $low_temp_recorded);
 
     $tempC_low = $result['tempC'];
     $tempF_low = round($tempC_low * 9/5 + 32, 2);
@@ -143,13 +88,13 @@ function get_current_weather() {
     $tempC_trend_2 = $result['trend_tempC'];
     $tempC_trend = $tempC_trend_1 - $tempC_trend_2;
     if ($tempC_trend >= 1) {
-        $tempC_trend = ' <i class="wi wi-cloud-up"></i>';
+        $tempC_trend = ' <i class="wi wi-direction-up"></i>';
     }
     elseif ($tempC_trend <= -1) {
-        $tempC_trend = ' <i class="wi wi-cloud-down"></i>';
+        $tempC_trend = ' <i class="wi wi-direction-down"></i>';
     }
     else {
-        $tempC_trend = ' <i class="wi wi-cloud-refresh"></i>';
+        $tempC_trend = ' <i class="wi wi-direction-right"></i>';
     }
 
     // Pressure Trending
@@ -162,13 +107,13 @@ function get_current_weather() {
     $hpa_trend_2 = $result['hpa_trend'];
     $hpa_trend = $hpa_trend_1 - $hpa_trend_2;
     if ($hpa_trend >= 1) {
-        $hpa_trend = ' <i class="wi wi-cloud-up"></i>';
+        $hpa_trend = ' <i class="wi wi-direction-up"></i>';
     }
     elseif ($hpa_trend <= -1) {
-        $hpa_trend = ' <i class="wi wi-cloud-down"></i>';
+        $hpa_trend = ' <i class="wi wi-direction-down"></i>';
     }
     else {
-        $hpa_trend = ' <i class="wi wi-cloud-refresh"></i>';
+        $hpa_trend = ' <i class="wi wi-direction-right"></i>';
     }
 
     // Humidity Trending
@@ -181,13 +126,13 @@ function get_current_weather() {
     $relH_trend_2 = $result['relH_trend'];
     $relH_trend = $relH_trend_1 - $relH_trend_2;
     if ($relH_trend >= 1) {
-        $relH_trend = ' <i class="wi wi-cloud-up"></i>';
+        $relH_trend = ' <i class="wi wi-direction-up"></i>';
     }
     elseif ($relH_trend <= -1) {
-        $relH_trend = ' <i class="wi wi-cloud-down"></i>';
+        $relH_trend = ' <i class="wi wi-direction-down"></i>';
     }
     else {
-        $relH_trend = ' <i class="wi wi-cloud-refresh"></i>';
+        $relH_trend = ' <i class="wi wi-direction-right"></i>';
     }
 
     // Wind Chill
@@ -207,76 +152,34 @@ function get_current_weather() {
 
 ?>
 
-    <div class="row">
-        <div class="col-lg-6">
+    <div class="row weather_row">
+        <div class="col-md-5 col-md-offset-1">
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <td><strong>Reported at:</strong></td>
-                            <td><?php echo $time; ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Current Temperature:</strong></td>
-                            <td><?php echo $tempC, '&#8451; (', $tempF, '&#8457;)', $tempC_trend; ?></td>
-                        </tr>
-                        <?php if (isset($feelsC)){ ?><tr>
-                            <td><strong>Feels Like:</strong></td>
-                            <td><?php echo $feelsC; ?>&#8451; (<?php echo $feelsF; ?>&#8457;)</td>
-                        </tr> <?php } ?>
-                        <tr>
-                            <td><strong>Highest Temperature:</strong></td>
-                            <td><?php echo $tempC_high; ?>&#8451; (<?php echo $tempF_high; ?>&#8457;) @ <?php echo $high_temp_recorded; ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Lowest Temperature:</strong></td>
-                            <td><?php echo $tempC_low, '&#8451; (', $tempF_low, '&#8457;) @ ', $low_temp_recorded; ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Average Temperature:</strong></td>
-                            <td><?php echo $tempC_avg; ?>&#8451; (<?php echo $tempF_avg; ?>&#8457;)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Wind Direction:</strong></td>
-                            <td><?php echo $windTXT, ' <i class="wi wi-wind wi-from-', strtolower($windD), '"></i>';?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Wind Speed:</strong></td>
-                            <td><?php echo $windSkmh , ' km/h (', $windSmph, ' mph)';?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Peak Wind Speed:</strong></td>
-                            <td><?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Average Wind Speed:</strong></td>
-                            <td><?php echo $avg_windSkmh, ' km/h (', $avg_windSmph, ' mph)';?></td>
-                        
-                        </tr>
-                        <tr>
-                            <td><strong>Dew Point:</strong></td>
-                            <td><?php echo $dewptC; ?>&#8451; (<?php echo $dewptF; ?>&#8457;)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Relative Humidity:</strong></td>
-                            <td><?php echo $relH, '%', $relH_trend; ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Pressure:</strong></td>
-                            <td><?php echo $pressurehPa, ' hPa (', $pressureinHg, ' inHg)', $hpa_trend; ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Rainfall Rate:</strong></td>
-                            <td><?php echo $rainmm, ' mm/hr (', $rainin, ' in/hr)'; ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Daily Rain:</strong></td>
-                            <td><?php echo $rain_totalmm, ' mm (', $rain_totalin, ' in)'; ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+            <p><strong>Reported:</strong> <?php echo $time; ?></p>
+
+            <p>
+                <strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)', $tempC_trend; ?><br>
+                <?php if (isset($feelsC)){ echo '<p><strong>Feels Like:</strong> ', $feelsC, '&#8451; (', $feelsF, '&#8457;)<br>';} ?>
+                <strong>High:</strong> <?php echo $tempC_high, '&#8451; (', $tempF_high, '&#8457;) @ ', $high_temp_recorded; ?><br>
+                <strong>Low:</strong> <?php echo $tempC_low, '&#8451; (', $tempF_low, '&#8457;) @ ', $low_temp_recorded; ?><br>
+                <strong>Average:</strong> <?php echo $tempC_avg, '&#8451; (', $tempF_avg,'&#8457;)'; ?></p>
+
+            <p>
+                <strong>Wind: <i class="wi wi-wind wi-from-<?php echo strtolower($windD); ?>"></i></strong> <?php echo $windD, ' @ ', $windSkmh , ' km/h (', $windSmph, ' mph)'; if ($windSkmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windSkmh < 25){ if ($windSkmh >= 10) {echo ' <i class="wi wi-windy"></i>';}} ?><br>
+                <strong>Peak:</strong> <?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?><br>
+                <strong>Average:</strong> <?php echo $avg_windSkmh, ' km/h (', $avg_windSmph, ' mph)';?>
+            </p>
+
+            <p><strong>Dew Point:</strong> <?php echo $dewptC, '&#8451; (', $dewptF, '&#8457;)'; ?></p>
+
+            <p><strong>Humidity:</strong> <?php echo $relH, '%', $relH_trend; ?></p>
+
+            <p><strong>Pressure:</strong> <?php echo $pressurehPa, ' hPa (', $pressureinHg, ' inHg)', $hpa_trend; ?></p>
+
+            <p>
+                <strong>Rain Rate:</strong> <?php echo $rainmm, ' mm/hr (', $rainin, ' in/hr)'; ?><br>
+                <strong>Daily Rain:</strong> <?php echo $rain_totalmm, ' mm (', $rain_totalin, ' in)'; ?></p>
         </div>
         
 <?php
@@ -298,27 +201,11 @@ function get_current_weather() {
             $relH = $result['relH'];
 
 ?>
-
-        <div class="col-lg-6">
+        <div class="col-md-6">
             <h2><?php echo $sensor_tower1_name; ?>:</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <tbody>
-                    <tr>
-                        <td><strong>Reported at:</strong></td>
-                        <td><?php echo $time; ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Current Temperature:</strong></td>
-                        <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Relative Humidity:</strong></td>
-                        <td><?php echo $relH, '%'; ?></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <p><strong>Reported:</strong> <?php echo $time; ?></p>
+            <p><strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)'; ?></p>
+            <p><strong>Humidity:</strong> <?php echo $relH, '%'; ?></p>
         </div>
 
 <?php
@@ -339,27 +226,12 @@ function get_current_weather() {
 
 ?>
 
-        <div class="col-lg-6">
-            <h2><?php echo $sensor_tower2_name; ?>:</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <tbody>
-                    <tr>
-                        <td><strong>Reported at:</strong></td>
-                        <td><?php echo $time; ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Current Temperature:</strong></td>
-                        <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Relative Humidity:</strong></td>
-                        <td><?php echo $relH, '%'; ?></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="col-md-6">
+                <h2><?php echo $sensor_tower2_name; ?>:</h2>
+                <p><strong>Reported:</strong> <?php echo $time; ?></p>
+                <p><strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)'; ?></p>
+                <p><strong>Humidity:</strong> <?php echo $relH, '%'; ?></p>
             </div>
-        </div>
 
 <?php
         }
@@ -378,28 +250,12 @@ function get_current_weather() {
 
 ?>
 
-        <div class="col-lg-6">
-            <h2><?php echo $sensor_tower3_name; ?>:</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <tbody>
-                    <tr>
-                        <td><strong>Reported at:</strong></td>
-                        <td><?php echo $time; ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Current Temperature:</strong></td>
-                        <td><?php echo $tempC; ?>&#8451; (<?php echo $tempF; ?>&#8457;)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Relative Humidity:</strong></td>
-                        <td><?php echo $relH, '%'; ?></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="col-md-6">
+                <h2><?php echo $sensor_tower3_name; ?>:</h2>
+                <p><strong>Reported:</strong> <?php echo $time; ?></p>
+                <p><strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)'; ?></p>
+                <p><strong>Humidity:</strong> <?php echo $relH, '%'; ?></p>
             </div>
-        </div>
-
     </div>
 
 <?php

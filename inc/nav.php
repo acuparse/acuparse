@@ -18,10 +18,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li <?php if ($_SERVER['PHP_SELF'] == '/index.php'){echo 'class="active"';} ?>>
-                    <a href="/"><i class="fa fa-play-circle-o"></i> Live Weather</a>
+                    <a href="/"><i class="wi wi-thermometer"></i> Live Weather</a>
                 </li>
                 <li <?php if ($_SERVER['PHP_SELF'] == '/archive.php'){echo 'class="active"';} ?>>
-                    <a href="archive"><i class="fa fa-users"></i> Archives</a>
+                    <a href="archive"><i class="fa  fa-archive"></i> Archives</a>
                 </li>
             </ul>
         </div>
