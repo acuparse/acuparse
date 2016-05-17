@@ -26,10 +26,10 @@ function get_current_weather() {
     $dewptF = $result['dewptF'];
 
     // Still needs tweaking!!
-    $rainin = $result['rain'] / 2540;
-    $rainmm = $result['rain'] / 1000;
-    $rain_totalin = $result['total_rain'] * 0.039370;
-    $rain_totalmm = $result['total_rain'];
+    $rainin = $result['rainim'];
+    $rainmm = $result['rainmm'];
+    $rain_totalin = $result['total_rainin'];
+    $rain_totalmm = $result['total_rainmm'];
 
     // Peak Windspeed
     $sql = "SELECT `timestamp`, `speedMS` FROM `windspeed` WHERE `speedMS` = (SELECT MAX(speedMS) FROM `windspeed` WHERE DATE(`timestamp`) = CURDATE()) AND DATE(`timestamp`) = CURDATE()";
@@ -157,29 +157,19 @@ function get_current_weather() {
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
 
             <p><strong>Reported:</strong> <?php echo $time; ?></p>
-
-            <p>
-                <strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)', $tempC_trend; ?><br>
-                <?php if (isset($feelsC)){ echo '<p><strong>Feels Like:</strong> ', $feelsC, '&#8451; (', $feelsF, '&#8457;)<br>';} ?>
-                <strong>High:</strong> <?php echo $tempC_high, '&#8451; (', $tempF_high, '&#8457;) @ ', $high_temp_recorded; ?><br>
-                <strong>Low:</strong> <?php echo $tempC_low, '&#8451; (', $tempF_low, '&#8457;) @ ', $low_temp_recorded; ?><br>
-                <strong>Average:</strong> <?php echo $tempC_avg, '&#8451; (', $tempF_avg,'&#8457;)'; ?></p>
-
-            <p>
-                <strong>Wind: <i class="wi wi-wind wi-from-<?php echo strtolower($windD); ?>"></i></strong> <?php echo $windD, ' @ ', $windSkmh , ' km/h (', $windSmph, ' mph)'; if ($windSkmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windSkmh < 25){ if ($windSkmh >= 10) {echo ' <i class="wi wi-windy"></i>';}} ?><br>
-                <strong>Peak:</strong> <?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?><br>
-                <strong>Average:</strong> <?php echo $avg_windSkmh, ' km/h (', $avg_windSmph, ' mph)';?>
-            </p>
-
+            <p><strong>Temp:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)', $tempC_trend; ?></p>
+            <p><?php if (isset($feelsC)){ echo '<p><strong>Feels Like:</strong> ', $feelsC, '&#8451; (', $feelsF, '&#8457;)</p>';} ?>
+            <p><strong>High:</strong> <?php echo $tempC_high, '&#8451; (', $tempF_high, '&#8457;) @ ', $high_temp_recorded; ?></p>
+            <p><strong>Low:</strong> <?php echo $tempC_low, '&#8451; (', $tempF_low, '&#8457;) @ ', $low_temp_recorded; ?></p>
+            <p><strong>Average:</strong> <?php echo $tempC_avg, '&#8451; (', $tempF_avg,'&#8457;)'; ?></p>
+            <p><strong>Wind: <?php if ($windSkmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windSkmh < 25){ if ($windSkmh >= 10) {echo ' <i class="wi wi-windy"></i>';}} ?> <i class="wi wi-wind wi-from-<?php echo strtolower($windD); ?>"></i></strong> <?php echo $windD, ' @ ', $windSkmh , ' km/h (', $windSmph, ' mph)'; ?></p>
+            <p><strong>Peak:</strong> <?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?></p>
+            <p><strong>Average:</strong> <?php echo $avg_windSkmh, ' km/h (', $avg_windSmph, ' mph)';?></p>
             <p><strong>Dew Point:</strong> <?php echo $dewptC, '&#8451; (', $dewptF, '&#8457;)'; ?></p>
-
             <p><strong>Humidity:</strong> <?php echo $relH, '%', $relH_trend; ?></p>
-
             <p><strong>Pressure:</strong> <?php echo $pressurehPa, ' hPa (', $pressureinHg, ' inHg)', $hpa_trend; ?></p>
-
-            <p>
-                <strong>Rain Rate:</strong> <?php echo $rainmm, ' mm/hr (', $rainin, ' in/hr)'; ?><br>
-                <strong>Daily Rain:</strong> <?php echo $rain_totalmm, ' mm (', $rain_totalin, ' in)'; ?></p>
+            <p><strong>Rain Rate:</strong> <?php echo $rainmm, ' mm/hr (', $rainin, ' in/hr)'; ?></p>
+            <p><strong>Daily Rain:</strong> <?php echo $rain_totalmm, ' mm (', $rain_totalin, ' in)'; ?></p>
         </div>
         
 <?php

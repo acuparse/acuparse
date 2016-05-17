@@ -19,10 +19,21 @@ $windS_ms = $result['speedMS'];
 $windS_kmh = $windS_ms * 3.6;
 $windS_mph = $windS_ms * 2.23694;
 
+// Process Average Wind Speed over the last 2 minutes
+$sql = "SELECT AVG(speedMS) AS `avg_speedMS` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)";
+$result = mysqli_fetch_array(mysqli_query($conn, $sql));
+$windspdmph_avg2m = $result['avg_speedMS'];
+$windspdmph_avg2m_mph = $windspdmph_avg2m * 2.23694;
+
 // Process Wind Direction
 $sql = "SELECT `degrees` FROM `winddirection` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $windDEG = $result['degrees'];
+
+// Process Average Wind Direction over the last 2 minutes
+$sql = "SELECT AVG(degrees) AS `avg_degrees` FROM `winddirection` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)";
+$result = mysqli_fetch_array(mysqli_query($conn, $sql));
+$windDEG_avg2m = $result['avg_degrees'];
 
 // Process Temp
 $sql = "SELECT `tempC` FROM `temperature` ORDER BY `timestamp` DESC LIMIT 1";
@@ -36,17 +47,17 @@ $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $humidity = $result['relH'];
 
 // Process Rainfall
-$sql = "SELECT `raw` FROM `rainfall` ORDER BY `timestamp` DESC LIMIT 1";
+$sql = "SELECT SUM(`raw`) AS `rainfall` FROM rainfall WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 1 HOUR)";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-$rain = $result['raw'];
-$rainin = $rain / 2540;
-$rainmm = $rain / 1000;
+$rain = $result['rainfall'];
+$rainin = $rain * 0.0393701;
+$rainmm = $rain;
 
 $sql = "SELECT SUM(`raw`) AS `rainfall_total` FROM rainfall WHERE DATE(`timestamp`) = CURDATE()";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $total_rainfall = $result['rainfall_total'];
-$total_rainfallin = $total_rainfall / 2540;
-$total_rainfallmm = $total_rainfall /1000;
+$total_rainfallin = $total_rainfall * 0.0393701;
+$total_rainfallmm = $total_rainfall;
 
 // Calculate Dew Point
 $dewptC = ((pow(($humidity / 100), 0.125)) * (112 + 0.9 * $tempC) + (0.1 * $tempC) - 112);
@@ -104,19 +115,14 @@ switch ($windDEG) {
         break;
 }
 
-// Change rain to 0 when sending to WU until fixed
-
-$rainin_wu = 0;
-$total_rainfallin_wu = 0;
-
 // Send data to wunderground
 $wu_query_url = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=' . $wu_id . '&PASSWORD=' . $wu_password;
-$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&windspeedmph=' . $windS_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rainin_wu . '&dailyrainin=' . $total_rainfallin_wu;
+$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&winddir_avg2m=' . $windDEG_avg2m . '&windspeedmph=' . $windS_mph . '&windspdmph_avg2m=' . $windspdmph_avg2m_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rainin . '&dailyrainin=' . $total_rainfallin;
 $wu_query_static = '&dateutc=now&softwaretype=other&action=updateraw';
 $wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
 
 // Save to DB
-$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windDEG`, `windD`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rain`, `total_rain`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windDEG', '$windD', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rain', '$total_rainfall', '$wu_query', '$wu_query_result')";
+$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windSmph_avg2m`, `windDEG`, `windD`, `windDEG_avg2m`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rainin`, `rainmm`, `total_rainin`, `total_rainmm`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windspdmph_avg2m_mph', '$windDEG', '$windD', '$windDEG_avg2m', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rainin', '$rainmm', '$total_rainfallin', '$total_rainfallmm', '$wu_query', '$wu_query_result')";
 $result = mysqli_query($conn, $sql);
 
 // Log
