@@ -13,9 +13,9 @@ $pressure_hPa = ($raw_pressure_hPa + $PRESSURE_OFFSET);
 $pressure_inHg = $pressure_hPa / 33.8638866667;
 
 // Process Wind Speed
-$sql = "SELECT `speedms` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1";
+$sql = "SELECT `speedMS` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-$windS_ms = $result['speedms'];
+$windS_ms = $result['speedMS'];
 $windS_kmh = $windS_ms * 3.6;
 $windS_mph = $windS_ms * 2.23694;
 
@@ -25,15 +25,15 @@ $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $windDEG = $result['degrees'];
 
 // Process Temp
-$sql = "SELECT `tempc` FROM `temperature` ORDER BY `timestamp` DESC LIMIT 1";
+$sql = "SELECT `tempC` FROM `temperature` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-$tempC = $result['tempc'];
+$tempC = $result['tempC'];
 $tempF = $tempC * 9/5 + 32;
 
 // Process Humidity
-$sql = "SELECT `humidity` FROM `humidity` ORDER BY `timestamp` DESC LIMIT 1";
+$sql = "SELECT `relH` FROM `humidity` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-$humidity = $result['humidity'];
+$humidity = $result['relH'];
 
 // Process Rainfall
 $sql = "SELECT `raw` FROM `rainfall` ORDER BY `timestamp` DESC LIMIT 1";

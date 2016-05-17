@@ -19,8 +19,8 @@
 
         <!-- CSS -->
         <link href="css/bootstrap.min.css" rel="stylesheet" />
-        <link href="css/weather/weather-icons.css" rel="stylesheet" />
-        <link href="css/weather/weather-icons-wind.css" rel="stylesheet" />
+        <link href="css/weather/css/weather-icons.min.css" rel="stylesheet" />
+        <link href="css/weather/css/weather-icons-wind.min.css" rel="stylesheet" />
         <link href="css/main.css" rel="stylesheet" />
         <link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="/css/datetimepicker.css" rel="stylesheet" type="text/css" />

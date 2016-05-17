@@ -27,19 +27,21 @@ if (!empty($_POST)) {
 
             //Step 1: (get temperature value)
             if ($D2 >= $C5) {
-                $dUT = $D2 - $C5 - (($D2 - $C5) / 2 ** 7) * (($D2 - $C5) / 2 ** 7) * $A / 2 ** $C;
-            } else if ($D2 < $C5) {
-                $dUT = $D2 - $C5 - (($D2 - $C5) / 2 ** 7) * (($D2 - $C5) / 2 ** 7) * $B / 2 ** $C;
+                $dUT = $D2 - $C5 - (($D2 - $C5) / 2**7) * (($D2 - $C5) / 2**7) * $A / 2**$C;
+            }
+
+            elseif ($D2 < $C5) {
+                $dUT = $D2 - $C5 - (($D2 - $C5) / 2**7) * (($D2 - $C5) / 2**7) * $B / 2**$C;
             }
 
             //Step 2: (calculate offset, sensitivity and final pressure value)
-            $OFF = ($C2 + ($C4 - 1024) * $dUT / 2 ** 14) * 4;
-            $SENS = $C1 + $C3 * $dUT / 2 ** 10;
-            $X = $SENS * ($D1 - 7168) / 2 ** 14 - $OFF;
-            $P = $X * 10 / 2 ** 5 + $C7;
+            $OFF = ($C2 + ($C4 - 1024) * $dUT / 2**14) * 4;
+            $SENS = $C1 + $C3 * $dUT / 2**10;
+            $X = $SENS * ($D1 - 7168) / 2**14 - $OFF;
+            $P = $X * 10 / 2**5 + $C7;
 
             //Step 3: (calculate temperature)
-            $T = 250 + $dUT * $C6 / 2 ** 16 - $dUT / 2 ** $D;
+            $T = 250 + $dUT * $C6 / 2**16 - $dUT / 2**$D;
 
             $raw_pressure_hPa = $P / 10;
 
@@ -48,7 +50,7 @@ if (!empty($_POST)) {
             $result = mysqli_query($conn, $sql);
         }
 
-        if ($_POST['mt'] == '5N1x31') {
+        if ($_POST['mt'] == '5N1x31' && $_POST['sensor'] == $sensor_5n1_id) {
             // Wind Speed, Wind Direction, and Rainfall
 
             // Wind Speed
@@ -56,7 +58,7 @@ if (!empty($_POST)) {
             $windS_ms = $a . "." . $b;
 
             // Insert into DB
-            $sql = "INSERT INTO `windspeed` (`speedms`) VALUES ('$windS_ms')";
+            $sql = "INSERT INTO `windspeed` (`speedMS`) VALUES ('$windS_ms')";
             $result = mysqli_query($conn, $sql);
 
             // Wind Direction
@@ -124,7 +126,7 @@ if (!empty($_POST)) {
             $result = mysqli_query($conn, $sql);
         }
 
-        else if ($_POST['mt'] == '5N1x38') {
+        elseif ($_POST['mt'] == '5N1x38') {
             // Wind Speed, Temperature, Humidity
 
             // Wind Speed
@@ -132,7 +134,7 @@ if (!empty($_POST)) {
             $windS_ms = $a . "." . $b;
             syslog(LOG_DEBUG,"Weather Station WindSpeed: $a - $b");
             // Insert into DB
-            $sql = "INSERT INTO `windspeed` (`speedms`) VALUES ('$windS_ms')";
+            $sql = "INSERT INTO `windspeed` (`speedMS`) VALUES ('$windS_ms')";
             $result = mysqli_query($conn, $sql);
 
             // Temperature
@@ -146,7 +148,7 @@ if (!empty($_POST)) {
             }
 
             // Insert into DB
-            $sql = "INSERT INTO `temperature` (`tempc`) VALUES ('$tempC')";
+            $sql = "INSERT INTO `temperature` (`tempC`) VALUES ('$tempC')";
             $result = mysqli_query($conn, $sql);
 
             // Humidity
@@ -154,53 +156,74 @@ if (!empty($_POST)) {
             $humidity = $a;
             syslog(LOG_DEBUG,"Weather Station relH: $a");
             // Insert into DB
-            $sql = "INSERT INTO `humidity` (`humidity`) VALUES ('$humidity')";
+            $sql = "INSERT INTO `humidity` (`relH`) VALUES ('$humidity')";
             $result = mysqli_query($conn, $sql);
         }
 
-        else if ($_POST['mt'] == 'tower') {
+        elseif ($tower_sensors_active == 1 && $_POST['mt'] == 'tower') {
 
-            // Under Trailer Sensor
-            if ($_POST['sensor'] == '11638') {
+            // Tower Sensor 1
+            if (isset($sensor_tower1_id) && $_POST['sensor'] == $sensor_tower1_id) {
                 // Temperature
                 sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
-                syslog(LOG_DEBUG,"Under Trailer Temp: $operator$a.$b");
+                syslog(LOG_DEBUG, "$sensor_tower1_name: $operator$a.$b");
                 if ($operator == 0) {
                     $tempC = $a . "." . $b;
-                }
-                else {
+                } else {
                     $tempC = "-" . $a . "." . $b;
                 }
 
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
                 $humidity = $a;
-                syslog(LOG_DEBUG,"Under Trailer relH: $a");
-                
+                syslog(LOG_DEBUG, "$sensor_tower1_name: $a");
+
                 // Insert into DB
-                $sql = "INSERT INTO `under_trailer` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
+                $sql = "INSERT INTO `tower1` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
                 $result = mysqli_query($conn, $sql);
             }
 
-            // Under Tubby Sensor
-            /*else if ($_POST['sensor'] == '') {
+            // Tower Sensor 2
+            elseif (isset($sensor_tower2_id) && $_POST['sensor'] == $sensor_tower2_id) {
                 // Temperature
                 sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
+                syslog(LOG_DEBUG, "$sensor_tower2_name: $operator$a.$b");
                 if ($operator == 0) {
                     $tempC = $a . "." . $b;
-                }
-                else {
+                } else {
                     $tempC = "-" . $a . "." . $b;
                 }
 
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
-                $humidity = $a . "." . $b;
+                $humidity = $a;
+                syslog(LOG_DEBUG, "$sensor_tower2_name: $a");
 
                 // Insert into DB
-                $sql = "INSERT INTO `under_tubby` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
+                $sql = "INSERT INTO `tower2` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
                 $result = mysqli_query($conn, $sql);
-            }*/
+            }
+
+            // Tower Sensor 3
+            elseif (isset($sensor_tower3_id) && $_POST['sensor'] == $sensor_tower3_id) {
+                // Temperature
+                sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
+                syslog(LOG_DEBUG, "$sensor_tower2_name: $operator$a.$b");
+                if ($operator == 0) {
+                    $tempC = $a . "." . $b;
+                } else {
+                    $tempC = "-" . $a . "." . $b;
+                }
+
+                // Humidity
+                sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
+                $humidity = $a;
+                syslog(LOG_DEBUG, "$sensor_tower2_name: $a");
+
+                // Insert into DB
+                $sql = "INSERT INTO `tower3` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
+                $result = mysqli_query($conn, $sql);
+            }
         }
     }
 
