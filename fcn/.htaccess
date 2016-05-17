@@ -1,2 +1,2 @@
 # Don't allow directory browsing or any access at all.
-allow from all
+deny from all

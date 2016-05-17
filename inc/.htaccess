@@ -1,0 +1,2 @@
+# Don't allow directory browsing or any access at all.
+deny from all
