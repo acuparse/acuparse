@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="cleartype" content="on" />
         <meta name="handheldfriendly" content="true" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <meta name="description" content="<?php echo $site_desc; ?>" />
         <meta name="keywords" content="weather" />
         <title><?php echo $site_name; ?></title>

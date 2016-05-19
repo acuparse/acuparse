@@ -18,9 +18,7 @@ include 'inc/header.php';
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
-            <h2 class="page-header"><?php echo $site_desc; ?></h2>
-        </div>
+
         <script type="text/javascript">
             $(document).ready(function() {
                 function update() {
