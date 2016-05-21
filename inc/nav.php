@@ -1,6 +1,7 @@
 <?php
 /**
- * File: nav.php
+ * File: inc/nav.php
+ * Build the navigation bar for the main site
  */
 
 ?>

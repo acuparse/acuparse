@@ -1,6 +1,7 @@
 <?php
 /**
- * File: header.php
+ * File: inc/header.php
+ * Build the main site's header
  */
 
 ?>

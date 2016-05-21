@@ -1,14 +1,16 @@
 <?php
 /**
- * Attempt to hijack data from the acu-rite bridge.
  * File: messages/index.php
+ * Hijack data from the acu-rite bridge, process and store in database.
  */
 
 if (isset($_POST['id']) && $_POST['mt']) {
 
-    require '/var/www/html/inc/config.php';
+    require(dirname(__DIR__) . '/inc/config.php');
 
     if ($_POST['id'] == $MACADDRESS) {
+
+        // Get Pressure reading from the Bridge
 
         if ($_POST['mt'] == 'pressure') {
             $C1 = hexdec($_POST['C1']);
@@ -43,17 +45,20 @@ if (isset($_POST['id']) && $_POST['mt']) {
 
             $raw_pressure_hPa = $P / 10;
 
+            syslog(LOG_DEBUG, "Bridge Pressure: $raw_pressure_hPa");
+
             // Save to DB
             $sql = "INSERT INTO `pressure` (`raw_hpa`) VALUES ('$raw_pressure_hPa')";
             $result = mysqli_query($conn, $sql);
         }
 
+        // Process Wind Speed, Wind Direction, and Rainfall
         if ($_POST['mt'] == '5N1x31' && $_POST['sensor'] == $sensor_5n1_id) {
-            // Wind Speed, Wind Direction, and Rainfall
 
             // Wind Speed
             sscanf($_POST['windspeed'], "A0%02d%d", $a, $b);
             $windS_ms = $a . "." . $b;
+            syslog(LOG_DEBUG, "5n1 Windspeed: $a.$b");
 
             // Insert into DB
             $sql = "INSERT INTO `windspeed` (`speedMS`) VALUES ('$windS_ms')";
@@ -111,6 +116,8 @@ if (isset($_POST['id']) && $_POST['mt']) {
                     $windDEG = '337.5';
                     break;
             }
+
+            syslog(LOG_DEBUG, "5n1 WindDirection: $windDEG");
             // Insert into DB
             $sql = "INSERT INTO `winddirection` (`degrees`) VALUES ('$windDEG')";
             $result = mysqli_query($conn, $sql);
@@ -118,24 +125,27 @@ if (isset($_POST['id']) && $_POST['mt']) {
             // Rainfall
             sscanf($_POST['rainfall'], "A0%02d%d", $a, $b);
             $rain = $a . "." . $b;
+            syslog(LOG_DEBUG, "5n1 Rainfall: $a.$b");
 
             // Insert into DB
             $sql = "INSERT INTO `rainfall` (`raw`) VALUES ('$rain')";
             $result = mysqli_query($conn, $sql);
-        } elseif ($_POST['mt'] == '5N1x38') {
-            // Wind Speed, Temperature, Humidity
+        }
+
+        // Process Wind Speed, Temperature, Humidity
+        elseif ($_POST['mt'] == '5N1x38') {
 
             // Wind Speed
             sscanf($_POST['windspeed'], "A0%02d%d", $a, $b);
             $windS_ms = $a . "." . $b;
-            syslog(LOG_DEBUG, "Weather Station WindSpeed: $a - $b");
+            syslog(LOG_DEBUG, "5n1 Windspeed: $a.$b");
             // Insert into DB
             $sql = "INSERT INTO `windspeed` (`speedMS`) VALUES ('$windS_ms')";
             $result = mysqli_query($conn, $sql);
 
             // Temperature
             sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
-            syslog(LOG_DEBUG, "Weather Station Temp: $operator$a.$b");
+            syslog(LOG_DEBUG, "5n1 tempC: $operator$a.$b");
             if ($operator == 0) {
                 $tempC = $a . "." . $b;
             } else {
@@ -149,17 +159,20 @@ if (isset($_POST['id']) && $_POST['mt']) {
             // Humidity
             sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
             $humidity = $a;
-            syslog(LOG_DEBUG, "Weather Station relH: $a");
+            syslog(LOG_DEBUG, "5n1 relH: $a");
             // Insert into DB
             $sql = "INSERT INTO `humidity` (`relH`) VALUES ('$humidity')";
             $result = mysqli_query($conn, $sql);
-        } elseif ($tower_sensors_active == 1 && $_POST['mt'] == 'tower') {
+        }
+
+        // Process Tower Sensors
+        elseif ($tower_sensors_active == 1 && $_POST['mt'] == 'tower') {
 
             // Tower Sensor 1
             if (isset($sensor_tower1_id) && $_POST['sensor'] == $sensor_tower1_id) {
                 // Temperature
                 sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
-                syslog(LOG_DEBUG, "$sensor_tower1_name: $operator$a.$b");
+                syslog(LOG_DEBUG, "$sensor_tower1_name tempC: $operator$a.$b");
                 if ($operator == 0) {
                     $tempC = $a . "." . $b;
                 } else {
@@ -169,16 +182,18 @@ if (isset($_POST['id']) && $_POST['mt']) {
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
                 $humidity = $a;
-                syslog(LOG_DEBUG, "$sensor_tower1_name: $a");
+                syslog(LOG_DEBUG, "$sensor_tower1_name relH: $a");
 
                 // Insert into DB
                 $sql = "INSERT INTO `tower1` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
                 $result = mysqli_query($conn, $sql);
-            } // Tower Sensor 2
+            }
+
+            // Tower Sensor 2
             elseif (isset($sensor_tower2_id) && $_POST['sensor'] == $sensor_tower2_id) {
                 // Temperature
                 sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
-                syslog(LOG_DEBUG, "$sensor_tower2_name: $operator$a.$b");
+                syslog(LOG_DEBUG, "$sensor_tower2_name tempC: $operator$a.$b");
                 if ($operator == 0) {
                     $tempC = $a . "." . $b;
                 } else {
@@ -188,16 +203,18 @@ if (isset($_POST['id']) && $_POST['mt']) {
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
                 $humidity = $a;
-                syslog(LOG_DEBUG, "$sensor_tower2_name: $a");
+                syslog(LOG_DEBUG, "$sensor_tower2_name relH: $a");
 
                 // Insert into DB
                 $sql = "INSERT INTO `tower2` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
                 $result = mysqli_query($conn, $sql);
-            } // Tower Sensor 3
+            }
+
+            // Tower Sensor 3
             elseif (isset($sensor_tower3_id) && $_POST['sensor'] == $sensor_tower3_id) {
                 // Temperature
                 sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
-                syslog(LOG_DEBUG, "$sensor_tower2_name: $operator$a.$b");
+                syslog(LOG_DEBUG, "$sensor_tower2_name tempC: $operator$a.$b");
                 if ($operator == 0) {
                     $tempC = $a . "." . $b;
                 } else {
@@ -207,7 +224,7 @@ if (isset($_POST['id']) && $_POST['mt']) {
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
                 $humidity = $a;
-                syslog(LOG_DEBUG, "$sensor_tower2_name: $a");
+                syslog(LOG_DEBUG, "$sensor_tower2_name relH: $a");
 
                 // Insert into DB
                 $sql = "INSERT INTO `tower3` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
@@ -223,19 +240,22 @@ if (isset($_POST['id']) && $_POST['mt']) {
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         $response = curl_exec($ch);
+
+        // Log the raw data to syslog
+        syslog(LOG_DEBUG, "Raw Data: $post");
     }
 }
 
-elseif (isset($_POST)) {
-    // Repost the data to MBW and send the response back to the bridge
+// No usable data, repost the request to MBW and send the response back to the bridge
+else {
+
     $url = 'http://acu-link.com/messages';
     $post = file_get_contents('php://input');
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
     $response = curl_exec($ch);
-}
 
-else    {
-    die('No Data!');
+    // Log the raw data to syslog
+    syslog(LOG_ERR, "Data not parsed, check config! Raw Data: $post");
 }

@@ -1,8 +1,10 @@
 <?php
 /**
- * File: cron.php
+ * File: fcn/cron.php
+ * Called by system Cron every minute to send data to Weather Underground and update database
  */
-require '/var/www/html/inc/config.php';
+
+require(dirname(__DIR__) . '/inc/config.php');
 
 // Process Pressure
 
@@ -44,23 +46,23 @@ $tempF = $tempC * 9/5 + 32;
 // Process Humidity
 $sql = "SELECT `relH` FROM `humidity` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-$humidity = $result['relH'];
+$relH = $result['relH'];
 
 // Process Rainfall
-$sql = "SELECT SUM(`raw`) AS `rainfall` FROM rainfall WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 1 HOUR)";
+$sql = "SELECT SUM(`raw`) AS `rainfall` FROM `rainfall` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 1 HOUR)";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $rain = $result['rainfall'];
 $rainin = $rain * 0.0393701;
 $rainmm = $rain;
 
-$sql = "SELECT SUM(`raw`) AS `rainfall_total` FROM rainfall WHERE DATE(`timestamp`) = CURDATE()";
+$sql = "SELECT SUM(`raw`) AS `rainfall_total` FROM `rainfall` WHERE DATE(`timestamp`) = CURDATE()";
 $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 $total_rainfall = $result['rainfall_total'];
 $total_rainfallin = $total_rainfall * 0.0393701;
 $total_rainfallmm = $total_rainfall;
 
 // Calculate Dew Point
-$dewptC = ((pow(($humidity / 100), 0.125)) * (112 + 0.9 * $tempC) + (0.1 * $tempC) - 112);
+$dewptC = ((pow(($relH / 100), 0.125)) * (112 + 0.9 * $tempC) + (0.1 * $tempC) - 112);
 $dewptF = ($dewptC * 9/5) + 32;
 
 // Convert wind direction into degrees
@@ -117,13 +119,13 @@ switch ($windDEG) {
 
 // Send data to wunderground
 $wu_query_url = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=' . $wu_id . '&PASSWORD=' . $wu_password;
-$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&winddir_avg2m=' . $windDEG_avg2m . '&windspeedmph=' . $windS_mph . '&windspdmph_avg2m=' . $windspdmph_avg2m_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $humidity . '&dewptf=' . $dewptF . '&rainin=' . $rainin . '&dailyrainin=' . $total_rainfallin;
+$wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&winddir_avg2m=' . $windDEG_avg2m . '&windspeedmph=' . $windS_mph . '&windspdmph_avg2m=' . $windspdmph_avg2m_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $relH . '&dewptf=' . $dewptF . '&rainin=' . $rainin . '&dailyrainin=' . $total_rainfallin;
 $wu_query_static = '&dateutc=now&softwaretype=other&action=updateraw';
 $wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
 
 // Save to DB
-$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windSmph_avg2m`, `windDEG`, `windD`, `windDEG_avg2m`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rainin`, `rainmm`, `total_rainin`, `total_rainmm`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windspdmph_avg2m_mph', '$windDEG', '$windD', '$windDEG_avg2m', '$humidity', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rainin', '$rainmm', '$total_rainfallin', '$total_rainfallmm', '$wu_query', '$wu_query_result')";
+$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windSmph_avg2m`, `windDEG`, `windD`, `windDEG_avg2m`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rainin`, `rainmm`, `total_rainin`, `total_rainmm`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windspdmph_avg2m_mph', '$windDEG', '$windD', '$windDEG_avg2m', '$relH', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rainin', '$rainmm', '$total_rainfallin', '$total_rainfallmm', '$wu_query', '$wu_query_result')";
 $result = mysqli_query($conn, $sql);
 
 // Log
-syslog(LOG_DEBUG,"Message: $wu_query");
+syslog(LOG_DEBUG,"WU Query: $wu_query");

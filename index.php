@@ -3,7 +3,7 @@
  * File: index.php
  */
 
-require '/var/www/html/inc/config.php';
+require(__DIR__ . '/inc/config.php');
 
 // Weather
 if (isset($_GET['weather'])) {
@@ -26,7 +26,7 @@ include 'inc/header.php';
                         url: '?weather',
                         success: function(data) {
                             $("#weather").html(data);
-                            window.setTimeout(update, 60000);
+                            window.setTimeout(update, 30000);
                         }
                     });
                 }
