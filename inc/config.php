@@ -8,13 +8,17 @@ $site_name = 'Golden Heights Weather Station';
 $site_desc = 'Live weather from Golden Heights, Sturgeon County, Alberta, Canada';
 $site_url = 'http://weather.maxpower.co';
 $date = date("Y-m-d H:i:s");
+date_default_timezone_set('America/Edmonton');
+$lat = 53.9189377;
+$long = -113.3702744;
+$zenith= 98.9636;
 
 // Weather Underground Settings
 $wu_id = 'IALBERTA517';
 $wu_password = 'P0pc0rn';
 
 // Bridge Config
-$MACADDRESS = '24C86E0479FB'; //Acurite Bridge MAC Address
+$MACADDRESS = '24C86E0479FB'; // Acurite Bridge MAC Address
 
 // Pressure Offset from Sea Level
 $PRESSURE_OFFSET = 127;

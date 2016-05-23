@@ -9,6 +9,7 @@ function get_current_weather() {
 
     // 5n1 Sensor Data
     $time = date('j M Y @ H:i:s');
+    $offset = date('Z') / 3600;
 
     // Process Wind Speed
     $sql = "SELECT `speedMS` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1";
@@ -249,6 +250,7 @@ function get_current_weather() {
         <div class="col-md-5 col-md-offset-1">
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
             <p><strong>Reported:</strong> <?php echo $time; ?></p>
+            <p><strong>Sunrise:</strong> <?php echo date_sunrise(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?> / <strong>Sunset:</strong> <?php echo date_sunset(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?></p>
             <hr>
             <p><strong>Temp:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)', $tempC_trend; ?></p>
             <p><?php if (isset($feelsC)){ echo '<p><strong>Feels Like:</strong> ', $feelsC, '&#8451; (', $feelsF, '&#8457;)</p>';} ?>
