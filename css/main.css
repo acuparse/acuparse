@@ -130,3 +130,11 @@ footer {
 .margin-bottom-20 { margin-bottom: 2.0em; }
 .margin-bottom-25 { margin-bottom: 2.5em; }
 .margin-bottom-30 { margin-bottom: 3.0em; }
+
+/* Temp Colours */
+.temp-hot {color: orangered;}
+.temp-warm {color: darkorange;}
+.temp-mild {color: orange;}
+.temp-chilly {color: lightblue}
+.temp-cold {color: blue}
+.temp-freezing {color: darkblue}

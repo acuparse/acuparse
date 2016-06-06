@@ -121,11 +121,26 @@ switch ($windDEG) {
 $wu_query_url = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=' . $wu_id . '&PASSWORD=' . $wu_password;
 $wu_query = '&tempf=' . $tempF . '&winddir=' . $windDEG . '&winddir_avg2m=' . $windDEG_avg2m . '&windspeedmph=' . $windS_mph . '&windspdmph_avg2m=' . $windspdmph_avg2m_mph . '&baromin=' . $pressure_inHg . '&humidity=' . $relH . '&dewptf=' . $dewptF . '&rainin=' . $rainin . '&dailyrainin=' . $total_rainfallin;
 $wu_query_static = '&dateutc=now&softwaretype=other&action=updateraw';
-$wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
 
-// Save to DB
-$sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windSmph_avg2m`, `windDEG`, `windD`, `windDEG_avg2m`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rainin`, `rainmm`, `total_rainin`, `total_rainmm`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windspdmph_avg2m_mph', '$windDEG', '$windD', '$windDEG_avg2m', '$relH', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rainin', '$rainmm', '$total_rainfallin', '$total_rainfallmm', '$wu_query', '$wu_query_result')";
-$result = mysqli_query($conn, $sql);
+// Make sure new data is being sent
 
-// Log
-syslog(LOG_DEBUG,"WU Query: $wu_query");
+$sql = "SELECT `wu_query` FROM `weather` ORDER BY `timestamp` DESC LIMIT 1";
+$result = mysqli_fetch_array(mysqli_query($conn, $sql));
+$last_update = $result['wu_query'];
+
+if ($last_update != $wu_query) {
+
+    $wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
+
+    // Save to DB
+    $sql = "INSERT INTO `weather` (`tempC`, `tempF`, `windSms`, `windSkmh`, `windSmph`, `windSmph_avg2m`, `windDEG`, `windD`, `windDEG_avg2m`, `relH`, `pressurehPa`, `pressureinHg`, `dewptC`, `dewptF`, `rainin`, `rainmm`, `total_rainin`, `total_rainmm`, `wu_query`,`wu_result`) VALUES ('$tempC', '$tempF', '$windS_ms', '$windS_kmh', '$windS_mph', '$windspdmph_avg2m_mph', '$windDEG', '$windD', '$windDEG_avg2m', '$relH', '$pressure_hPa', '$pressure_inHg', '$dewptC', '$dewptF', '$rainin', '$rainmm', '$total_rainfallin', '$total_rainfallmm', '$wu_query', '$wu_query_result')";
+    $result = mysqli_query($conn, $sql);
+
+    // Log
+    syslog(LOG_DEBUG,"WU Query: $wu_query - $wu_query_result");
+}
+
+else {
+    // Log
+    syslog(LOG_DEBUG,"WU Query Failed: Repeat entry, station might be offline!");
+}

@@ -8,7 +8,7 @@ function get_current_weather() {
     require(dirname(__DIR__) . '/inc/config.php');
 
     // 5n1 Sensor Data
-    $time = date('j M Y @ H:i:s');
+    $time = date('H:i:s');
     $offset = date('Z') / 3600;
 
     // Process Wind Speed
@@ -85,12 +85,38 @@ function get_current_weather() {
     $max_windSkmh = round($max_windSms * 3.6, 2);
     $max_windSmph = round($max_windSms * 2.23694, 2);
 
+    // 2 Min Average Windspeed
+    $sql = "SELECT AVG(speedMS) AS `avg_speedMS` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)";
+    $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+    $avg2_windSms = $result['avg_speedMS'];
+    $avg2_windSkmh = round($avg2_windSms * 3.6, 2);
+    $avg2_windSmph = round($avg2_windSms * 2.23694, 2);
+
     // 10 Min Average Windspeed
     $sql = "SELECT AVG(speedMS) AS `avg_speedMS` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 10 MINUTE)";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-    $avg_windSms = $result['avg_speedMS'];
-    $avg_windSkmh = round($avg_windSms * 3.6, 2);
-    $avg_windSmph = round($avg_windSms * 2.23694, 2);
+    $avg10_windSms = $result['avg_speedMS'];
+    $avg10_windSkmh = round($avg10_windSms * 3.6, 2);
+    $avg10_windSmph = round($avg10_windSms * 2.23694, 2);
+
+    // 15 Min Average Windspeed
+    $sql = "SELECT AVG(speedMS) AS `avg_speedMS` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 15 MINUTE)";
+    $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+    $avg15_windSms = $result['avg_speedMS'];
+    $avg15_windSkmh = round($avg15_windSms * 3.6, 2);
+    $avg15_windSmph = round($avg15_windSms * 2.23694, 2);
+
+    // 30 Min Average Windspeed
+    $sql = "SELECT AVG(speedMS) AS `avg_speedMS` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)";
+    $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+    $avg30_windSms = $result['avg_speedMS'];
+    $avg30_windSkmh = round($avg30_windSms * 3.6, 2);
+    $avg30_windSmph = round($avg30_windSms * 2.23694, 2);
+
+    $mean_windSms = array(1 => $avg2_windSms, $avg10_windSms, $avg15_windSms, $avg30_windSms);
+    $mean_windSms = array_sum($mean_windSms) / count($mean_windSms);
+    $mean_windSkmh = round($mean_windSms * 3.6, 2);
+    $mean_windSmph = round($mean_windSms * 2.23694, 2);
 
     // Process Pressure
 
@@ -128,6 +154,11 @@ function get_current_weather() {
     $tempC_low = $result['tempC'];
     $tempF_low = round($tempC_low * 9/5 + 32, 2);
     $tempC_low = round($tempC_low, 2);
+
+    // Mid Temp
+    $tempC_mid = ($tempC_high + $tempC_low) / 2;
+    $tempF_mid = round($tempC_mid * 9/5 + 32, 2);
+    $tempC_mid = round($tempC_mid, 2);
 
     // Average Temp
     $sql = "SELECT AVG(tempC) AS `avg_tempC` FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()";
@@ -244,39 +275,131 @@ function get_current_weather() {
         $feelsC = round(($feelsF - 32) / 1.8, 2);
     }
 
+    // Get Moon Data
+    require(dirname(__DIR__) . '/fcn/moonphase.php');
+    $moon = new Solaris\MoonPhase();
+    $moon_age = round( $moon->age(), 1 );
+    $moon_stage = $moon->phase_name();
+    $next_new_moon = gmdate( 'Y-m-d @ H:i:s', $moon->next_new_moon() );
+    $next_full_moon = gmdate( 'Y-m-d @ H:i:s', $moon->next_full_moon() );
+    $last_new_moon = gmdate( 'Y-m-d @ H:i:s', $moon->new_moon() );
+    $last_full_moon = gmdate( 'Y-m-d @ H:i:s', $moon->full_moon() );
+    $moon_illumination = round($moon->illumination(), 2);
+    function percent($number){
+        return $number * 100 . '%';
+    }
+    $moon_illumination = percent($moon_illumination);
+    // Get moon icon
+
+    switch ($moon_stage) {
+        case 'New Moon':
+            $moon_icon = 'wi-moon-new';
+            break;
+        case 'Waxing Crescent':
+            $moon_icon = 'wi-moon-waxing-crescent-6';
+            break;
+        case 'First Quarter':
+            $moon_icon = 'wi-moon-first-quarter';
+            break;
+        case 'Waxing Gibbous':
+            $moon_icon = 'wi-moon-waxing-gibbous-6';
+            break;
+        case 'Full Moon':
+            $moon_icon = 'wi-moon-full';
+            break;
+        case 'Waning Gibbous':
+            $moon_icon = 'wi-moon-waning-gibbous-6';
+            break;
+        case 'Last Quarter':
+            $moon_icon = 'wi-moon-third-quarter';
+            break;
+        case 'Waning Crescent':
+            $moon_icon = 'wi-moon-waning-crescent-1';
+            break;
+    }
+
+    // Moon rise/set
+    require(dirname(__DIR__) . '/fcn/moontime.php');
+    $moon_time = Moon::calculateMoonTimes($lat, $long);
+    $moon_rise = gmdate( 'H:i', $moon_time->moonrise );
+    $moon_set = gmdate( 'H:i', $moon_time->moonset );
 ?>
 
     <div class="row weather_row">
-        <div class="col-md-5 col-md-offset-1">
+        <div class="col-md-4">
+            <h2>Environment:</h2>
+            <p><?php echo date('l, j F Y'); ?></p>
+            <hr>
+            <h3><i class="wi wi-day-sunny"></i> Sun:</h3>
+            <ul class="list-unstyled">
+                <li><i class="wi wi-sunrise"></i> <strong>Sunrise:</strong> <?php echo date_sunrise(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?></li>
+                <li><i class="wi wi-sunset"></i> <strong>Sunset:</strong> <?php echo date_sunset(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?></li>
+            </ul>
+            <h3><i class="wi <?php echo $moon_icon; ?>"></i> Moon:</h3>
+            <ul class="list-unstyled">
+                <h4><?php echo "$moon_stage, $moon_age days. $moon_illumination visible" ?></h4>
+                <li><i class="wi wi-moonrise"></i> <strong>Moonrise:</strong> <?php echo $moon_rise; ?></li>
+                <li><i class="wi wi-moonset"></i> <strong>Moonset:</strong> <?php echo $moon_set; ?></li>
+                <li><strong>Current New:</strong> <?php echo $last_new_moon; ?></li>
+                <li><strong>Current Full:</strong> <?php echo $last_full_moon; ?></li>
+                <li><strong>Upcoming New:</strong> <?php echo $next_new_moon; ?></li>
+                <li><strong>Upcoming Full:</strong> <?php echo $next_full_moon; ?></li>
+            </ul>
+        </div>
+
+        <div class="col-md-4">
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
-            <p><strong>Reported:</strong> <?php echo $time; ?></p>
-            <p><strong>Sunrise:</strong> <?php echo date_sunrise(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?> / <strong>Sunset:</strong> <?php echo date_sunset(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?></p>
+            <p><strong>Generated:</strong> <?php echo $time; ?></p>
             <hr>
-            <p><strong>Temp:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)', $tempC_trend; ?></p>
-            <p><?php if (isset($feelsC)){ echo '<p><strong>Feels Like:</strong> ', $feelsC, '&#8451; (', $feelsF, '&#8457;)</p>';} ?>
-            <p><strong>High:</strong> <?php echo $tempC_high, '&#8451; (', $tempF_high, '&#8457;) @ ', $high_temp_recorded; ?></p>
-            <p><strong>Low:</strong> <?php echo $tempC_low, '&#8451; (', $tempF_low, '&#8457;) @ ', $low_temp_recorded; ?></p>
-            <p><strong>Average:</strong> <?php echo $tempC_avg, '&#8451; (', $tempF_avg,'&#8457;)'; ?></p>
-            <p><strong>Dew Point:</strong> <?php echo $dewptC, '&#8451; (', $dewptF, '&#8457;)'; ?></p>
+            <div class="row">
+                <h3><i class="wi wi-thermometer"></i> Temperature:</h3>
+                <h4><?php echo "$tempC &#8451; ($tempF &#8457;) $tempC_trend"; ?></h4>
+                <ul class="list-unstyled">
+                    <?php if (isset($feelsC)){ echo "<li><strong>Feels Like:</strong> $feelsC &#8451; ($feelsF &#8457;)</li>";} ?>
+                    <li><strong>High:</strong> <?php echo "$tempC_high &#8451; ($tempF_high &#8457;) @ $high_temp_recorded"; ?></li>
+                    <li><strong>Mid:</strong> <?php echo "$tempC_mid &#8451; ($tempF_mid &#8457;)"; ?></li>
+                    <li><strong>Low:</strong> <?php echo "$tempC_low &#8451; ($tempF_low &#8457;) @ $low_temp_recorded"; ?></li>
+                    <li><strong>Average:</strong> <?php echo "$tempC_avg &#8451; ($tempF_avg &#8457;)"; ?></li>
+                    <li><strong>Dew Point:</strong> <?php echo "$dewptC &#8451; ($dewptF &#8457;)"; ?></li>
+                </ul>
+            </div>
             <hr>
-            <p><strong>Wind:</strong> <?php if ($windS_kmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windS_kmh < 25){ if ($windS_kmh >= 10) {echo ' <i class="wi wi-windy"></i>';}} ?> <i class="wi wi-wind wi-from-<?php echo strtolower($windD); ?>"></i> <?php echo $windD, ' @ ', $windS_kmh , ' km/h (', $windS_mph, ' mph)'; ?></p>
-            <p><strong>Peak:</strong> <?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?></p>
-            <p><strong>Average:</strong> <?php echo $avg_windSkmh, ' km/h (', $avg_windSmph, ' mph)';?></p>
+            <div class="row">
+                <h3><?php if ($windS_kmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windS_kmh < 25){ if ($windS_kmh >= 10) {echo ' <i class="wi wi-windy"></i> ';}} echo '<i class="wi wi-wind wi-from-', strtolower($windD), '"></i>'; ?> Wind:</h3>
+                <h4><?php echo $windD, ' @ ', $windS_kmh , ' km/h (', $windS_mph, ' mph)'; ?></h4>
+                <ul class="list-unstyled">
+                    <li><strong>Peak:</strong> <?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?></li>
+                    <li><strong>2m Average:</strong> <?php echo $avg2_windSkmh, ' km/h (', $avg2_windSmph, ' mph)';?></li>
+                    <li><strong>10m Average:</strong> <?php echo $avg10_windSkmh, ' km/h (', $avg10_windSmph, ' mph)';?></li>
+                    <li><strong>15m Average:</strong> <?php echo $avg15_windSkmh, ' km/h (', $avg15_windSmph, ' mph)';?></li>
+                    <li><strong>30m Average:</strong> <?php echo $avg30_windSkmh, ' km/h (', $avg30_windSmph, ' mph)';?></li>
+                    <li><strong>Mean:</strong> <?php echo $mean_windSkmh, ' km/h (', $mean_windSmph, ' mph)';?></li>
+                </ul>
+            </div>
             <hr>
-            <p><strong>Humidity:</strong> <?php echo $relH, '%', $relH_trend; ?></p>
+            <h3><i class="wi wi-humidity"></i> Humidity:</h3>
+            <h4><?php echo $relH, '%', $relH_trend; ?></h4>
             <hr>
-            <p><strong>Pressure:</strong> <?php echo $pressure_hPa, ' hPa (', $pressure_inHg, ' inHg)', $hpa_trend; ?></p>
+            <h3><i class="wi wi-barometer"></i> Pressure:</h3>
+            <h4><?php echo $pressure_hPa, ' hPa (', $pressure_inHg, ' inHg)', $hpa_trend; ?></h4>
             <hr>
-            <p><strong>Rain Rate:</strong> <?php echo $rainmm, ' mm/hr (', $rainin, ' in/hr)'; ?></p>
-            <p><strong>Daily Rain:</strong> <?php echo $rain_totalmm_day, ' mm (', $rain_totalin_day, ' in)'; ?></p>
-            <p><strong>Weekly Rain:</strong> <?php echo $rain_totalmm_week, ' mm (', $rain_totalin_week, ' in)'; ?></p>
-            <p><strong><?php echo $time = date('M'); ?> Rain:</strong> <?php echo $rain_totalmm_month, ' mm (', $rain_totalin_month, ' in)'; ?></p>
+            <h3><i class="wi wi-umbrella"></i> <strong>Rain:</strong></h3>
+            <?php if ($rainmm != 0){ echo "<p><strong>Fall Rate:</strong> $rainmm mm/hr ($rainin in/hr)</p>";} ?>
+                <h4>Accumulation Totals:</h4>
+            <ul class="list-unstyled">
+                <li><strong>Daily:</strong> <?php echo $rain_totalmm_day, ' mm (', $rain_totalin_day, ' in)'; ?></li>
+                <li><strong>Weekly:</strong> <?php echo $rain_totalmm_week, ' mm (', $rain_totalin_week, ' in)'; ?></li>
+                <li><strong>Monthly:</strong> <?php echo $rain_totalmm_month, ' mm (', $rain_totalin_month, ' in)'; ?></li>
+            </ul>
         </div>
         
 <?php
     // Output Tower Sensors
 
     if ($tower_sensors_active == 1) {
+        ?>
+        <div class="col-md-4">
+        <?php
     
         // Tower 1
 
@@ -286,18 +409,19 @@ function get_current_weather() {
 
             $time = $result['timestamp'];
             $time = strtotime($time);
-            $time = date('j M Y @ H:i:s T', $time);
+            $time = date('H:i:s', $time);
             $tempC = $result['tempC'];
             $tempF = $tempC * 9 / 5 + 32;
             $relH = $result['relH'];
 
 ?>
-        <div class="col-md-6">
-            <h2><?php echo $sensor_tower1_name; ?>:</h2>
-            <p><strong>Reported:</strong> <?php echo $time; ?></p>
-            <p><strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)'; ?></p>
-            <p><strong>Humidity:</strong> <?php echo $relH, '%'; ?></p>
-        </div>
+                <div class="row">
+                    <h2><?php echo $sensor_tower1_name; ?>:</h2>
+                    <p><strong>Reported:</strong> <?php echo $time; ?></p>
+                    <hr>
+                    <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
+                    <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
+                </div>
 
 <?php
         }
@@ -310,19 +434,20 @@ function get_current_weather() {
 
             $time = $result['timestamp'];
             $time = strtotime($time);
-            $time = date('H:i:s T', $time);
+            $time = date('H:i:s', $time);
             $tempC = $result['tempC'];
             $tempF = $tempC * 9 / 5 + 32;
             $relH = $result['relH'];
 
 ?>
 
-            <div class="col-md-6">
-                <h2><?php echo $sensor_tower2_name; ?>:</h2>
-                <p><strong>Reported:</strong> <?php echo $time; ?></p>
-                <p><strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)'; ?></p>
-                <p><strong>Humidity:</strong> <?php echo $relH, '%'; ?></p>
-            </div>
+                    <div class="row">
+                        <h2><?php echo $sensor_tower2_name; ?>:</h2>
+                        <p><strong>Reported:</strong> <?php echo $time; ?></p>
+                        <hr>
+                        <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
+                        <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
+                    </div>
 
 <?php
         }
@@ -334,22 +459,27 @@ function get_current_weather() {
 
             $time = $result['timestamp'];
             $time = strtotime($time);
-            $time = date('j M Y @ H:i:s T', $time);
+            $time = date('H:i:s', $time);
             $tempC = $result['tempC'];
             $tempF = $tempC * 9 / 5 + 32;
             $relH = $result['relH'];
 
 ?>
 
-            <div class="col-md-6">
-                <h2><?php echo $sensor_tower3_name; ?>:</h2>
-                <p><strong>Reported:</strong> <?php echo $time; ?></p>
-                <p><strong>Temperature:</strong> <?php echo $tempC, '&#8451; (', $tempF, '&#8457;)'; ?></p>
-                <p><strong>Humidity:</strong> <?php echo $relH, '%'; ?></p>
-            </div>
-    </div>
-
+                    <div class="row">
+                        <h2><?php echo $sensor_tower3_name; ?>:</h2>
+                        <p><strong>Reported:</strong> <?php echo $time; ?></p>
+                        <hr>
+                        <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
+                        <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
+                    </div>
 <?php
         }
+        ?>
+            </div>
+    <?php
     }
+    ?>
+    </div>
+<?php
 }
