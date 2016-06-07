@@ -9,7 +9,6 @@ function get_current_weather() {
 
     // 5n1 Sensor Data
     $time = date('H:i:s');
-    $offset = date('Z') / 3600;
 
     // Process Wind Speed
     $sql = "SELECT `speedMS` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1";
@@ -321,8 +320,8 @@ function get_current_weather() {
     // Moon rise/set
     require(dirname(__DIR__) . '/fcn/moontime.php');
     $moon_time = Moon::calculateMoonTimes($lat, $long);
-    $moon_rise = gmdate( 'H:i', $moon_time->moonrise );
-    $moon_set = gmdate( 'H:i', $moon_time->moonset );
+    $moon_rise = gmdate('H:i', $moon_time->moonrise);
+    $moon_set = gmdate('H:i', $moon_time->moonset);
 ?>
 
     <div class="row weather_row">
@@ -366,7 +365,7 @@ function get_current_weather() {
             <hr>
             <div class="row">
                 <h3><?php if ($windS_kmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windS_kmh < 25){ if ($windS_kmh >= 10) {echo ' <i class="wi wi-windy"></i> ';}} echo '<i class="wi wi-wind wi-from-', strtolower($windD), '"></i>'; ?> Wind:</h3>
-                <h4><?php echo $windD, ' @ ', $windS_kmh , ' km/h (', $windS_mph, ' mph)'; ?></h4>
+                <h4>from <?php echo $windD, ' @ ', $windS_kmh , ' km/h (', $windS_mph, ' mph)'; ?></h4>
                 <ul class="list-unstyled">
                     <li><strong>Peak:</strong> <?php echo $max_windSkmh, ' km/h (', $max_windSmph, ' mph)', ' @ ', $max_wind_recorded;?></li>
                     <li><strong>2m Average:</strong> <?php echo $avg2_windSkmh, ' km/h (', $avg2_windSmph, ' mph)';?></li>

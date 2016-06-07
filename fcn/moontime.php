@@ -34,7 +34,7 @@ class Moon {
         $day = date('j');
         $year = date('Y');
 
-        $timezone = (int)($lon / 15);
+        $timezone = date('Z') / 3600;
         $date = self::modifiedJulianDate($month, $day, $year);
         $date -= $timezone / 24;
         $latRad = deg2rad($lat);
@@ -49,7 +49,7 @@ class Moon {
         $ym = self::sinAlt($date, $hour - 1, $lon, $cglat, $sglat) - $sinho;
 
         $above = $ym > 0;
-        while ($hour < 25 && (false == $set || false == $rise)) {
+        while ($hour <= 25 && (false == $set || false == $rise)) {
 
             $yz = self::sinAlt($date, $hour, $lon, $cglat, $sglat) - $sinho;
             $yp = self::sinAlt($date, $hour + 1, $lon, $cglat, $sglat) - $sinho;
@@ -89,8 +89,8 @@ class Moon {
         $retVal = new stdClass();
         $utrise = self::convertTime($utrise);
         $utset = self::convertTime($utset);
-        $retVal->moonrise = $rise ? mktime($utrise['hrs'], $utrise['min'], 0, $month, $day, $year) : mktime(0, 0, 0, $month, $day + 1, $year);
-        $retVal->moonset = $set ? mktime($utset['hrs'], $utset['min'], 0, $month, $day, $year) : mktime(0, 0, 0, $month, $day + 1, $year);
+        $retVal->moonrise = $rise ? gmmktime($utrise['hrs'], $utrise['min'], 0, $month, $day, $year) : gmmktime(0, 0, 0, $month, $day + 1, $year);
+        $retVal->moonset = $set ? gmmktime($utset['hrs'], $utset['min'], 0, $month, $day, $year) : gmmktime(0, 0, 0, $month, $day + 1, $year);
         return $retVal;
 
     }
