@@ -118,11 +118,11 @@ function get_current_weather() {
     $mean_windSmph = round($mean_windSms * 2.23694, 2);
 
     // Process Pressure
-
     $sql = "SELECT `raw_hpa` FROM `pressure` ORDER BY `timestamp` DESC LIMIT 1";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $raw_pressure_hPa = $result['raw_hpa'];
-    $pressure_hPa = round(($raw_pressure_hPa + $PRESSURE_OFFSET), 2);
+    $pressure_hPa = $raw_pressure_hPa + $PRESSURE_OFFSET;
+    $pressure_kPa = round(($pressure_hPa * 0.1), 3);
     $pressure_inHg = round($pressure_hPa / 33.8638866667, 2);
 
     // Process Temp
@@ -226,7 +226,7 @@ function get_current_weather() {
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $hpa_trend_1 = $result['hpa_trend'];
 
-    $sql = "SELECT AVG(raw_hpa) AS `hpa_trend` FROM `pressure` WHERE `timestamp` BETWEEN DATE_SUB(NOW(), INTERVAL 6 HOUR) AND DATE_SUB(NOW(), INTERVAL 3 HOUR)";
+    $sql = "SELECT AVG(raw_hpa) AS `hpa_trend` FROM `pressure` WHERE `timestamp` BETWEEN DATE_SUB(NOW(), INTERVAL 12 HOUR) AND DATE_SUB(NOW(), INTERVAL 6 HOUR)";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $hpa_trend_2 = $result['hpa_trend'];
     $hpa_trend = $hpa_trend_1 - $hpa_trend_2;
@@ -273,78 +273,9 @@ function get_current_weather() {
         $feelsF = round($feelsF, 2);
         $feelsC = round(($feelsF - 32) / 1.8, 2);
     }
-
-    // Get Moon Data
-    require(dirname(__DIR__) . '/fcn/moonphase.php');
-    $moon = new Solaris\MoonPhase();
-    $moon_age = round( $moon->age(), 1 );
-    $moon_stage = $moon->phase_name();
-    $next_new_moon = gmdate( 'Y-m-d @ H:i:s', $moon->next_new_moon() );
-    $next_full_moon = gmdate( 'Y-m-d @ H:i:s', $moon->next_full_moon() );
-    $last_new_moon = gmdate( 'Y-m-d @ H:i:s', $moon->new_moon() );
-    $last_full_moon = gmdate( 'Y-m-d @ H:i:s', $moon->full_moon() );
-    $moon_illumination = round($moon->illumination(), 2);
-    function percent($number){
-        return $number * 100 . '%';
-    }
-    $moon_illumination = percent($moon_illumination);
-    // Get moon icon
-
-    switch ($moon_stage) {
-        case 'New Moon':
-            $moon_icon = 'wi-moon-new';
-            break;
-        case 'Waxing Crescent':
-            $moon_icon = 'wi-moon-waxing-crescent-6';
-            break;
-        case 'First Quarter':
-            $moon_icon = 'wi-moon-first-quarter';
-            break;
-        case 'Waxing Gibbous':
-            $moon_icon = 'wi-moon-waxing-gibbous-6';
-            break;
-        case 'Full Moon':
-            $moon_icon = 'wi-moon-full';
-            break;
-        case 'Waning Gibbous':
-            $moon_icon = 'wi-moon-waning-gibbous-6';
-            break;
-        case 'Last Quarter':
-            $moon_icon = 'wi-moon-third-quarter';
-            break;
-        case 'Waning Crescent':
-            $moon_icon = 'wi-moon-waning-crescent-1';
-            break;
-    }
-
-    // Moon rise/set
-    require(dirname(__DIR__) . '/fcn/moontime.php');
-    $moon_time = Moon::calculateMoonTimes($lat, $long);
-    $moon_rise = gmdate('H:i', $moon_time->moonrise);
-    $moon_set = gmdate('H:i', $moon_time->moonset);
+    
 ?>
 
-    <div class="row weather_row">
-        <div class="col-md-4">
-            <h2>Environment:</h2>
-            <p><?php echo date('l, j F Y'); ?></p>
-            <hr>
-            <h3><i class="wi wi-day-sunny"></i> Sun:</h3>
-            <ul class="list-unstyled">
-                <li><i class="wi wi-sunrise"></i> <strong>Sunrise:</strong> <?php echo date_sunrise(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?></li>
-                <li><i class="wi wi-sunset"></i> <strong>Sunset:</strong> <?php echo date_sunset(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset); ?></li>
-            </ul>
-            <h3><i class="wi <?php echo $moon_icon; ?>"></i> Moon:</h3>
-            <ul class="list-unstyled">
-                <h4><?php echo "$moon_stage, $moon_age days. $moon_illumination visible" ?></h4>
-                <li><i class="wi wi-moonrise"></i> <strong>Moonrise:</strong> <?php echo $moon_rise; ?></li>
-                <li><i class="wi wi-moonset"></i> <strong>Moonset:</strong> <?php echo $moon_set; ?></li>
-                <li><strong>Current New:</strong> <?php echo $last_new_moon; ?></li>
-                <li><strong>Current Full:</strong> <?php echo $last_full_moon; ?></li>
-                <li><strong>Upcoming New:</strong> <?php echo $next_new_moon; ?></li>
-                <li><strong>Upcoming Full:</strong> <?php echo $next_full_moon; ?></li>
-            </ul>
-        </div>
 
         <div class="col-md-4">
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
@@ -380,7 +311,7 @@ function get_current_weather() {
             <h4><?php echo $relH, '%', $relH_trend; ?></h4>
             <hr>
             <h3><i class="wi wi-barometer"></i> Pressure:</h3>
-            <h4><?php echo $pressure_hPa, ' hPa (', $pressure_inHg, ' inHg)', $hpa_trend; ?></h4>
+            <h4><?php echo $pressure_kPa, ' kPa (', $pressure_inHg, ' inHg)', $hpa_trend; ?></h4>
             <hr>
             <h3><i class="wi wi-umbrella"></i> <strong>Rain:</strong></h3>
             <?php if ($rainmm != 0){ echo "<p><strong>Fall Rate:</strong> $rainmm mm/hr ($rainin in/hr)</p>";} ?>
@@ -478,7 +409,4 @@ function get_current_weather() {
             </div>
     <?php
     }
-    ?>
-    </div>
-<?php
 }

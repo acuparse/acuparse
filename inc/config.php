@@ -32,7 +32,7 @@
     $MACADDRESS = '24C86E0479FB'; // Acurite Bridge MAC Address
 
     // Pressure Offset from Sea Level
-    $PRESSURE_OFFSET = 127;
+    $PRESSURE_OFFSET = 129;
 
     // 5N1 Sensor Config
     $sensor_5n1_id = '01360';
