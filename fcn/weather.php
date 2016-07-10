@@ -281,7 +281,6 @@ function get_current_weather() {
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
             <p><strong>Generated:</strong> <?php echo $time; ?></p>
             <hr>
-            <div class="row">
                 <h3><i class="wi wi-thermometer"></i> Temperature:</h3>
                 <h4><?php echo "$tempC &#8451; ($tempF &#8457;) $tempC_trend"; ?></h4>
                 <ul class="list-unstyled">
@@ -292,9 +291,7 @@ function get_current_weather() {
                     <li><strong>Average:</strong> <?php echo "$tempC_avg &#8451; ($tempF_avg &#8457;)"; ?></li>
                     <li><strong>Dew Point:</strong> <?php echo "$dewptC &#8451; ($dewptF &#8457;)"; ?></li>
                 </ul>
-            </div>
             <hr>
-            <div class="row">
                 <h3><?php if ($windS_kmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windS_kmh < 25){ if ($windS_kmh >= 10) {echo ' <i class="wi wi-windy"></i> ';}} echo '<i class="wi wi-wind wi-from-', strtolower($windD), '"></i>'; ?> Wind:</h3>
                 <h4>from <?php echo $windD, ' @ ', $windS_kmh , ' km/h (', $windS_mph, ' mph)'; ?></h4>
                 <ul class="list-unstyled">
@@ -305,7 +302,6 @@ function get_current_weather() {
                     <li><strong>30m Average:</strong> <?php echo $avg30_windSkmh, ' km/h (', $avg30_windSmph, ' mph)';?></li>
                     <li><strong>Mean:</strong> <?php echo $mean_windSkmh, ' km/h (', $mean_windSmph, ' mph)';?></li>
                 </ul>
-            </div>
             <hr>
             <h3><i class="wi wi-humidity"></i> Humidity:</h3>
             <h4><?php echo $relH, '%', $relH_trend; ?></h4>

@@ -12,10 +12,10 @@ function get_current_environment() {
     $moon = new Solaris\MoonPhase();
     $moon_age = round( $moon->age(), 1 );
     $moon_stage = $moon->phase_name();
-    $next_new_moon = gmdate( 'j M @ H:i:s', $moon->next_new_moon() );
-    $next_full_moon = gmdate( 'j M @ H:i:s', $moon->next_full_moon() );
-    $last_new_moon = gmdate( 'j M @ H:i:s', $moon->new_moon() );
-    $last_full_moon = gmdate( 'j M @ H:i:s', $moon->full_moon() );
+    $next_new_moon = date( 'j M @ H:i:s', $moon->next_new_moon() );
+    $next_full_moon = date( 'j M @ H:i:s', $moon->next_full_moon() );
+    $last_new_moon = date( 'j M @ H:i:s', $moon->new_moon() );
+    $last_full_moon = date( 'j M @ H:i:s', $moon->full_moon() );
     $moon_illumination = round($moon->illumination(), 2);
     function percent($number){
         return $number * 100 . '%';
@@ -53,8 +53,8 @@ function get_current_environment() {
     // Moon rise/set
     require('moontime.php');
     $moon_time = Moon::calculateMoonTimes($lat, $long);
-    $moon_rise = gmdate('H:i', $moon_time->moonrise);
-    $moon_set = gmdate('H:i', $moon_time->moonset);
+    $moon_rise = date('H:i', $moon_time->moonrise);
+    $moon_set = date('H:i', $moon_time->moonset);
 
     // Get Sun Data
     $sunrise = date_sunrise(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset);
