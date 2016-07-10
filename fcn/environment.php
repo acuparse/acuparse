@@ -53,8 +53,8 @@ function get_current_environment() {
     // Moon rise/set
     require('moontime.php');
     $moon_time = Moon::calculateMoonTimes($lat, $long);
-    $moon_rise = date('H:i', $moon_time->moonrise);
-    $moon_set = date('H:i', $moon_time->moonset);
+    $moon_rise = gmdate('H:i', $moon_time->moonrise);
+    $moon_set = gmdate('H:i', $moon_time->moonset);
 
     // Get Sun Data
     $sunrise = date_sunrise(time(), SUNFUNCS_RET_STRING, $lat, $long, $zenith, $offset);
