@@ -12,9 +12,9 @@
     $db_password="Summer01"; // Password
 
     // Sitewide Variables
-    $site_name = 'Golden Heights Weather Station';
+    $site_name = 'Power Family Weather Station';
     $site_desc = 'Live weather from Golden Heights, Sturgeon County, Alberta, Canada';
-    $site_url = 'http://weather.maxpower.co';
+    $site_url = 'http://weather.thepowers.ca';
     $date = date('Y-m-d H:i:s');
 
     // Location Variables

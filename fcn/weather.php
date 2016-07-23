@@ -304,7 +304,7 @@ function get_current_weather() {
             <h4><?php echo $relH, '%', $relH_trend; ?></h4>
             <h3><i class="wi wi-barometer"></i> Pressure:</h3>
             <h4><?php echo $pressure_kPa, ' kPa (', $pressure_inHg, ' inHg)', $hpa_trend; ?></h4>
-            <h3><i class="wi wi-umbrella"></i> <strong>Rain:</strong></h3>
+            <h3><i class="wi wi-umbrella"></i> Rain:</h3>
             <?php if ($rainmm != 0){ echo "<p><strong>Fall Rate:</strong> $rainmm mm/hr ($rainin in/hr)</p>";} ?>
                 <h4>Accumulation Totals:</h4>
             <ul class="list-unstyled">

@@ -98,7 +98,8 @@ function get_current_environment() {
             <li><i class="wi wi-sunset"></i> <strong>Sunset:</strong> <?php echo $sunset; ?></li>
         </ul>
         <h3><i class="wi <?php echo $moon_icon; ?>"></i> Moon:</h3>
-        <h4><?php echo "$moon_stage, $moon_age days. $moon_illumination visible" ?></h4>
+        <h4><?php echo "$moon_stage"; ?></h4>
+        <p><?php echo "$moon_age days old, $moon_illumination visible"; ?></p>
         <ul class="list-unstyled">
             <li><i class="wi wi-moonrise"></i> <strong>Moonrise:</strong> <?php echo $moon_rise; ?></li>
             <li><i class="wi wi-moonset"></i> <strong>Moonset:</strong> <?php echo $moon_set; ?></li>
