@@ -214,7 +214,7 @@ if (isset($_POST['id']) && $_POST['mt']) {
             elseif (isset($sensor_tower3_id) && $_POST['sensor'] == $sensor_tower3_id) {
                 // Temperature
                 sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
-                syslog(LOG_DEBUG, "$sensor_tower2_name tempC: $operator$a.$b");
+                syslog(LOG_DEBUG, "$sensor_tower3_name tempC: $operator$a.$b");
                 if ($operator == 0) {
                     $tempC = $a . "." . $b;
                 } else {
@@ -224,7 +224,7 @@ if (isset($_POST['id']) && $_POST['mt']) {
                 // Humidity
                 sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
                 $humidity = $a;
-                syslog(LOG_DEBUG, "$sensor_tower2_name relH: $a");
+                syslog(LOG_DEBUG, "$sensor_tower3_name relH: $a");
 
                 // Insert into DB
                 $sql = "INSERT INTO `tower3` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";

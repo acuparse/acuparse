@@ -354,7 +354,7 @@ function get_current_weather() {
     
         // Tower 2
 
-        elseif (isset($sensor_tower2_id)) {
+        if (isset($sensor_tower2_id)) {
             $sql = "SELECT * FROM `tower2` ORDER BY `timestamp` DESC LIMIT 1";
             $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 
@@ -379,7 +379,7 @@ function get_current_weather() {
         }
         // Tower 3
 
-        elseif (isset($sensor_tower3_id)) {
+        if (isset($sensor_tower3_id)) {
             $sql = "SELECT * FROM `tower3` ORDER BY `timestamp` DESC LIMIT 1";
             $result = mysqli_fetch_array(mysqli_query($conn, $sql));
 

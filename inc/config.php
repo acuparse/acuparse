@@ -49,11 +49,11 @@
 
         // Tower Sensor 2
         //$sensor_tower2_id = ''; // ID from tower sensor
-        //$sensor_tower2_name = ''; // Sensor name
+        //$sensor_tower2_name = 'Inside Trailer'; // Sensor name
 
         // Tower Sensor 3
-        //sensor_$tower3_id = ''; // ID from tower sensor
-        //sensor_$tower3_name = ''; // Sensor name
+        $sensor_tower3_id = '08537'; // ID from tower sensor
+        $sensor_tower3_name = 'Under Tubby'; // Sensor name
 
 // END User Modifiable Variables
 
