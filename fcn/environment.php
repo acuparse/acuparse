@@ -92,7 +92,6 @@ function get_current_environment() {
         <h2>Environment:</h2>
         <div id="time"></div>
         <?php if ($rain == 1) {echo '<p><strong>Currently Raining</strong></p>';} ?>
-        <hr>
         <h3><i class="wi wi-day-sunny"></i> Sun:</h3>
         <ul class="list-unstyled">
             <li><i class="wi wi-sunrise"></i> <strong>Sunrise:</strong> <?php echo $sunrise; ?></li>

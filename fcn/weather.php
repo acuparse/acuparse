@@ -280,7 +280,6 @@ function get_current_weather() {
         <div class="col-md-4">
             <h2><?php echo $sensor_5n1_name; ?>:</h2>
             <p><strong>Generated:</strong> <?php echo $time; ?></p>
-            <hr>
                 <h3><i class="wi wi-thermometer"></i> Temperature:</h3>
                 <h4><?php echo "$tempC &#8451; ($tempF &#8457;) $tempC_trend"; ?></h4>
                 <ul class="list-unstyled">
@@ -291,7 +290,6 @@ function get_current_weather() {
                     <li><strong>Average:</strong> <?php echo "$tempC_avg &#8451; ($tempF_avg &#8457;)"; ?></li>
                     <li><strong>Dew Point:</strong> <?php echo "$dewptC &#8451; ($dewptF &#8457;)"; ?></li>
                 </ul>
-            <hr>
                 <h3><?php if ($windS_kmh >= 25 ){ echo ' <i class="wi wi-strong-wind"></i>';} elseif ($windS_kmh < 25){ if ($windS_kmh >= 10) {echo ' <i class="wi wi-windy"></i> ';}} echo '<i class="wi wi-wind wi-from-', strtolower($windD), '"></i>'; ?> Wind:</h3>
                 <h4>from <?php echo $windD, ' @ ', $windS_kmh , ' km/h (', $windS_mph, ' mph)'; ?></h4>
                 <ul class="list-unstyled">
@@ -302,13 +300,10 @@ function get_current_weather() {
                     <li><strong>30m Average:</strong> <?php echo $avg30_windSkmh, ' km/h (', $avg30_windSmph, ' mph)';?></li>
                     <li><strong>Mean:</strong> <?php echo $mean_windSkmh, ' km/h (', $mean_windSmph, ' mph)';?></li>
                 </ul>
-            <hr>
             <h3><i class="wi wi-humidity"></i> Humidity:</h3>
             <h4><?php echo $relH, '%', $relH_trend; ?></h4>
-            <hr>
             <h3><i class="wi wi-barometer"></i> Pressure:</h3>
             <h4><?php echo $pressure_kPa, ' kPa (', $pressure_inHg, ' inHg)', $hpa_trend; ?></h4>
-            <hr>
             <h3><i class="wi wi-umbrella"></i> <strong>Rain:</strong></h3>
             <?php if ($rainmm != 0){ echo "<p><strong>Fall Rate:</strong> $rainmm mm/hr ($rainin in/hr)</p>";} ?>
                 <h4>Accumulation Totals:</h4>
@@ -344,7 +339,6 @@ function get_current_weather() {
                 <div class="row">
                     <h2><?php echo $sensor_tower1_name; ?>:</h2>
                     <p><strong>Reported:</strong> <?php echo $time; ?></p>
-                    <hr>
                     <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
                     <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
                 </div>
@@ -367,10 +361,10 @@ function get_current_weather() {
 
 ?>
 
+                    <hr>
                     <div class="row">
                         <h2><?php echo $sensor_tower2_name; ?>:</h2>
                         <p><strong>Reported:</strong> <?php echo $time; ?></p>
-                        <hr>
                         <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
                         <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
                     </div>
@@ -392,10 +386,10 @@ function get_current_weather() {
 
 ?>
 
+                    <hr>
                     <div class="row">
                         <h2><?php echo $sensor_tower3_name; ?>:</h2>
                         <p><strong>Reported:</strong> <?php echo $time; ?></p>
-                        <hr>
                         <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
                         <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
                     </div>
