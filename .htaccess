@@ -1,3 +1,9 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(weather\.)?maxpower.co [NC]
+RewriteRule ^(.*)$ http://weather.thepowers.ca/$1 [R=301,NC,L]
+</IfModule>
+
 # Don't allow directory browsing
 Options -Indexes
 
