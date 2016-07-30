@@ -27,7 +27,7 @@
         <link href="/css/datetimepicker.css" rel="stylesheet" type="text/css" />
 
         <!-- JS -->
-        <script src="js/jquery-1.12.2.min.js" type="text/javascript"></script>
+        <script src="js/jquery-3.1.0.min.js" type="text/javascript"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="/js/datetimepicker.js" type="text/javascript"></script>
     </head>
