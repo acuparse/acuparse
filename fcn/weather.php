@@ -201,11 +201,19 @@ function get_current_weather() {
     $rainin = round($rain * 0.0393701, 2);
     $rainmm = round($rain, 2);
 
+    // Today's Rainfall
     $sql = "SELECT SUM(`raw`) AS `rainfall_day_total` FROM `rainfall` WHERE DATE(`timestamp`) = CURDATE()";
     $result = mysqli_fetch_array(mysqli_query($conn, $sql));
     $total_rainfall_day = $result['rainfall_day_total'];
-    $rain_totalin_day = round($total_rainfall_day * 0.0393701, 2);
-    $rain_totalmm_day = round($total_rainfall_day, 2);
+    $rain_totalin_today = round($total_rainfall_day * 0.0393701, 2);
+    $rain_totalmm_today = round($total_rainfall_day, 2);
+
+    // Yesterday's Rainfall
+    $sql = "SELECT SUM(`raw`) AS `rainfall_yesterday_total` FROM `rainfall` WHERE DATE(`timestamp`) = SUBDATE(CURDATE(),1)";
+    $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+    $total_rainfall_day = $result['rainfall_yesterday_total'];
+    $rain_totalin_yesterday = round($total_rainfall_day * 0.0393701, 2);
+    $rain_totalmm_yesterday = round($total_rainfall_day, 2);
 
     // Weekly Rainfall
     $sql = "SELECT SUM(`raw`) AS `rainfall_week_total` FROM rainfall WHERE WEEKOFYEAR(`timestamp`) = WEEKOFYEAR(NOW());";
@@ -308,7 +316,8 @@ function get_current_weather() {
             <?php if ($rainmm != 0){ echo "<p><strong>Fall Rate:</strong> $rainmm mm/hr ($rainin in/hr)</p>";} ?>
                 <h4>Accumulation Totals:</h4>
             <ul class="list-unstyled">
-                <li><strong>Daily:</strong> <?php echo $rain_totalmm_day, ' mm (', $rain_totalin_day, ' in)'; ?></li>
+                <li><strong>Today:</strong> <?php echo $rain_totalmm_today, ' mm (', $rain_totalin_today, ' in)'; ?></li>
+                <li><strong>Yesterday:</strong> <?php echo $rain_totalmm_yesterday, ' mm (', $rain_totalin_yesterday, ' in)'; ?></li>
                 <li><strong>Weekly:</strong> <?php echo $rain_totalmm_week, ' mm (', $rain_totalin_week, ' in)'; ?></li>
                 <li><strong>Monthly:</strong> <?php echo $rain_totalmm_month, ' mm (', $rain_totalin_month, ' in)'; ?></li>
             </ul>
@@ -394,6 +403,31 @@ function get_current_weather() {
                         <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
                     </div>
 <?php
+        }
+
+        // Tower 4
+
+        if (isset($sensor_tower4_id)) {
+            $sql = "SELECT * FROM `tower4` ORDER BY `timestamp` DESC LIMIT 1";
+            $result = mysqli_fetch_array(mysqli_query($conn, $sql));
+
+            $time = $result['timestamp'];
+            $time = strtotime($time);
+            $time = date('H:i:s', $time);
+            $tempC = $result['tempC'];
+            $tempF = $tempC * 9 / 5 + 32;
+            $relH = $result['relH'];
+
+            ?>
+
+            <hr>
+            <div class="row">
+                <h2><?php echo $sensor_tower4_name; ?>:</h2>
+                <p><strong>Reported:</strong> <?php echo $time; ?></p>
+                <h3><i class="wi wi-thermometer"></i> Temperature:</h3> <h4><?php echo "$tempC &#8451; ($tempF &#8457;)"; ?></h4>
+                <h3><i class="wi wi-humidity"></i> Humidity:</h3> <h4><?php echo "$relH %"; ?></h4>
+            </div>
+            <?php
         }
         ?>
             </div>

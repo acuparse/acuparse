@@ -230,8 +230,28 @@ if (isset($_POST['id']) && $_POST['mt']) {
                 $sql = "INSERT INTO `tower3` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
                 $result = mysqli_query($conn, $sql);
             }
-        }
 
+            // Tower Sensor 4
+            elseif (isset($sensor_tower4_id) && $_POST['sensor'] == $sensor_tower4_id) {
+                // Temperature
+                sscanf($_POST['temperature'], "A%01s%02d%d", $operator, $a, $b);
+                syslog(LOG_DEBUG, "$sensor_tower4_name tempC: $operator$a.$b");
+                if ($operator == 0) {
+                    $tempC = $a . "." . $b;
+                } else {
+                    $tempC = "-" . $a . "." . $b;
+                }
+
+                // Humidity
+                sscanf($_POST['humidity'], "A0%02d%d", $a, $b);
+                $humidity = $a;
+                syslog(LOG_DEBUG, "$sensor_tower4_name relH: $a");
+
+                // Insert into DB
+                $sql = "INSERT INTO `tower4` (`tempC`, `relH`) VALUES ('$tempC', '$humidity')";
+                $result = mysqli_query($conn, $sql);
+            }
+        }
 
         // Repost the data to MBW and send the response back to the bridge
         $url = 'http://acu-link.com/messages';

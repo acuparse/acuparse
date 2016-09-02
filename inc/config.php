@@ -55,6 +55,10 @@
         $sensor_tower3_id = '08537'; // ID from tower sensor
         $sensor_tower3_name = 'Under Tubby'; // Sensor name
 
+        // Tower Sensor 4
+        $sensor_tower4_id = '05753'; // ID from tower sensor
+        $sensor_tower4_name = 'Outside Shed'; // Sensor name
+
 // END User Modifiable Variables
 
 // Open Database Connection
