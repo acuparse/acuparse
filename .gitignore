@@ -1,0 +1,13 @@
+.idea/
+src/usr/*
+!src/usr/.gitkeep
+!src/usr/config.new.php
+cam/*
+cam/tmp/*
+!cam/templates/
+!cam/tmp
+!cam/tmp/.gitkeep
+src/pub/img/cam/*
+!src/pub/img/cam/.gitkeep
+logs/*
+!logs/.gitkeep

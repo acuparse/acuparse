@@ -1,0 +1,278 @@
+/*
+ * Acuparse - AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2017 Maxwell Power
+ * @author Maxwell Power <max@acuparse.com>
+ * @link http://www.acuparse.com
+ * @license AGPL-3.0+
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this code. If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * File: src/pub/themes/clean.css
+ * Clean CSS Theme
+ */
+/* Load Fonts */
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:400,700');
+
+/* Global Styles */
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 16px;
+    overflow-x: hidden;
+    padding-top: 60px; /* Required padding for navbar */
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+ul {
+    list-style-position: inside;
+}
+
+/* Footer */
+
+footer {
+    margin: 50px 0;
+}
+
+/* Headings */
+.panel-heading {
+    text-decoration: underline;
+}
+
+.page-header {
+    margin-top: 6px;
+}
+
+/* Login */
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+    font-weight: normal;
+}
+
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+
+.form-signin input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-cam-archive-date {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.loggedin-user {
+    font-weight: 700;
+}
+
+/* Navbar */
+.navbar-brand {
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+
+/* Horizontal Rules */
+hr.hr-dashed {
+    border-top: thin dashed #b1b0b0;
+}
+
+hr.hr-dotted {
+    border-top: thin dotted #b1b0b0;
+}
+
+/* Sections */
+.header_display {
+
+}
+
+.current_time_display {
+
+}
+
+.live_weather_display {
+
+}
+
+.weather_archive_display {
+
+}
+
+.camera_archive_display {
+
+}
+
+.live_camera_display {
+
+}
+
+.admin_functions_display {
+
+}
+
+.change_password_display {
+
+}
+
+.add_user_display {
+
+}
+
+.edit_user_display {
+
+}
+
+.view_users_display {
+
+}
+
+.user_login_display {
+
+}
+
+.footer_display {
+
+}
+
+.footer_appinfo {
+    font-size: smaller;
+}
+
+/* Weather Data Rows */
+.row_weather_data {
+}
+
+.row_tower_data {
+}
+
+.row_temperature_data {
+}
+
+.row_wind_data {
+}
+
+.row_humidity_data {
+}
+
+.row_pressure_data {
+}
+
+.row_rain_data {
+}
+
+.row_sun_data {
+}
+
+.row_moon_data {
+}
+
+/* Custom Margins */
+.margin-top-05 {
+    margin-top: 0.5em;
+}
+
+.margin-top-10 {
+    margin-top: 1.0em;
+}
+
+.margin-top-15 {
+    margin-top: 1.5em;
+}
+
+.margin-top-20 {
+    margin-top: 2.0em;
+}
+
+.margin-top-25 {
+    margin-top: 2.5em;
+}
+
+.margin-top-30 {
+    margin-top: 3.0em;
+}
+
+.margin-bottom-05 {
+    margin-bottom: 0.5em;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 1.0em;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 1.5em;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 2.0em;
+}
+
+.margin-bottom-25 {
+    margin-bottom: 2.5em;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 3.0em;
+}
