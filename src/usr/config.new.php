@@ -145,7 +145,7 @@ return (object)array(
     ),
 
     'version' => (object)array(
-        'app' => '2.1.0',
+        'app' => '2.1.1',
         'schema' => '2.1'
     ),
 

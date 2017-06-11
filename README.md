@@ -1,4 +1,4 @@
-# [Acuparse](http://www.acuparse.com) - v2.1.0
+# [Acuparse](http://www.acuparse.com) - v2.1.1
 ## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](http://www.ghwx.ca)
 
@@ -50,10 +50,11 @@ Acuparse can also, in theory, be run locally on a Raspberry Pi or similar. It ha
 
 ## Quick Install:
 Install your base Debian or Ubuntu operating system and update. Then download and run the installer.
+
 ``` wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh```
 
 # Updating:
-Detailed upgrade instructions for major releases will be published to the docs/updates folder.
+Detailed upgrade instructions for major releases will be published to the docs/updates folder, if required.
 
 The basic update process:
 
@@ -78,4 +79,4 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 # Discussion:
-Join the [mailing lists](https://lists.acuparse.com) or visit the [chat room](https://chat.acuparse.com).
+Join the [mailing lists](https://lists.acuparse.com).

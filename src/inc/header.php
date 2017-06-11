@@ -66,18 +66,23 @@
     }
     // Logged in admin
     if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_SESSION['IsAdmin'] === true) {
+
         // Check Git for updates
         if ($config->site->updates === true) {
             if ($_SERVER['PHP_SELF'] !== '/admin/install/index.php') {
-                $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name`='schema'"));
+                $result = mysqli_fetch_assoc(mysqli_query($conn,
+                    "SELECT `value` FROM `system` WHERE `name`='schema'"));
                 $schema = $result['value'];
-                $repo = "$app_info->raw_github_repository/$app_info->branch/.version";
+                $repo = "$app_info->updater_url";
                 $headers = get_headers($repo);
 
-                if (strpos($headers[0], "200")) {
+                if (($schema > $app_info->schema) || ($app_info->version > $config->version->app)) {
+                    header("Location: /admin/install/?update");
+                    die();
+                } elseif (strpos($headers[0], "200")) {
                     $git_version = json_decode(file_get_contents($repo));
                     if ($git_version !== null) {
-                        if ($app_info->version != $git_version->version) {
+                        if ($app_info->version < $git_version->version) {
                             ?>
                             <div class="row" id="update_message"><br>
                                 <div class="col-lg-12">
@@ -92,8 +97,6 @@
                             <?php
                         }
                     }
-                } elseif (($schema != $app_info->schema) || ($app_info->version != $config->version->app)) {
-                    header("Location: /admin/install/?update");
                 }
             }
         }
