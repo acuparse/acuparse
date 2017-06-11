@@ -12,7 +12,7 @@ Can be run locally or on a remote/cloud server. Installing on a dedicated Debian
 ## Install Acuparse:
 * Download and run the Acuparse installer.
 
-``` wget https://raw.githubusercontent.com/maxwellpower/acuparse/installer/install.sh && sudo sh install.sh```
+``` wget https://raw.githubusercontent.com/acuparse/installer/install.sh && sudo sh install.sh```
 
 ### Installing Acuparse Manually:
 * Switch to the root account to install:

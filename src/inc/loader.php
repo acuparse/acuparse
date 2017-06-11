@@ -46,8 +46,7 @@ if (!isset($app_info)) {
         'name' => $app_info['name'], // Application Name
         'version' => $app_info['version'], // Application version
         'schema' => $app_info['schema'], // Database Schema Version
-        'branch' => $app_info['branch'], // Current version release status
-        'raw_github_repository' => $app_info['raw'], // Git Repository
+        'updater_url' => $app_info['updater_url'], // Git Repository
         'homepage' => $app_info['homepage'] // Project Homepage
     );
 }

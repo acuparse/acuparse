@@ -29,31 +29,47 @@
 require(dirname(__DIR__) . '/inc/loader.php');
 
 if (isset($_GET['do'])) {
-    require(APP_BASE_PATH . '/fcn/mailer.php');
 
-    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
-    $email = strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
-    $post_subject = filter_input(INPUT_POST, 'subject', FILTER_SANITIZE_STRING);
-    $subject = 'Contact Form Submission - ' . $post_subject;
-    $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
-
-    $message = '<p><strong>You have received a new message from:</strong> <a href="mailto:' . $email . '?subject=' . $post_subject . '">' . $name . ' &lt;' . $email . '&gt;</a></p><p>' . $message . '</p>';
-
-    $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
-    while ($row = mysqli_fetch_array($sql)) {
-        $admin_email[] = $row['email'];
+    // Check for google recaptcha
+    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) {
+        // Check that Google captcha is correct
+        $captcha = $_POST['g-recaptcha-response'];
+        $response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $config->google->recaptcha->secret . "&response=" . $captcha),
+            true);
+    } // Recaptcha not enabled, set response to true by default
+    else {
+        $response['success'] = true;
     }
 
-    // Mail it
-    foreach ($admin_email as $to) {
-        mailer($to, $subject, $message, $email, $name, false);
-    }
-    // Log it
-    syslog(LOG_INFO, "Mail sent to admin successfully");
-    // Display message
-    $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
-    header("Location: /");
+    // Captcha Success, process the contact form
+    if ($response['success'] === true) {
 
+        require(APP_BASE_PATH . '/fcn/mailer.php');
+
+        $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+        $email = strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
+        $post_subject = filter_input(INPUT_POST, 'subject', FILTER_SANITIZE_STRING);
+        $subject = 'Contact Form Submission - ' . $post_subject;
+        $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
+
+        $message = '<p><strong>You have received a new message from:</strong> <a href="mailto:' . $email . '?subject=' . $post_subject . '">' . $name . ' &lt;' . $email . '&gt;</a></p><p>' . $message . '</p>';
+
+        $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
+        while ($row = mysqli_fetch_array($sql)) {
+            $admin_email[] = $row['email'];
+        }
+
+        // Mail it
+        foreach ($admin_email as $to) {
+            mailer($to, $subject, $message, $email, $name, false);
+        }
+        // Log it
+        syslog(LOG_INFO, "Mail sent to admin successfully");
+        // Display message
+        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
+        header("Location: /");
+
+    }
 } else {
 // Get Header
     $page_title = 'Contact Owner | ' . $config->site->name;
@@ -69,7 +85,7 @@ if (isset($_GET['do'])) {
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <h3>Send a Message</h3>
-            <form name="message" id="contactForm" action="/contact?do" method="POST">
+            <form name="message" id="recaptcha-form" action="/contact?do" method="POST">
                 <div class="form-group">
                     <label>Your Name:</label>
                     <input type="text" class="form-control" <?php if (isset($_SESSION['UserLoggedIn'])) {
@@ -93,9 +109,19 @@ if (isset($_GET['do'])) {
                     <label>Message:</label>
                     <textarea rows="10" cols="100" class="form-control" name="message" id="message" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary center-block"><i class="fa fa-paper-plane"></i> Send
-                    Message
-                </button>
+                <?php
+                if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) { ?>
+                    <button type="submit" class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
+                            data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit"><i
+                                class="fa fa-paper-plane"></i> Send
+                        Message
+                    </button>
+                    <?php
+                } else { ?>
+                    <button type="submit" class="btn btn-primary center-block"><i class="fa fa-paper-plane"></i> Send
+                        Message
+                    </button>
+                <?php } ?>
             </form>
         </div>
 

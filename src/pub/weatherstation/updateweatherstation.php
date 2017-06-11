@@ -125,18 +125,18 @@ if ($_GET['id'] === $config->station->hub_mac) {
             }
         } // This tower has not been added
         else {
-            syslog(LOG_ERR, "Unknown Tower $tower_id. Raw=\"$myacurite_query\"");
+            syslog(LOG_ERR, "Unknown Tower $tower_id. Raw= $myacurite_query");
             die();
         }
     } // This sensor is not added
     else {
         $sensor = $_GET['sensor'];
         if ($_GET['mt'] === 'tower') {
-            syslog(LOG_ERR, "Towers not enabled - Unknown Tower $sensor. Raw=\"$myacurite_query\"");
+            syslog(LOG_ERR, "Towers not enabled - Unknown Tower $sensor. Raw= $myacurite_query");
         } elseif ($_GET['mt'] === '5N1x31' || $_GET['mt'] === '5N1x38') {
-            syslog(LOG_ERR, "Unknown 5n1 Sensor $sensor. Raw=\"$myacurite_query\"");
+            syslog(LOG_ERR, "Unknown 5n1 Sensor $sensor. Raw= $myacurite_query");
         } else {
-            syslog(LOG_ERR, "Unknown Sensor $sensor. Raw=\"$myacurite_query\"");
+            syslog(LOG_ERR, "Unknown Sensor $sensor. Raw= $myacurite_query");
         }
         die();
     }
@@ -153,13 +153,19 @@ if ($_GET['id'] === $config->station->hub_mac) {
     // Forward the raw data to MyAcurite
     if ($config->upload->myacurite->enabled === true) {
         $myacurite = file_get_contents($config->upload->myacurite->url . '/weatherstation/updateweatherstation?' . $myacurite_query);
+
+        // MyAcurite is terrible with timekeeping. Update the response with the current time
+        $myacurite_pattern = '/["localtime":"](\d{2}:\d{2}:\d{2})/';
+        $myacurite_replacement = date('H:i:s');
+        $myacurite_response = preg_replace($myacurite_pattern, $myacurite_replacement, $myacurite);
+
         // Log the raw data
         if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "MyAcuRite Query: $myacurite_query | Result: $myacurite");
+            syslog(LOG_DEBUG, "MyAcuRite Query: $myacurite_query | Response: $myacurite | Corrected: $myacurite_response");
         }
 
         // Output the response to the smartHUB
-        echo $myacurite;
+        echo $myacurite_response;
     } // MyAcurite is disabled
     else {
         // Output a response to the smartHUB
@@ -170,6 +176,6 @@ if ($_GET['id'] === $config->station->hub_mac) {
 else {
     $id = $_GET['id'];
     // Log it
-    syslog(LOG_ERR, "MAC $id is not configured. Raw=\"$myacurite_query\"");
+    syslog(LOG_ERR, "MAC $id is not configured. Raw= $myacurite_query");
     die();
 }

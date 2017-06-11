@@ -29,7 +29,7 @@
 <!-- JS -->
 
 <?php
-if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
+if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
     ?>
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script>

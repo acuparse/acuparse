@@ -28,6 +28,26 @@
 // Get the loader
 require(dirname(__DIR__) . '/src/inc/loader.php');
 
+// Check the event scheduler
+if ($config->mysql->trim !== 0) {
+    $result = mysqli_fetch_array(mysqli_query($conn, "SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
+    $scheduler = $result['Value'];
+    if ($scheduler === 'OFF') {
+        if ($config->mysql->trim === 1) {
+            $schema = dirname(__DIR__) . '/sql/trim/enable.sql';
+            $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
+            $schema = shell_exec($schema);
+            syslog(LOG_INFO, "Event Scheduler Reset");
+        } elseif ($config->mysql->trim === 1) {
+            // Load the database with the trim schema
+            $schema = dirname(__DIR__) . '/sql/trim/enable_xtower.sql';
+            $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
+            $schema = shell_exec($schema);
+            syslog(LOG_INFO, "Event Scheduler Reset");
+        }
+    }
+}
+
 // Load weather Data:
 require(APP_BASE_PATH . '/fcn/weather/GetCurrentWeatherData.php');
 $get_data = new GetCurrentWeatherData();
@@ -165,7 +185,7 @@ else {
         $outage_alert = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `last_sent`, `status` FROM `outage_alert`"));
 
         // Should a notification be sent?
-        if ((strtotime($outage_alert['last_sent']) < strtotime("-" . $config->outage_alert->interval)) || $outage_alert['status'] === '1') {
+        if (strtotime($outage_alert['last_sent']) < strtotime("-" . $config->outage_alert->interval)) {
 
             if ($config->outage_alert->enabled === true) {
                 require(APP_BASE_PATH . '/fcn/mailer.php');
@@ -183,8 +203,9 @@ else {
                 }
                 // Log it
                 syslog(LOG_ERR, "OFFLINE: not receiving data from the smartHUB. Email sent to admin.");
-                // Update the status
-                mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '0'");
+                // Update the time the email was sent
+                $last_sent = date("Y-m-d H:i:s");
+                mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$last_sent', `status` = '0'");
 
             } else {
                 // Log it
