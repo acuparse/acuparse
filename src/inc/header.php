@@ -67,7 +67,10 @@
     // Logged in admin
     if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_SESSION['IsAdmin'] === true) {
         // Check Git for updates
-        if ($config->site->updates === true) {
+
+        if (($schema < $app_info->schema) || ($app_info->version < $config->version->app)) {
+            header("Location: /admin/install/?update");
+        } elseif ($config->site->updates === true) {
             if ($_SERVER['PHP_SELF'] !== '/admin/install/index.php') {
                 $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name`='schema'"));
                 $schema = $result['value'];
@@ -92,8 +95,6 @@
                             <?php
                         }
                     }
-                } elseif (($schema < $app_info->schema) || ($app_info->version < $config->version->app)) {
-                    header("Location: /admin/install/?update");
                 }
             }
         }
