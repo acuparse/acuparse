@@ -4,7 +4,7 @@
 # Contributing:
 If you're interested in contributing to Acuparse, the first step is joining the development mailing list.
 
-Join the [mailing lists](https://lists.acuparse.com) or visit the [chat room](https://chat.acuparse.com).
+Join the [mailing lists](https://lists.acuparse.com).
 
 ## Branches:
 * `master`: Holds the most recent stable release.
