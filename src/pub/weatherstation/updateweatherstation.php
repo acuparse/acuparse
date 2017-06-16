@@ -154,22 +154,17 @@ if ($_GET['id'] === $config->station->hub_mac) {
     if ($config->upload->myacurite->enabled === true) {
         $myacurite = file_get_contents($config->upload->myacurite->url . '/weatherstation/updateweatherstation?' . $myacurite_query);
 
-        // MyAcurite is terrible with timekeeping. Update the response with the current time
-        $myacurite_pattern = '/["localtime":"](\d{2}:\d{2}:\d{2})/';
-        $myacurite_replacement = date('H:i:s');
-        $myacurite_response = preg_replace($myacurite_pattern, $myacurite_replacement, $myacurite);
-
         // Log the raw data
         if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "MyAcuRite Query: $myacurite_query | Response: $myacurite | Corrected: $myacurite_response");
+            syslog(LOG_DEBUG, "MyAcuRite Query: $myacurite_query | Response: $myacurite");
         }
 
         // Output the response to the smartHUB
-        echo $myacurite_response;
+        echo $myacurite;
     } // MyAcurite is disabled
     else {
-        // Output a response to the smartHUB
-        echo '{"localtime":"' . date('H:i:s') . '"}';
+        // Output the expected response to the smartHUB
+        echo '{"localtime":"' . date('H:H:H') . '"}';
     }
 
 } // This MAC is not setup

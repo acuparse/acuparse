@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.1.2]](http://www.acuparse.com/releases/v2-1-2/) - 2017-06-16
+### Changed
+- Undoing changes to MyAcurite localtime response. It breaks rainfall data.
+
 ## [[2.1.1]](http://www.acuparse.com/releases/v2-1-1/) - 2017-06-10
 ### Changed
 - Updated wrong installer path in docs/INSTALL.md
