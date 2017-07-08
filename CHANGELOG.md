@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
-jQuery to 3.2.1
+- jQuery to 3.2.1
+- Modified localtime response again. This time with the correct regex.
 
 ## [[2.1.2]](http://www.acuparse.com/releases/v2-1-2/) - 2017-06-16
 ### Changed
