@@ -1,4 +1,4 @@
-# [Acuparse](http://www.acuparse.com) - v2.1.2
+# [Acuparse](http://www.acuparse.com) - v2.1.3
 ## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](http://www.ghwx.ca)
 

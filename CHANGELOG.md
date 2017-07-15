@@ -8,9 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.1.3]](http://www.acuparse.com/releases/v2-1-3/) - 2017-07-15
 ### Changed
 - jQuery to 3.2.1
-- Modified localtime response again. This time with the correct regex.
+- Modified localtime response again. This time with the correct regex. Rain data clears properly now.
 
 ## [[2.1.2]](http://www.acuparse.com/releases/v2-1-2/) - 2017-06-16
 ### Changed
