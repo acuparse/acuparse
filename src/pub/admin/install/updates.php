@@ -35,4 +35,8 @@ switch ($config->version->app){
         $config->version->app = '2.1.2';
         //$config->version->schema = '2.1';
         $notes = 'See CHANGELOG for details.';
+    case '2.1.2':
+        $config->version->app = '2.1.3';
+        //$config->version->schema = '2.1';
+        $notes = 'Rainfall Fixes';
 }

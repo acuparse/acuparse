@@ -59,7 +59,7 @@ if ($config->google->analytics->enabled === true) { ?>
         ga('send', 'pageview');
     </script>
 <?php } ?>
-<script type="text/javascript" src="/lib/jquery/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="/lib/jquery/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
