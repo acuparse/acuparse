@@ -109,7 +109,7 @@ function getCurrentHTML()
 
                         <!-- Dew Point -->
                         <li><strong>Dew Point:</strong> <?php
-                            $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptC&#8457;)";
+                            $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
                             echo $dewpt; ?></li>
                     </ul>
                 </div>
