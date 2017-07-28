@@ -37,17 +37,17 @@
     <title><?= $page_title ?></title>
 
     <!-- CSS -->
-    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/lib/weather_icons/css/weather-icons.min.css" rel="stylesheet">
-    <link href="/lib/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
-    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/lib/mit/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
+    <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
+    <link href="/lib/mit/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) { ?>
-        <link href="/lib/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet">
-        <link href="/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="/lib/mit/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet">
+        <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
     <?php }
     if (($_SERVER['PHP_SELF'] === '/admin/tower.php') && (isset($_GET['view']))) { ?>
-        <link href="/lib/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
-        <link href="/lib/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
+        <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
+        <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
     <?php } ?>
     <!-- Site Theme -->
     <link href="/themes/<?= $config->site->theme; ?>.css" rel="stylesheet">

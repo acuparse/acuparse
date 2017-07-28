@@ -186,8 +186,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         <?php
         // Load jquery ui and touch punch to allow the dragging of towers.
         $page_footer =
-            '<script type="text/javascript" src="/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-            <script type="text/javascript" src="/lib/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+            '<script type="text/javascript" src="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+            <script type="text/javascript" src="/lib/mit/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
             <script>
                 $(document).ready(
                     function () {

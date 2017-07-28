@@ -315,7 +315,7 @@ class MoonPhase {
 		// There are eight phases, evenly split. A "New Moon" occupies the 1/16th phases either side of phase = 0, and the rest follow from that.
 
         /**
-         * @author Maxwell Power <max@maxpower.co>
+         * @author Maxwell Power <max@acuparse.com>
          * Fixed phase_name, float in an array.
          */
 		return $names[ intval( floor( ( $this->phase + 0.0625 ) * 8 ) ) ];
