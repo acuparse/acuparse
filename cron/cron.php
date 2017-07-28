@@ -38,7 +38,7 @@ if ($config->mysql->trim !== 0) {
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
             $schema = shell_exec($schema);
             syslog(LOG_INFO, "Event Scheduler Reset");
-        } elseif ($config->mysql->trim === 1) {
+        } elseif ($config->mysql->trim === 2) {
             // Load the database with the trim schema
             $schema = dirname(__DIR__) . '/sql/trim/enable_xtower.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
