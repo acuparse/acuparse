@@ -36,7 +36,7 @@ function getCurrentHTML()
     $wx = $GetData->getConditions();
 
     // Get Moon Data:
-    require('lib/moonphase.php');
+    require(APP_BASE_PATH . '/pub/lib/mit/moon/moonphase.php');
     $moon = new MoonPhase();
     $moon_age = round($moon->age(), 1);
     $moon_stage = $moon->phase_name();
@@ -55,11 +55,14 @@ function getCurrentHTML()
     require('weatherIcons.php');
 
     // Moon rise/set
-    require('lib/moontime.php');
-    $moon_time = Moon::calculateMoonTimes($config->site->lat, $config->site->long);
-    $moon_rise = gmdate('j M @ H:i', $moon_time->moonrise);
-    $moon_set = gmdate('j M @ H:i', $moon_time->moonset);
-
+    $moon_time_enabled = false;
+    if (file_exists(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php')) {
+        $moon_time_enabled = true;
+        require(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php');
+        $moon_time = Moon::calculateMoonTimes($config->site->lat, $config->site->long);
+        $moon_rise = gmdate('j M @ H:i', $moon_time->moonrise);
+        $moon_set = gmdate('j M @ H:i', $moon_time->moonset);
+    }
     // Get Sun Data
     $zenith = 90 + (50 / 60);
     $offset = date('Z') / 3600;
@@ -106,7 +109,7 @@ function getCurrentHTML()
 
                         <!-- Dew Point -->
                         <li><strong>Dew Point:</strong> <?php
-                            $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptC&#8457;)";
+                            $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
                             echo $dewpt; ?></li>
                     </ul>
                 </div>
@@ -193,10 +196,12 @@ function getCurrentHTML()
                     <h4><?= "$moon_stage"; ?></h4>
                     <p><?= "$moon_age days old, $moon_illumination visible"; ?></p>
                     <ul class="list-unstyled">
-                        <li><i class="wi wi-moonrise" aria-hidden="true"></i>
-                            <strong>Moonrise:</strong> <?= $moon_rise; ?></li>
-                        <li><i class="wi wi-moonset" aria-hidden="true"></i>
-                            <strong>Moonset:</strong> <?= $moon_set; ?></li>
+                        <?php if ($moon_time_enabled === true) { ?>
+                            <li><i class="wi wi-moonrise" aria-hidden="true"></i>
+                                <strong>Moonrise:</strong> <?= $moon_rise; ?></li>
+                            <li><i class="wi wi-moonset" aria-hidden="true"></i>
+                                <strong>Moonset:</strong> <?= $moon_set; ?></li>
+                        <?php } ?>
                         <li><strong>Current New:</strong> <?= $last_new_moon; ?></li>
                         <li><strong>Current Full:</strong> <?= $last_full_moon; ?></li>
                         <li><strong>Upcoming New:</strong> <?= $next_new_moon; ?></li>

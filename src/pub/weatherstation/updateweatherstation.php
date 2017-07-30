@@ -169,6 +169,7 @@ if ($_GET['id'] === $config->station->hub_mac) {
             syslog(LOG_DEBUG, "MyAcuRite Query: $myacurite_query | Response: $myacurite | Output: $hub_response");
         }
 
+        // Output the response to the smartHUB
         echo $hub_response;
 
     } // MyAcurite is disabled

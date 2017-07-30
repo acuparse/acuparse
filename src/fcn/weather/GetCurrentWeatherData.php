@@ -320,6 +320,7 @@ class GetCurrentWeatherData
 
     // Public Functions
 
+    // Calculate the trending value
     public function calculateTrend($unit, $table, $sensor = null)
     {
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -349,6 +350,7 @@ class GetCurrentWeatherData
         return $trend;
     }
 
+    // Get current conditions
     public function getConditions()
     {
         return (object)array(

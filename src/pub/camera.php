@@ -199,7 +199,7 @@ if ($config->camera->enabled === true) {
 
     // Set the footer to include scripts required for this page
     $page_footer =
-        '<script src="/lib/lightbox/js/lightbox.min.js"></script>';
+        '<script src="/lib/mit/lightbox/js/lightbox.min.js"></script>';
 
     include(APP_BASE_PATH . '/inc/footer.php');
 

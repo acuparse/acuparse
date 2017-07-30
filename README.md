@@ -1,4 +1,4 @@
-# [Acuparse](http://www.acuparse.com) - v2.1.3
+# [Acuparse](http://www.acuparse.com)
 ## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](http://www.ghwx.ca)
 
@@ -66,9 +66,19 @@ The basic update process:
 # Licencing:
 Acuparse is licenced under the AGPL-3.0+. It also uses several other open source scripts and their licences are included where available.
 
-3rd party scripts are located in `src/pub/lib` and `src/fcn/weather/lib`.
+3rd party scripts are located in `src/pub/lib`.
 
 See [LICENSE](LICENSE) for more details.
+
+## Commercial Licence:
+A commercial licence without any AGPL restrictions is also available. Visit [acuparse.com/commercial](https://www.acuparse.com/commercial) for details.
+
+# Support:
+Support for the core application is handled via [issues](https://github.com/acuparse/acuparse/issues).
+
+Implementation and technical support is provided separately via the [maintainers](https://www.acuparse.com/support).
+
+If you require advanced assistance, consider a commercial licence.
 
 # Release Notes:
 
