@@ -8,9 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.1.4]](https://www.acuparse.com/releases/v2-1-4/) - 2017-07-30
 ### Changed
 - Moved 3rd party scripts around and made changes to support a commercial non GPL version.
 - Fixed - Dew point showing &#8457; temp as the &#8451; temp in metric mode.
+- Fixed - SQL Trim was not re-enabling xtower as expected.
 
 ## [[2.1.3]](https://www.acuparse.com/releases/v2-1-3/) - 2017-07-15
 ### Changed
