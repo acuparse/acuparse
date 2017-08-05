@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Camera archive back and forward buttons corrected to display as expected.
+- Updated datetimepicker from source
 
 ## [[2.1.4]](https://www.acuparse.com/releases/v2-1-4/) - 2017-07-30
 ### Changed
