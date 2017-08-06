@@ -4,12 +4,18 @@
 # Installation Guide:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
 
-Can be run locally or on a remote/cloud server. Installing on a dedicated Debian/Ubuntu server is a good choice!
+Can be run locally or on a remote/cloud server. 
+
+Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method. Any other method is not officially supported or tested.
+
 * Setup a local DNS override for `hubapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 > **Info:** Exactly how to do this depends on the network where the smartHUB is installed. Use a firewall that allows you to customize your DNS. Such as pfSense® or OPNsense®.
 
-* Install your base operating system and update. 
 ## Install Acuparse:
+> **Info:** Installer currently supports Debian Stretch(9) and Ubuntu 16.04 LTS.
+
+* Install the base operating system and update.
+
 * Download and run the Acuparse installer.
 
 ``` wget https://raw.githubusercontent.com/acuparse/installer/install.sh && sudo sh install.sh```
@@ -22,15 +28,14 @@ Can be run locally or on a remote/cloud server. Installing on a dedicated Debian
 
 * Install the required packages:
 
-    * Debian 8: `apt-get install git ntp imagemagick exim4 apache2 mysql-server php5 libapache2-mod-php5 php5-mysql php5-gd php5-curl php5-cli`
-
-    * Ubuntu 16: `apt-get install git ntp imagemagick exim4 apache2 mysql-server php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-gd php7.0-curl php7.0-json php7.0-cli`
+    * Ubuntu 16 / Debian 9: `apt-get install git ntp imagemagick exim4 apache2 mysql-server php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-gd php7.0-curl php7.0-json php7.0-cli`
 
 * Secure your MySQL install: `mysql_secure_installation`
 
 #### Email Server Config:
 * Run `dpkg-reconfigure exim4-config` and choose the correct values for your system. Most users will need to select `internet site; mail is sent and received directly using SMTP` and accept the rest of the defaults.
 
+#### Install Acuparse:
 * Get the Acuparse source:
 
     ``` git init /opt/acuparse && cd /opt/acuparse && git remote add -t master -f origin https://github.com/maxwellpower/acuparse.git && git checkout master ```
@@ -76,7 +81,7 @@ When you make changes on MyAcuRite you will eventually get a response back to th
 
 Check the syslog and watch for your changes. Once your smartHUB is reporting updated readings, modify the Acuparse config with your required offset.
 
-> **Info:** It's recommended you allow MyAcuRite to handle the pressure readings, where possible. Since it manages the offset on the smartHUB. Try adjusted pressure and modify your elevation.
+> **Info:** It's recommended to use MyAcuRite to handle the pressure offset, where possible. Since it will configure the offset on the smartHUB. Try adjusted pressure and modify your elevation.
 
 ## Uploading Data:
 Detailed instructions for each available in docs/external.
@@ -89,7 +94,7 @@ Detailed instructions for each available in docs/external.
 When MyAcuRite receives your readings, it sends back a JSON response to your smartHUB in the following format.
 `{"localtime":"00:00:00","checkversion":"","ID1":"","PASSWORD1":"","sensor1":"","elevation":""}`.
 
-* localtime = Local time the reading was received. (In testing it seems this is not always correct.) Suspect it is used to keep time on the smartHUB? 
+* localtime = Local time the reading was received. Keeps time on the smartHUB and is used mainly for rainfall readings.
 * checkversion = The current firmware version available. Currently 224.
 * ID1 = Weather Underground Station ID.
 * PASSWORD1 = Weather Underground Station Password.

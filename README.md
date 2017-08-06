@@ -43,13 +43,16 @@ Users currently having trouble sending updates to Weather Underground should fin
 # Installation:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
 
-Can be run locally or on a remote/cloud server. Installing on a dedicated Debian/Ubuntu server is a good choice!
-Acuparse can also, in theory, be run locally on a Raspberry Pi or similar. It has not been tested.
+Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method. Any other method is not officially supported or tested.
+
+Acuparse can also, in theory, be run locally on a Raspberry Pi or similar configuration. It has not been extensively tested.
 
 * See [docs/INSTALL.md](docs/INSTALL.md) for detailed installation instructions.
 
 ## Quick Install:
-Install your base Debian or Ubuntu operating system and update. Then download and run the installer.
+> **Info:** Installer currently supports Debian Stretch(9) and Ubuntu 16.04 LTS.
+
+Install the base operating system and update. Then download and run the installer.
 
 ``` wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh```
 
