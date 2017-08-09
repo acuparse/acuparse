@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.1.5]](https://www.acuparse.com/releases/v2-1-5/) - 2017-08-08
+### Changed
+- Camera archive back and forward buttons corrected to display as expected.
+- Updated datetimepicker from source.
+- Moving to Debian Stretch
+
 ## [[2.1.4]](https://www.acuparse.com/releases/v2-1-4/) - 2017-07-30
 ### Changed
 - Moved 3rd party scripts around and made changes to support a commercial non GPL version.

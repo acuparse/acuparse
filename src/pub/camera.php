@@ -50,20 +50,32 @@ if ($config->camera->enabled === true) {
 
         // Check the cam directory for images
         $cam_dir = scandir('img/cam/');
+        $last_dir = current(array_slice($cam_dir, -2)); // Latest directory should be the 2nd last value. Since latest.jpg should be the last.
         $cam_dir = $cam_dir[3]; // Oldest images should be the 3rd value. Since .=0 ..=1 and .gitignore=2 are first.
         // No images? make today the latest day.
-        if ($cam_dir == false) {
+        $cam_dir_has_images = true;
+        if ($cam_dir === null) {
             $cam_dir = date('Y-m-d');
+            $cam_dir_has_images = false;
         }
+
+        // Today's Date
+        $today = date('Y-m-d');
         ?>
+
         <section id="camera_archive" class="camera_archive_display">
         <div class="row">
             <h1 class="page-header">Weather Camera Archive</h1>
         </div>
         <div class="row">
             <div class="col-lg-3 col-md-3 col-xs-3 text-left">
-                <?php if ($backward_date < $cam_dir) {
-
+                <?php if (($backward_date < $cam_dir) || $cam_dir_has_images === false) {
+                    // Don't display backward button
+                } elseif ($backward_date > $today) {
+                    ?>
+                    <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fa fa-backward"
+                                                                         aria-hidden="true"></i></h3></a>
+                    <?php
                 } else { ?>
                     <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fa fa-backward"
                                                                                  aria-hidden="true"></i></h3></a>
@@ -80,7 +92,8 @@ if ($config->camera->enabled === true) {
                 </form>
             </div>
             <div class="col-lg-3 col-md-3 col-xs-3 text-right">
-                <?php if ($forward_date > date('Y-m-d')) {
+                <?php if (($forward_date > $today) || $cam_dir_has_images === false) {
+                    // Don't display forward button
                 } else {
                     if ($forward_date < $cam_dir) {
                         ?>
