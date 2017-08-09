@@ -28,20 +28,15 @@
 switch ($config->version->app){
     // Update from 2.1.0
     case '2.1.0':
-        $config->version->app = '2.1.1';
     // Update from 2.1.1
     case '2.1.1':
-        $config->version->app = '2.1.2';
     // Update from 2.1.2
     case '2.1.2':
-        $config->version->app = '2.1.3';
     // Update from 2.1.3
     case '2.1.3':
-        $config->version->app = '2.1.4';
+    // Update from 2.1.4
+    case '2.1.4':
 }
+//$config->version->schema = '2.1';
+$config->version->app = '2.1.5';
 $notes = 'Minor changes and bug fixes. See CHANGELOG for details.';
-
-/*
-$config->version->schema = '2.1';
-$config->version->app = '2.1.';
-*/
