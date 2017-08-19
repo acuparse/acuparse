@@ -71,63 +71,71 @@ if (isset($_GET['do'])) {
 
     }
 } else {
-// Get Header
-    $page_title = 'Contact Owner | ' . $config->site->name;
-    include(APP_BASE_PATH . '/inc/header.php');
-    ?>
+    if ($config->contact->enabled === true) {
+        // Get Header
+        $page_title = 'Contact Owner | ' . $config->site->name;
+        include(APP_BASE_PATH . '/inc/header.php');
+        ?>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Contact Owner</h1>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Contact Owner</h1>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <h3>Send a Message</h3>
-            <form name="message" id="recaptcha-form" action="/contact?do" method="POST">
-                <div class="form-group">
-                    <label>Your Name:</label>
-                    <input type="text" class="form-control" <?php if (isset($_SESSION['UserLoggedIn'])) {
-                        echo 'value="', $_SESSION['Username'], '"';
-                    } ?> name="name" id="name" placeholder="Name">
-                </div>
-                <div class="form-group">
-                    <label>Email Address:</label>
-                    <input type="email" <?php if (isset($_SESSION['UserLoggedIn'])) {
-                        $uid = $_SESSION['UserID'];
-                        $email = mysqli_fetch_array(mysqli_query($conn,
-                            "SELECT `email` FROM `users` WHERE `uid`='$uid'"));
-                        echo 'value="', $email['email'], '"';
-                    } ?> class="form-control" name="email" id="email" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <label>Subject:</label>
-                    <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-                </div>
-                <div class="form-group">
-                    <label>Message:</label>
-                    <textarea rows="10" cols="100" class="form-control" name="message" id="message" required></textarea>
-                </div>
-                <?php
-                if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) { ?>
-                    <button type="submit" class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
-                            data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit"><i
-                                class="fa fa-paper-plane"></i> Send
-                        Message
-                    </button>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h3>Send a Message</h3>
+                <form name="message" id="recaptcha-form" action="/contact?do" method="POST">
+                    <div class="form-group">
+                        <label>Your Name:</label>
+                        <input type="text" class="form-control" <?php if (isset($_SESSION['UserLoggedIn'])) {
+                            echo 'value="', $_SESSION['Username'], '"';
+                        } ?> name="name" id="name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address:</label>
+                        <input type="email" <?php if (isset($_SESSION['UserLoggedIn'])) {
+                            $uid = $_SESSION['UserID'];
+                            $email = mysqli_fetch_array(mysqli_query($conn,
+                                "SELECT `email` FROM `users` WHERE `uid`='$uid'"));
+                            echo 'value="', $email['email'], '"';
+                        } ?> class="form-control" name="email" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject:</label>
+                        <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message:</label>
+                        <textarea rows="10" cols="100" class="form-control" name="message" id="message"
+                                  required></textarea>
+                    </div>
                     <?php
-                } else { ?>
-                    <button type="submit" class="btn btn-primary center-block"><i class="fa fa-paper-plane"></i> Send
-                        Message
-                    </button>
-                <?php } ?>
-            </form>
+                    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) { ?>
+                        <button type="submit" class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
+                                data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit"><i
+                                    class="fa fa-paper-plane"></i> Send
+                            Message
+                        </button>
+                        <?php
+                    } else { ?>
+                        <button type="submit" class="btn btn-primary center-block"><i class="fa fa-paper-plane"></i>
+                            Send
+                            Message
+                        </button>
+                    <?php } ?>
+                </form>
+            </div>
+
         </div>
+        <?php
 
-    </div>
-    <?php
-
-// Get footer
-    include(APP_BASE_PATH . '/inc/footer.php');
+        // Get footer
+        include(APP_BASE_PATH . '/inc/footer.php');
+    } // Archive not enabled, go home.
+    else {
+        header("Location: /");
+    }
 }
