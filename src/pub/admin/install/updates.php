@@ -36,7 +36,9 @@ switch ($config->version->app){
     case '2.1.3':
     // Update from 2.1.4
     case '2.1.4':
+    // Update from 2.1.4
+    case '2.1.5':
 }
 //$config->version->schema = '2.1';
-$config->version->app = '2.1.5';
+$config->version->app = '2.1.6';
 $notes = 'Minor changes and bug fixes. See CHANGELOG for details.';
