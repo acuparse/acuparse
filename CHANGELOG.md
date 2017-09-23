@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.1.6]](https://www.acuparse.com/releases/v2-1-6/) - 2017-09-23
+### Changed
+- Minor bugfixes and improvements. Changed redirect paths and form label.
+
 ## [[2.1.5]](https://www.acuparse.com/releases/v2-1-5/) - 2017-08-08
 ### Changed
 - Camera archive back and forward buttons corrected to display as expected.

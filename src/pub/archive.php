@@ -64,5 +64,5 @@ if ($config->archive->enabled === true) {
 
 } // Archive not enabled, go home.
 else {
-    header("Location: /admin");
+    header("Location: /");
 }
