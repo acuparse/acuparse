@@ -108,7 +108,7 @@ if (isset($_GET['do'])) {
                                required>
                     </div>
                     <div class="form-group">
-                        <label>Message:</label>
+                        <label for="message">Message:</label>
                         <textarea rows="10" cols="100" class="form-control" name="message" id="message"
                                   required></textarea>
                     </div>
