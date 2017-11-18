@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+- Changed default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
 
 ## [[2.1.6]](https://www.acuparse.com/releases/v2-1-6/) - 2017-09-23
 ### Changed
