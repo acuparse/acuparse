@@ -2,7 +2,7 @@
 ## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](http://www.ghwx.ca)
 
-Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1 weather station and tower sensors, via your smartHUB. It uploads weather data to Weather Underground, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and upload to Weather Underground.
+Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1 weather station and tower sensors, via your smartHUB. It uploads weather data to Weather Underground, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
@@ -14,7 +14,7 @@ Users currently having trouble sending updates to Weather Underground should fin
 
 # Features:
 * **Your weather data belongs to you, stored on your OWN server.**
-* Showcase live camera images and send them to Weather Underground.
+* Showcase your live weather camera.
 * Uploads weather data to external providers.
 * Customize barometer readings.
 * Display data in both &#8457; and &#8451;. Selectable default.
