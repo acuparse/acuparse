@@ -25,11 +25,6 @@
 # Remote IP camera upload shell script
 ##
 
-### USER VALUES ###
-WU_CAM_USER='' # WeatherUnderground Webcam user
-WU_CAM_PASS='' # WeatherUnderground Webcam password
-### END USER VALUES ###
-
 WEBDIR='/opt/acuparse/src/pub/img/cam'
 BASEDIR='/opt/acuparse/cam/tmp'
 ARCHIVE_DATE=$(date +"%Y-%m-%d")
@@ -49,15 +44,6 @@ convert image.jpg \
         fill black  text 0,18 '$STATION_INFO' \
         fill OrangeRed2  text 1,19 '$STATION_INFO' " \
     image.jpg
-
-echo "Sending image to Weather Underground"
-ftp -n webcam.wunderground.com <<EOF > /opt/acuparse/logs/wu_upload.log 2>&1
-quote USER $WU_CAM_USER
-quote PASS $WU_CAM_PASS
-binary
-put image.jpg
-quit
-EOF
 
 echo "Moving image to webserver"
 cp image.jpg $WEBDIR/latest.jpg

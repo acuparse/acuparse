@@ -36,9 +36,11 @@ switch ($config->version->app){
     case '2.1.3':
     // Update from 2.1.4
     case '2.1.4':
-    // Update from 2.1.4
+    // Update from 2.1.5
     case '2.1.5':
+    // Update from 2.1.6
+    case '2.1.6':
 }
 //$config->version->schema = '2.1';
-$config->version->app = '2.1.6';
-$notes = 'Minor changes and bug fixes. See CHANGELOG for details.';
+$config->version->app = '2.1.7';
+$notes = 'Weather Underground Camera Uploading has been removed. Cam scripts will need to be updated manually.';

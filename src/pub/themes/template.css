@@ -19,37 +19,11 @@
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * File: src/pub/themes/clean.css
- * Clean CSS Theme
+ * File: src/pub/themes/template.css
+ * CSS Theme Template
  */
-
 /* Load Fonts */
-/* open-sans-regular - latin */
-@font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local('Open Sans Regular'), local('OpenSans-Regular'),
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.woff') format('woff'), /* Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
-}
-/* open-sans-700 - latin */
-@font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 700;
-    src: url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.eot'); /* IE9 Compat Modes */
-    src: local('Open Sans Bold'), local('OpenSans-Bold'),
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.woff') format('woff'), /* Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.svg#OpenSans') format('svg'); /* Legacy iOS */
-}
+
 
 /* Global Styles */
 
@@ -60,7 +34,7 @@ body {
 }
 
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: sans-serif;
     font-size: 1.5em;
     overflow-x: hidden;
     padding-top: 60px; /* Required padding for navbar */
@@ -106,6 +80,15 @@ footer {
     max-width: 330px;
     padding: 15px;
     margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+    font-weight: normal;
 }
 
 .form-signin .form-control {
@@ -159,8 +142,89 @@ hr.hr-dotted {
     border-top: thin dotted #b1b0b0;
 }
 
+/* Sections */
+.header_display {
+
+}
+
+.current_time_display {
+
+}
+
+.live_weather_display {
+
+}
+
+.weather_archive_display {
+
+}
+
+.camera_archive_display {
+
+}
+
+.live_camera_display {
+
+}
+
+.admin_functions_display {
+
+}
+
+.change_password_display {
+
+}
+
+.add_user_display {
+
+}
+
+.edit_user_display {
+
+}
+
+.view_users_display {
+
+}
+
+.user_login_display {
+
+}
+
+.footer_display {
+
+}
+
 .footer_appinfo {
     font-size: smaller;
+}
+
+/* Weather Data Rows */
+.row_weather_data {
+}
+
+.row_tower_data {
+}
+
+.row_temperature_data {
+}
+
+.row_wind_data {
+}
+
+.row_humidity_data {
+}
+
+.row_pressure_data {
+}
+
+.row_rain_data {
+}
+
+.row_sun_data {
+}
+
+.row_moon_data {
 }
 
 /* Custom Margins */
@@ -176,6 +240,38 @@ hr.hr-dotted {
     margin-top: 1.5em;
 }
 
+.margin-top-20 {
+    margin-top: 2.0em;
+}
+
+.margin-top-25 {
+    margin-top: 2.5em;
+}
+
+.margin-top-30 {
+    margin-top: 3.0em;
+}
+
 .margin-bottom-05 {
     margin-bottom: 0.5em;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 1.0em;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 1.5em;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 2.0em;
+}
+
+.margin-bottom-25 {
+    margin-bottom: 2.5em;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 3.0em;
 }

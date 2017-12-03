@@ -78,24 +78,24 @@ function getArchiveHTML()
                 <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
                 <h4><strong>High:</strong> <?php
                     $temp_high_week = ($config->site->imperial === true) ? "$week->tempF_high&#8457; ($week->tempC_high&#8451;)" : "$week->tempC_high&#8451; ($week->tempF_high&#8457;)";
-                    echo $temp_high_week . ' @ ' . $week->tempF_high_recorded; ?></h4>
+                    echo $temp_high_week . ' on ' . $week->tempF_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $temp_low_week = ($config->site->imperial === true) ? "$week->tempF_low&#8457; ($week->tempC_low&#8451;)" : "$week->tempC_low&#8451; ($week->tempF_low&#8457;)";
-                    echo $temp_low_week . ' @ ' . $week->tempF_low_recorded; ?></h4>
+                    echo $temp_low_week . ' on ' . $week->tempF_low_recorded; ?></h4>
                 <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
                 <h4><?php
                     $wind_high_week = ($config->site->imperial === true) ? "$week->windS_mph_high mph ($week->windS_kmh_high km/h)" : "$week->windS_kmh_high km/h ($week->windS_mph_high mph)";
-                    echo 'From ' . $week->windDIR . ' @ ' . $wind_high_week . ' @ ' . $week->windS_mph_high_recorded; ?></h4>
+                    echo 'From ' . $week->windDIR . ' on ' . $wind_high_week . ' on ' . $week->windS_mph_high_recorded; ?></h4>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <h4><strong>High:</strong> <?php
                     $pressure_high_week = ($config->site->imperial === true) ? "$week->pressure_inHg_high inHg ($week->pressure_kPa_high kPa)" : "$week->pressure_kPa_high kPa ($week->pressure_inHg_high inHg)";
-                    echo $pressure_high_week . ' @ ' . $week->pressure_inHg_high_recorded; ?></h4>
+                    echo $pressure_high_week . ' on ' . $week->pressure_inHg_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $pressure_low_week = ($config->site->imperial === true) ? "$week->pressure_inHg_low inHg ($week->pressure_kPa_low kPa)" : "$week->pressure_kPa_low kPa ($week->pressure_inHg_low inHg)";
-                    echo $pressure_low_week . ' @ ' . $week->pressure_inHg_low_recorded; ?></h4>
+                    echo $pressure_low_week . ' on ' . $week->pressure_inHg_low_recorded; ?></h4>
                 <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
-                <h4><strong>High:</strong> <?= "$week->relH_high% @ " . $week->relH_high_recorded; ?></h4>
-                <h4><strong>Low:</strong> <?= "$week->relH_low% @ " . $week->relH_low_recorded; ?></h4>
+                <h4><strong>High:</strong> <?= "$week->relH_high% on " . $week->relH_high_recorded; ?></h4>
+                <h4><strong>Low:</strong> <?= "$week->relH_low% on " . $week->relH_low_recorded; ?></h4>
                 <?php if ($week->rainfall_IN_total !== 0.) { ?>
                     <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
                     <h4><strong>Most Rain:</strong> <?php
@@ -114,24 +114,24 @@ function getArchiveHTML()
                 <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
                 <h4><strong>High:</strong> <?php
                     $temp_high_month = ($config->site->imperial === true) ? "$month->tempF_high&#8457; ($month->tempC_high&#8451;)" : "$month->tempC_high&#8451; ($month->tempF_high&#8457;)";
-                    echo $temp_high_month . ' @ ' . $month->tempF_high_recorded; ?></h4>
+                    echo $temp_high_month . ' on ' . $month->tempF_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $temp_low_month = ($config->site->imperial === true) ? "$month->tempF_low&#8457; ($month->tempC_low&#8451;)" : "$month->tempC_low&#8451; ($month->tempF_low&#8457;)";
-                    echo $temp_low_month . ' @ ' . $month->tempF_low_recorded; ?></h4>
+                    echo $temp_low_month . ' on ' . $month->tempF_low_recorded; ?></h4>
                 <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
                 <h4><?php
                     $wind_high_month = ($config->site->imperial === true) ? "$month->windS_mph_high mph ($month->windS_kmh_high km/h)" : "$month->windS_kmh_high km/h ($month->windS_mph_high mph)";
-                    echo 'From ' . $month->windDIR . ' @ ' . $wind_high_month . ' @ ' . $month->windS_mph_high_recorded; ?></h4>
+                    echo 'From ' . $month->windDIR . ' @ ' . $wind_high_month . ' on ' . $month->windS_mph_high_recorded; ?></h4>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <h4><strong>High:</strong> <?php
                     $pressure_high_month = ($config->site->imperial === true) ? "$month->pressure_inHg_high inHg ($month->pressure_kPa_high kPa)" : "$month->pressure_kPa_high kPa ($month->pressure_inHg_high inHg)";
-                    echo $pressure_high_month . ' @ ' . $month->pressure_inHg_high_recorded; ?></h4>
+                    echo $pressure_high_month . ' on ' . $month->pressure_inHg_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $pressure_low_month = ($config->site->imperial === true) ? "$month->pressure_inHg_low inHg ($month->pressure_kPa_low kPa)" : "$month->pressure_kPa_low kPa ($month->pressure_inHg_low inHg)";
-                    echo $pressure_low_month . ' @ ' . $month->pressure_inHg_low_recorded; ?></h4>
+                    echo $pressure_low_month . ' on ' . $month->pressure_inHg_low_recorded; ?></h4>
                 <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
-                <h4><strong>High:</strong> <?= "$month->relH_high% @ " . $month->relH_high_recorded; ?></h4>
-                <h4><strong>Low:</strong> <?= "$month->relH_low% @ " . $month->relH_low_recorded; ?></h4>
+                <h4><strong>High:</strong> <?= "$month->relH_high% on " . $month->relH_high_recorded; ?></h4>
+                <h4><strong>Low:</strong> <?= "$month->relH_low% on " . $month->relH_low_recorded; ?></h4>
                 <?php if ($month->rainfall_IN_total !== 0.) { ?>
                     <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
                     <h4><strong>Most Rain:</strong> <?php
@@ -150,24 +150,24 @@ function getArchiveHTML()
                 <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
                 <h4><strong>High:</strong> <?php
                     $temp_high_last_month = ($config->site->imperial === true) ? "$last_month->tempF_high&#8457; ($last_month->tempC_high&#8451;)" : "$last_month->tempC_high&#8451; ($last_month->tempF_high&#8457;)";
-                    echo $temp_high_last_month . ' @ ' . $last_month->tempF_high_recorded; ?></h4>
+                    echo $temp_high_last_month . ' on ' . $last_month->tempF_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $temp_low_last_month = ($config->site->imperial === true) ? "$last_month->tempF_low&#8457; ($last_month->tempC_low&#8451;)" : "$last_month->tempC_low&#8451; ($last_month->tempF_low&#8457;)";
-                    echo $temp_low_last_month . ' @ ' . $last_month->tempF_low_recorded; ?></h4>
+                    echo $temp_low_last_month . ' on ' . $last_month->tempF_low_recorded; ?></h4>
                 <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
                 <h4><?php
                     $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph ($last_month->windS_kmh_high km/h)" : "$last_month->windS_kmh_high km/h ($last_month->windS_mph_high mph)";
-                    echo 'From ' . $last_month->windDIR . ' @ ' . $wind_high_last_month . ' @ ' . $last_month->windS_mph_high_recorded; ?></h4>
+                    echo 'From ' . $last_month->windDIR . ' @ ' . $wind_high_last_month . ' on ' . $last_month->windS_mph_high_recorded; ?></h4>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <h4><strong>High:</strong> <?php
                     $pressure_high_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_high inHg ($last_month->pressure_kPa_high kPa)" : "$last_month->pressure_kPa_high kPa ($last_month->pressure_inHg_high inHg)";
-                    echo $pressure_high_last_month . ' @ ' . $last_month->pressure_inHg_high_recorded; ?></h4>
+                    echo $pressure_high_last_month . ' on ' . $last_month->pressure_inHg_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $pressure_low_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_low inHg ($last_month->pressure_kPa_low kPa)" : "$last_month->pressure_kPa_low kPa ($last_month->pressure_inHg_low inHg)";
-                    echo $pressure_low_last_month . ' @ ' . $last_month->pressure_inHg_low_recorded; ?></h4>
+                    echo $pressure_low_last_month . ' on ' . $last_month->pressure_inHg_low_recorded; ?></h4>
                 <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
-                <h4><strong>High:</strong> <?= "$last_month->relH_high% @ " . $last_month->relH_high_recorded; ?></h4>
-                <h4><strong>Low:</strong> <?= "$last_month->relH_low% @ " . $last_month->relH_low_recorded; ?></h4>
+                <h4><strong>High:</strong> <?= "$last_month->relH_high% on " . $last_month->relH_high_recorded; ?></h4>
+                <h4><strong>Low:</strong> <?= "$last_month->relH_low% on " . $last_month->relH_low_recorded; ?></h4>
                 <?php if ($last_month->rainfall_IN_total !== 0.) { ?>
                     <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
                     <h4><strong>Most Rain:</strong> <?php
@@ -186,24 +186,24 @@ function getArchiveHTML()
                 <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
                 <h4><strong>High:</strong> <?php
                     $temp_high_year = ($config->site->imperial === true) ? "$year->tempF_high&#8457; ($year->tempC_high&#8451;)" : "$year->tempC_high&#8451; ($year->tempF_high&#8457;)";
-                    echo $temp_high_year . ' @ ' . $year->tempF_high_recorded; ?></h4>
+                    echo $temp_high_year . ' on ' . $year->tempF_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $temp_low_year = ($config->site->imperial === true) ? "$year->tempF_low&#8457; ($year->tempC_low&#8451;)" : "$year->tempC_low&#8451; ($year->tempF_low&#8457;)";
-                    echo $temp_low_year . ' @ ' . $year->tempF_low_recorded; ?></h4>
+                    echo $temp_low_year . ' on ' . $year->tempF_low_recorded; ?></h4>
                 <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
                 <h4><?php
                     $wind_high_year = ($config->site->imperial === true) ? "$year->windS_mph_high mph ($year->windS_kmh_high km/h)" : "$year->windS_kmh_high km/h ($year->windS_mph_high mph)";
-                    echo 'From ' . $year->windDIR . ' @ ' . $wind_high_year . ' @ ' . $year->windS_mph_high_recorded; ?></h4>
+                    echo 'From ' . $year->windDIR . ' @ ' . $wind_high_year . ' on ' . $year->windS_mph_high_recorded; ?></h4>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <h4><strong>High:</strong> <?php
                     $pressure_high_year = ($config->site->imperial === true) ? "$year->pressure_inHg_high inHg ($year->pressure_kPa_high kPa)" : "$year->pressure_kPa_high kPa ($year->pressure_inHg_high inHg)";
-                    echo $pressure_high_year . ' @ ' . $year->pressure_inHg_high_recorded; ?></h4>
+                    echo $pressure_high_year . ' on ' . $year->pressure_inHg_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $pressure_low_year = ($config->site->imperial === true) ? "$year->pressure_inHg_low inHg ($year->pressure_kPa_low kPa)" : "$year->pressure_kPa_low kPa ($year->pressure_inHg_low inHg)";
-                    echo $pressure_low_year . ' @ ' . $year->pressure_inHg_low_recorded; ?></h4>
+                    echo $pressure_low_year . ' on ' . $year->pressure_inHg_low_recorded; ?></h4>
                 <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
-                <h4><strong>High:</strong> <?= "$year->relH_high% @ " . $year->relH_high_recorded; ?></h4>
-                <h4><strong>Low:</strong> <?= "$year->relH_low% @ " . $year->relH_low_recorded; ?></h4>
+                <h4><strong>High:</strong> <?= "$year->relH_high% on " . $year->relH_high_recorded; ?></h4>
+                <h4><strong>Low:</strong> <?= "$year->relH_low% on " . $year->relH_low_recorded; ?></h4>
                 <?php if ($year->rainfall_IN_total !== 0.) { ?>
                     <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
                     <h4><strong>Most Rain:</strong> <?php
@@ -221,24 +221,24 @@ function getArchiveHTML()
                 <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
                 <h4><strong>High:</strong> <?php
                     $temp_high_ever = ($config->site->imperial === true) ? "$ever->tempF_high&#8457; ($ever->tempC_high&#8451;)" : "$ever->tempC_high&#8451; ($ever->tempF_high&#8457;)";
-                    echo $temp_high_ever . ' @ ' . $ever->tempF_high_recorded; ?></h4>
+                    echo $temp_high_ever . ' on ' . $ever->tempF_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $temp_low_ever = ($config->site->imperial === true) ? "$ever->tempF_low&#8457; ($ever->tempC_low&#8451;)" : "$ever->tempC_low&#8451; ($ever->tempF_low&#8457;)";
-                    echo $temp_low_ever . ' @ ' . $ever->tempF_low_recorded; ?></h4>
+                    echo $temp_low_ever . ' on ' . $ever->tempF_low_recorded; ?></h4>
                 <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
                 <h4><?php
                     $wind_high_ever = ($config->site->imperial === true) ? "$ever->windS_mph_high mph ($ever->windS_kmh_high km/h)" : "$ever->windS_kmh_high km/h ($ever->windS_mph_high mph)";
-                    echo 'From ' . $ever->windDIR . ' @ ' . $wind_high_ever . ' @ ' . $ever->windS_mph_high_recorded; ?></h4>
+                    echo 'From ' . $ever->windDIR . ' @ ' . $wind_high_ever . ' on ' . $ever->windS_mph_high_recorded; ?></h4>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <h4><strong>High:</strong> <?php
                     $pressure_high_ever = ($config->site->imperial === true) ? "$ever->pressure_inHg_high inHg ($ever->pressure_kPa_high kPa)" : "$ever->pressure_kPa_high kPa ($ever->pressure_inHg_high inHg)";
-                    echo $pressure_high_ever . ' @ ' . $ever->pressure_inHg_high_recorded; ?></h4>
+                    echo $pressure_high_ever . ' on ' . $ever->pressure_inHg_high_recorded; ?></h4>
                 <h4><strong>Low:</strong> <?php
                     $pressure_low_ever = ($config->site->imperial === true) ? "$ever->pressure_inHg_low inHg ($ever->pressure_kPa_low kPa)" : "$ever->pressure_kPa_low kPa ($ever->pressure_inHg_low inHg)";
-                    echo $pressure_low_ever . ' @ ' . $ever->pressure_inHg_low_recorded; ?></h4>
+                    echo $pressure_low_ever . ' on ' . $ever->pressure_inHg_low_recorded; ?></h4>
                 <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
-                <h4><strong>High:</strong> <?= "$ever->relH_high% @ " . $ever->relH_high_recorded; ?></h4>
-                <h4><strong>Low:</strong> <?= "$ever->relH_low% @ " . $ever->relH_low_recorded; ?></h4>
+                <h4><strong>High:</strong> <?= "$ever->relH_high% on " . $ever->relH_high_recorded; ?></h4>
+                <h4><strong>Low:</strong> <?= "$ever->relH_low% on " . $ever->relH_low_recorded; ?></h4>
                 <?php if ($ever->rainfall_IN_total !== 0.) { ?>
                     <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
                     <h4><strong>Most Rain:</strong> <?php
