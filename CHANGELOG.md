@@ -8,9 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [[2.1.7]](https://www.acuparse.com/releases/v2-1-7/) - 2017-12-03
-- Changed default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
-- Removed support for uploading images to Weather Underground due to it being decommissioned 15 Dec 2017 :(
+### Changed
+- Default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
 - Reformatted Archive display
+
+### Removed
+- Support for uploading images to Weather Underground due to it being decommissioned 15 Dec 2017 :(
 
 ## [[2.1.6]](https://www.acuparse.com/releases/v2-1-6/) - 2017-09-23
 ### Changed
