@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Fixed tower admin not displaying proper privacy status.
+
 ## [[2.1.7]](https://www.acuparse.com/releases/v2-1-7/) - 2017-12-03
 ### Changed
 - Default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
