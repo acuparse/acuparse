@@ -160,7 +160,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
                             while ($row = mysqli_fetch_assoc($result)) {
                                 $private = 'No';
-                                if ($row['private'] === 1) {
+                                if ($row['private'] === '1') {
                                     $private = 'Yes';
                                 }
                                 ?>

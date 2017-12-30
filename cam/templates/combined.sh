@@ -26,6 +26,8 @@
 ##
 
 ### USER VALUES ###
+WU_CAM_USER='' # WeatherUnderground Webcam user
+WU_CAM_PASS='' # WeatherUnderground Webcam password
 WATERMARK='Station Name | Station Web Address' # Image Watermark Text
 CAMERA_HOST='http://' # The camera host
 CAMERA_FILENAME='snapshot.jpg' # Camera image name
@@ -57,6 +59,15 @@ convert $CAMERA_FILENAME \
         fill black  text 0,0 '$WATERMARK' \
         fill OrangeRed2  text 1,1 '$WATERMARK' " \
     image.jpg
+
+echo "Sending image to Weather Underground"
+ftp -n webcam.wunderground.com <<END_SCRIPT > /opt/acuparse/logs/wu_upload.log 2>&1
+quote USER $WU_CAM_USER
+quote PASS $WU_CAM_PASS
+binary
+put image.jpg
+quit
+END_SCRIPT
 
 echo "Moving image to webserver"
 cp image.jpg $WEBDIR/latest.jpg
