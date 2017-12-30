@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Fixed tower admin not displaying proper privacy status.
+- Added back Weather Underground Camera Upload. WU changed their mind.
 
 ## [[2.1.7]](https://www.acuparse.com/releases/v2-1-7/) - 2017-12-03
 ### Changed
