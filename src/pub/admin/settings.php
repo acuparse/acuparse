@@ -134,7 +134,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->outage_alert->interval = $_POST['outage_alert']['interval'];
 
         // Debug
-        $config->debug->logging = (bool)$_POST['debug']['logging'];
+        $config->debug->logging = (bool)$_POST['debug']['logging']['enabled'];
         $config->debug->server->enabled = (bool)$_POST['debug']['server']['enabled'];
         $config->debug->server->url = $_POST['debug']['server']['url'];
 

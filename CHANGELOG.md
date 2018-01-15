@@ -8,10 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- When disabling logging in settings, it was not being properly written to the config file.
 
 ## [[2.1.8]](https://www.acuparse.com/releases/v2-1-8/) - 2017-12-30
-### Changed
-- Fixed tower admin not displaying proper privacy status.
+### Fixed
+- Tower admin not displaying proper privacy status.
 
 ### Added
 - Added back Weather Underground Camera Upload. WU changed their mind.
