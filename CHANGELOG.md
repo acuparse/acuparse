@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.1.9] - (https://www.acuparse.com/releases/v2-1-9/) - 2017-01-23
 ### Changed
 - Modified Archive display format to align with the display format on the homepage.
 - Updates page will now display notes from previous versions and file formatting changes.
