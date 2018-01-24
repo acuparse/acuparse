@@ -25,24 +25,51 @@
  * Site Update Tasks
  */
 
-switch ($config->version->app){
+switch ($config->version->app) {
     // Update from 2.1.0
     case '2.1.0':
+        $config->version->app = '2.1.1';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+
     // Update from 2.1.1
     case '2.1.1':
+        $config->version->app = '2.1.2';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+
     // Update from 2.1.2
     case '2.1.2':
+        $config->version->app = '2.1.3';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Rainfall Fixes.</li>';
+
     // Update from 2.1.3
     case '2.1.3':
+        $config->version->app = '2.1.4';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+
     // Update from 2.1.4
     case '2.1.4':
+        $config->version->app = '2.1.5';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+
     // Update from 2.1.5
     case '2.1.5':
+        $config->version->app = '2.1.6';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+
     // Update from 2.1.6
     case '2.1.6':
+        $config->version->app = '2.1.7';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Weather Underground Camera Uploading has been removed. Cam scripts will need to be updated manually.</li>';
+
     // Update from 2.1.7
-    case '2.1.6':
+    case '2.1.7':
+        $config->version->app = '2.1.8';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Weather Underground Camera Uploading has been re-added. Cam scripts will need to be updated manually.</li>';
+
+    // Update from 2.1.8
+    case '2.1.8':
+        $config->version->app = '2.1.9';
+        $config->site->hide_alternate = 'false';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'New option to hide alternate measurements</li>';
 }
 //$config->version->schema = '2.1';
-$config->version->app = '2.1.8';
-$notes = 'Weather Underground Camera Uploading has been re-added. Cam scripts will need to be updated manually.';

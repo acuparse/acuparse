@@ -80,36 +80,60 @@ function getCurrentHTML()
                 <div class="row row_temperature_data">
                     <h2><i class="fa <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
                     <h4><?php
-                        $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457; ($wx->tempC&#8451;)" : "$wx->tempC&#8451; ($wx->tempF&#8457;)";
+                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                            $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457; ($wx->tempC&#8451;)" : "$wx->tempC&#8451; ($wx->tempF&#8457;)";
+                        } else {
+                            $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457;" : "$wx->tempC&#8451;";
+                        }
                         echo $temp . trendIcon($wx->tempF_trend) ?></h4>
 
                     <!-- Feels Like -->
                     <ul class="list-unstyled">
                         <?php if ($wx->feelsF != 0) {
-                            $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457; ($wx->feelsC&#8451;)" : "$wx->feelsC&#8451; ($wx->feelsF&#8457;)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457; ($wx->feelsC&#8451;)" : "$wx->feelsC&#8451; ($wx->feelsF&#8457;)";
+                            } else {
+                                $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457;" : "$wx->feelsC&#8451;";
+                            }
                             echo "<li><strong>Feels Like:</strong> " . $feels . "</li>";
                         } ?>
 
                         <!-- Daily Low -->
                         <li><strong>Low:</strong>
                             <?php
-                            $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457; ($wx->tempC_low&#8451;)" : "$wx->tempC_low&#8451; ($wx->tempF_low&#8457;)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457; ($wx->tempC_low&#8451;)" : "$wx->tempC_low&#8451; ($wx->tempF_low&#8457;)";
+                            } else {
+                                $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457;" : "$wx->tempC_low&#8451;";
+                            }
                             echo $temp_low . " @ $wx->low_temp_recorded"; ?></li>
 
                         <!-- Daily High -->
                         <li><strong>High:</strong>
                             <?php
-                            $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457; ($wx->tempC_high&#8451;)" : "$wx->tempC_high&#8451; ($wx->tempF_high&#8457;)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457; ($wx->tempC_high&#8451;)" : "$wx->tempC_high&#8451; ($wx->tempF_high&#8457;)";
+                            } else {
+                                $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457;" : "$wx->tempC_high&#8451;";
+                            }
                             echo $temp_high . " @ $wx->high_temp_recorded"; ?></li>
 
                         <!-- Average -->
                         <li><strong>Average:</strong> <?php
-                            $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457; ($wx->tempC_avg&#8451;)" : "$wx->tempC_avg&#8451; ($wx->tempF_avg&#8457;)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457; ($wx->tempC_avg&#8451;)" : "$wx->tempC_avg&#8451; ($wx->tempF_avg&#8457;)";
+                            } else {
+                                $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457;" : "$wx->tempC_avg&#8451;";
+                            }
                             echo $temp_avg; ?></li>
 
                         <!-- Dew Point -->
                         <li><strong>Dew Point:</strong> <?php
-                            $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
+                            } else {
+                                $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457;" : "$wx->dewptC&#8451;";
+                            }
                             echo $dewpt; ?></li>
                     </ul>
                 </div>
@@ -126,15 +150,27 @@ function getCurrentHTML()
                         echo '<i class="wi wi-wind wi-from-', strtolower($wx->windDIR), '" aria-hidden="true"></i>'; ?>
                         Wind:</h2>
                     <h4>from <?php
-                        $wind = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSmph mph ($wx->windSkmh km/h)" : "$wx->windDIR @ $wx->windSkmh km/h ($wx->windSmph mph)";
+                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                            $wind = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSmph mph ($wx->windSkmh km/h)" : "$wx->windDIR @ $wx->windSkmh km/h ($wx->windSmph mph)";
+                        } else {
+                            $wind = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSmph mph" : "$wx->windDIR @ $wx->windSkmh km/h";
+                        }
                         echo $wind; ?></h4>
                     <ul class="list-unstyled">
                         <li><strong>Average:</strong> from <?php
-                            $wind_avg = ($config->site->imperial === true) ? "$wx->windDIR_avg2 @ $wx->windSmph_avg2 mph ($wx->windSkmh_avg2 km/h)" : "$wx->windDIR_avg2 @ $wx->windSkmh_avg2 km/h ($wx->windSmph_avg2 mph)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $wind_avg = ($config->site->imperial === true) ? "$wx->windDIR_avg2 @ $wx->windSmph_avg2 mph ($wx->windSkmh_avg2 km/h)" : "$wx->windDIR_avg2 @ $wx->windSkmh_avg2 km/h ($wx->windSmph_avg2 mph)";
+                            } else {
+                                $wind_avg = ($config->site->imperial === true) ? "$wx->windDIR_avg2 @ $wx->windSmph_avg2 mph" : "$wx->windDIR_avg2 @ $wx->windSkmh_avg2 km/h";
+                            }
                             echo $wind_avg; ?></li>
                         <li><strong>Peak:</strong>
                             <?php
-                            $wind_peak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSmph_peak mph ($wx->windSkmh_peak km/h)" : "$wx->windDIR_peak @ $wx->windSkmh_peak km/h ($wx->windSmph_peak mph)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $wind_peak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSmph_peak mph ($wx->windSkmh_peak km/h)" : "$wx->windDIR_peak @ $wx->windSkmh_peak km/h ($wx->windSmph_peak mph)";
+                            } else {
+                                $wind_peak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSmph_peak mph" : "$wx->windDIR_peak @ $wx->windSkmh_peak km/h";
+                            }
                             echo $wind_peak . ' @ ' . $wx->wind_recorded_peak; ?></li>
                     </ul>
                 </div>
@@ -153,7 +189,11 @@ function getCurrentHTML()
                 <div class="row row_pressure_data">
                     <h2><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h2>
                     <h4><?php
-                        $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg ($wx->pressure_kPa kPa)" : "$wx->pressure_kPa kPa ($wx->pressure_inHg inHg)";
+                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                            $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg ($wx->pressure_kPa kPa)" : "$wx->pressure_kPa kPa ($wx->pressure_inHg inHg)";
+                        } else {
+                            $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg" : "$wx->pressure_kPa kPa";
+                        }
                         echo $pressure . trendIcon($wx->inHg_trend); ?></h4>
                 </div>
 
@@ -162,10 +202,18 @@ function getCurrentHTML()
                     <h2><i class="wi wi-raindrops" aria-hidden="true"></i> Rain:</h2>
                     <ul class="list-unstyled">
                         <li><strong>Fall Rate:</strong> <?php
-                            $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr ($wx->rainMM mm/hr)" : "$wx->rainMM mm/hr ($wx->rainIN in/hr)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr ($wx->rainMM mm/hr)" : "$wx->rainMM mm/hr ($wx->rainIN in/hr)";
+                            } else {
+                                $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr" : "$wx->rainMM mm/hr";
+                            }
                             echo $rain; ?></li>
                         <li><strong>Daily Total:</strong> <?php
-                            $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in ($wx->rainTotalMM_today mm)" : "$wx->rainTotalMM_today mm ($wx->rainTotalIN_today in)";
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in ($wx->rainTotalMM_today mm)" : "$wx->rainTotalMM_today mm ($wx->rainTotalIN_today in)";
+                            } else {
+                                $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in" : "$wx->rainTotalMM_today mm";
+                            }
                             echo $rain_today; ?></li>
                     </ul>
                 </div>
@@ -173,7 +221,7 @@ function getCurrentHTML()
             <?php
             // Done with Weather data
 
-            // Show environment details:
+            // Show environment details
             ?>
 
             <!-- Right Column -->
@@ -214,7 +262,7 @@ function getCurrentHTML()
 
     <?php
 
-    // If tower sensors are active show the tower data:
+    // If tower sensors are active show the tower data
     if ($config->station->towers === true) {
 
         // Can we display private data?
@@ -250,7 +298,11 @@ function getCurrentHTML()
                             <h2 class="panel-heading"><?= $row['name']; ?>:</h2>
                             <h3><i class="fa <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h3>
                             <h4><?php
-                                $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; ($tempC&#8451;) $tempF_trend" : "$tempC&#8451; ($tempF&#8457;) $tempF_trend";
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                    $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; ($tempC&#8451;) $tempF_trend" : "$tempC&#8451; ($tempF&#8457;) $tempF_trend";
+                                } else {
+                                    $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; $tempF_trend" : "$tempC&#8451; $tempF_trend";
+                                }
                                 echo $tower_temp ?></h4>
                             <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
                             <h4><?= "$relH% $relH_trend"; ?></h4>

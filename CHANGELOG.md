@@ -8,8 +8,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Modified Archive display format to align with the display format on the homepage.
+- Updates page will now display notes from previous versions and file formatting changes.
+
 ### Fixed
 - When disabling logging in settings, it was not being properly written to the config file.
+- Watermark was not displaying imperial measurements when enabled.
+
+### Added
+- Option to hide alternate measurements from being displayed.
 
 ## [[2.1.8]](https://www.acuparse.com/releases/v2-1-8/) - 2017-12-30
 ### Fixed

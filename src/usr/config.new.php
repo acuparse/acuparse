@@ -56,6 +56,7 @@ return (object)array(
         'lat' => 0, // Station Latitude - Decimal Format
         'long' => 0, // Station Longitude - Decimal Format
         'imperial' => false, // Use imperial measurements by default? True/False
+        'hide_alternate' => 'false', // Hide alternate measurements?
         'theme' => 'clean', // The CSS theme to use
         'updates' => true // Check for updates?
     ),
@@ -144,11 +145,7 @@ return (object)array(
         ),
     ),
 
-    'version' => (object)array(
-        'app' => '2.1.8',
-        'schema' => '2.1'
-    ),
-
+    // Default Intervals
     'intervals' => (object)array(
         0 => '5 minutes',
         1 => '10 minutes',
@@ -157,5 +154,11 @@ return (object)array(
         4 => '30 minutes',
         5 => '45 minutes',
         6 => '1 hour',
+    ),
+
+    // Application/Database Version
+    'version' => (object)array(
+        'app' => '2.1.8',
+        'schema' => '2.1'
     ),
 );

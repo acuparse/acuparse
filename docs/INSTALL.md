@@ -38,7 +38,7 @@ Installing on a fresh instance of a Debian based OS is the only officially suppo
 #### Install Acuparse:
 * Get the Acuparse source:
 
-    ``` git init /opt/acuparse && cd /opt/acuparse && git remote add -t master -f origin https://github.com/maxwellpower/acuparse.git && git checkout master ```
+    ``` git init /opt/acuparse && cd /opt/acuparse && git remote add -t master -f origin https://github.com/acuparse/acuparse.git && git checkout master ```
  
 * Set the owner on the web root: `chown -R www-data:www-data src`
 

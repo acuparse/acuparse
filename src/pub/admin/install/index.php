@@ -46,7 +46,7 @@ if (isset($_GET['update']) && $installed === true) {
                         <p><strong>Double check your config settings before proceeding!</strong></p>
                     </div>
                     <div><h3>Notes:</h3>
-                        <p><?= $notes; ?></p>
+                        <ul class="list-unstyled"><?= $notes; ?></ul>
                     </div>
                 </div>
             </div>
