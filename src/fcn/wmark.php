@@ -34,5 +34,6 @@ function camWmark()
     require(APP_BASE_PATH . '/fcn/weather/GetCurrentWeatherData.php');
     $GetData = new GetCurrentWeatherData();
     $wx = $GetData->getConditions();
-    echo 'Baro: ' . $wx->pressure_kPa . ' kPa | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempC . '°C | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSkmh . ' km/h | Accum: ' . $wx->rainTotalMM_today . ' mm';
+    $output = ($config->site->imperial === true) ? 'Baro: ' . $wx->pressure_inHg . ' inHg | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempF . '°F | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSmph . ' mph | Accum: ' . $wx->rainTotalIN_today . ' in' : 'Baro: ' . $wx->pressure_kPa . ' kPa | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempC . '°C | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSkmh . ' km/h | Accum: ' . $wx->rainTotalMM_today . ' mm';
+    echo $output;
 }

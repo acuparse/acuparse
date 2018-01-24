@@ -85,6 +85,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->site->lat = (float)$_POST['site']['lat'];
         $config->site->long = (float)$_POST['site']['long'];
         $config->site->imperial = (bool)$_POST['site']['imperial'];
+        $config->site->hide_alternate = $_POST['site']['hide_alternate'];
         $config->site->theme = $_POST['site']['theme'];
         $config->site->updates = (bool)$_POST['site']['updates'];
 
@@ -134,7 +135,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->outage_alert->interval = $_POST['outage_alert']['interval'];
 
         // Debug
-        $config->debug->logging = (bool)$_POST['debug']['logging'];
+        $config->debug->logging = (bool)$_POST['debug']['logging']['enabled'];
         $config->debug->server->enabled = (bool)$_POST['debug']['server']['enabled'];
         $config->debug->server->url = $_POST['debug']['server']['url'];
 
@@ -386,16 +387,42 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_imperial">Display
                                 Format:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline"><input type="radio" id="station_imperial"
+                                <label class="radio-inline bg-info"><input type="radio" id="station_imperial"
                                                                    name="site[imperial]"
                                                                    value="0" <?php if ($config->site->imperial === false) {
                                         echo 'checked="checked"';
                                     } ?>>Metric</label>
-                                <label class="radio-inline"><input type="radio" id="station_imperial"
+                                <label class="radio-inline bg-info"><input type="radio" id="station_imperial"
                                                                    name="site[imperial]"
                                                                    value="1" <?php if ($config->site->imperial === true) {
                                         echo 'checked="checked"';
                                     } ?>>Imperial</label>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_hide_alternate">Hide
+                                Alternate Measurements:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-danger"><input type="radio" id="station_hide_alternate"
+                                                                   name="site[hide_alternate]"
+                                                                   value="false" <?php if ($config->site->hide_alternate === 'false') {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="station_hide_alternate"
+                                                                   name="site[hide_alternate]"
+                                                                   value="true" <?php if ($config->site->hide_alternate === 'true') {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-warning"><input type="radio" id="station_hide_alternate"
+                                                                   name="site[hide_alternate]"
+                                                                   value="live" <?php if ($config->site->hide_alternate === 'live') {
+                                        echo 'checked="checked"';
+                                    } ?>>Live</label>
+                                <label class="radio-inline bg-warning"><input type="radio" id="station_hide_alternate"
+                                                                   name="site[hide_alternate]"
+                                                                   value="archive" <?php if ($config->site->hide_alternate === 'archive') {
+                                        echo 'checked="checked"';
+                                    } ?>>Archive</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
