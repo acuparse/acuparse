@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2017 Maxwell Power
+ * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -76,8 +76,8 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
     if ($status['status'] === '0') {
 
         require(APP_BASE_PATH . '/fcn/mailer.php');
-        $subject = 'SmartHUB ONLINE';
-        $message = '<p><strong>Acuparse is receiving and processing updates from your smartHUB.</strong>';
+        $subject = 'Access/smartHUB ONLINE';
+        $message = '<p><strong>Acuparse is receiving and processing updates from your Access/smartHUB.</strong>';
 
         $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
         while ($row = mysqli_fetch_array($sql)) {
@@ -97,7 +97,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
 
         } else {
             // Log it
-            syslog(LOG_INFO, "ONLINE: Receiving updates from smartHUB. Email notifications not enabled.");
+            syslog(LOG_INFO, "ONLINE: Receiving updates from Access/smartHUB. Email notifications not enabled.");
             // Update the status
             mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '1'");
         }
@@ -189,8 +189,8 @@ else {
 
             if ($config->outage_alert->enabled === true) {
                 require(APP_BASE_PATH . '/fcn/mailer.php');
-                $subject = 'smartHUB offline! No Updates received.';
-                $message = '<p><strong>Acuparse is not receiving updates from your smartHUB.</strong><p>Check your internet connection.</p>';
+                $subject = 'Access/smartHUB offline! No Updates received.';
+                $message = '<p><strong>Acuparse is not receiving updates from your Access/smartHUB.</strong><p>Check your internet connection.</p>';
 
                 $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
                 while ($row = mysqli_fetch_array($sql)) {
@@ -202,14 +202,14 @@ else {
                     mailer($to, $subject, $message);
                 }
                 // Log it
-                syslog(LOG_ERR, "OFFLINE: not receiving data from the smartHUB. Email sent to admin.");
+                syslog(LOG_ERR, "OFFLINE: not receiving data from the Access/smartHUB. Email sent to admin.");
                 // Update the time the email was sent
                 $last_sent = date("Y-m-d H:i:s");
                 mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$last_sent', `status` = '0'");
 
             } else {
                 // Log it
-                syslog(LOG_ERR, "OFFLINE: not receiving data from the smartHUB.");
+                syslog(LOG_ERR, "OFFLINE: not receiving data from the Access/smartHUB.");
                 // Update the status
                 mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '0'");
             }

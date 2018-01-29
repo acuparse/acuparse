@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2017 Maxwell Power
+ * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -70,7 +70,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
         // Station
         $config->station->hub_mac = $_POST['station']['hub_mac'];
-        $config->station->sensor_5n1 = sprintf('%08d', $_POST['station']['sensor_5n1']); // Tower ID should be 8 digits
+        $config->station->access_mac = $_POST['station']['access_mac'];
+        $config->station->sensor_5n1 = sprintf('%08d', $_POST['station']['sensor_5n1']);
         $config->station->baro_offset = (float)$_POST['station']['baro_offset'];
         $config->station->towers = (bool)$_POST['station']['towers'];
 
@@ -126,8 +127,10 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->upload->cwop->interval = $_POST['upload']['cwop']['interval'];
         $config->upload->cwop->url = $_POST['upload']['cwop']['url'];
         // MyAcurite
-        $config->upload->myacurite->enabled = (bool)$_POST['upload']['myacurite']['enabled'];
-        $config->upload->myacurite->url = $_POST['upload']['myacurite']['url'];
+        $config->upload->myacurite->hub_enabled = (bool)$_POST['upload']['myacurite']['hub_enabled'];
+        $config->upload->myacurite->hub_url = $_POST['upload']['myacurite']['hub_url'];
+        $config->upload->myacurite->access_enabled = (bool)$_POST['upload']['myacurite']['access_enabled'];
+        $config->upload->myacurite->access_url = $_POST['upload']['myacurite']['access_url'];
 
         // Email Outage Alerts
         $config->outage_alert->enabled = (bool)$_POST['outage_alert']['enabled'];
@@ -204,7 +207,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_trim">Database
-                                Trimming:</label>
+                                Trimming?</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-danger"><input type="radio" id="mysql_trim"
                                                                              name="mysql[trim]"
@@ -227,15 +230,26 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h2 class="panel-heading">Sensor Settings:</h2>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_mac">SmartHUB MAC:</label>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_access_mac">Access
+                                MAC:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="station[hub_mac]" id="station_mac"
-                                       placeholder="SmartHUB MAC" maxlength="12"
+                                <input type="text" class="form-control" name="station[access_mac]"
+                                       id="station_access_mac"
+                                       placeholder="Access MAC" maxlength="12"
+                                       value="<?= $config->station->access_mac; ?>" required>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_hub_mac">smartHUB
+                                MAC:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="station[hub_mac]" id="station_hub_mac"
+                                       placeholder="smartHUB MAC" maxlength="12"
                                        value="<?= $config->station->hub_mac; ?>" required>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5n1 Sensor
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5N1 Sensor
                                 ID:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" class="form-control" name="station[sensor_5n1]"
@@ -388,39 +402,39 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 Format:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-info"><input type="radio" id="station_imperial"
-                                                                   name="site[imperial]"
-                                                                   value="0" <?php if ($config->site->imperial === false) {
+                                                                           name="site[imperial]"
+                                                                           value="0" <?php if ($config->site->imperial === false) {
                                         echo 'checked="checked"';
                                     } ?>>Metric</label>
                                 <label class="radio-inline bg-info"><input type="radio" id="station_imperial"
-                                                                   name="site[imperial]"
-                                                                   value="1" <?php if ($config->site->imperial === true) {
+                                                                           name="site[imperial]"
+                                                                           value="1" <?php if ($config->site->imperial === true) {
                                         echo 'checked="checked"';
                                     } ?>>Imperial</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_hide_alternate">Hide
-                                Alternate Measurements:</label>
+                                Alternate Measurements?</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-danger"><input type="radio" id="station_hide_alternate"
-                                                                   name="site[hide_alternate]"
-                                                                   value="false" <?php if ($config->site->hide_alternate === 'false') {
+                                                                             name="site[hide_alternate]"
+                                                                             value="false" <?php if ($config->site->hide_alternate === 'false') {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
                                 <label class="radio-inline bg-success"><input type="radio" id="station_hide_alternate"
-                                                                   name="site[hide_alternate]"
-                                                                   value="true" <?php if ($config->site->hide_alternate === 'true') {
+                                                                              name="site[hide_alternate]"
+                                                                              value="true" <?php if ($config->site->hide_alternate === 'true') {
                                         echo 'checked="checked"';
                                     } ?>>Enabled</label>
                                 <label class="radio-inline bg-warning"><input type="radio" id="station_hide_alternate"
-                                                                   name="site[hide_alternate]"
-                                                                   value="live" <?php if ($config->site->hide_alternate === 'live') {
+                                                                              name="site[hide_alternate]"
+                                                                              value="live" <?php if ($config->site->hide_alternate === 'live') {
                                         echo 'checked="checked"';
                                     } ?>>Live</label>
                                 <label class="radio-inline bg-warning"><input type="radio" id="station_hide_alternate"
-                                                                   name="site[hide_alternate]"
-                                                                   value="archive" <?php if ($config->site->hide_alternate === 'archive') {
+                                                                              name="site[hide_alternate]"
+                                                                              value="archive" <?php if ($config->site->hide_alternate === 'archive') {
                                         echo 'checked="checked"';
                                     } ?>>Archive</label>
                             </div>
@@ -446,7 +460,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         <h2 class="panel-heading">App Settings:</h2>
                         <h3>Camera Settings:</h3>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="camera_enabled">State:</label>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="camera_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="camera_enabled"
                                                                               name="camera[enabled]"
@@ -470,7 +484,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                         <h3>Archive Settings:</h3>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="archive_enabled">State:</label>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="archive_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="archive_enabled"
                                                                               name="archive[enabled]"
@@ -486,7 +500,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                         <h3>Contact Settings:</h3>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="contact_enabled">State:</label>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="contact_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="contact_enabled"
                                                                               name="contact[enabled]"
@@ -503,7 +517,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         <h3>Log Settings:</h3>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="debug_logging_enabled">State:</label>
+                                   for="debug_logging_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="debug_logging_enabled"
                                                                               name="debug[logging][enabled]"
@@ -517,13 +531,14 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                     } ?>>Disabled</label>
                             </div>
                         </div>
-
                     </div>
+
+                    <!–– Outage Alerts -->
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h2 class="panel-heading">Outage Alerts:</h2>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="outage_alert_enabled">State:</label>
+                                   for="outage_alert_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="outage_alert_enabled"
                                                                               name="outage_alert[enabled]"
@@ -571,12 +586,14 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                 </div>
+
+                <!–– Google Settings -->
                 <div class="row">
                     <h2 class="panel-heading">Google Settings:</h2>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h3 class="panel-heading">Invisible reCAPTCHA:</h3>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="recaptcha_enabled">State:</label>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="recaptcha_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="recaptcha_enabled"
                                                                               name="google[recaptcha][enabled]"
@@ -612,7 +629,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h3 class="panel-heading">Analytics:</h3>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="analytics_enabled">State:</label>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="analytics_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <label class="radio-inline bg-success"><input type="radio" id="analytics_enabled"
                                                                               name="google[analytics][enabled]"
@@ -636,6 +653,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                 </div>
+
+                <!–– Upload Settings -->
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <h2 class="panel-heading">Upload Settings:</h2>
@@ -643,7 +662,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <h3 class="panel-heading">Weather Underground:</h3>
                             <div class="form-group row margin-bottom-05">
                                 <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="wu_station_updates">State:</label>
+                                       for="wu_station_updates">Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                     <label class="radio-inline bg-success"><input type="radio" id="wu_station_updates"
                                                                                   name="upload[wu][enabled]"
@@ -690,7 +709,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <h3 class="panel-heading">PWS Weather:</h3>
                             <div class="form-group row margin-bottom-05">
                                 <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="pws_station_updates">State:</label>
+                                       for="pws_station_updates">Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                     <label class="radio-inline bg-success"><input type="radio" id="pws_station_updates"
                                                                                   name="upload[pws][enabled]"
@@ -739,7 +758,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <h3 class="panel-heading">CWOP:</h3>
                             <div class="form-group row margin-bottom-05">
                                 <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="cwop_station_updates">State:</label>
+                                       for="cwop_station_updates">Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                     <label class="radio-inline bg-success"><input type="radio" id="cwop_station_updates"
                                                                                   name="upload[cwop][enabled]"
@@ -801,49 +820,96 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 </div>
                             </div>
                         </div>
+
+                        <!–– MyAcuRite -->
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <h3 class="panel-heading">MyAcuRite:</h3>
                             <div class="form-group row margin-bottom-05">
                                 <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="cwop_station_updates">State:</label>
+                                       for="myacurite_hub_update">smartHub Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-success"><input type="radio" id="cwop_station_updates"
-                                                                                  name="upload[myacurite][enabled]"
-                                                                                  value="1" <?php if ($config->upload->myacurite->enabled === true) {
+                                    <label class="radio-inline bg-success"><input type="radio" id="myacurite_hub_update"
+                                                                                  name="upload[myacurite][hub_enabled]"
+                                                                                  value="1" <?php if ($config->upload->myacurite->hub_enabled === true) {
                                             echo 'checked="checked"';
                                         } ?>>Enabled</label>
-                                    <label class="radio-inline bg-danger"><input type="radio" id="cwop_station_updates"
-                                                                                 name="upload[myacurite][enabled]"
-                                                                                 value="0" <?php if ($config->upload->myacurite->enabled === false) {
+                                    <label class="radio-inline bg-danger"><input type="radio" id="myacurite_hub_update"
+                                                                                 name="upload[myacurite][hub_enabled]"
+                                                                                 value="0" <?php if ($config->upload->myacurite->hub_enabled === false) {
                                             echo 'checked="checked"';
                                         } ?>>Disabled</label>
                                 </div>
                             </div>
                             <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="myacurite_update_url">Upload
-                                    URL:</label>
+                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                       for="myacurite_access_update">Access Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <select name="upload[myacurite][url]" id="myacurite_update_url"
-                                            class="form-control">
-                                        <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->url === "http://hubapi.myacurite.com") {
-                                            echo 'selected="selected"';
-                                        } ?>>hubapi.myacurite.com (official)
-                                        </option>
-                                        <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->url === "http://hubapi.acuparse.com") {
-                                            echo 'selected="selected"';
-                                        } ?>>hubapi.acuparse.com (secondary)
-                                        </option>
-                                    </select>
-                                    <p class="bg-info">If using a local redirect, use secondary.<br>See <code>docs/DNS.md</code>
-                                    </p>
+                                    <label class="radio-inline bg-success"><input type="radio"
+                                                                                  id="myacurite_access_update"
+                                                                                  name="upload[myacurite][access_enabled]"
+                                                                                  value="1" <?php if ($config->upload->myacurite->access_enabled === true) {
+                                            echo 'checked="checked"';
+                                        } ?>>Enabled</label>
+                                    <label class="radio-inline bg-danger"><input type="radio"
+                                                                                 id="myacurite_access_update"
+                                                                                 name="upload[myacurite][access_enabled]"
+                                                                                 value="0" <?php if ($config->upload->myacurite->access_enabled === false) {
+                                            echo 'checked="checked"';
+                                        } ?>>Disabled</label>
                                 </div>
                             </div>
+                            <div class="row margin-bottom-05">
+                                <h4>Upload URL's:</h4>
+                                <div class="row">
+                                    <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 bg-info">
+                                        <p><strong>If installed on the same network as your device, use secondary.<br>See <code>docs/DNS.md</code></strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group row margin-bottom-05 margin-top-05">
+                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                           for="myacurite_hub_update_url">smartHub:</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                        <select name="upload[myacurite][hub_url]" id="myacurite_hub_update_url"
+                                                class="form-control">
+                                            <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.myacurite.com") {
+                                                echo 'selected="selected"';
+                                            } ?>>myacurite.com (official)
+                                            </option>
+                                            <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.acuparse.com") {
+                                                echo 'selected="selected"';
+                                            } ?>>acuparse.com (secondary)
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row margin-bottom-05">
+                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="myacurite_access_update_url">Access:</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                        <select name="upload[myacurite][access_url]" id="myacurite_access_update_url"
+                                                class="form-control">
+                                            <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") {
+                                                echo 'selected="selected"';
+                                            } ?>>myacurite.com (official)
+                                            </option>
+                                            <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") {
+                                                echo 'selected="selected"';
+                                            } ?>>acuparse.com (secondary)
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!–– Debug Server -->
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <h3 class="panel-heading">Debug Update Server:</h3>
                             <p>Sends MyAcuRite data to an additional debug server</p>
                             <div class="form-group row margin-bottom-05">
                                 <div class="form-group row margin-bottom-05">
                                     <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                           for="debug_server_enabled">State:</label>
+                                           for="debug_server_enabled">Upload:</label>
                                     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                         <label class="radio-inline bg-success"><input type="radio"
                                                                                       id="debug_server_enabled"
@@ -867,6 +933,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div class="row">

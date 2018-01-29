@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2017 Maxwell Power
+ * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -33,15 +33,16 @@ return (object)array(
         'database' => 'acuparse', // Database to use
         'username' => 'acuparse', // Database User
         'password' => '', // Database Password
-        'trim' => 0 // Database trim level
+        'trim' => 0, // Database trim level
     ),
 
     // Sensor specific config variables
     'station' => (object)array(
+        'access_mac' => '000000000000', // Access MAC Address
         'hub_mac' => '000000000000', // smartHUB MAC Address
         'sensor_5n1' => '00000000', // 5n1 Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
-        'baro_offset' => 0 // inHg. Adjust this as required to match the offset for your elevation
+        'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
     ),
 
     // Site specific config variables
@@ -58,13 +59,13 @@ return (object)array(
         'imperial' => false, // Use imperial measurements by default? True/False
         'hide_alternate' => 'false', // Hide alternate measurements?
         'theme' => 'clean', // The CSS theme to use
-        'updates' => true // Check for updates?
+        'updates' => true, // Check for updates?
     ),
 
     // IP camera variables
     'camera' => (object)array(
         'enabled' => false, // Web Camera Enabled, True/False
-        'text' => 'Image updated every 15 minutes.' // Text displayed camera under image
+        'text' => 'Image updated every 15 minutes.', // Text displayed camera under image
     ),
 
     // Archive variables
@@ -84,13 +85,13 @@ return (object)array(
         'recaptcha' => (object)array(
             'enabled' => false, // Use recaptcha? True/False
             'secret' => '', // Recaptcha Secret
-            'sitekey' => '' // Recaptcha Sitekey
+            'sitekey' => '', // Recaptcha Sitekey
         ),
 
         // Analytics
         'analytics' => (object)array(
             'enabled' => false, //true or false
-            'id' => '' // Google Analytics ID
+            'id' => '', // Google Analytics ID
         ),
     ),
 
@@ -102,7 +103,7 @@ return (object)array(
             'enabled' => false, // true or false
             'id' => '', // Station ID
             'password' => '', // Password
-            'url' => 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php' // Server URL
+            'url' => 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php', // Server URL
         ),
 
         // PWS Weather Settings
@@ -110,7 +111,7 @@ return (object)array(
             'enabled' => false, // true or false
             'id' => '', // Station ID
             'password' => '', // Password
-            'url' => 'http://www.pwsweather.com/pwsupdate/pwsupdate.php' // Server URL
+            'url' => 'http://www.pwsweather.com/pwsupdate/pwsupdate.php', // Server URL
         ),
 
         // CWOP Settings
@@ -119,13 +120,15 @@ return (object)array(
             'id' => '', // Station ID
             'location' => '', // CWOP Coordinates in format "ddmm.hhN/dddmm.hhW"
             'interval' => '10 minutes', // Update Frequency. Should be at least 5 minutes; 10 is good.
-            'url' => 'cwop.aprs.net' // CWOP Server to send updates to
+            'url' => 'cwop.aprs.net', // CWOP Server to send updates to
         ),
 
         // MyAcurite
         'myacurite' => (object)array(
-            'enabled' => true, // true or false
-            'url' => 'http://hubapi.myacurite.com'
+            'hub_enabled' => true, // true or false
+            'hub_url' => 'http://hubapi.myacurite.com',
+            'access_enabled' => true, // true or false
+            'access_url' => 'https://atlasapi.myacurite.com',
         ),
     ),
 
@@ -133,7 +136,7 @@ return (object)array(
     'outage_alert' => (object)array(
         'enabled' => false, // true or false
         'offline_for' => '5 minutes', // Time the station is offline before sending emails.
-        'interval' => '1 hour' // How often to email admin about outages.
+        'interval' => '1 hour', // How often to email admin about outages.
     ),
 
     // Debug Settings
@@ -141,7 +144,7 @@ return (object)array(
         'logging' => true, // Debug logging to Syslog. True/False
         'server' => (object)array(
             'enabled' => false, //true or false
-            'url' => 'http://' // The url for your development system. eg. http://127.0.0.1
+            'url' => 'http://', // The url for your development system. eg. http://127.0.0.1
         ),
     ),
 
@@ -158,7 +161,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.1.9',
-        'schema' => '2.1'
+        'app' => '2.2.0',
+        'schema' => '2.2',
     ),
 );

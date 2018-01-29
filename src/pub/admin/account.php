@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2017 Maxwell Power
+ * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -39,8 +39,8 @@ if (isset($_SESSION['UserLoggedIn'])) {
             mysqli_query($conn, "DELETE FROM `sessions` WHERE `device_key`= '$device_key'");
             unset($_COOKIE['device_key']);
             unset($_COOKIE['token']);
-            setcookie('device_key', '', time() - 3600, '/');
-            setcookie('token', '', time() - 3600, '/');
+            setcookie('device_key', '', time() + 60 * 60 * 24 * 30, '/');
+            setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
         }
         $_SESSION = array();
         session_regenerate_id(true);

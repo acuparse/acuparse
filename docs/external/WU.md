@@ -1,5 +1,5 @@
 # Acuparse
-## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
+## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### Weather Underground Updater
 
 # Registration:
