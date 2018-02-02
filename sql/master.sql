@@ -1,6 +1,6 @@
 /**
- * Acuparse - AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2017 Maxwell Power
+ * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -22,7 +22,7 @@
 /**
  * File: sql/master.sql
  * The master database schema
- * Version 2.1
+ * Version 2.2
  */
 
 CREATE TABLE IF NOT EXISTS `archive` (
@@ -210,10 +210,10 @@ ALTER TABLE `tower_data`
 ALTER TABLE `password_recover`
   ADD CONSTRAINT `password_recover_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-INSERT INTO `rainfall` (`rainin`, `last_update`) VALUES ('0.00', '2017-01-01 00:00:00');
+INSERT INTO `rainfall` (`rainin`, `last_update`) VALUES ('0.00', '2018-01-01 00:00:00');
 
-INSERT INTO `outage_alert` (`last_sent`, `status`) VALUES ('2017-01-01 00:00:00', '0');
+INSERT INTO `outage_alert` (`last_sent`, `status`) VALUES ('2018-01-01 00:00:00', '0');
 
-INSERT INTO `last_update` (`timestamp`) VALUES ('2017-01-01 00:00:00');
+INSERT INTO `last_update` (`timestamp`) VALUES ('2018-01-01 00:00:00');
 
-INSERT INTO `system` (`name`, `value`) VALUES ('schema', '2.1');
+INSERT INTO `system` (`name`, `value`) VALUES ('schema', '2.2');

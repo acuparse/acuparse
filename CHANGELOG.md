@@ -1,5 +1,5 @@
 # Acuparse
-## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
+## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 
 # Change Log
 All notable changes to this project will be documented in this file.
@@ -9,7 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.1.9] - (https://www.acuparse.com/releases/v2-1-9/) - 2017-01-23
+## [[2.2.0]](https://www.acuparse.com/releases/v2-2-0/) - 2018-02-02
+### Added
+- Support for the new Access as it replaces the smartHUB.
+- SSL Support
+
+### Changed
+- Modified the cookie expiration time in account.php to reflect the same as in session.php
+
+## [[2.1.9]](https://www.acuparse.com/releases/v2-1-9/) - 2018-01-23
 ### Changed
 - Modified Archive display format to align with the display format on the homepage.
 - Updates page will now display notes from previous versions and file formatting changes.

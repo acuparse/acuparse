@@ -1,5 +1,5 @@
 # Acuparse
-## AcuRite®‎ smartHUB and IP Camera Data Processing, Display, and Upload.
+## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 
 # Contributing:
 If you're interested in contributing to Acuparse, the first step is joining the development mailing list.
