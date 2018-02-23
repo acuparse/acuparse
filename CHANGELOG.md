@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
+- Doc. Cleanup and Updates.
 - Modified HUB upload to prevent firmware updates. Acuparse now sends it's own response back to the HUB.
 
 ## [[2.2.0]](https://www.acuparse.com/releases/v2-2-0/) - 2018-02-02
@@ -17,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - SSL Support
 
 ### Changed
-- Modified the cookie expiration time in account.php to reflect the same as in session.php
+- Modified the cookie expiration time in account.php to reflect the same as in session.php.
 
 ## [[2.1.9]](https://www.acuparse.com/releases/v2-1-9/) - 2018-01-23
 ### Changed
