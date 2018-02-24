@@ -37,13 +37,13 @@ if ($config->mysql->trim !== 0) {
             $schema = dirname(__DIR__) . '/sql/trim/enable.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
             $schema = shell_exec($schema);
-            syslog(LOG_INFO, "Event Scheduler Reset");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
         } elseif ($config->mysql->trim === 2) {
             // Load the database with the trim schema
             $schema = dirname(__DIR__) . '/sql/trim/enable_xtower.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
             $schema = shell_exec($schema);
-            syslog(LOG_INFO, "Event Scheduler Reset");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
         }
     }
 }
@@ -68,7 +68,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         "INSERT INTO `archive` (`tempF`, `feelsF`, `windSmph`, `windSmph_avg2m`, `windDEG`, `windDEG_avg2m`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSmph', '$data->windSmph_avg2', '$data->windDEG', '$data->windDEG_avg2', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')");
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "Processed Archive Update");
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: Processed Archive Update");
     }
 
     // Check if this is the first update after an outage
@@ -89,7 +89,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
                 mailer($to, $subject, $message);
             }
             // Log it
-            syslog(LOG_INFO, "Station Online. Email sent to admin.");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Station Online. Email sent to admin.");
 
             // Update the time the email was sent
             $last_sent = date("Y-m-d H:i:s");
@@ -97,7 +97,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
 
         } else {
             // Log it
-            syslog(LOG_INFO, "ONLINE: Receiving updates from Access/smartHUB. Email notifications not enabled.");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: ONLINE: Receiving updates from Access/smartHUB. Email notifications not enabled.");
             // Update the status
             mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '1'");
         }
@@ -113,7 +113,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pws_query', '$pws_query_result')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "PWS Query: $pws_query | Result: $pws_query_result");
+            syslog(LOG_DEBUG, "[PWS]: Query = $pws_query | Result = $pws_query_result");
         }
     }
 
@@ -127,7 +127,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wu_query', '$wu_query_result')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "WU Query: $wu_query | Result: $wu_query_result");
+            syslog(LOG_DEBUG, "[WU]: Query = $wu_query | Result = $wu_query_result");
         }
     }
 
@@ -153,7 +153,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             if (!$cwop_socket) {
                 if ($config->debug->logging === true) {
                     // Log it
-                    syslog(LOG_DEBUG, "CWOP Query: $cwop_socket_errno ($cwop_socket_errstr)");
+                    syslog(LOG_DEBUG, "[CWOP]: Query = $cwop_socket_errno ($cwop_socket_errstr)");
                 }
             } else {
                 $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $config->site->hostname . "\r";
@@ -166,13 +166,13 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             // Log
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_DEBUG, "CWOP Query: $cwop_query");
+                syslog(LOG_DEBUG, "[CWOP]: Query = $cwop_query");
             }
         } // No new update to send
         else {
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_DEBUG, "CWOP update not sent. Not enough time has passed");
+                syslog(LOG_DEBUG, "[CWOP]: Update not sent. Not enough time has passed");
             }
         }
     }
@@ -202,24 +202,24 @@ else {
                     mailer($to, $subject, $message);
                 }
                 // Log it
-                syslog(LOG_ERR, "OFFLINE: not receiving data from the Access/smartHUB. Email sent to admin.");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: OFFLINE: not receiving data from the Access/smartHUB. Email sent to admin.");
                 // Update the time the email was sent
                 $last_sent = date("Y-m-d H:i:s");
                 mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$last_sent', `status` = '0'");
 
             } else {
                 // Log it
-                syslog(LOG_ERR, "OFFLINE: not receiving data from the Access/smartHUB.");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: OFFLINE: not receiving data from the Access/smartHUB.");
                 // Update the status
                 mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '0'");
             }
         } else {
             // Log it
-            syslog(LOG_ERR, "OFFLINE: Too soon to send another notification.");
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: OFFLINE: Too soon to send another notification.");
         }
     } // Not offline long enough,
-    elseif ($config->debug->logging === true) {
+    else {
         // Log it
-        syslog(LOG_DEBUG, "No update to send. There is no new data to send or station is offline.");
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: No update to send. There is no new data to send or station is offline.");
     }
 }

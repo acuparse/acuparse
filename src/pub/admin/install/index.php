@@ -102,7 +102,7 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
             "INSERT INTO `users` (`username`, `password`, `email`, `admin`) VALUES ('$username', '$password', '$email', '1')");
         if (!$result) {
             // Log it
-            syslog(LOG_ERR, "Adding first user failed: " . mysqli_error($conn));
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first user failed: " . mysqli_error($conn));
         }
 
         // If adding the account was successful
@@ -114,7 +114,7 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
             $message = '<h2>Admin Account Created Successfully!</h2><p>Your admin account has been added successfully. You can now login.</p>';
             mailer($email, $subject, $message);
             // Log it
-            syslog(LOG_INFO, "First account for $username added successfully");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: First account for $username added successfully");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Added Successfully!</div>';
 
@@ -136,7 +136,7 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
                 "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$device_key', '$token', '$user_agent')");
             if (!$result) {
                 // Log it
-                syslog(LOG_ERR, "Saving session failed: " . mysqli_error($conn));
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed: " . mysqli_error($conn));
             }
 
             // Send the session cookie
@@ -144,14 +144,14 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
             setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
 
             // Log
-            syslog(LOG_INFO, "$username logged in successfully");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
 
             // Redirect user after successful login
             header("Location: /admin/settings");
         } // Something went wrong ...
         else {
             // Log it
-            syslog(LOG_ERR, "Adding first admin $username failed");
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first admin $username failed");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
             header("Location: /admin");
@@ -232,22 +232,22 @@ elseif (isset($_GET['config_db']) && $installed === false) {
             $schema = $sql_path . '/trim/enable.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
             $schema = shell_exec($schema);
-            syslog(LOG_INFO, "Trim All Enabled");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All Enabled");
         } elseif ($config->mysql->trim === 2) {
             // Load the database with the trim schema
             $schema = $sql_path . '/trim/enable_xtower.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
             $schema = shell_exec($schema);
-            syslog(LOG_INFO, "Trim All except towers Enabled");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All except towers Enabled");
         }
 
         // Log it
-        syslog(LOG_INFO, "Database configuration saved successfully");
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: Database configuration saved successfully");
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Database Configuration saved successfully!</div>';
         header("Location: /admin/install/?add_user");
     } else {
         // Log it
-        syslog(LOG_INFO, "Database configuration failed");
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: Database configuration failed");
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving Database Configuration failed!</div>';
         header("Location: /admin/install");
     }

@@ -51,16 +51,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
             $result = mysqli_query($conn,
                 "INSERT INTO `towers` (`name`, `sensor`, `arrange`, `private`) VALUES ('$tower_name', '$tower_sensor_id', '$display', '$private')");
             if (!$result) {
-                syslog(LOG_ERR, "Adding tower $tower_sensor_id - $tower_name failed: " . mysqli_error($conn));
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding tower $tower_sensor_id - $tower_name failed: " . mysqli_error($conn));
             }
 
             // If the insert Query was successful.
             if (mysqli_affected_rows($conn) === 1) {
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Added Successfully!</div>';
-                syslog(LOG_INFO, "Tower $tower_sensor_id - $tower_name added successfully");
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: Tower $tower_sensor_id - $tower_name added successfully");
             } else {
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong creating new tower!</div>';
-                syslog(LOG_ERR, "Adding tower $tower_sensor_id - $tower_name failed");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding tower $tower_sensor_id - $tower_name failed");
             }
             header("Location: /admin");
         } // Show the add new tower form
@@ -119,10 +119,10 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         // If the insert Query was successful.
         if (mysqli_affected_rows($conn) === 1) {
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Deleted Successfully!</div>';
-            syslog(LOG_INFO, "Tower $tower_sensor_id deleted successfully");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Tower $tower_sensor_id deleted successfully");
         } else {
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong deleting the tower!</div>';
-            syslog(LOG_ERR, "Deleting tower $tower_sensor_id failed!");
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Deleting tower $tower_sensor_id failed!");
         }
         // Redirect to admin
         header("Location: /admin/tower?view");
@@ -226,10 +226,10 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
             // If the insert Query was successful.
             if (mysqli_affected_rows($conn) === 1) {
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Updated Successfully!</div>';
-                syslog(LOG_INFO, "Tower $tower_sensor_id - $tower_name updated successfully");
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: Tower $tower_sensor_id - $tower_name updated successfully");
             } else {
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong updating the tower!</div>';
-                syslog(LOG_ERR, "Updating tower $tower_sensor_id - $tower_name failed!");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Updating tower $tower_sensor_id - $tower_name failed!");
             }
             header("Location: /admin/?menu");
         } // Show the edit form

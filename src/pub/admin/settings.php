@@ -148,12 +148,12 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
         if ($save !== false) {
             // Log it
-            syslog(LOG_INFO, "Site configuration saved successfully");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Site configuration saved successfully");
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Configuration saved successfully!</div>';
             header("Location: /admin");
         } else {
             // Log it
-            syslog(LOG_INFO, "Saving configuration failed");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Saving configuration failed");
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving configuration failed!</div>';
             header("Location: /admin");
         }

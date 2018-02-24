@@ -40,7 +40,7 @@ elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->stati
 else {
     $mac = $_GET['id'];
     // Log it
-    syslog(LOG_ERR, "MAC $mac is not configured.");
+    syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured.");
     die();
 }
 
