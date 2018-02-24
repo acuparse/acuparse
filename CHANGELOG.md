@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Documentation cleanup and updates.
 - Modified HUB response to prevent firmware updates. Acuparse now sends it's own response back to the HUB.
+- Login cookies so they will work as expected.
 
 ### Added
 - Restriction to prevent sending HUB updates to MyAcuRite after EoL.
@@ -49,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [[2.1.7]](https://www.acuparse.com/releases/v2-1-7/) - 2017-12-03
 ### Changed
 - Default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
-- Reformatted Archive display
+- Reformatted Archive display.
 
 ### Removed
 - Support for uploading images to Weather Underground due to it being decommissioned 15 Dec 2017 :(
@@ -62,7 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Camera archive back and forward buttons corrected to display as expected.
 - Updated datetimepicker from source.
-- Moving to Debian Stretch
+- Moving to Debian Stretch.
 
 ## [[2.1.4]](https://www.acuparse.com/releases/v2-1-4/) - 2017-07-30
 ### Changed

@@ -40,7 +40,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
             unset($_COOKIE['device_key']);
             unset($_COOKIE['token']);
             setcookie('device_key', '', time() + 60 * 60 * 24 * 30, '/');
-            setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
+            setcookie('token', '', time() + 60 * 60 * 24 * 30, '/');
         }
         $_SESSION = array();
         session_regenerate_id(true);
@@ -57,7 +57,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                 $uid = $_SESSION['UserID'];
                 if ($user_id !== $uid) {
                     // Log it
-                    syslog(LOG_ERR, "No permissions to modify $user_id. $uid is not an admin");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: No permissions to modify $user_id. $uid is not an admin");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
                     header("Location: /");
@@ -73,7 +73,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     "SELECT * FROM `users` WHERE `uid` = '$user_id'"));
                 if (password_verify(filter_input(INPUT_POST, 'pass', FILTER_UNSAFE_RAW), $userRow['password'])) {
                     // Log it
-                    syslog(LOG_INFO, "Password change request for UID $uid failed");
+                    syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid failed");
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password.</div>';
                     header("Location: /admin/account?password");
                     die();
@@ -104,11 +104,11 @@ if (isset($_SESSION['UserLoggedIn'])) {
                 // Mail it
                 mailer($email['email'], $subject, $message);
                 // Log it
-                syslog(LOG_INFO, "Password change for UID $user_id successful");
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change for UID $user_id successful");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
             } else {
-                syslog(LOG_ERR, "Password change for UID $user_id failed: " . mysqli_error($conn));
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Password change for UID $user_id failed: " . mysqli_error($conn));
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Nothing changed! Password was probably the same ...</div>';
             }
             header("Location: /");
@@ -172,7 +172,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
             if ($_SESSION['IsAdmin'] !== true) {
                 if ($user_id !== $uid) {
                     // Log it
-                    syslog(LOG_ERR, "No permissions to modify $user_id. $uid is not an admin");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: No permissions to modify $user_id. $uid is not an admin");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
                     header("Location: /");
@@ -191,7 +191,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                 "SELECT `username`, `email`, `admin` FROM `users` WHERE `uid` = '$user_id'"));
             if (($username === $old_info['username']) && ($email === $old_info['email']) && ($admin === $old_info['admin'])) {
                 // Log it
-                syslog(LOG_ERR, "Editing user failed, nothing changed");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing user failed, nothing changed");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Nothing to change!</div>';
                 header("Location: /");
@@ -201,7 +201,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     "SELECT `username` FROM `users` WHERE `username` = '$username'"));
                 if ($count !== 0) {
                     // Log it
-                    syslog(LOG_ERR, "Editing user failed, username already exists");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing user failed, username already exists");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Duplicate Username</div>';
                     header("Location: /");
@@ -212,7 +212,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     "SELECT `email` FROM `users` WHERE `email` = '$email'"));
                 if ($count !== 0) {
                     // Log it
-                    syslog(LOG_ERR, "Editing user failed, email already exists");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing user failed, email already exists");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Duplicate Email</div>';
                     header("Location: /");
@@ -223,7 +223,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     "SELECT `uid` FROM `users` WHERE `admin` = '1'"));
                 if ($count === 1) {
                     // Log it
-                    syslog(LOG_ERR, "Editing a user failed! Can't demote only admin.");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing a user failed! Can't demote only admin.");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit user failed! Can\'t demote the only admin.</div>';
                     header("Location: /");
@@ -241,7 +241,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                 $message = '<h2>Account Modified Successfully!</h2><p>Your account details have been modified successfully.</p>';
                 mailer($email, $subject, $message);
                 // Log it
-                syslog(LOG_INFO, "User $user_id - $username updated successfully");
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: User $user_id - $username updated successfully");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Updated Successfully!</div>';
 
@@ -250,7 +250,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                 }
             } else {
                 // Log it
-                syslog(LOG_ERR, "Updating user $user_id - $username failed: " . mysqli_error($conn));
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Updating user $user_id - $username failed: " . mysqli_error($conn));
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong updating the user!</div>';
             }
@@ -277,7 +277,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
             $count = mysqli_num_rows(mysqli_query($conn, $sql));
             if ($count === 0) {
                 // Log it
-                syslog(LOG_ERR, "Updating user $user_id failed. Does not exist");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Updating user $user_id failed. Does not exist");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No User with that User ID.</div>';
                 header("Location: /");
@@ -396,7 +396,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     "SELECT `username` FROM `users` WHERE `username` = '$username'"));
                 if ($check_username !== 0) {
                     // Log it
-                    syslog(LOG_ERR, "Adding user failed, username already exists");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding user failed, username already exists");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed, username already exists.</div>';
                     header("Location: /admin/account?add_user");
@@ -406,7 +406,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     "SELECT `email` FROM `users` WHERE `email` = '$email'"));
                 if ($check_email !== 0) {
                     // Log it
-                    syslog(LOG_ERR, "Adding user failed, email already exists");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding user failed, email already exists");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed, email already exists.</div>';
                     header("Location: /admin/account?add_user");
@@ -422,12 +422,12 @@ if (isset($_SESSION['UserLoggedIn'])) {
                     $message = '<h2>New Account Created Successfully!</h2><p>Your new account has created successfully. You can now login at <a href="http://' . $config->site->hostname . '">' . $config->site->hostname . '</a> with the details below.</p><h3>Username: ' . $username . '</h3><h3>Password: ' . $password . '</h3>';
                     mailer($email, $subject, $message);
                     // Log it
-                    syslog(LOG_INFO, "Account for $username added successfully");
+                    syslog(LOG_INFO, "(SYSTEM)[INFO]: Account for $username added successfully");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Account added successfully.</div>';
                 } else {
                     // Log it
-                    syslog(LOG_ERR, "Adding user failed: " . mysqli_error($conn));
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding user failed: " . mysqli_error($conn));
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed.</div>';
                 }
@@ -537,7 +537,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
             // Don't delete the logged in user
             if ($user_id === $_SESSION['UserID']) {
                 // Log it
-                syslog(LOG_ERR, "User $user_id cannot delete themselves");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: User $user_id cannot delete themselves");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Cannot delete your own account!</div>';
             } else {
@@ -545,12 +545,12 @@ if (isset($_SESSION['UserLoggedIn'])) {
                 // If the insert Query was successful.
                 if (mysqli_affected_rows($conn) === 1) {
                     // Log it
-                    syslog(LOG_INFO, "User $user_id deleted successfully");
+                    syslog(LOG_INFO, "(SYSTEM)[INFO]: User $user_id deleted successfully");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Deleted Successfully!</div>';
                 } else {
                     // Log it
-                    syslog(LOG_ERR, "Deleting user $user_id failed!");
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Deleting user $user_id failed!");
                     // Display message
                     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong deleting the user!</div>';
                 }
@@ -611,7 +611,7 @@ elseif (isset($_GET['login'])) {
                     "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$device_key', '$token', '$user_agent')");
                 if (!$result) {
                     // Log it
-                    syslog(LOG_ERR, "Saving session failed: " . mysqli_error($conn));
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed! Raw = " . mysqli_error($conn));
                 }
 
                 // Send the session cookie
@@ -619,14 +619,14 @@ elseif (isset($_GET['login'])) {
                 setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
 
                 // Log it
-                syslog(LOG_INFO, "$username logged in successfully");
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
 
                 // Redirect user after successful login
                 header("Location: /");
             } // Invalid password entered
             else {
                 // Log it
-                syslog(LOG_ERR, "Invalid password for $username");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid password for $username");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Sorry, you have entered an invalid username or password!</div>';
                 header("Location: /admin/account");
@@ -634,7 +634,7 @@ elseif (isset($_GET['login'])) {
         } // No rows found, user not authorized
         else {
             // Log it
-            syslog(LOG_ERR, "Invalid username $username");
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid username $username");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Sorry, you have entered an invalid username or password!</div>';
             header("Location: /admin/account");
@@ -642,7 +642,7 @@ elseif (isset($_GET['login'])) {
     } // Captcha Failed
     else {
         // Log it
-        syslog(LOG_ERR, "Invalid captcha response");
+        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid captcha response");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Sorry, Captcha verification failed!</div>';
         header("Location: /admin/account");
