@@ -148,12 +148,12 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
         if ($save !== false) {
             // Log it
-            syslog(LOG_INFO, "Site configuration saved successfully");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Site configuration saved successfully");
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Configuration saved successfully!</div>';
             header("Location: /admin");
         } else {
             // Log it
-            syslog(LOG_INFO, "Saving configuration failed");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Saving configuration failed");
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving configuration failed!</div>';
             header("Location: /admin");
         }
@@ -790,7 +790,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                            id="cwop_station_location"
                                            placeholder="Station Location" maxlength="35"
                                            value="<?= $config->upload->cwop->location; ?>">
-                                    <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code></p>
+                                    <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code>.<br>See <a href="http://boulter.com/gps">Degrees, Minutes & Seconds</a></p>
                                 </div>
                             </div>
                             <div class="form-group row margin-bottom-05">
@@ -862,7 +862,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 <h4>Upload URL's:</h4>
                                 <div class="row">
                                     <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 bg-info">
-                                        <p><strong>If installed on the same network as your device, use secondary.<br>See <code>docs/DNS.md</code></strong>
+                                        <p><strong>If installed on the same network as your device, use secondary.<br>See
+                                                <code>docs/DNS.md</code></strong>
                                         </p>
                                     </div>
                                 </div>
@@ -884,15 +885,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                     </div>
                                 </div>
                                 <div class="form-group row margin-bottom-05">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="myacurite_access_update_url">Access:</label>
+                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                           for="myacurite_access_update_url">Access:</label>
                                     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                         <select name="upload[myacurite][access_url]" id="myacurite_access_update_url"
                                                 class="form-control">
-                                            <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") {
+                                            <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") {
                                                 echo 'selected="selected"';
                                             } ?>>myacurite.com (official)
                                             </option>
-                                            <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") {
+                                            <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") {
                                                 echo 'selected="selected"';
                                             } ?>>acuparse.com (secondary)
                                             </option>

@@ -66,7 +66,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         // Log it
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,
-                "(HUB)[5N1] Wind: $wind_direction @ $windspeedmph | Rain: $rainin | DailyRain: $dailyrainin | Pressure: $baromin");
+                "(HUB)[5N1]: Wind = $wind_direction @ $windspeedmph | Rain = $rainin | DailyRain = $dailyrainin | Pressure = $baromin");
         }
     } // Process Wind Speed, Temperature, Humidity
     elseif ($_GET['mt'] === '5N1x38') {
@@ -102,7 +102,8 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         // Log it
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "(HUB)[5N1] TempF: $tempF | relH: $humidity | Windspeed: $windspeedmph | Pressure: $baromin");
+            syslog(LOG_DEBUG,
+                "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windspeedmph | Pressure = $baromin");
         }
     }
 } // Process Tower Sensors
@@ -131,22 +132,22 @@ elseif ($config->station->towers === true && $_GET['mt'] === 'tower') {
 
         // Log it
         if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "(HUB)[Tower] $tower_name - tempF: $tempF / relH: $humidity");
+            syslog(LOG_DEBUG, "(HUB)[TOWER][$tower_name]: tempF = $tempF | relH = $humidity");
         }
     } // This tower has not been added
     else {
-        syslog(LOG_ERR, "(HUB)[Tower] ERROR: Unknown ID $tower_id. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Unknown ID $tower_id. Raw: $myacurite_query");
         die();
     }
 } // This sensor is not added
 else {
     $sensor = $_GET['sensor'];
     if ($_GET['mt'] === 'tower') {
-        syslog(LOG_ERR, "(HUB)[Tower] ERROR: Towers not enabled. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Towers not enabled. Raw = $myacurite_query");
     } elseif ($_GET['mt'] === '5N1x31' || $_GET['mt'] === '5N1x38') {
-        syslog(LOG_ERR, "(HUB)[5N1] ERROR: Unknown ID $sensor. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown ID $sensor. Raw = $myacurite_query");
     } else {
-        syslog(LOG_ERR, "(HUB) ERROR: Unknown Sensor $sensor. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacurite_query");
     }
     die();
 }
@@ -162,26 +163,33 @@ if ($config->debug->server->enabled === true) {
 
 // Forward the raw data to MyAcurite
 if ($config->upload->myacurite->hub_enabled === true) {
-    $myacurite = file_get_contents($config->upload->myacurite->hub_url . '/weatherstation/updateweatherstation?' . $myacurite_query);
 
-    // Rainfall data clears prematurely. Modify the response and use server time instead.
-    $hub_response = preg_replace('/(\d{2}:\d{2}:\d{2})/', date('H:i:s'), $myacurite);
+    // Don't send updates after EoL
+    if ((strtotime('2018-09-01') > strtotime(date('Y-m-d')))) {
+        $myacurite = file_get_contents($config->upload->myacurite->hub_url . '/weatherstation/updateweatherstation?' . $myacurite_query);
 
-    // Log the raw data
-    if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[MyAcuRite] Query: $myacurite_query | Response: $myacurite | Output: $hub_response");
+        // Create the response to the HUB. Since Acurite is ending support, we don't want firmware updates
+        $hub_response = '{"localtime":"' . date('H:i:s') . '"}';
+
+        // Log the raw data
+        if ($config->debug->logging === true) {
+            syslog(LOG_DEBUG,
+                "(HUB)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite | Hub Response = $hub_response");
+        }
+        // Output the expected response to the smartHUB
+        echo $hub_response;
+    } else {
+        goto disabled;
     }
-
-    // Output the response to the smartHUB
-    echo $hub_response;
-
-} // MyAcurite is disabled
-else {
-    // Output the expected response to the smartHUB
+} else {
+    disabled:
     $myacurite = '{"localtime":"' . date('H:i:s') . '"}';
-    // Log the raw data
+
+// Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[Acuparse] Response: $myacurite");
+        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite");
     }
+
+// Output the expected response to the smartHUB
     echo $myacurite;
 }

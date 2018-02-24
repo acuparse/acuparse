@@ -82,7 +82,7 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                     // Mail it
                     mailer($email, $subject, $message);
                     // Log it
-                    syslog(LOG_INFO, "Password change request for UID $uid received");
+                    syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid received");
                     // Display message
                     echo '<div class="row"><div class="col-lg-12"><div class="alert alert-success">If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
                 } //Otherwise
@@ -100,13 +100,13 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                         // Mail it
                         mailer($email, $subject, $message);
                         // Log it
-                        syslog(LOG_INFO, "Password change request for UID $uid received");
+                        syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid received");
                         // Display message
                         echo '<div class="row"><div class="col-lg-12"><div class="alert alert-success">If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
                     } // Something went wrong
                     else {
                         // Log it
-                        syslog(LOG_ERR, "Failed to save password reset request for UID $uid");
+                        syslog(LOG_ERR, "(SYSTEM)[INFO]: Failed to save password reset request for UID $uid");
                         //Display message
                         echo '<div class="row"><div class="col-lg-12"><div class="alert alert-danger">Something went wrong while completing your request. Please try again.</div></div></div>';
                     }
@@ -151,7 +151,7 @@ if (!isset($_SESSION['UserLoggedIn'])) {
         } // That hash does not exist
         else {
             // Log it
-            syslog(LOG_ERR, "Invalid hash received. $hash");
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]:Invalid hash received. $hash");
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Your request cannot be processed. Try submitting your password reset request again.</div>';
             header("Location: /");
         }
@@ -180,7 +180,7 @@ if (!isset($_SESSION['UserLoggedIn'])) {
             filter_input(INPUT_POST, 'pass', FILTER_SANITIZE_STRING)), $userRow['password'])) {
             mysqli_query($conn, "DELETE FROM `password_recover` WHERE `uid` = '$uid'");
             // Log it
-            syslog(LOG_INFO, "Password change request for UID $uid failed");
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid failed");
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password. Try logging in with that password.</div>';
             header("Location: /admin/account");
             die();
@@ -200,14 +200,14 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                 // Mail it
                 mailer($email, $subject, $message);
                 // Log it
-                syslog(LOG_INFO, "Password change request for UID $uid processed successfully");
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid processed successfully");
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
                 header("Location: /admin/account");
 
             } else {
                 // Log it
-                syslog(LOG_ERR, "Password change request for UID $uid failed");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Password change request for UID $uid failed");
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Something went wrong while completing your request. Please try again.</div>';
                 header("Location: /recover&do?hash=$hash");
             }

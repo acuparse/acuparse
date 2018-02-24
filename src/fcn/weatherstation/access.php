@@ -33,7 +33,7 @@ $timestamp = strtotime($timestamp . ' UTC');
 $timestamp = date("Y-m-d H:i:s", $timestamp);
 
 
-// Process 5n1 Update
+// Process 5N1 Update
 if ($_GET['mt'] === '5N1') {
 
     if ($_GET['sensor'] === $config->station->sensor_5n1) {
@@ -112,7 +112,7 @@ if ($_GET['mt'] === '5N1') {
         // Log it
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,
-                "(ACCESS)[5N1] TempF: $tempF | relH: $humidity | Windspeed: $windspeedmph | Wind: $wind_direction @ $windspeedmph | Rain: $rainin | DailyRain: $dailyrainin | Pressure: $baromin");
+                "(ACCESS)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windspeedmph | Wind = $wind_direction @ $windspeedmph | Rain = $rainin | DailyRain = $dailyrainin | Pressure = $baromin");
         }
     }
 } // Process Tower Sensors
@@ -140,11 +140,11 @@ elseif ($config->station->towers === true && $_GET['mt'] === 'tower') {
             "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`, `timestamp`) VALUES ('$tempF', '$humidity', '$tower_id', '$timestamp')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "(ACCESS)[Tower] $tower_name - tempF: $tempF / relH: $humidity");
+            syslog(LOG_DEBUG, "(ACCESS)[TOWER][$tower_name]: tempF = $tempF | relH = $humidity");
         }
     } // This tower has not been added
     else {
-        syslog(LOG_ERR, "(ACCESS)[Tower] ERROR Unknown ID: $tower_id. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(ACCESS)[TOWER][ERROR]: Unknown ID: $tower_id. Raw = $myacurite_query");
         die();
     }
 } // This sensor is not added
@@ -152,11 +152,11 @@ else {
     $sensor = $_GET['sensor'];
     if ($_GET['mt'] === 'tower') {
         syslog(LOG_ERR,
-            "(ACCESS)[Tower] ERROR: Towers not enabled or Unknown Tower ID $sensor. Raw: $myacurite_query");
+            "(ACCESS)[TOWER] ERROR: Towers not enabled or Unknown Tower ID $sensor. Raw = $myacurite_query");
     } elseif ($_GET['mt'] === '5N1') {
-        syslog(LOG_ERR, "(ACCESS)[5N1] ERROR: Unknown Sensor ID $sensor. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(ACCESS)[5N1][ERROR]: Unknown Sensor ID $sensor. Raw = $myacurite_query");
     } else {
-        syslog(LOG_ERR, "(ACCESS) ERROR: Unknown Sensor $sensor. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(ACCESS)[ERROR]: Unknown Sensor $sensor. Raw = $myacurite_query");
     }
     die();
 }
@@ -173,6 +173,11 @@ $opts = array(
             'method' => 'POST',
             'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT'],
             'content' => $postdata
+        ),
+    'ssl' =>
+        array(
+            "verify_peer" => false,
+            "verify_peer_name" => false,
         )
 );
 $context = stream_context_create($opts);
@@ -190,7 +195,7 @@ if ($config->upload->myacurite->access_enabled === true) {
 
     // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(ACCESS)[MyAcuRite] Query: $myacurite_query | Response: $myacurite");
+        syslog(LOG_DEBUG, "(ACCESS)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite");
     }
 
     // Output the response to the Access
@@ -201,7 +206,7 @@ else {
     $myacurite = '{}';
     // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(ACCESS)[Acuparse] Response: $myacurite");
+        syslog(LOG_DEBUG, "(ACCESS)[Acuparse]: Response = $myacurite");
     }
     echo $myacurite;
 }

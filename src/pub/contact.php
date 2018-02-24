@@ -64,7 +64,7 @@ if (isset($_GET['do'])) {
             mailer($to, $subject, $message, $email, $name, false);
         }
         // Log it
-        syslog(LOG_INFO, "Mail sent to admin successfully");
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: Mail sent to admin successfully");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
         header("Location: /");

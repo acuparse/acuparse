@@ -9,13 +9,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.2.1]](https://www.acuparse.com/releases/v2-2-1/) - 2018-02-23
+### Changed
+- Documentation cleanup and updates.
+- Modified HUB response to prevent firmware updates. Acuparse now sends it's own response back to the HUB.
+- Login cookies so they will work as expected.
+
+### Added
+- Restriction to prevent sending HUB updates to MyAcuRite after EoL.
+
+### Fixed
+- Changing config settings from the UI broke the Access upload path.
+- SSL certificate for atlasapi.myacurite.com API has the wrong hostname. Disabled SSL hostname checks.
+
 ## [[2.2.0]](https://www.acuparse.com/releases/v2-2-0/) - 2018-02-02
 ### Added
 - Support for the new Access as it replaces the smartHUB.
 - SSL Support
 
 ### Changed
-- Modified the cookie expiration time in account.php to reflect the same as in session.php
+- Modified the cookie expiration time in account.php to reflect the same as in session.php.
 
 ## [[2.1.9]](https://www.acuparse.com/releases/v2-1-9/) - 2018-01-23
 ### Changed
@@ -39,7 +52,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [[2.1.7]](https://www.acuparse.com/releases/v2-1-7/) - 2017-12-03
 ### Changed
 - Default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
-- Reformatted Archive display
+- Reformatted Archive display.
 
 ### Removed
 - Support for uploading images to Weather Underground due to it being decommissioned 15 Dec 2017 :(
@@ -52,7 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Camera archive back and forward buttons corrected to display as expected.
 - Updated datetimepicker from source.
-- Moving to Debian Stretch
+- Moving to Debian Stretch.
 
 ## [[2.1.4]](https://www.acuparse.com/releases/v2-1-4/) - 2017-07-30
 ### Changed

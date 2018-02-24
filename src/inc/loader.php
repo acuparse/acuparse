@@ -62,7 +62,7 @@ if (!isset($conn)) {
         $conn = mysqli_connect($config->mysql->host, $config->mysql->username, $config->mysql->password,
             $config->mysql->database);
         if (!$conn) {
-            die(syslog(LOG_ERR, "MySQL Connection failed: " . mysqli_connect_error()));
+            die(syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error()));
         }
     }
 }
@@ -73,12 +73,12 @@ if (!isset($openlog)) {
     $openlog = openlog("$app_info->name($app_info->version)", LOG_ODELAY, $facility);
 }
 
-// Output buffering
-if (!isset($ob_start)) {
-    $ob_start = ob_start();
-}
-
 // Start the session
 if (!isset($_SESSION)) {
     require(APP_BASE_PATH . '/inc/session.php');
+}
+
+// Output buffering
+if (!isset($ob_start)) {
+    $ob_start = ob_start();
 }

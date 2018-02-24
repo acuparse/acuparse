@@ -38,39 +38,53 @@ if (!isset($_SESSION['UserLoggedIn'])) {
         // Count the rows returned
         $count = mysqli_num_rows($result);
         if ($count === 1) {
+            mysqli_query($conn, "DELETE FROM `sessions` WHERE `device_key`= '$device_key'");
             $row = mysqli_fetch_assoc($result);
             $presented_token = $_COOKIE['token'];
             $actual_token = md5($row['token']);
+            $uid = $row['uid'];
 
             // Good token presented
             if ($presented_token === $actual_token) {
                 // Let's remember the user is logged in
                 $_SESSION['UserLoggedIn'] = true;
-                $_SESSION['UserID'] = $row['uid'];
-                $uid = $_SESSION['UserID'];
+                $_SESSION['UserID'] = $uid;
 
-                $row2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `users` WHERE `uid`= '$uid'"));
-                $_SESSION['Username'] = $row2['username'];
-                $_SESSION['IsAdmin'] = (bool)$row2['admin'];
+                $row_users = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `users` WHERE `uid`= '$uid'"));
+                $username = $row_users['username'];
+                $_SESSION['Username'] = $username;
+                $_SESSION['IsAdmin'] = (bool)$row_users['admin'];
 
+                // Generate the device key and token for this session
+                $device_key = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', mt_rand(1, 10))), 1,
+                    40);
                 $token = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', mt_rand(1, 10))), 1, 40);
+                $user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+                // Save the session to the database
+                $result = mysqli_query($conn,
+                    "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$device_key', '$token', '$user_agent')");
+                if (!$result) {
+                    // Log it
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed! Raw = " . mysqli_error($conn));
+                }
+
+                // Send the session cookie
+                setcookie('device_key', $device_key, time() + 60 * 60 * 24 * 30, '/');
                 setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
-                mysqli_query($conn,
-                    "UPDATE `sessions` SET `token` = '$token' WHERE `uid` = '$uid' AND `device_key` = '$device_key'");
+
+                // Log it
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully via cookie");
 
             } // Bad token presented
             else {
-                $device_key = $_COOKIE['device_key'];
-                mysqli_query($conn, "DELETE FROM `sessions` WHERE `device_key`= '$device_key'");
                 unset($_COOKIE['device_key']);
                 unset($_COOKIE['token']);
                 setcookie('device_key', '', time() - 3600, '/');
                 setcookie('token', '', time() - 3600, '/');
                 $_SESSION = array();
                 session_regenerate_id(true);
-                $uid = $row['uid'];
-                $token = $row['token'];
-                syslog(LOG_WARNING, "Invalid Cookie Presented for UID $uid: $device_key - $token");
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid Cookie Presented for UID $uid: $device_key - $presented_token");
             }
         }
     }
