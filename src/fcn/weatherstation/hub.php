@@ -165,7 +165,7 @@ if ($config->debug->server->enabled === true) {
 if ($config->upload->myacurite->hub_enabled === true) {
 
     // Don't send updates after EoL
-    if ((strtotime('2018-09-01') > strtotime(date('Y-m-d')))) {
+    if ((strtotime('2019-03-01') > strtotime(date('Y-m-d')))) {
         $myacurite = file_get_contents($config->upload->myacurite->hub_url . '/weatherstation/updateweatherstation?' . $myacurite_query);
 
         // Create the response to the HUB. Since Acurite is ending support, we don't want firmware updates

@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Updated smartHUB EoL to 2019-03-01 due to AcuRite extending service.
 
 ## [[2.2.1]](https://www.acuparse.com/releases/v2-2-1/) - 2018-02-23
 ### Changed
