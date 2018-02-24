@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.2.1]](https://www.acuparse.com/releases/v2-2-1/) - 2018-02-23
 ### Changed
 - Documentation cleanup and updates.
 - Modified HUB response to prevent firmware updates. Acuparse now sends it's own response back to the HUB.

@@ -22,7 +22,7 @@
 
 /**
  * File: src/pub/admin/install/scripts/2_1.php
- * Site Update Tasks
+ * 2.1 Site Update Tasks
  */
 
 switch ($config->version->app) {
@@ -76,7 +76,8 @@ switch ($config->version->app) {
     case '2.1.9':
         $config->version->app = '2.2.0';
         $config->version->schema = '2.2';
-        mysqli_query($conn, "UPDATE `system` SET `value` = '2.2' WHERE `system`.`name` = 'schema';"); //Update Schema Version
+        mysqli_query($conn,
+            "UPDATE `system` SET `value` = '2.2' WHERE `system`.`name` = 'schema';"); //Update Schema Version
         $config->station->access_mac = '000000000000'; // Add Access MAC
 
         // Fix MyAcuRite upload variables
@@ -86,8 +87,6 @@ switch ($config->version->app) {
         $config->upload->myacurite->url === 'http://hubapi.myacurite.com' ? $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com' : $config->upload->myacurite->hub_url = 'https://atlasapi.acuparse.com';
         unset($config->upload->myacurite->enabled);
         unset($config->upload->myacurite->url);
-        $config->upload->myacurite->hub_url = 'http://hubapi.myacurite.com';
-        $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com';
 
         $notes .= '<li>' . $config->version->app . ' - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://github.com/acuparse/acuparse/tree/master/docs/updates/from_2.1.md">docs/updates/from2_1.md</a></li>';
 }

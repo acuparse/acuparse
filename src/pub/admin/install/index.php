@@ -31,8 +31,7 @@ require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 if (isset($_GET['update']) && $installed === true) {
     if (isset($_GET['do'])) {
         $notes = '';
-        foreach (glob("scripts/*.php") as $filename)
-        {
+        foreach (glob("scripts/*.php") as $filename) {
             include $filename;
         }
         // Save the users config file
