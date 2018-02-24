@@ -66,7 +66,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         // Log it
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,
-                "(HUB)[5N1] Wind: $wind_direction @ $windspeedmph | Rain: $rainin | DailyRain: $dailyrainin | Pressure: $baromin");
+                "(HUB)[5N1]: Wind = $wind_direction @ $windspeedmph | Rain = $rainin | DailyRain = $dailyrainin | Pressure = $baromin");
         }
     } // Process Wind Speed, Temperature, Humidity
     elseif ($_GET['mt'] === '5N1x38') {
@@ -103,7 +103,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         if ($config->debug->logging === true) {
             // Log it
             syslog(LOG_DEBUG,
-                "(HUB)[5N1] TempF: $tempF | relH: $humidity | Windspeed: $windspeedmph | Pressure: $baromin");
+                "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windspeedmph | Pressure = $baromin");
         }
     }
 } // Process Tower Sensors
@@ -132,22 +132,22 @@ elseif ($config->station->towers === true && $_GET['mt'] === 'tower') {
 
         // Log it
         if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "(HUB)[Tower] $tower_name - tempF: $tempF / relH: $humidity");
+            syslog(LOG_DEBUG, "(HUB)[TOWER][$tower_name]: tempF = $tempF | relH = $humidity");
         }
     } // This tower has not been added
     else {
-        syslog(LOG_ERR, "(HUB)[Tower] ERROR: Unknown ID $tower_id. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Unknown ID $tower_id. Raw: $myacurite_query");
         die();
     }
 } // This sensor is not added
 else {
     $sensor = $_GET['sensor'];
     if ($_GET['mt'] === 'tower') {
-        syslog(LOG_ERR, "(HUB)[Tower] ERROR: Towers not enabled. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Towers not enabled. Raw = $myacurite_query");
     } elseif ($_GET['mt'] === '5N1x31' || $_GET['mt'] === '5N1x38') {
-        syslog(LOG_ERR, "(HUB)[5N1] ERROR: Unknown ID $sensor. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown ID $sensor. Raw = $myacurite_query");
     } else {
-        syslog(LOG_ERR, "(HUB) ERROR: Unknown Sensor $sensor. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacurite_query");
     }
     die();
 }
@@ -174,7 +174,7 @@ if ($config->upload->myacurite->hub_enabled === true) {
         // Log the raw data
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,
-                "(HUB)[MyAcuRite] Query: $myacurite_query | Response: $myacurite | Hub Response: $hub_response");
+                "(HUB)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite | Hub Response = $hub_response");
         }
         // Output the expected response to the smartHUB
         echo $hub_response;
@@ -187,7 +187,7 @@ if ($config->upload->myacurite->hub_enabled === true) {
 
 // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[MyAcuRite] Query: $myacurite_query | Response: $myacurite");
+        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite");
     }
 
 // Output the expected response to the smartHUB

@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
-- Doc. Cleanup and Updates.
-- Modified HUB upload to prevent firmware updates. Acuparse now sends it's own response back to the HUB.
+- Documentation cleanup and updates.
+- Modified HUB response to prevent firmware updates. Acuparse now sends it's own response back to the HUB.
+
+### Added
+- Restriction to prevent sending HUB updates to MyAcuRite after EoL.
+
+### Fixed
+- Changing config settings from the UI broke the Access upload path.
+- SSL certificate for atlasapi.myacurite.com API has the wrong hostname. Disabled SSL hostname checks.
 
 ## [[2.2.0]](https://www.acuparse.com/releases/v2-2-0/) - 2018-02-02
 ### Added
