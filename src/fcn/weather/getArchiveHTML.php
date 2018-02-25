@@ -24,7 +24,6 @@
  * File: src/getArchiveHTML.php
  * Get the archive data HTML
  */
-
 function getArchiveHTML()
 {
     require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -70,7 +69,7 @@ function getArchiveHTML()
                         } else {
                             $wind_high_yesterday = ($config->site->imperial === true) ? "$yesterday->windS_mph_high mph" : "$yesterday->windS_kmh_high km/h";
                         }
-                        echo 'From ' . $yesterday->windDIR . ' @ ' . $wind_high_yesterday . ' @ ' . $yesterday->windS_mph_high_recorded; ?></li>
+                        echo 'From ' . $yesterday->windDIR . ' at ' . $wind_high_yesterday . ' @ ' . $yesterday->windS_mph_high_recorded; ?></li>
                 </ul>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <ul class="list-unstyled">
@@ -137,7 +136,7 @@ function getArchiveHTML()
                         } else {
                             $wind_high_week = ($config->site->imperial === true) ? "$week->windS_mph_high mph" : "$week->windS_kmh_high km/h";
                         }
-                        echo 'From ' . $week->windDIR . ' on ' . $wind_high_week . ' @ ' . $week->windS_mph_high_recorded; ?></li>
+                        echo 'From ' . $week->windDIR . ' at ' . $wind_high_week . ' on ' . $week->windS_mph_high_recorded; ?></li>
                 </ul>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <ul class="list-unstyled">
@@ -211,7 +210,7 @@ function getArchiveHTML()
                         } else {
                             $wind_high_month = ($config->site->imperial === true) ? "$month->windS_mph_high mph" : "$month->windS_kmh_high km/h";
                         }
-                        echo 'From ' . $month->windDIR . ' on ' . $wind_high_month . ' @ ' . $month->windS_mph_high_recorded; ?></li>
+                        echo 'From ' . $month->windDIR . ' at ' . $wind_high_month . ' on ' . $month->windS_mph_high_recorded; ?></li>
                 </ul>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <ul class="list-unstyled">
@@ -286,7 +285,7 @@ function getArchiveHTML()
                         } else {
                             $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph" : "$last_month->windS_kmh_high km/h";
                         }
-                        echo 'From ' . $last_month->windDIR . ' on ' . $wind_high_last_month . ' @ ' . $last_month->windS_mph_high_recorded; ?></li>
+                        echo 'From ' . $last_month->windDIR . ' at ' . $wind_high_last_month . ' on ' . $last_month->windS_mph_high_recorded; ?></li>
                 </ul>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <ul class="list-unstyled">
@@ -362,7 +361,7 @@ function getArchiveHTML()
                         } else {
                             $wind_high_year = ($config->site->imperial === true) ? "$year->windS_mph_high mph" : "$year->windS_kmh_high km/h";
                         }
-                        echo 'From ' . $year->windDIR . ' on ' . $wind_high_year . ' @ ' . $year->windS_mph_high_recorded; ?></li>
+                        echo 'From ' . $year->windDIR . ' at ' . $wind_high_year . ' on ' . $year->windS_mph_high_recorded; ?></li>
                 </ul>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <ul class="list-unstyled">
@@ -435,7 +434,7 @@ function getArchiveHTML()
                         } else {
                             $wind_high_ever = ($config->site->imperial === true) ? "$ever->windS_mph_high mph" : "$ever->windS_kmh_high km/h";
                         }
-                        echo 'From ' . $ever->windDIR . ' on ' . $wind_high_ever . ' @ ' . $ever->windS_mph_high_recorded; ?></li>
+                        echo 'From ' . $ever->windDIR . ' at ' . $wind_high_ever . ' on ' . $ever->windS_mph_high_recorded; ?></li>
                 </ul>
                 <h3><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
                 <ul class="list-unstyled">
