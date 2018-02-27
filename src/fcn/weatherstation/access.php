@@ -90,7 +90,7 @@ if ($_GET['mt'] === '5N1') {
             "INSERT INTO `pressure` (`inhg`, `timestamp`) VALUES ('$baromin', '$timestamp');
                     INSERT INTO `windspeed` (`speedMPH`, `timestamp`) VALUES ('$windspeedmph' , '$timestamp');
                     INSERT INTO `temperature` (`tempF`, `timestamp`) VALUES ('$tempF', '$timestamp');
-                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$wind_direction', $timestamp);
+                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$wind_direction', '$timestamp');
                     INSERT INTO `humidity` (`relH`, `timestamp`) VALUES ('$humidity', '$timestamp');
                     UPDATE `rainfall` SET `rainin`='$rainin', `last_update`='$timestamp';
                     INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`) VALUES ('$dailyrainin', '$rain_date', '$timestamp') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyrainin', `last_update`='$timestamp'");

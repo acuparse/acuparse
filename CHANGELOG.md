@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Wind readings in the archive worded incorrectly.
+- Access updates not saving to DB.
 
 ## [[2.2.1]](https://www.acuparse.com/releases/v2-2-1/) - 2018-02-23
 ### Changed
