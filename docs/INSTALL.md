@@ -9,6 +9,8 @@ Can be run locally or on a remote/cloud server.
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 
 ## DNS Redirect
+> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
+
 If you are connecting your Access/SmartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally. Otherwise, you will need a DNS server installed on your network.
 See [docs/DNS.md](docs/DNS.md)
 

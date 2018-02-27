@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Timezone to Access response.
+- Script to change the upload server locally on the Access. Removing the DNS redirect requirement.
 
 ### Changed
 - Updated smartHUB EoL to 2019-03-01 due to AcuRite extending service.

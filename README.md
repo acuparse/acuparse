@@ -42,6 +42,9 @@ Users currently having trouble sending updates to Weather Underground should fin
 
 # Installation:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
+> **Note:** If you are not using an Access, you will need to setup a DNS redirect using a DNS server on your local network. 
+
+See [docs/INSTALL.md](docs/INSTALL.md) for detailed installation instructions.
 
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 
@@ -51,7 +54,6 @@ Acuparse can also, in theory, be run locally on a Raspberry Pi(Raspbian) or simi
 
 The Acurite Access sends data to MyAcuRite using an SSL connection. By Default Apache will use the snake oil cert to serve over HTTPS. For most users, this should be sufficient. If you use a hostname, you will need to install and configure an SSL certificate. The installer will ask and attempt to generate a Lets Encrypt cert for you.
 
-* See [docs/INSTALL.md](docs/INSTALL.md) for detailed installation instructions.
 ## Quick Install:
 > **Info:** Installer currently supports Debian Stretch(9), Ubuntu 16.04 LTS, and Raspbian.
 
