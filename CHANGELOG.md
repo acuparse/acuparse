@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.2.2]](https://www.acuparse.com/releases/v2-2-2/) - 2018-02-26
+### Added
+- Timezone to Access response.
+- Script to change the upload server locally on the Access. Removing the DNS redirect requirement.
+
+### Changed
+- Updated smartHUB EoL to 2019-03-01 due to AcuRite extending service.
+
+### Fixed
+- Wind readings in the archive worded incorrectly.
+- Access updates not saving to DB.
+
 ## [[2.2.1]](https://www.acuparse.com/releases/v2-2-1/) - 2018-02-23
 ### Changed
 - Documentation cleanup and updates.

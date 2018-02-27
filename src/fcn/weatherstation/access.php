@@ -90,7 +90,7 @@ if ($_GET['mt'] === '5N1') {
             "INSERT INTO `pressure` (`inhg`, `timestamp`) VALUES ('$baromin', '$timestamp');
                     INSERT INTO `windspeed` (`speedMPH`, `timestamp`) VALUES ('$windspeedmph' , '$timestamp');
                     INSERT INTO `temperature` (`tempF`, `timestamp`) VALUES ('$tempF', '$timestamp');
-                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$wind_direction', $timestamp);
+                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$wind_direction', '$timestamp');
                     INSERT INTO `humidity` (`relH`, `timestamp`) VALUES ('$humidity', '$timestamp');
                     UPDATE `rainfall` SET `rainin`='$rainin', `last_update`='$timestamp';
                     INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`) VALUES ('$dailyrainin', '$rain_date', '$timestamp') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyrainin', `last_update`='$timestamp'");
@@ -203,7 +203,8 @@ if ($config->upload->myacurite->access_enabled === true) {
 } // MyAcurite is disabled
 else {
     // Output the expected response to the Access
-    $myacurite = '{}';
+    $access_timezone_offset = date('P');
+    $myacurite = '{"timezone":"' . $access_timezone_offset . '"}';
     // Log the raw data
     if ($config->debug->logging === true) {
         syslog(LOG_DEBUG, "(ACCESS)[Acuparse]: Response = $myacurite");

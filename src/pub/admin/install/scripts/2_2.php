@@ -31,4 +31,9 @@ switch ($config->version->app) {
         $config->version->app = '2.2.1';
         $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com';
         $notes .= '<li>' . $config->version->app . ' - ' . 'Blocks Acurite response from affecting the HUB.<br>Resolves broken Access updates to MyAcuRite.</li>';
+
+    // Update from 2.2.1
+    case '2.2.1':
+        $config->version->app = '2.2.2';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Access bug fixes.<br>New script to change Access Upload server.</li>';
 }

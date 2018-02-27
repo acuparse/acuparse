@@ -9,6 +9,8 @@ Can be run locally or on a remote/cloud server.
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 
 ## DNS Redirect
+> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
+
 If you are connecting your Access/SmartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally. Otherwise, you will need a DNS server installed on your network.
 See [docs/DNS.md](docs/DNS.md)
 
@@ -125,7 +127,17 @@ A typical response looks like this:
 `{"localtime":"00:00:00","checkversion":"224"}`
 
 ### Access
-When the Access reports readings to MyAcurite, it responds with an empty message. `{}`.
+When MyAcuRite receives your readings, it sends back a JSON response to your Access in the following format.
+`{"sensor1":"","PASSWORD1":"","timezone":"","elevation":"","ID1":""}`.
+
+* timezone = Local timezone offset of the Access.
+* ID1 = Weather Underground Station ID.
+* PASSWORD1 = Weather Underground Station Password.
+* sensor1 = Sensor used to send data to Weather Underground.
+* elevation = Elevation of the smartHUB in feet.
+
+A typical response looks like this:
+`{"timezone":"00:00""}`
 
 ## Email Outage Notifications:
 Outage notifications are sent to all registered admins. You can configure some simple values for outage checking, the system will email you when there is no data received.
