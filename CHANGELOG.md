@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.2.2]](https://www.acuparse.com/releases/v2-2-2/) - 2018-02-26
 ### Added
 - Timezone to Access response.
 - Script to change the upload server locally on the Access. Removing the DNS redirect requirement.
