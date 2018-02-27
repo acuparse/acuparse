@@ -203,7 +203,8 @@ if ($config->upload->myacurite->access_enabled === true) {
 } // MyAcurite is disabled
 else {
     // Output the expected response to the Access
-    $myacurite = '{}';
+    $access_timezone_offset = date('P');
+    $myacurite = '{"timezone":"' . $access_timezone_offset . '"}';
     // Log the raw data
     if ($config->debug->logging === true) {
         syslog(LOG_DEBUG, "(ACCESS)[Acuparse]: Response = $myacurite");

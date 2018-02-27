@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Timezone to Access response.
+
 ### Changed
 - Updated smartHUB EoL to 2019-03-01 due to AcuRite extending service.
 
