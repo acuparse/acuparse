@@ -28,26 +28,6 @@
 // Get the loader
 require(dirname(__DIR__) . '/src/inc/loader.php');
 
-// Check the event scheduler
-if ($config->mysql->trim !== 0) {
-    $result = mysqli_fetch_array(mysqli_query($conn, "SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
-    $scheduler = $result['Value'];
-    if ($scheduler === 'OFF') {
-        if ($config->mysql->trim === 1) {
-            $schema = dirname(__DIR__) . '/sql/trim/enable.sql';
-            $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-            $schema = shell_exec($schema);
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
-        } elseif ($config->mysql->trim === 2) {
-            // Load the database with the trim schema
-            $schema = dirname(__DIR__) . '/sql/trim/enable_xtower.sql';
-            $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-            $schema = shell_exec($schema);
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
-        }
-    }
-}
-
 // Load weather Data:
 require(APP_BASE_PATH . '/fcn/weather/GetCurrentWeatherData.php');
 $get_data = new GetCurrentWeatherData();
@@ -221,5 +201,25 @@ else {
     else {
         // Log it
         syslog(LOG_INFO, "(SYSTEM)[INFO]: No update to send. There is no new data to send or station is offline.");
+    }
+}
+
+// Check the event scheduler
+if ($config->mysql->trim !== 0) {
+    $result = mysqli_fetch_array(mysqli_query($conn, "SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
+    $scheduler = $result['Value'];
+    if ($scheduler === 'OFF') {
+        if ($config->mysql->trim === 1) {
+            $schema = dirname(__DIR__) . '/sql/trim/enable.sql';
+            $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
+            $schema = shell_exec($schema);
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
+        } elseif ($config->mysql->trim === 2) {
+            // Load the database with the trim schema
+            $schema = dirname(__DIR__) . '/sql/trim/enable_xtower.sql';
+            $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
+            $schema = shell_exec($schema);
+            syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
+        }
     }
 }
