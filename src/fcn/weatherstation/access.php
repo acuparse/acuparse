@@ -116,7 +116,7 @@ if ($_GET['mt'] === '5N1') {
         }
     }
 } // Process Tower Sensors
-elseif ($config->station->towers === true && $_GET['mt'] === 'tower') {
+elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn')) {
 
     // Tower ID
     $tower_id = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
@@ -128,12 +128,20 @@ elseif ($config->station->towers === true && $_GET['mt'] === 'tower') {
         $result = mysqli_fetch_array(mysqli_query($conn, $sql));
         $tower_name = $result['name'];
 
-        // Temperature
-        $tempF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'tempf', FILTER_SANITIZE_STRING));
+        // ProIn Specific Variables
+        if ($_GET['mt'] === 'ProIn') {
+            $tempF = (float)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'indoortempf', FILTER_SANITIZE_STRING));
+            $humidity = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'indoorhumidity', FILTER_SANITIZE_STRING));
+        } else {
+            // Temperature
+            $tempF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'tempf', FILTER_SANITIZE_STRING));
 
-        // Humidity
-        $humidity = (int)mysqli_real_escape_string($conn,
-            filter_input(INPUT_GET, 'humidity', FILTER_SANITIZE_STRING));
+            // Humidity
+            $humidity = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'humidity', FILTER_SANITIZE_STRING));
+        }
 
         // Insert into DB
         mysqli_query($conn,
