@@ -38,7 +38,7 @@ switch ($config->version->app) {
         $notes .= '<li>' . $config->version->app . ' - ' . 'Access bug fixes.<br>New script to change Access Upload server.</li>';
 
     // Update from 2.2.2
-    case '2.2.1':
+    case '2.2.2':
         $config->version->app = '2.2.3';
         $notes .= '<li>' . $config->version->app . ' - ' . 'Tower sensors now support the indoor/outdoor monitors for temp/humidity readings</li>';
 }
