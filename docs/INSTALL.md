@@ -12,7 +12,7 @@ Installing on a fresh instance of a Debian based OS is the only officially suppo
 > **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
 
 If you are connecting your Access/SmartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally. Otherwise, you will need a DNS server installed on your network.
-See [docs/DNS.md](docs/DNS.md)
+See [docs/DNS.md](DNS.md)
 
 ### smartHUB
 * Setup a local DNS override for `hubapi.myacurite.com` pointing to the external IP address of your Acuparse server.
@@ -20,7 +20,7 @@ See [docs/DNS.md](docs/DNS.md)
 ### Access
 * Setup a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 
-## Install Acuparse:
+## Automated Acuparse Installation:
 > **Info:** Installer currently supports Debian Stretch(9), Ubuntu 16.04 LTS and Raspbian.
 
 * Install the base operating system and update.
@@ -29,7 +29,10 @@ See [docs/DNS.md](docs/DNS.md)
 
 ``` wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh```
 
-### Installing Acuparse Manually:
+### Raspberry Pi
+* For a detailed installation guide on Raspbian, view the [Wiki Doc](https://github.com/acuparse/acuparse/wiki/Installation-on-Raspberry-Pi)
+
+## Manual Acuparse Installation:
 * Switch to the root account to install:
     * `sudo su`
 * Change to the root directory:
@@ -147,7 +150,7 @@ If there is no new data due to updates not being received in the configured peri
 
 ## Tower Sensors:
 Acuparse allows for the addition of as many Tower sensors as the Access/smartHUB will pass along. You can choose which sensors are shown publicly or only to logged in users. Towers are configured and arranged using the admin settings.
-          
+* Acuparse also supports Indoor/Outdoor Temp and Humidity monitors but will not save or display any additional data.          
 ## Check Installation:
 
 ## Syslog:

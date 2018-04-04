@@ -134,7 +134,7 @@ if (isset($_GET['do'])) {
 
         // Get footer
         include(APP_BASE_PATH . '/inc/footer.php');
-    } // Archive not enabled, go home.
+    } // Contact not enabled, go home.
     else {
         header("Location: /");
     }

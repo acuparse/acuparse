@@ -69,6 +69,11 @@ Detailed upgrade instructions for significant releases will be published in the 
     ``` cd /opt/acuparse && sudo git pull ```
 * Connect to your site to complete the update.
 
+# Donations:
+If you like Acuparse, you can support my work and the project by buying me a coffee!
+
+<a href="https://www.buymeacoffee.com/maxp" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 # Licencing:
 Acuparse is open-source software. Released with an AGPL-3.0+ license. It also uses several other open source scripts. Their licences included where available.
 
