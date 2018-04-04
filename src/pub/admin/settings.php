@@ -228,7 +228,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">Sensor Settings:</h2>
+                        <h2 class="panel-heading">Acurite Sensor Settings:</h2>
+                        <h3>Device Settings:</h3>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_access_mac">Access
                                 MAC:</label>
@@ -249,17 +250,6 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5N1 Sensor
-                                ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="station[sensor_5n1]"
-                                       id="station_sensor_5n1"
-                                       placeholder="5n1 Sensor ID" maxlength="8"
-                                       value="<?= $config->station->sensor_5n1; ?>">
-                                <p class="bg-info">8 Digits including leading 0's</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="baro_offset">Barometer
                                 Offset:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
@@ -268,6 +258,18 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                        value="<?= $config->station->baro_offset; ?>">
                                 <p class="bg-info">inHg. Adjust this as required to match the offset for your
                                     elevation</p>
+                            </div>
+                        </div>
+                        <h3>Sensor Settings:</h3>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5N1 Weather Station
+                                ID:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="station[sensor_5n1]"
+                                       id="station_sensor_5n1"
+                                       placeholder="5n1 Sensor ID" maxlength="8"
+                                       value="<?= $config->station->sensor_5n1; ?>">
+                                <p class="bg-info">8 Digits including leading 0's</p>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -287,7 +289,11 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </div>
                         </div>
                     </div>
+
                     <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
+
+                    <hr class="hr-dashed">
+
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h2 class="panel-heading">Site Settings:</h2>
                         <div class="form-group row margin-bottom-05">
@@ -586,6 +592,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                 </div>
+                <hr class="hr-dashed">
 
                 <!–– Google Settings -->
                 <div class="row">
@@ -653,6 +660,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                 </div>
+                <hr class="hr-dashed">
 
                 <!–– Upload Settings -->
                 <div class="row">

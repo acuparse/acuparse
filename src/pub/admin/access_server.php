@@ -21,8 +21,8 @@
  */
 
 /**
- * File: src/pub/admin/index.php
- * Send a POST request and change the update server in an Access
+ * File: src/pub/admin/access_server.php
+ * Sends a POST request to modify the update server in an Access
  */
 
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -85,4 +85,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
     </section>
     <?php
     include(APP_BASE_PATH . '/inc/footer.php');
+}
+else {
+    header("Location: /");
 }

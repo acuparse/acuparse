@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.2.3]](https://www.acuparse.com/releases/v2-2-3/) - 2018-04-03
+### Changed
+- Tower sensors now support the indoor/outdoor monitors for temp/humidity readings.
+- Admin settings formatting.
+- Minor formatting and documentation updates.
+
 ## [[2.2.2]](https://www.acuparse.com/releases/v2-2-2/) - 2018-02-26
 ### Added
 - Timezone to Access response.
