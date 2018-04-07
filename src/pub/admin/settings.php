@@ -262,7 +262,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                         <h3>Sensor Settings:</h3>
                         <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5N1 Weather Station
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5N1 Weather
+                                Station
                                 ID:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" class="form-control" name="station[sensor_5n1]"
@@ -798,7 +799,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                            id="cwop_station_location"
                                            placeholder="Station Location" maxlength="35"
                                            value="<?= $config->upload->cwop->location; ?>">
-                                    <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code>.<br>See <a href="http://boulter.com/gps">Degrees, Minutes & Seconds</a></p>
+                                    <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code>.<br>See <a
+                                                href="http://boulter.com/gps">Degrees, Minutes & Seconds</a></p>
                                 </div>
                             </div>
                             <div class="form-group row margin-bottom-05">

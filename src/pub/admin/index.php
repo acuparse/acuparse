@@ -73,7 +73,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
                 <h4>Access Tools:</h4>
                 <button type="button" id="access_server" class="btn btn-default center-block margin-top-10"
                         onclick="location.href = '/admin/access_server'"><i class="fa fa fa-cogs"
-                                                                       aria-hidden="true"></i> Change Upload Server
+                                                                            aria-hidden="true"></i> Change Upload Server
                 </button>
             </div>
         </div>

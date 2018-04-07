@@ -37,8 +37,6 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
         <div class="row">
             <div class="col-lg-12">
                 <h2 class="page-header">Change Access Update Server</h2>
-                <p>This script will attempt to change the server where your Access sends updates.<br>
-                    This is accomplished by sending a POST request from your browser to the IP address of your Access.</p>
             </div>
         </div>
         <?php
@@ -54,16 +52,28 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
                         <input type="text" class="form-control" name="ser" id="ser"
                                placeholder="New Hostname" value="<?= $config->site->hostname; ?>"
                                required>
-                        <p class="margin-top-05"><strong>Default: </strong><pre>atlasapi.myacurite.com</pre></p>
+                        <p class="margin-top-05"><strong>Default: </strong>
+                        <pre>atlasapi.myacurite.com</pre>
+                        </p>
                     </div>
                     <button type="submit" class="btn btn-primary center-block"><i
                                 class="fa fa-power-off"></i> Reboot
                     </button>
                 </form>
-                <p class="margin-top-05">When you submit the form, you'll be redirected to your Access where it will reboot.</p>
+                <p class="margin-top-05">When you submit this form, you'll be redirected to your Access. It will then
+                    reboot with the new settings.</p>
                 <?php
                 } else {
                 ?>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>This script sets the hostname where your Access sends it's data; via a POST request from your
+                            browser to your Access.</p>
+                    </div>
+                    <div class="alert alert-warning col-lg-6 col-lg-offset-3">
+                        <p><strong>Warning: </strong>Use a browser located on the same network as your Access!</p>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-4">
                         <form name="access_server" id="access_server" action="" method="GET">
@@ -85,7 +95,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
     </section>
     <?php
     include(APP_BASE_PATH . '/inc/footer.php');
-}
+} // Not logged in, go home
 else {
     header("Location: /");
 }

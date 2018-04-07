@@ -50,7 +50,8 @@ if ($config->camera->enabled === true) {
 
         // Check the cam directory for images
         $cam_dir = scandir('img/cam/');
-        $last_dir = current(array_slice($cam_dir, -2)); // Latest directory should be the 2nd last value. Since latest.jpg should be the last.
+        $last_dir = current(array_slice($cam_dir,
+            -2)); // Latest directory should be the 2nd last value. Since latest.jpg should be the last.
         $cam_dir = $cam_dir[3]; // Oldest images should be the 3rd value. Since .=0 ..=1 and .gitignore=2 are first.
         // No images? make today the latest day.
         $cam_dir_has_images = true;
@@ -74,7 +75,7 @@ if ($config->camera->enabled === true) {
                 } elseif ($backward_date > $today) {
                     ?>
                     <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fa fa-backward"
-                                                                         aria-hidden="true"></i></h3></a>
+                                                                            aria-hidden="true"></i></h3></a>
                     <?php
                 } else { ?>
                     <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fa fa-backward"
