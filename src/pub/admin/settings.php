@@ -683,8 +683,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3">
                         <h3 class="panel-heading">Master Temp/Humidity Sensor:</h3>
-                        <p>Choose the main sensor used when uploading Temp/Humidity data to 3rd party sites. This does not
-                            affect the main dashboard.</p>
+                        <p>Choose the main sensor used when uploading Temp/Humidity data to 3rd party sites. This does
+                            not affect the main dashboard.</p>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="wu_station_updates">Primary Sensor:</label>

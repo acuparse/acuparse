@@ -136,6 +136,10 @@ Detailed instructions for each available in docs/external.
     * Data is only sent to external sites when there is new data to send and enough time has passed for CWOP updates.
 > **Notice:** Disable updating of Weather Underground from your Access/smartHUB/MyAcuRite. Watch your syslog for the response from MyAcuRite.
 
+## Master Sensor:
+By default Acuparse will use the 5N1 sensor to upload data to external sites. To upload data from a tower, change the Master Temp/Humidity Sensor.
+Changing the sensor sends those readings externally instead of the 5N1. You can also choose to use the tower readings for the data archive or use the readings from the 5N1.
+
 # MyAcuRite Responses:
 
 ## Access:
