@@ -101,31 +101,42 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->contact->enabled = (bool)$_POST['contact']['enabled'];
 
         // Google
+
         // recaptcha
         $config->google->recaptcha->enabled = (bool)$_POST['google']['recaptcha']['enabled'];
         $config->google->recaptcha->secret = $_POST['google']['recaptcha']['secret'];
         $config->google->recaptcha->sitekey = $_POST['google']['recaptcha']['sitekey'];
+
         //analytics
         $config->google->analytics->enabled = (bool)$_POST['google']['analytics']['enabled'];
         $config->google->analytics->id = $_POST['google']['analytics']['id'];
 
         // Uploader
+
+        // Master Sensor
+        $config->upload->sensor->external = $_POST['upload']['sensor']['external'];
+        $config->upload->sensor->id = $_POST['upload']['sensor']['id'];
+        $config->upload->sensor->archive = (bool)$_POST['upload']['sensor']['archive'];
+
         // WU
         $config->upload->wu->enabled = (bool)$_POST['upload']['wu']['enabled'];
         $config->upload->wu->id = $_POST['upload']['wu']['id'];
         $config->upload->wu->password = $_POST['upload']['wu']['password'];
         $config->upload->wu->url = $_POST['upload']['wu']['url'];
+
         // PWS
         $config->upload->pws->enabled = (bool)$_POST['upload']['pws']['enabled'];
         $config->upload->pws->id = $_POST['upload']['pws']['id'];
         $config->upload->pws->password = $_POST['upload']['pws']['password'];
         $config->upload->pws->url = $_POST['upload']['pws']['url'];
+
         // CWOP
         $config->upload->cwop->enabled = (bool)$_POST['upload']['cwop']['enabled'];
         $config->upload->cwop->id = $_POST['upload']['cwop']['id'];
         $config->upload->cwop->location = $_POST['upload']['cwop']['location'];
         $config->upload->cwop->interval = $_POST['upload']['cwop']['interval'];
         $config->upload->cwop->url = $_POST['upload']['cwop']['url'];
+
         // MyAcurite
         $config->upload->myacurite->hub_enabled = (bool)$_POST['upload']['myacurite']['hub_enabled'];
         $config->upload->myacurite->hub_url = $_POST['upload']['myacurite']['hub_url'];
@@ -665,288 +676,373 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
                 <!–– Upload Settings -->
                 <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3">
                         <h2 class="panel-heading">Upload Settings:</h2>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="panel-heading">Weather Underground:</h3>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="wu_station_updates">Upload:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-success"><input type="radio" id="wu_station_updates"
-                                                                                  name="upload[wu][enabled]"
-                                                                                  value="1" <?php if ($config->upload->wu->enabled === true) {
-                                            echo 'checked="checked"';
-                                        } ?>>Enabled</label>
-                                    <label class="radio-inline bg-danger"><input type="radio" id="wu_station_updates"
-                                                                                 name="upload[wu][enabled]"
-                                                                                 value="0" <?php if ($config->upload->wu->enabled === false) {
-                                            echo 'checked="checked"';
-                                        } ?>>Disabled</label>
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_station_id">Station
-                                    ID:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[wu][id]" id="wu_station_id"
-                                           placeholder="Station ID" maxlength="15"
-                                           value="<?= $config->upload->wu->id; ?>">
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_station_password">Station
-                                    Password:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[wu][password]"
-                                           id="wu_station_password"
-                                           placeholder="Station Password" maxlength="35"
-                                           value="<?= $config->upload->wu->password; ?>">
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_update_url">Upload
-                                    URL:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[wu][url]"
-                                           id="wu_update_url"
-                                           placeholder="Update URL" value="<?= $config->upload->wu->url; ?>" readonly>
-                                </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3">
+                        <h3 class="panel-heading">Master Temp/Humidity Sensor:</h3>
+                        <p>Choose the main sensor used when uploading Temp/Humidity data to 3rd party sites. This does not
+                            affect the main dashboard.</p>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="wu_station_updates">Primary Sensor:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="station_updates_sensor"
+                                                                              name="upload[sensor][external]"
+                                                                              onclick='document.getElementById("station_updates_sensor_id").disabled=true;'
+                                                                              value="default" <?php if ($config->upload->sensor->external === 'default') {
+                                        echo 'checked="checked"';
+                                    } ?>>Default (5N1)</label>
+                                <label class="radio-inline bg-warning"><input type="radio"
+                                                                              id="station_updates_sensor"
+                                                                              name="upload[sensor][external]"
+                                                                              onclick='document.getElementById("station_updates_sensor_id").disabled=false;'
+                                                                              value="tower" <?php if ($config->upload->sensor->external === 'tower') {
+                                        echo 'checked="checked"';
+                                    } ?>>Tower</label>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="panel-heading">PWS Weather:</h3>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="pws_station_updates">Upload:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-success"><input type="radio" id="pws_station_updates"
-                                                                                  name="upload[pws][enabled]"
-                                                                                  value="1" <?php if ($config->upload->pws->enabled === true) {
-                                            echo 'checked="checked"';
-                                        } ?>>Enabled</label>
-                                    <label class="radio-inline bg-danger"><input type="radio" id="pws_station_updates"
-                                                                                 name="upload[pws][enabled]"
-                                                                                 value="0" <?php if ($config->upload->pws->enabled === false) {
-                                            echo 'checked="checked"';
-                                        } ?>>Disabled</label>
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_station_id">Station
-                                    ID:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[pws][id]"
-                                           id="pws_station_id"
-                                           placeholder="Station ID" maxlength="15"
-                                           value="<?= $config->upload->pws->id; ?>">
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_station_password">Station
-                                    Password:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[pws][password]"
-                                           id="pws_station_password"
-                                           placeholder="Station Password" maxlength="35"
-                                           value="<?= $config->upload->pws->password; ?>">
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_update_url">Upload
-                                    URL:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[pws][url]"
-                                           id="pws_update_url"
-                                           placeholder="Update URL" value="<?= $config->upload->pws->url; ?>" readonly>
-                                </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="station_updates_sensor_id">Tower ID:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <select name="upload[sensor][id]"
+                                        id="station_updates_sensor_id"
+                                    <?php if ($config->upload->sensor->external === 'default') {
+                                        echo 'disabled="disabled"';
+                                    } ?>
+                                        class="form-control">
+                                    <option value=""></option>
+                                    <?php
+                                    $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        ?>
+                                        <option value="<?= $row['sensor']; ?>" <?php if ($config->upload->sensor->id === $row['sensor']) {
+                                            echo 'selected="selected"';
+                                        } ?>> <?= $row['sensor'] . ' - ' . $row['name']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
-                        <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="panel-heading">CWOP:</h3>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="cwop_station_updates">Upload:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-success"><input type="radio" id="cwop_station_updates"
-                                                                                  name="upload[cwop][enabled]"
-                                                                                  value="1" <?php if ($config->upload->cwop->enabled === true) {
-                                            echo 'checked="checked"';
-                                        } ?>>Enabled</label>
-                                    <label class="radio-inline bg-danger"><input type="radio" id="cwop_station_updates"
-                                                                                 name="upload[cwop][enabled]"
-                                                                                 value="0" <?php if ($config->upload->cwop->enabled === false) {
-                                            echo 'checked="checked"';
-                                        } ?>>Disabled</label>
-                                </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="station_updates_sensor_archive">Use for Archive?</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="station_updates_sensor_archive"
+                                                                              name="upload[sensor][archive]"
+                                                                              value="1" <?php if ($config->upload->sensor->archive === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-danger"><input type="radio"
+                                                                             id="station_updates_sensor_archive"
+                                                                             name="upload[sensor][archive]"
+                                                                             value="0" <?php if ($config->upload->sensor->archive === false) {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
                             </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_station_id">Station
-                                    ID:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[cwop][id]"
-                                           id="cwop_station_id"
-                                           placeholder="Station ID" maxlength="15"
-                                           value="<?= $config->upload->cwop->id; ?>">
-                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <h3 class="panel-heading">Weather Underground:</h3>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="wu_station_updates">Upload:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="wu_station_updates"
+                                                                              name="upload[wu][enabled]"
+                                                                              value="1" <?php if ($config->upload->wu->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-danger"><input type="radio"
+                                                                             id="wu_station_updates"
+                                                                             name="upload[wu][enabled]"
+                                                                             value="0" <?php if ($config->upload->wu->enabled === false) {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
                             </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="cwop_station_location">Location</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[cwop][location]"
-                                           id="cwop_station_location"
-                                           placeholder="Station Location" maxlength="35"
-                                           value="<?= $config->upload->cwop->location; ?>">
-                                    <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code>.<br>See <a
-                                                href="http://boulter.com/gps">Degrees, Minutes & Seconds</a></p>
-                                </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_station_id">Station
+                                ID:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[wu][id]" id="wu_station_id"
+                                       placeholder="Station ID" maxlength="15"
+                                       value="<?= $config->upload->wu->id; ?>">
                             </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_station_interval">Update
-                                    Interval</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <select name="upload[cwop][interval]" id="cwop_station_interval"
-                                            class="form-control">
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_station_password">Station
+                                Password:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[wu][password]"
+                                       id="wu_station_password"
+                                       placeholder="Station Password" maxlength="35"
+                                       value="<?= $config->upload->wu->password; ?>">
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_update_url">Upload
+                                URL:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[wu][url]"
+                                       id="wu_update_url"
+                                       placeholder="Update URL" value="<?= $config->upload->wu->url; ?>"
+                                       readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <h3 class="panel-heading">PWS Weather:</h3>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="pws_station_updates">Upload:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="pws_station_updates"
+                                                                              name="upload[pws][enabled]"
+                                                                              value="1" <?php if ($config->upload->pws->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-danger"><input type="radio"
+                                                                             id="pws_station_updates"
+                                                                             name="upload[pws][enabled]"
+                                                                             value="0" <?php if ($config->upload->pws->enabled === false) {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_station_id">Station
+                                ID:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[pws][id]"
+                                       id="pws_station_id"
+                                       placeholder="Station ID" maxlength="15"
+                                       value="<?= $config->upload->pws->id; ?>">
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_station_password">Station
+                                Password:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[pws][password]"
+                                       id="pws_station_password"
+                                       placeholder="Station Password" maxlength="35"
+                                       value="<?= $config->upload->pws->password; ?>">
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_update_url">Upload
+                                URL:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[pws][url]"
+                                       id="pws_update_url"
+                                       placeholder="Update URL" value="<?= $config->upload->pws->url; ?>"
+                                       readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <h3 class="panel-heading">CWOP:</h3>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="cwop_station_updates">Upload:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="cwop_station_updates"
+                                                                              name="upload[cwop][enabled]"
+                                                                              value="1" <?php if ($config->upload->cwop->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-danger"><input type="radio"
+                                                                             id="cwop_station_updates"
+                                                                             name="upload[cwop][enabled]"
+                                                                             value="0" <?php if ($config->upload->cwop->enabled === false) {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_station_id">Station
+                                ID:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[cwop][id]"
+                                       id="cwop_station_id"
+                                       placeholder="Station ID" maxlength="15"
+                                       value="<?= $config->upload->cwop->id; ?>">
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="cwop_station_location">Location</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[cwop][location]"
+                                       id="cwop_station_location"
+                                       placeholder="Station Location" maxlength="35"
+                                       value="<?= $config->upload->cwop->location; ?>">
+                                <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code>.<br>See <a
+                                            href="http://boulter.com/gps">Degrees, Minutes & Seconds</a></p>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_station_interval">Update
+                                Interval</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <select name="upload[cwop][interval]" id="cwop_station_interval"
+                                        class="form-control">
+                                    <?php
+                                    foreach ($config->intervals as $interval) { ?>
+                                        <option value="<?= $interval; ?>" <?php if ($config->upload->cwop->interval === $interval) {
+                                            echo 'selected="selected"';
+                                        } ?>><?= $interval; ?></option>
                                         <?php
-                                        foreach ($config->intervals as $interval) { ?>
-                                            <option value="<?= $interval; ?>" <?php if ($config->upload->cwop->interval === $interval) {
-                                                echo 'selected="selected"';
-                                            } ?>><?= $interval; ?></option>
-                                            <?php
-                                        } ?>
+                                    } ?>
+                                </select>
+                                <p class="bg-info">Should be at least 5 minutes; 10 is good.</p>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_update_url">Upload
+                                URL:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="upload[cwop][url]"
+                                       id="cwop_update_url"
+                                       placeholder="Update URL" value="<?= $config->upload->cwop->url; ?>"
+                                       readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!–– MyAcuRite -->
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <h3 class="panel-heading">MyAcuRite:</h3>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="myacurite_hub_update">smartHub Upload:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="myacurite_hub_update"
+                                                                              name="upload[myacurite][hub_enabled]"
+                                                                              value="1" <?php if ($config->upload->myacurite->hub_enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-danger"><input type="radio"
+                                                                             id="myacurite_hub_update"
+                                                                             name="upload[myacurite][hub_enabled]"
+                                                                             value="0" <?php if ($config->upload->myacurite->hub_enabled === false) {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="myacurite_access_update">Access Upload:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="myacurite_access_update"
+                                                                              name="upload[myacurite][access_enabled]"
+                                                                              value="1" <?php if ($config->upload->myacurite->access_enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
+                                <label class="radio-inline bg-danger"><input type="radio"
+                                                                             id="myacurite_access_update"
+                                                                             name="upload[myacurite][access_enabled]"
+                                                                             value="0" <?php if ($config->upload->myacurite->access_enabled === false) {
+                                        echo 'checked="checked"';
+                                    } ?>>Disabled</label>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-05">
+                            <h4>Upload URL's:</h4>
+                            <div class="row">
+                                <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 bg-info">
+                                    <p><strong>If installed on the same network as your device, use
+                                            secondary.<br>See
+                                            <code>docs/DNS.md</code></strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row margin-bottom-05 margin-top-05">
+                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                       for="myacurite_hub_update_url">smartHub:</label>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                    <select name="upload[myacurite][hub_url]" id="myacurite_hub_update_url"
+                                            class="form-control">
+                                        <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.myacurite.com") {
+                                            echo 'selected="selected"';
+                                        } ?>>myacurite.com (official)
+                                        </option>
+                                        <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.acuparse.com") {
+                                            echo 'selected="selected"';
+                                        } ?>>acuparse.com (secondary)
+                                        </option>
                                     </select>
-                                    <p class="bg-info">Should be at least 5 minutes; 10 is good.</p>
                                 </div>
                             </div>
                             <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_update_url">Upload
-                                    URL:</label>
+                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                       for="myacurite_access_update_url">Access:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="upload[cwop][url]"
-                                           id="cwop_update_url"
-                                           placeholder="Update URL" value="<?= $config->upload->cwop->url; ?>" readonly>
+                                    <select name="upload[myacurite][access_url]"
+                                            id="myacurite_access_update_url"
+                                            class="form-control">
+                                        <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") {
+                                            echo 'selected="selected"';
+                                        } ?>>myacurite.com (official)
+                                        </option>
+                                        <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") {
+                                            echo 'selected="selected"';
+                                        } ?>>acuparse.com (secondary)
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!–– MyAcuRite -->
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="panel-heading">MyAcuRite:</h3>
+                    <!–– Debug Server -->
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <h3 class="panel-heading">Debug Update Server:</h3>
+                        <p>Sends MyAcuRite data to an additional debug server</p>
+                        <div class="form-group row margin-bottom-05">
                             <div class="form-group row margin-bottom-05">
                                 <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="myacurite_hub_update">smartHub Upload:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-success"><input type="radio" id="myacurite_hub_update"
-                                                                                  name="upload[myacurite][hub_enabled]"
-                                                                                  value="1" <?php if ($config->upload->myacurite->hub_enabled === true) {
-                                            echo 'checked="checked"';
-                                        } ?>>Enabled</label>
-                                    <label class="radio-inline bg-danger"><input type="radio" id="myacurite_hub_update"
-                                                                                 name="upload[myacurite][hub_enabled]"
-                                                                                 value="0" <?php if ($config->upload->myacurite->hub_enabled === false) {
-                                            echo 'checked="checked"';
-                                        } ?>>Disabled</label>
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="myacurite_access_update">Access Upload:</label>
+                                       for="debug_server_enabled">Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                     <label class="radio-inline bg-success"><input type="radio"
-                                                                                  id="myacurite_access_update"
-                                                                                  name="upload[myacurite][access_enabled]"
-                                                                                  value="1" <?php if ($config->upload->myacurite->access_enabled === true) {
+                                                                                  id="debug_server_enabled"
+                                                                                  name="debug[server][enabled]"
+                                                                                  value="1" <?php if ($config->debug->server->enabled === true) {
                                             echo 'checked="checked"';
                                         } ?>>Enabled</label>
                                     <label class="radio-inline bg-danger"><input type="radio"
-                                                                                 id="myacurite_access_update"
-                                                                                 name="upload[myacurite][access_enabled]"
-                                                                                 value="0" <?php if ($config->upload->myacurite->access_enabled === false) {
+                                                                                 id="debug_server_enabled"
+                                                                                 name="debug[server][enabled]"
+                                                                                 value="0" <?php if ($config->debug->server->enabled === false) {
                                             echo 'checked="checked"';
                                         } ?>>Disabled</label>
                                 </div>
                             </div>
-                            <div class="row margin-bottom-05">
-                                <h4>Upload URL's:</h4>
-                                <div class="row">
-                                    <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 bg-info">
-                                        <p><strong>If installed on the same network as your device, use secondary.<br>See
-                                                <code>docs/DNS.md</code></strong>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group row margin-bottom-05 margin-top-05">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                           for="myacurite_hub_update_url">smartHub:</label>
-                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                        <select name="upload[myacurite][hub_url]" id="myacurite_hub_update_url"
-                                                class="form-control">
-                                            <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.myacurite.com") {
-                                                echo 'selected="selected"';
-                                            } ?>>myacurite.com (official)
-                                            </option>
-                                            <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.acuparse.com") {
-                                                echo 'selected="selected"';
-                                            } ?>>acuparse.com (secondary)
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row margin-bottom-05">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                           for="myacurite_access_update_url">Access:</label>
-                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                        <select name="upload[myacurite][access_url]" id="myacurite_access_update_url"
-                                                class="form-control">
-                                            <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") {
-                                                echo 'selected="selected"';
-                                            } ?>>myacurite.com (official)
-                                            </option>
-                                            <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") {
-                                                echo 'selected="selected"';
-                                            } ?>>acuparse.com (secondary)
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
+                                   for="debug_server_url">URL:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" name="debug[server][url]"
+                                       id="debug_server_url"
+                                       placeholder="Server URL" value="<?= $config->debug->server->url; ?>">
                             </div>
                         </div>
-
-                        <!–– Debug Server -->
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="panel-heading">Debug Update Server:</h3>
-                            <p>Sends MyAcuRite data to an additional debug server</p>
-                            <div class="form-group row margin-bottom-05">
-                                <div class="form-group row margin-bottom-05">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                           for="debug_server_enabled">Upload:</label>
-                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                        <label class="radio-inline bg-success"><input type="radio"
-                                                                                      id="debug_server_enabled"
-                                                                                      name="debug[server][enabled]"
-                                                                                      value="1" <?php if ($config->debug->server->enabled === true) {
-                                                echo 'checked="checked"';
-                                            } ?>>Enabled</label>
-                                        <label class="radio-inline bg-danger"><input type="radio"
-                                                                                     id="debug_server_enabled"
-                                                                                     name="debug[server][enabled]"
-                                                                                     value="0" <?php if ($config->debug->server->enabled === false) {
-                                                echo 'checked="checked"';
-                                            } ?>>Disabled</label>
-                                    </div>
-                                </div>
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="debug_server_url">URL:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <input type="text" class="form-control" name="debug[server][url]"
-                                           id="debug_server_url"
-                                           placeholder="Server URL" value="<?= $config->debug->server->url; ?>">
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
+
+                </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">

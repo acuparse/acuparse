@@ -15,7 +15,7 @@ Users currently having trouble sending updates to Weather Underground should fin
 # Features:
 * **Your weather data belongs to you, stored on your OWN server.**
 * Showcase live camera images and send them to Weather Underground.
-* Uploads weather data to external providers.
+* Uploads weather data from your 5N1 or a Tower/5N1 to external providers.
 * Customize barometer readings.
 * Display data in both &#8457; and &#8451;. Selectable default.
 * Multiple tower sensors, public or private.
@@ -34,12 +34,9 @@ Users currently having trouble sending updates to Weather Underground should fin
     * Reports can be run against the database. Open issues for custom report requests and tag them with the reports tag. phpMyAdmin is an excellent tool for advanced manual reporting on your station.
 * Charts and Graphing.
     * Since this is available at most external weather sites.
-* Multiple Access/smartHUB/5n1 sensors and ability to choose which sensor uploads externally.
-    * The current framework is centred around one Access/smartHUB with a single 5n1 sensor.
-    Version 2 will continue using the single Access/smartHUB model. With the development of Version 3 centring around support for the Access and Atlas sensors. 
-    The ability to customise the sensor data sent to external sites will also get added. Since support for multiple sensors requires a profound restructuring, it is unknown if there will be an upgrade path to Version 3, from 2.
-    Please keep that in mind when planning your long-term data archiving. The core focus with any data migration between version 2.X and 3.X will be the archive data. Community feedback will mostly drive the development of version 3.X and any migration paths.
-
+* Multiple Access/smartHUB/5n1 sensors
+    * The current framework is built around a single Access/smartHUB and 5n1 sensor. 
+   
 # Installation:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
 > **Note:** If you are not using an Access, you will need to setup a DNS redirect using a DNS server on your local network. 

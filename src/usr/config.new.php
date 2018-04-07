@@ -97,6 +97,12 @@ return (object)array(
 
     // External Updater Settings
     'upload' => (object)array(
+        // Master Sensor Settings
+        'sensor' => (object)array(
+            'external' => 'default', // default or tower
+            'id' => '', // Tower ID
+            'archive' => false, // true or false
+        ),
 
         // Weather Underground Settings
         'wu' => (object)array(
