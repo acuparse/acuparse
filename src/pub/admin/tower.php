@@ -51,7 +51,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
             $result = mysqli_query($conn,
                 "INSERT INTO `towers` (`name`, `sensor`, `arrange`, `private`) VALUES ('$tower_name', '$tower_sensor_id', '$display', '$private')");
             if (!$result) {
-                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding tower $tower_sensor_id - $tower_name failed: " . mysqli_error($conn));
+                syslog(LOG_ERR,
+                    "(SYSTEM)[ERROR]: Adding tower $tower_sensor_id - $tower_name failed: " . mysqli_error($conn));
             }
 
             // If the insert Query was successful.

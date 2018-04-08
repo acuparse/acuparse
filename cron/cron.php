@@ -33,7 +33,17 @@ require(APP_BASE_PATH . '/fcn/weather/GetCurrentWeatherData.php');
 $get_data = new GetCurrentWeatherData();
 $data = $get_data->getConditions();
 
-// Send data to wunderground and PWS
+// If using tower data for archiving, set it now
+if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === true) {
+    $sensor = $config->upload->sensor->id;
+    $result = mysqli_fetch_assoc(mysqli_query($conn,
+        "SELECT * FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+    $data->tempF = round($result['tempF'], 1);
+    $data->tempC = round(($result['tempF'] - 32) * 5 / 9, 1);
+    $data->relH = $result['relH'];
+    $dewptC = ((pow(($data->relH / 100), 0.125)) * (112 + 0.9 * $data->tempC) + (0.1 * $data->tempC) - 112);
+    $dewptF = ($dewptC * 9 / 5) + 32;
+}
 
 // Set the UTC date for the update
 $utc_date = gmdate("Y-m-d+H:i:s");
@@ -83,6 +93,18 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         }
     }
 
+    // Using tower data
+    if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === false) {
+        $sensor = $config->upload->sensor->id;
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT * FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+        $data->tempF = round($result['tempF'], 1);
+        $data->tempC = round(($result['tempF'] - 32) * 5 / 9, 1);
+        $data->relH = $result['relH'];
+        $dewptC = ((pow(($data->relH / 100), 0.125)) * (112 + 0.9 * $data->tempC) + (0.1 * $data->tempC) - 112);
+        $dewptF = ($dewptC * 9 / 5) + 32;
+    }
+
     // Build PWS Update
     if ($config->upload->pws->enabled === true) {
         $pws_query_url = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->password;
@@ -93,7 +115,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pws_query', '$pws_query_result')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "[PWS]: Query = $pws_query | Result = $pws_query_result");
+            syslog(LOG_DEBUG, "(EXTERNAL)[PWS]: Query = $pws_query | Result = $pws_query_result");
         }
     }
 
@@ -107,7 +129,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wu_query', '$wu_query_result')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "[WU]: Query = $wu_query | Result = $wu_query_result");
+            syslog(LOG_DEBUG, "(EXTERNAL)[WU]: Query = $wu_query | Result = $wu_query_result");
         }
     }
 
@@ -133,7 +155,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             if (!$cwop_socket) {
                 if ($config->debug->logging === true) {
                     // Log it
-                    syslog(LOG_DEBUG, "[CWOP]: Query = $cwop_socket_errno ($cwop_socket_errstr)");
+                    syslog(LOG_DEBUG, "(EXTERNAL)[CWOP] Socket Error: $cwop_socket_errno ($cwop_socket_errstr)");
                 }
             } else {
                 $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $config->site->hostname . "\r";
@@ -146,13 +168,13 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             // Log
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_DEBUG, "[CWOP]: Query = $cwop_query");
+                syslog(LOG_DEBUG, "(EXTERNAL)[CWOP]: Query = $cwop_query");
             }
         } // No new update to send
         else {
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_DEBUG, "[CWOP]: Update not sent. Not enough time has passed");
+                syslog(LOG_DEBUG, "(EXTERNAL)[CWOP]: Update not sent. Not enough time has passed");
             }
         }
     }

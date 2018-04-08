@@ -84,7 +84,8 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                 setcookie('token', '', time() - 3600, '/');
                 $_SESSION = array();
                 session_regenerate_id(true);
-                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid Cookie Presented for UID $uid: $device_key - $presented_token");
+                syslog(LOG_ERR,
+                    "(SYSTEM)[ERROR]: Invalid Cookie Presented for UID $uid: $device_key - $presented_token");
             }
         }
     }

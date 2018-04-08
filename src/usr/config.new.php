@@ -97,6 +97,12 @@ return (object)array(
 
     // External Updater Settings
     'upload' => (object)array(
+        // Master Sensor Settings
+        'sensor' => (object)array(
+            'external' => 'default', // default or tower
+            'id' => '', // Tower ID
+            'archive' => false, // true or false
+        ),
 
         // Weather Underground Settings
         'wu' => (object)array(
@@ -161,7 +167,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.2.3',
-        'schema' => '2.2',
+        'app' => '2.3.0',
+        'schema' => '2.3',
     ),
 );
