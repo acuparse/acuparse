@@ -158,7 +158,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
                     syslog(LOG_DEBUG, "(EXTERNAL)[CWOP] Socket Error: $cwop_socket_errno ($cwop_socket_errstr)");
                 }
             } else {
-                $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $config->site->hostname . "\r";
+                $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $app_info->name . "(" . $app_info->version . ")" . "\r";
                 fwrite($cwop_socket, $cwop_out);
                 fclose($cwop_socket);
             }
