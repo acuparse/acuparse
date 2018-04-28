@@ -109,7 +109,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
     if ($config->upload->pws->enabled === true) {
         $pws_query_url = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->password;
         $pws_query = '&dateutc=' . $utc_date . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSmph . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-        $pws_query_static = '&softwaretype=other&action=updateraw';
+        $pws_query_static = '&softwaretype=' . $app_info->name . '&action=updateraw';
         $pws_query_result = file_get_contents($pws_query_url . $pws_query . $pws_query_static);
         // Save to DB
         mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pws_query', '$pws_query_result')");
@@ -123,7 +123,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
     if ($config->upload->wu->enabled === true) {
         $wu_query_url = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
         $wu_query = '&dateutc=' . $utc_date . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&winddir_avg2m=' . $data->windDEG_avg2 . '&windspeedmph=' . $data->windSmph . '&windspdmph_avg2m=' . $data->windSmph_avg2 . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-        $wu_query_static = '&softwaretype=other&action=updateraw';
+        $wu_query_static = '&softwaretype=' . $app_info->name . '&action=updateraw';
         $wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
         // Save to DB
         mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wu_query', '$wu_query_result')");
@@ -158,7 +158,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
                     syslog(LOG_DEBUG, "(EXTERNAL)[CWOP] Socket Error: $cwop_socket_errno ($cwop_socket_errstr)");
                 }
             } else {
-                $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $app_info->name . "(" . $app_info->version . ")" . "\r";
+                $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $app_info->name . "\r";
                 fwrite($cwop_socket, $cwop_out);
                 fclose($cwop_socket);
             }
