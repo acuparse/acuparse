@@ -100,7 +100,7 @@
                                     </li> <?php } ?>
                                 <?php if ($config->upload->cwop->enabled === true) { ?>
                                     <li>
-                                        <a href="//www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
+                                        <a href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
                                            target="_blank"><i
                                                     class="fa fa-external-link-square" aria-hidden="true"></i> CWOP</a>
                                     </li> <?php } ?>

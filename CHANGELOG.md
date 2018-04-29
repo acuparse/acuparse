@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.3.1]](https://www.acuparse.com/releases/v2-3-1/) - 2018-04-27
+### Changed
+- Findu does not play nice with https at the moment. Forcing nav link to be http.
+- External updates will use the proper appname when building update packets.
+
 ## [[2.3.0]](https://www.acuparse.com/releases/v2-3-0/) - 2018-04-07
 ### Added
 - Ability to set a Tower as the source for Temp/Humidity when sending updates externally/archiving.

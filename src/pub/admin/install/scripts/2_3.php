@@ -37,4 +37,9 @@ switch ($config->version->app) {
         $config->upload->sensor->id = null;
         $config->upload->sensor->archive = false;
         $notes .= '<li>' . $config->version->app . ' - ' . 'Added ability to choose master sensor for external upload.</li>';
+
+    // Update from 2.3.0
+    case '2.3.0':
+        $config->version->app = '2.3.1';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes to CWOP packet and Findu link.</li>';
 }
