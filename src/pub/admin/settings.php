@@ -1059,6 +1059,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         <?php
         include(APP_BASE_PATH . '/inc/footer.php');
     }
-} else {
-    header("Location: /admin/account");
+} // Not logged in or user is not an admin
+else {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    header("Location: /");
 }

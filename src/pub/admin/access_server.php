@@ -97,5 +97,6 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
     include(APP_BASE_PATH . '/inc/footer.php');
 } // Not logged in, go home
 else {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /");
 }
