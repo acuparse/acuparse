@@ -61,7 +61,7 @@ if (isset($_GET['update']) && $installed === true) {
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
                     <button type="button" class="btn btn-primary btn-block" onclick="location.href = '/admin/settings'">
                         <i
-                                class="fa fa-check" aria-hidden="true"></i> Edit Settings
+                                class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
                     </button>
                 </div>
             </section>
@@ -85,7 +85,7 @@ if (isset($_GET['update']) && $installed === true) {
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
                     <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"
                             onclick="location.href = '/admin/install?update&do'"><i
-                                class="fa fa-check"
+                                class="fas fa-wrench"
                                 aria-hidden="true"></i>
                         Process Upgrade
                     </button>
@@ -216,7 +216,7 @@ elseif (isset($_GET['add_user']) && $installed === true) {
                                        placeholder="Password" maxlength="32" required>
                             </div>
                             <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                        class="fa fa-check" aria-hidden="true"></i> Submit
+                                        class="fas fa-save" aria-hidden="true"></i> Save
                             </button>
                         </form>
                     </div>
@@ -359,9 +359,9 @@ elseif ($installed === false) {
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">
                     <button type="submit" id="submit" value="submit" class="btn btn-primary btn-block"><i
-                                class="fa fa-check"
+                                class="fas fa-save"
                                 aria-hidden="true"></i>
-                        Submit
+                        Save
                     </button>
                 </div>
             </div>

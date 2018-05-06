@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Bumped jQuery datetimepicker to 2.5.19.
+- Bumped jQuery to 3.3.1.
+- Font Awesome to 5.0.12 and icon updates.
+- Lightbox to v2.10.0.
+- Installer and general security fixes.
 
 ## [[2.3.1]](https://www.acuparse.com/releases/v2-3-1/) - 2018-04-27
 ### Changed

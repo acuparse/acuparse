@@ -104,7 +104,9 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                                                        value="0" checked="checked">No</label>
                                 </div>
                                 <input type="hidden" name="display" id="display" value="<?= $arrange; ?>">
-                                <button type="submit" id="submit" value="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
+                                            class="fas fa-save" aria-hidden="true"></i> Save
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -177,9 +179,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" id="archive" class="btn btn-primary center-block"
-                            onclick="location.href = '/admin'"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-                        Done
+                    <button type="button" class="btn btn-primary center-block" onclick="location.href = '/admin'"><i
+                                class="fas fa-arrow-circle-left" aria-hidden="true"></i> Done
                     </button>
                 </div>
             </div>
@@ -276,7 +277,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </div>
                             <input type="hidden" value="<?= $row['sensor']; ?>" name="original_tower_id">
                             <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                        class="fa fa fa-save" aria-hidden="true"></i> Save
+                                        class="fas fa-save" aria-hidden="true"></i> Save
                             </button>
                         </form>
                     </div>
@@ -288,7 +289,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                     <p>Click below to remove <?= $row['name']; ?>.</p>
                     <button type="button" id="delete" class="btn btn-danger center-block"
                             onClick="confirmDelete('/admin/tower?delete&sensor_id=<?= $row['sensor']; ?>')"><i
-                                class="fa fa fa-remove" aria-hidden="true"></i> Delete Tower
+                                class="far fa-trash-alt" aria-hidden="true"></i> Delete Tower
                     </button>
                 </div>
             </section>

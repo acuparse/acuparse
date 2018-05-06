@@ -44,7 +44,7 @@ function getArchiveHTML()
             <!-- Yesterday -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <h2 class="panel-heading">Yesterday:</h2>
-                <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
+                <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
                 <ul class="list-unstyled">
                     <li><strong>High:</strong> <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -111,7 +111,7 @@ function getArchiveHTML()
             <!-- This Week -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <h2 class="panel-heading">This Week:</h2>
-                <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
+                <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
                 <ul class="list-unstyled">
                     <li><strong>High:</strong> <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -185,7 +185,7 @@ function getArchiveHTML()
             <!-- This Month -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <h2 class="panel-heading">This Month:</h2>
-                <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
+                <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
                 <ul class="list-unstyled">
                     <li><strong>High:</strong> <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -260,7 +260,7 @@ function getArchiveHTML()
             <!-- Last Month -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <h2 class="panel-heading">Last Month:</h2>
-                <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
+                <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
                 <ul class="list-unstyled">
                     <li><strong>High:</strong> <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -336,7 +336,7 @@ function getArchiveHTML()
             <!-- This Year -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <h2 class="panel-heading">This Year:</h2>
-                <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
+                <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
                 <ul class="list-unstyled">
                     <li><strong>High:</strong> <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -409,7 +409,7 @@ function getArchiveHTML()
             <!-- All Time -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <h2 class="panel-heading">All Time:</h2>
-                <h3><i class="fa fa-thermometer-full" aria-hidden="true"></i> Temperature:</h3>
+                <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
                 <ul class="list-unstyled">
                     <li><strong>High:</strong> <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {

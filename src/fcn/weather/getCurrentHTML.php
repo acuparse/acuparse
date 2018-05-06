@@ -78,7 +78,7 @@ function getCurrentHTML()
 
                 <!-- Temperature Data -->
                 <div class="row row_temperature_data">
-                    <h2><i class="fa <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
+                    <h2><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
                     <h4><?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457; ($wx->tempC&#8451;)" : "$wx->tempC&#8451; ($wx->tempF&#8457;)";
@@ -296,7 +296,7 @@ function getCurrentHTML()
                         ?>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"> <!-- 1/4th Column -->
                             <h2 class="panel-heading"><?= $row['name']; ?>:</h2>
-                            <h3><i class="fa <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h3>
+                            <h3><i class="fas <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h3>
                             <h4><?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                     $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; ($tempC&#8451;) $tempF_trend" : "$tempC&#8451; ($tempF&#8457;) $tempF_trend";

@@ -150,7 +150,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                             <input type="hidden" name="uid" id="uid" value="<?= $user_id; ?>">
                             <button type="submit" id="submit" value="submit"
                                     class="margin-top-05 btn btn-primary center-block">
-                                <i class="fa fa-check" aria-hidden="true"></i> Submit
+                                <i class="fas fa-save" aria-hidden="true"></i> Save
                             </button>
                         </form>
                     </div>
@@ -324,7 +324,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 </div>
                                 <input type="hidden" value="<?= $user_id; ?>" name="uid">
                                 <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                            class="fa fa fa-save" aria-hidden="true"></i> Save
+                                            class="fas fa-save"" aria-hidden="true"></i> Save
                                 </button>
                             </form>
                         </div>
@@ -338,7 +338,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                     onclick="location.href = '/admin/account?password<?php if ($user_id !== $_SESSION['UserID']) {
                                         echo '&uid=' . $user_id;
                                     } ?>'"><i
-                                        class="fa fa fa-remove" aria-hidden="true"></i> Change Password
+                                        class="fas fa-key" aria-hidden="true"></i> Change Password
                             </button>
                         </div>
                     </div>
@@ -354,7 +354,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 } ?>type="button" id="delete" class="btn btn-danger center-block"
                                         onClick="confirmDelete('/admin/account?delete&uid=<?= $user_id; ?>')">
                                     <i
-                                            class="fa fa fa-remove" aria-hidden="true"></i> Delete User
+                                            class="fas fa-user-times" aria-hidden="true"></i> Delete User
                                 </button>
                             </div>
                         </div>
@@ -467,7 +467,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                                                            value="0" checked="checked">No</label>
                                     </div>
                                     <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                                class="fa fa-check" aria-hidden="true"></i> Submit
+                                                class="fas fa-save" aria-hidden="true"></i> Save
                                     </button>
                                 </form>
                             </div>
@@ -519,7 +519,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                             </table>
                         </div>
                         <button type="button" class="btn btn-primary center-block"
-                                onclick="location.href = '/admin'"><i class="fa fa-chevron-left"
+                                onclick="location.href = '/admin'"><i class="fas fa-arrow-circle-left"
                                                                       aria-hidden="true"></i>
                             Done
                         </button>
@@ -670,12 +670,12 @@ elseif (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) !== 0) {
                 if ($config->google->recaptcha->enabled === true) { ?>
                     <button class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
                             data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
-                        <i class="fa fa-sign-in" aria-hidden="true"></i> Login
+                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
                     </button>
                     <?php
                 } else { ?>
                     <button class="margin-top-05 btn btn-lg btn-primary btn-block" type="submit"><i
-                                class="fa fa-sign-in" aria-hidden="true"></i> Login
+                                class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
                     </button>
                     <?php
                 } ?>

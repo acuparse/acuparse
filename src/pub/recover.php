@@ -140,7 +140,7 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                             </div>
                             <input type="hidden" name="hash" value="<?= $hash; ?>">
                             <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                        class="fa fa-check" aria-hidden="true"></i> Submit
+                                        class="fas fa-key" aria-hidden="true"></i> Submit
                             </button>
                         </form>
                     </div>
@@ -236,12 +236,12 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                         if ($config->google->recaptcha->enabled === true) { ?>
                             <button class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
                                     data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
-                                <i class="fa fa-sign-in" aria-hidden="true"></i> Submit
+                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Submit
                             </button>
                             <?php
                         } else { ?>
                             <button class="margin-top-05 btn btn-lg btn-primary btn-block" type="submit"><i
-                                        class="fa fa-sign-in" aria-hidden="true"></i> Submit
+                                        class="fas fa-sign-in-alt" aria-hidden="true"></i> Submit
                             </button>
                             <?php
                         } ?>

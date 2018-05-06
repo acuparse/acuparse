@@ -57,7 +57,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
                         </p>
                     </div>
                     <button type="submit" class="btn btn-primary center-block"><i
-                                class="fa fa-power-off"></i> Reboot
+                                class="fas fa-power-off"></i> Reboot
                     </button>
                 </form>
                 <p class="margin-top-05">When you submit this form, you'll be redirected to your Access. It will then
@@ -82,7 +82,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_
                                 <input type="text" class="form-control" name="ip" id="ip" placeholder="Access IP">
                             </div>
                             <button type="submit" class="btn btn-primary center-block"><i
-                                        class="fa fa-arrow-circle-o-right"></i>
+                                        class="far fa-arrow-alt-circle-right"></i>
                                 Next
                             </button>
 
