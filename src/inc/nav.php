@@ -124,7 +124,7 @@
                     // Member Account Functions
                     if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true) {
                         ?>
-                        <li class="dropdown <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php')) {
+                        <li class="dropdown <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php')) {
                             echo 'active';
                         } ?>">
                             <a href="" class="dropdown-toggle" data-toggle="dropdown"><span class="loggedin-user"><i
@@ -133,7 +133,7 @@
                                         class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <?php if (isset($_SESSION['IsAdmin']) && $_SESSION['IsAdmin'] === true) { ?>
-                                    <li <?php if ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || (isset($_GET['add_user'])) || (isset($_GET['view'])))) {
+                                    <li <?php if ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || (isset($_GET['add_user'])) || (isset($_GET['view'])))) {
                                         echo 'class="active"';
                                     } ?>>
                                         <a href="/admin"><i class="fas fa-cog" aria-hidden="true"></i> Admin</a>
