@@ -42,4 +42,9 @@ switch ($config->version->app) {
     case '2.3.0':
         $config->version->app = '2.3.1';
         $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes to CWOP packet and Findu link.</li>';
+
+    // Update from 2.3.1
+    case '2.3.1':
+        $config->version->app = '2.3.2';
+        $notes .= '<li>' . $config->version->app . ' - ' . 'Security and 3rd party script updates.</li>';
 }

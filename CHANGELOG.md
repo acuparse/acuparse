@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.3.2]](https://www.acuparse.com/releases/v2-3-2/) - 2018-05-06
 ### Changed
 - Bumped jQuery datetimepicker to 2.5.19.
 - Bumped jQuery to 3.3.1.
