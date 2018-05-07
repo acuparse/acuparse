@@ -116,12 +116,12 @@ if (isset($_GET['do'])) {
                     if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) { ?>
                         <button type="submit" class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
                                 data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit"><i
-                                    class="fa fa-paper-plane"></i> Send
+                                    class="fas fa-paper-plane"></i> Send
                             Message
                         </button>
                         <?php
                     } else { ?>
-                        <button type="submit" class="btn btn-primary center-block"><i class="fa fa-paper-plane"></i>
+                        <button type="submit" class="btn btn-primary center-block"><i class="fas fa-paper-plane"></i>
                             Send
                             Message
                         </button>

@@ -74,11 +74,11 @@ if ($config->camera->enabled === true) {
                     // Don't display backward button
                 } elseif ($backward_date > $today) {
                     ?>
-                    <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fa fa-backward"
+                    <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fas fa-backward"
                                                                             aria-hidden="true"></i></h3></a>
                     <?php
                 } else { ?>
-                    <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fa fa-backward"
+                    <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fas fa-backward"
                                                                                  aria-hidden="true"></i></h3></a>
                 <?php } ?>
             </div>
@@ -98,13 +98,13 @@ if ($config->camera->enabled === true) {
                 } else {
                     if ($forward_date < $cam_dir) {
                         ?>
-                        <a href="/camera?archive&date=<?= $cam_dir; ?>"><h3><i class="fa fa-forward"
+                        <a href="/camera?archive&date=<?= $cam_dir; ?>"><h3><i class="fas fa-forward"
                                                                                aria-hidden="true"></i></h3>
                         </a>
                         <?php
                     } else {
                         ?>
-                        <a href="/camera?archive&date=<?= $forward_date; ?>"><h3><i class="fa fa-forward"
+                        <a href="/camera?archive&date=<?= $forward_date; ?>"><h3><i class="fas fa-forward"
                                                                                     aria-hidden="true"></i></h3>
                         </a>
                         <?php
@@ -190,9 +190,8 @@ if ($config->camera->enabled === true) {
                 <div class="row"><strong><?= $config->camera->text; ?></strong></div>
                 <div class="row margin-top-15">
                     <button type="button" id="archive" class="btn btn-default center-block"
-                            onclick="location.href = '/camera?archive'"><i class="fa fa fa-archive"
-                                                                           aria-hidden="true"></i> View Camera
-                        Archive
+                            onclick="location.href = '/camera?archive'"><i class="far fa-images" aria-hidden="true"></i>
+                        View Camera Archive
                     </button>
                 </div>
                 <?php

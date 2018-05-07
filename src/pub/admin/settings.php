@@ -1047,9 +1047,9 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">
                         <button type="submit" id="submit" value="submit" class="btn btn-primary btn-block"><i
-                                    class="fa fa-check"
+                                    class="fas fa-save"
                                     aria-hidden="true"></i>
-                            Submit
+                            Save
                         </button>
                     </div>
                 </div>
@@ -1059,6 +1059,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         <?php
         include(APP_BASE_PATH . '/inc/footer.php');
     }
-} else {
-    header("Location: /admin/account");
+} // Not logged in or user is not an admin
+else {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    header("Location: /");
 }

@@ -150,7 +150,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                             <input type="hidden" name="uid" id="uid" value="<?= $user_id; ?>">
                             <button type="submit" id="submit" value="submit"
                                     class="margin-top-05 btn btn-primary center-block">
-                                <i class="fa fa-check" aria-hidden="true"></i> Submit
+                                <i class="fas fa-save" aria-hidden="true"></i> Save
                             </button>
                         </form>
                     </div>
@@ -324,21 +324,20 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 </div>
                                 <input type="hidden" value="<?= $user_id; ?>" name="uid">
                                 <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                            class="fa fa fa-save" aria-hidden="true"></i> Save
+                                            class="fas fa-save" aria-hidden="true"></i> Save
                                 </button>
                             </form>
                         </div>
                     </div>
                     <hr class="hr-dotted">
                     <div class="row">
-                        <h2 class="">Change User Password?</h2>
+                        <h2>Change User Password?</h2>
                         <div class="col-lg-6 col-lg-offset-3  alert-warning">
                             <p>Click below to change <?= $row['username']; ?>'s password.</p>
                             <button type="button" id="password" class="btn btn-warning center-block"
                                     onclick="location.href = '/admin/account?password<?php if ($user_id !== $_SESSION['UserID']) {
                                         echo '&uid=' . $user_id;
-                                    } ?>'"><i
-                                        class="fa fa fa-remove" aria-hidden="true"></i> Change Password
+                                    } ?>'"><i class="fas fa-key" aria-hidden="true"></i> Change Password
                             </button>
                         </div>
                     </div>
@@ -352,9 +351,8 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 <button <?php if ($user_id === $_SESSION['UserID']) {
                                     echo 'disabled="disabled" ';
                                 } ?>type="button" id="delete" class="btn btn-danger center-block"
-                                        onClick="confirmDelete('/admin/account?delete&uid=<?= $user_id; ?>')">
-                                    <i
-                                            class="fa fa fa-remove" aria-hidden="true"></i> Delete User
+                                        onClick="confirmDelete('/admin/account?delete&uid=<?= $user_id; ?>')"><i
+                                            class="fas fa-user-times" aria-hidden="true"></i> Delete User
                                 </button>
                             </div>
                         </div>
@@ -467,7 +465,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                                                            value="0" checked="checked">No</label>
                                     </div>
                                     <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                                class="fa fa-check" aria-hidden="true"></i> Submit
+                                                class="fas fa-save" aria-hidden="true"></i> Save
                                     </button>
                                 </form>
                             </div>
@@ -518,10 +516,8 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 </tbody>
                             </table>
                         </div>
-                        <button type="button" class="btn btn-primary center-block"
-                                onclick="location.href = '/admin'"><i class="fa fa-chevron-left"
-                                                                      aria-hidden="true"></i>
-                            Done
+                        <button type="button" class="btn btn-primary center-block" onclick="location.href = '/admin'"><i
+                                    class="fas fa-arrow-circle-left" aria-hidden="true"></i> Done
                         </button>
                     </div>
                 </div>
@@ -670,12 +666,12 @@ elseif (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) !== 0) {
                 if ($config->google->recaptcha->enabled === true) { ?>
                     <button class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
                             data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
-                        <i class="fa fa-sign-in" aria-hidden="true"></i> Login
+                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
                     </button>
                     <?php
                 } else { ?>
                     <button class="margin-top-05 btn btn-lg btn-primary btn-block" type="submit"><i
-                                class="fa fa-sign-in" aria-hidden="true"></i> Login
+                                class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
                     </button>
                     <?php
                 } ?>

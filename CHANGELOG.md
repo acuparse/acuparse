@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.3.2]](https://www.acuparse.com/releases/v2-3-2/) - 2018-05-06
+### Changed
+- Bumped jQuery datetimepicker to 2.5.19.
+- Bumped jQuery to 3.3.1.
+- Font Awesome to 5.0.12 and icon updates.
+- Lightbox to v2.10.0.
+- Installer and general security fixes.
+
 ## [[2.3.1]](https://www.acuparse.com/releases/v2-3-1/) - 2018-04-27
 ### Changed
 - Findu does not play nice with https at the moment. Forcing nav link to be http.
