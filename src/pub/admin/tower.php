@@ -284,7 +284,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                 </div>
                 <hr class="hr-dotted">
                 <div class="row">
-                    <h2 class="">Delete Tower?</h2>
+                    <h2>Delete Tower?</h2>
                     <div class="col-lg-6 col-lg-offset-3  alert-danger"
                     <p>Click below to remove <?= $row['name']; ?>.</p>
                     <button type="button" id="delete" class="btn btn-danger center-block"

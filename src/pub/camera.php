@@ -190,9 +190,8 @@ if ($config->camera->enabled === true) {
                 <div class="row"><strong><?= $config->camera->text; ?></strong></div>
                 <div class="row margin-top-15">
                     <button type="button" id="archive" class="btn btn-default center-block"
-                            onclick="location.href = '/camera?archive'"><i class="far fa-images"
-                                                                           aria-hidden="true"></i> View Camera
-                        Archive
+                            onclick="location.href = '/camera?archive'"><i class="far fa-images" aria-hidden="true"></i>
+                        View Camera Archive
                     </button>
                 </div>
                 <?php
