@@ -324,21 +324,20 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 </div>
                                 <input type="hidden" value="<?= $user_id; ?>" name="uid">
                                 <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                            class="fas fa-save"" aria-hidden="true"></i> Save
+                                            class="fas fa-save" aria-hidden="true"></i> Save
                                 </button>
                             </form>
                         </div>
                     </div>
                     <hr class="hr-dotted">
                     <div class="row">
-                        <h2 class="">Change User Password?</h2>
+                        <h2>Change User Password?</h2>
                         <div class="col-lg-6 col-lg-offset-3  alert-warning">
                             <p>Click below to change <?= $row['username']; ?>'s password.</p>
                             <button type="button" id="password" class="btn btn-warning center-block"
                                     onclick="location.href = '/admin/account?password<?php if ($user_id !== $_SESSION['UserID']) {
                                         echo '&uid=' . $user_id;
-                                    } ?>'"><i
-                                        class="fas fa-key" aria-hidden="true"></i> Change Password
+                                    } ?>'"><i class="fas fa-key" aria-hidden="true"></i> Change Password
                             </button>
                         </div>
                     </div>
@@ -352,8 +351,7 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 <button <?php if ($user_id === $_SESSION['UserID']) {
                                     echo 'disabled="disabled" ';
                                 } ?>type="button" id="delete" class="btn btn-danger center-block"
-                                        onClick="confirmDelete('/admin/account?delete&uid=<?= $user_id; ?>')">
-                                    <i
+                                        onClick="confirmDelete('/admin/account?delete&uid=<?= $user_id; ?>')"><i
                                             class="fas fa-user-times" aria-hidden="true"></i> Delete User
                                 </button>
                             </div>
@@ -518,10 +516,8 @@ if (isset($_SESSION['UserLoggedIn'])) {
                                 </tbody>
                             </table>
                         </div>
-                        <button type="button" class="btn btn-primary center-block"
-                                onclick="location.href = '/admin'"><i class="fas fa-arrow-circle-left"
-                                                                      aria-hidden="true"></i>
-                            Done
+                        <button type="button" class="btn btn-primary center-block" onclick="location.href = '/admin'"><i
+                                    class="fas fa-arrow-circle-left" aria-hidden="true"></i> Done
                         </button>
                     </div>
                 </div>
