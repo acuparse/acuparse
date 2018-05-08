@@ -9,7 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [[2.3.2]](https://www.acuparse.com/releases/v2-3-2/) - 2018-05-06
+## [[2.4.0]](https://www.acuparse.com/releases/v2-4-0/) - 2018-05-07
+### Added
+- Ability to select which readings to store and use for Barometer readings.
+
+### Changed
+- Minor code formatting.
+- Minor tweaks to the placement of some options in settings.
+- Moon icon updates.
+
+## [[2.3.2-beta]](https://www.acuparse.com/releases/v2-3-2-beta/) - 2018-05-06
 ### Changed
 - Bumped jQuery datetimepicker to 2.5.19.
 - Bumped jQuery to 3.3.1.

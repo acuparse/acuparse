@@ -103,12 +103,12 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
         // Google
 
-        // recaptcha
+        // reCAPTCHA
         $config->google->recaptcha->enabled = (bool)$_POST['google']['recaptcha']['enabled'];
         $config->google->recaptcha->secret = $_POST['google']['recaptcha']['secret'];
         $config->google->recaptcha->sitekey = $_POST['google']['recaptcha']['sitekey'];
 
-        //analytics
+        // Analytics
         $config->google->analytics->enabled = (bool)$_POST['google']['analytics']['enabled'];
         $config->google->analytics->id = $_POST['google']['analytics']['id'];
 
@@ -116,7 +116,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
         // Master Sensor
         $config->upload->sensor->external = $_POST['upload']['sensor']['external'];
-        $config->upload->sensor->id = $_POST['upload']['sensor']['id'];
+        $config->upload->sensor->id = (isset($_POST['upload']['sensor']['id'])) ? $_POST['upload']['sensor']['id'] : '';
         $config->upload->sensor->archive = (bool)$_POST['upload']['sensor']['archive'];
 
         // WU
@@ -249,7 +249,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 <input type="text" class="form-control" name="station[access_mac]"
                                        id="station_access_mac"
                                        placeholder="Access MAC" maxlength="12"
-                                       value="<?= $config->station->access_mac; ?>" required>
+                                       value="<?= $config->station->access_mac; ?>">
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -258,7 +258,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" class="form-control" name="station[hub_mac]" id="station_hub_mac"
                                        placeholder="smartHUB MAC" maxlength="12"
-                                       value="<?= $config->station->hub_mac; ?>" required>
+                                       value="<?= $config->station->hub_mac; ?>">
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -497,7 +497,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">App Settings:</h2>
+                        <h2 class="panel-heading">Feature Settings:</h2>
                         <h3>Camera Settings:</h3>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="camera_enabled">Status:</label>
@@ -1028,7 +1028,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </div>
                         </div>
                     </div>
-
+                    <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
                     <!–– Debug Server -->
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h3 class="panel-heading">Debug Update Server:</h3>

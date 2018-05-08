@@ -34,7 +34,7 @@ if (isset($_GET['update']) && $installed === true) {
         // Logged in, process update
         if (isset($_GET['do'])) {
             $notes = '';
-            $updatePattern = dirname(dirname(dirname(__DIR__))) . '/fcn/updater/*.php';
+            $updatePattern = dirname(dirname(dirname(__DIR__))) . '/fcn/updater/*/*.php';
             foreach (glob($updatePattern) as $filename) {
                 include $filename;
             }
@@ -371,5 +371,6 @@ elseif ($installed === false) {
     // Get app footer
     include(APP_BASE_PATH . '/inc/footer.php');
 } else {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /");
 }

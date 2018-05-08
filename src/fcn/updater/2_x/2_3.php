@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/pub/admin/install/scripts/2_3.php
+ * File: src/fcn/updater/2_3.php
  * 2.3 Site Update Tasks
  */
 
@@ -36,15 +36,15 @@ switch ($config->version->app) {
         $config->upload->sensor->external = 'default';
         $config->upload->sensor->id = null;
         $config->upload->sensor->archive = false;
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Added ability to choose master sensor for external upload.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Added ability to choose master sensor for external upload.</li>';
 
     // Update from 2.3.0
     case '2.3.0':
         $config->version->app = '2.3.1';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes to CWOP packet and Findu link.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes to CWOP packet and Findu link.</li>';
 
     // Update from 2.3.1
     case '2.3.1':
-        $config->version->app = '2.3.2';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Security and 3rd party script updates.</li>';
+        $config->version->app = '2.3.2-beta';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Security and 3rd party script updates.</li>';
 }

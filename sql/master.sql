@@ -22,7 +22,7 @@
 /**
  * File: sql/master.sql
  * The master database schema
- * Version 2.2
+ * Version 2.3
  */
 
 CREATE TABLE IF NOT EXISTS `archive` (
