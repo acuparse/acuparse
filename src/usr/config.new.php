@@ -43,6 +43,7 @@ return (object)array(
         'sensor_5n1' => '00000000', // 5n1 Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
+        'baro_source' => '0', // Use baro reading from which device? 0-default/1-hub/2-access
     ),
 
     // Site specific config variables
