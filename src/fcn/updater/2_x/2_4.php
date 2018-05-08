@@ -21,25 +21,16 @@
  */
 
 /**
- * File: src/pub/admin/install/scripts/2_3.php
- * 2.3 Site Update Tasks
+ * File: src/fcn/updater/2_4.php
+ * 2.4 Site Update Tasks
  */
 
 switch ($config->version->app) {
 
-    // Update from 2.2.3
-    case '2.2.3':
-        $config->version->app = '2.3.0';
-        $config->version->schema = '2.3';
-        mysqli_query($conn,
-            "UPDATE `system` SET `value` = '2.3' WHERE `system`.`name` = 'schema';"); //Update Schema Version
-        $config->upload->sensor->external = 'default';
-        $config->upload->sensor->id = null;
-        $config->upload->sensor->archive = false;
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Added ability to choose master sensor for external upload.</li>';
+    // Update from 2.3.2-beta
+    case '2.3.2-beta' || '2.3.2 || 2.4.0-beta':
+        $config->version->app = '2.4.0-release';
+        $config->station->baro_source = 0;
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Added ability to select which barometer values are retained.</li>';
 
-    // Update from 2.3.0
-    case '2.3.0':
-        $config->version->app = '2.3.1';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes to CWOP packet and Findu link.</li>';
 }

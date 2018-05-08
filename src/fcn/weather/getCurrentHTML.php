@@ -78,7 +78,7 @@ function getCurrentHTML()
 
                 <!-- Temperature Data -->
                 <div class="row row_temperature_data">
-                    <h2><i class="fa <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
+                    <h2><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
                     <h4><?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457; ($wx->tempC&#8451;)" : "$wx->tempC&#8451; ($wx->tempF&#8457;)";
@@ -250,10 +250,14 @@ function getCurrentHTML()
                             <li><i class="wi wi-moonset" aria-hidden="true"></i>
                                 <strong>Moonset:</strong> <?= $moon_set; ?></li>
                         <?php } ?>
-                        <li><strong>Current New:</strong> <?= $last_new_moon; ?></li>
-                        <li><strong>Current Full:</strong> <?= $last_full_moon; ?></li>
-                        <li><strong>Upcoming New:</strong> <?= $next_new_moon; ?></li>
-                        <li><strong>Upcoming Full:</strong> <?= $next_full_moon; ?></li>
+                        <li><i class="wi wi-moon-new" aria-hidden="true"></i> <strong>Latest
+                                New:</strong> <?= $last_new_moon; ?></li>
+                        <li><i class="wi wi-moon-full" aria-hidden="true"></i> <strong>Latest
+                                Full:</strong> <?= $last_full_moon; ?></li>
+                        <li><i class="wi wi-moon-new" aria-hidden="true"></i> <strong>Upcoming
+                                New:</strong> <?= $next_new_moon; ?></li>
+                        <li><i class="wi wi-moon-full" aria-hidden="true"></i> <strong>Upcoming
+                                Full:</strong> <?= $next_full_moon; ?></li>
                     </ul>
                 </div> <!-- END Moon -->
             </div> <!-- END Right Column -->
@@ -296,7 +300,7 @@ function getCurrentHTML()
                         ?>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"> <!-- 1/4th Column -->
                             <h2 class="panel-heading"><?= $row['name']; ?>:</h2>
-                            <h3><i class="fa <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h3>
+                            <h3><i class="fas <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h3>
                             <h4><?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                     $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; ($tempC&#8451;) $tempF_trend" : "$tempC&#8451; ($tempF&#8457;) $tempF_trend";

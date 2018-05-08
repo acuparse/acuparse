@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/pub/admin/install/scripts/2_2.php
+ * File: src/fcn/updater/2_2.php
  * 2.2 Site Update Tasks
  */
 
@@ -43,21 +43,21 @@ switch ($config->version->app) {
         unset($config->upload->myacurite->enabled);
         unset($config->upload->myacurite->url);
 
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://github.com/acuparse/acuparse/tree/master/docs/updates/from_2.1.md">docs/updates/from2_1.md</a></li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://github.com/acuparse/acuparse/tree/master/docs/updates/from_2.1.md">docs/updates/from2_1.md</a></li>';
 
     // Update from 2.2.0
     case '2.2.0':
         $config->version->app = '2.2.1';
         $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Blocks Acurite response from affecting the HUB.<br>Resolves broken Access updates to MyAcuRite.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Blocks Acurite response from affecting the HUB.<br>Resolves broken Access updates to MyAcuRite.</li>';
 
     // Update from 2.2.1
     case '2.2.1':
         $config->version->app = '2.2.2';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Access bug fixes.<br>New script to change Access Upload server.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Access bug fixes.<br>New script to change Access Upload server.</li>';
 
     // Update from 2.2.2
     case '2.2.2':
         $config->version->app = '2.2.3';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Tower sensors now support the indoor/outdoor monitors for temp/humidity readings</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Tower sensors now support the indoor/outdoor monitors for temp/humidity readings</li>';
 }

@@ -44,13 +44,13 @@
                     <li <?php if ($_SERVER['PHP_SELF'] === '/index.php' && empty($_GET)) {
                         echo 'class="active"';
                     } ?>>
-                        <a href="/"><i class="wi wi-thermometer" aria-hidden="true"></i> Live</a>
+                        <a href="/"><i class="fas fa-thermometer-half" aria-hidden="true"></i> Live</a>
                     </li>
                     <?php if ($config->archive->enabled === true) { ?>
                         <li <?php if ($_SERVER['PHP_SELF'] === '/archive.php') {
                             echo 'class="active"';
                         } ?>>
-                            <a href="/archive"><i class="fa fa-archive" aria-hidden="true"></i> Archive</a>
+                            <a href="/archive"><i class="fas fa-archive" aria-hidden="true"></i> Archive</a>
                         </li>
 
                     <?php }
@@ -60,18 +60,18 @@
                         <li class="dropdown <?php if ($_SERVER['PHP_SELF'] === '/camera.php') {
                             echo 'active';
                         } ?>">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-camera"
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-camera"
                                                                                          aria-hidden="true"></i>
                                 Camera
                                 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (!isset($_GET['archive']))) {
                                     echo 'class="active"';
-                                } ?>><a href="/camera"><i class="fa fa-binoculars" aria-hidden="true"></i> Live View</a>
+                                } ?>><a href="/camera"><i class="far fa-eye" aria-hidden="true"></i> Live View</a>
                                 </li>
                                 <li <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) {
                                     echo 'class="active"';
-                                } ?>><a href="/camera?archive"><i class="fa fa-archive" aria-hidden="true"></i> Archive</a>
+                                } ?>><a href="/camera?archive"><i class="far fa-images" aria-hidden="true"></i> Archive</a>
                                 </li>
                             </ul>
                         </li>
@@ -82,27 +82,27 @@
                     <?php if ($config->upload->wu->enabled === true || $config->upload->pws->enabled === true || $config->upload->cwop->enabled === true) { ?>
                         <li class="dropdown">
                             <a href="" class="dropdown-toggle" data-toggle="dropdown"><i
-                                        class="fa fa-external-link-square" aria-hidden="true"></i>
+                                        class="fas fa-external-link-square-alt" aria-hidden="true"></i>
                                 External
                                 <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <?php if ($config->upload->wu->enabled === true) { ?>
                                     <li>
                                         <a href="//www.wunderground.com/personal-weather-station/dashboard?ID=<?= $config->upload->wu->id; ?>"
-                                           target="_blank"><i
-                                                    class="fa fa-external-link-square" aria-hidden="true"></i> WU</a>
+                                           target="_blank"><img src="/img/external/wu.ico" width="16" height="16"
+                                                                aria-hidden="true"> Weather Underground</a>
                                     </li> <?php } ?>
                                 <?php if ($config->upload->pws->enabled === true) { ?>
                                     <li>
                                         <a href="//www.pwsweather.com/obs/<?= $config->upload->pws->id; ?>.html"
-                                           target="_blank"><i
-                                                    class="fa fa-external-link-square" aria-hidden="true"></i> PWS</a>
+                                           target="_blank"><img src="/img/external/pws.ico" width="16" height="16"
+                                                                aria-hidden="true"> PWS Weather</a>
                                     </li> <?php } ?>
                                 <?php if ($config->upload->cwop->enabled === true) { ?>
                                     <li>
                                         <a href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
-                                           target="_blank"><i
-                                                    class="fa fa-external-link-square" aria-hidden="true"></i> CWOP</a>
+                                           target="_blank"><img src="/img/external/findu.ico" width="16" height="16"
+                                                                aria-hidden="true"> CWOP via findU</a>
                                     </li> <?php } ?>
                             </ul>
                         </li>
@@ -115,7 +115,7 @@
                         <li <?php if ($_SERVER['PHP_SELF'] === '/contact.php') {
                             echo 'class="active"';
                         } ?>>
-                            <a href="/contact"><i class="fa fa-envelope" aria-hidden="true"></i> Contact</a>
+                            <a href="/contact"><i class="fas fa-envelope" aria-hidden="true"></i> Contact</a>
                         </li>
 
                         <?php
@@ -124,35 +124,36 @@
                     // Member Account Functions
                     if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true) {
                         ?>
-                        <li class="dropdown <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php')) {
+                        <li class="dropdown <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php')) {
                             echo 'active';
                         } ?>">
                             <a href="" class="dropdown-toggle" data-toggle="dropdown"><span class="loggedin-user"><i
-                                            class="fa fa-user"
+                                            class="fas fa-user-tie"
                                             aria-hidden="true"></i> <?= $_SESSION['Username']; ?> </span><b
                                         class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <?php if (isset($_SESSION['IsAdmin']) && $_SESSION['IsAdmin'] === true) { ?>
-                                    <li <?php if ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || (isset($_GET['add_user'])) || (isset($_GET['view'])))) {
+                                    <li <?php if ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || (isset($_GET['add_user'])) || (isset($_GET['view'])))) {
                                         echo 'class="active"';
                                     } ?>>
-                                        <a href="/admin"><i class="fa fa-cog" aria-hidden="true"></i> Admin</a>
+                                        <a href="/admin"><i class="fas fa-cog" aria-hidden="true"></i> Admin</a>
                                     </li>
                                 <?php } ?>
                                 <li <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && (!isset($_GET['uid']))) {
                                     echo 'class="active"';
                                 } ?>>
-                                    <a href="/admin/account?edit"><i class="fa fa-user-circle" aria-hidden="true"></i>
+                                    <a href="/admin/account?edit"><i class="fas fa-user-edit" aria-hidden="true"></i>
                                         Edit Account</a>
                                 </li>
                                 <li <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && (!isset($_GET['uid']))) {
                                     echo 'class="active"';
                                 } ?>>
-                                    <a href="/admin/account?password"><i class="fa fa-user-secret"
+                                    <a href="/admin/account?password"><i class="fas fa-user-secret"
                                                                          aria-hidden="true"></i> Change Password</a>
                                 </li>
                                 <li>
-                                    <a href="/admin/account?logout"><i class="fa fa-sign-out" aria-hidden="true"></i>
+                                    <a href="/admin/account?logout"><i class="fas fa-sign-out-alt"
+                                                                       aria-hidden="true"></i>
                                         Logout</a>
                                 </li>
                             </ul>
@@ -166,7 +167,7 @@
                         <li <?php if ($_SERVER['PHP_SELF'] === '/account.php') {
                             echo 'class="active"';
                         } ?>>
-                            <a href="/admin/account"><i class="fa fa-unlock" aria-hidden="true"></i> Login</a>
+                            <a href="/admin/account"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a>
                         </li>
                         <?php
                     }

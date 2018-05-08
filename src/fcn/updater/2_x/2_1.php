@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/pub/admin/install/scripts/2_1.php
+ * File: src/fcn/updater/2_1.php
  * 2.1 Site Update Tasks
  */
 
@@ -29,48 +29,48 @@ switch ($config->version->app) {
     // Update from 2.1.0
     case '2.1.0':
         $config->version->app = '2.1.1';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
 
     // Update from 2.1.1
     case '2.1.1':
         $config->version->app = '2.1.2';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
 
     // Update from 2.1.2
     case '2.1.2':
         $config->version->app = '2.1.3';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Rainfall Fixes.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Rainfall Fixes.</li>';
 
     // Update from 2.1.3
     case '2.1.3':
         $config->version->app = '2.1.4';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
 
     // Update from 2.1.4
     case '2.1.4':
         $config->version->app = '2.1.5';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
 
     // Update from 2.1.5
     case '2.1.5':
         $config->version->app = '2.1.6';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
 
     // Update from 2.1.6
     case '2.1.6':
         $config->version->app = '2.1.7';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Weather Underground Camera Uploading has been removed. Cam scripts will need to be updated manually.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Weather Underground Camera Uploading has been removed. Cam scripts will need to be updated manually.</li>';
 
     // Update from 2.1.7
     case '2.1.7':
         $config->version->app = '2.1.8';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Weather Underground Camera Uploading has been re-added. Cam scripts will need to be updated manually.</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Weather Underground Camera Uploading has been re-added. Cam scripts will need to be updated manually.</li>';
 
     // Update from 2.1.8
     case '2.1.8':
         $config->version->app = '2.1.9';
         $config->site->hide_alternate = 'false';
-        $notes .= '<li>' . $config->version->app . ' - ' . 'New option to hide alternate measurements</li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'New option to hide alternate measurements</li>';
 
     // Update from 2.1.9
     case '2.1.9':
@@ -88,5 +88,5 @@ switch ($config->version->app) {
         unset($config->upload->myacurite->enabled);
         unset($config->upload->myacurite->url);
 
-        $notes .= '<li>' . $config->version->app . ' - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://github.com/acuparse/acuparse/tree/master/docs/updates/from_2.1.md">docs/updates/from2_1.md</a></li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://github.com/acuparse/acuparse/tree/master/docs/updates/from_2.1.md">docs/updates/from2_1.md</a></li>';
 }

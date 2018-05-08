@@ -38,11 +38,12 @@ return (object)array(
 
     // Sensor specific config variables
     'station' => (object)array(
-        'access_mac' => '000000000000', // Access MAC Address
-        'hub_mac' => '000000000000', // smartHUB MAC Address
-        'sensor_5n1' => '00000000', // 5n1 Sensor ID (8 Digits including leading 0's)
+        'access_mac' => '', // Access MAC Address
+        'hub_mac' => '', // smartHUB MAC Address
+        'sensor_5n1' => '', // 5n1 Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
+        'baro_source' => '0', // Use baro reading from which device? 0-default/1-hub/2-access
     ),
 
     // Site specific config variables
@@ -50,8 +51,8 @@ return (object)array(
         'name' => 'Acuparse Weather Station', // Name of the weather station
         'desc' => 'A Simple Weather Station Script', // Station Description
         'location' => 'Somewhere, Earth', // Station Location
-        'hostname' => 'example.com', // Station Domain or IP Address
-        'email' => 'weatherstation@example.com', // System email address.
+        'hostname' => '', // Station Domain or IP Address
+        'email' => '', // System email address.
         'timezone' => 'UTC', // Station Timezone - http://php.net/manual/en/timezones.php
         'display_date' => 'l, j F Y G:i:s T', // Header Date Format
         'lat' => 0, // Station Latitude - Decimal Format
@@ -167,7 +168,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.3.1',
+        'app' => '2.4.0-release',
         'schema' => '2.3',
     ),
 );

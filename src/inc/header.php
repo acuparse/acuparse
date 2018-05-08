@@ -36,11 +36,13 @@
     <meta name="keywords" content="weather">
     <title><?= $page_title ?></title>
 
+    <!-- JS -->
+    <script defer src="/lib/mit/fontawesome/js/fontawesome-all.min.js"></script>
+
     <!-- CSS -->
     <link href="/lib/mit/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
     <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
-    <link href="/lib/mit/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) { ?>
         <link href="/lib/mit/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet">
         <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">

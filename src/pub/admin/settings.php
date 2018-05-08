@@ -73,6 +73,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->station->access_mac = $_POST['station']['access_mac'];
         $config->station->sensor_5n1 = sprintf('%08d', $_POST['station']['sensor_5n1']);
         $config->station->baro_offset = (float)$_POST['station']['baro_offset'];
+        $config->station->baro_source = (int)$_POST['station']['baro_source'];
         $config->station->towers = (bool)$_POST['station']['towers'];
 
         // Site
@@ -102,12 +103,12 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
         // Google
 
-        // recaptcha
+        // reCAPTCHA
         $config->google->recaptcha->enabled = (bool)$_POST['google']['recaptcha']['enabled'];
         $config->google->recaptcha->secret = $_POST['google']['recaptcha']['secret'];
         $config->google->recaptcha->sitekey = $_POST['google']['recaptcha']['sitekey'];
 
-        //analytics
+        // Analytics
         $config->google->analytics->enabled = (bool)$_POST['google']['analytics']['enabled'];
         $config->google->analytics->id = $_POST['google']['analytics']['id'];
 
@@ -115,7 +116,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
         // Master Sensor
         $config->upload->sensor->external = $_POST['upload']['sensor']['external'];
-        $config->upload->sensor->id = $_POST['upload']['sensor']['id'];
+        $config->upload->sensor->id = (isset($_POST['upload']['sensor']['id'])) ? $_POST['upload']['sensor']['id'] : '';
         $config->upload->sensor->archive = (bool)$_POST['upload']['sensor']['archive'];
 
         // WU
@@ -230,7 +231,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                                                               value="1" <?php if ($config->mysql->trim === 1) {
                                         echo 'checked="checked"';
                                     } ?>>Trim All</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="mysql_trim"
+                                <label class="radio-inline bg-warning"><input type="radio" id="mysql_trim"
                                                                               name="mysql[trim]"
                                                                               value="2" <?php if ($config->mysql->trim === 2) {
                                         echo 'checked="checked"';
@@ -248,7 +249,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 <input type="text" class="form-control" name="station[access_mac]"
                                        id="station_access_mac"
                                        placeholder="Access MAC" maxlength="12"
-                                       value="<?= $config->station->access_mac; ?>" required>
+                                       value="<?= $config->station->access_mac; ?>">
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -257,7 +258,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" class="form-control" name="station[hub_mac]" id="station_hub_mac"
                                        placeholder="smartHUB MAC" maxlength="12"
-                                       value="<?= $config->station->hub_mac; ?>" required>
+                                       value="<?= $config->station->hub_mac; ?>">
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -269,6 +270,27 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                        value="<?= $config->station->baro_offset; ?>">
                                 <p class="bg-info">inHg. Adjust this as required to match the offset for your
                                     elevation</p>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-bottom-05">
+                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_trim">Use which
+                                Barometer?</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <label class="radio-inline bg-success"><input type="radio" id="station_baro_source"
+                                                                              name="station[baro_source]"
+                                                                              value="0" <?php if ($config->station->baro_source === 0) {
+                                        echo 'checked="checked"';
+                                    } ?>>Default</label>
+                                <label class="radio-inline bg-warning"><input type="radio" id="station_baro_source"
+                                                                              name="station[baro_source]"
+                                                                              value="1" <?php if ($config->station->baro_source === 1) {
+                                        echo 'checked="checked"';
+                                    } ?>>Hub</label>
+                                <label class="radio-inline bg-warning"><input type="radio" id="station_baro_source"
+                                                                              name="station[baro_source]"
+                                                                              value="2" <?php if ($config->station->baro_source === 2) {
+                                        echo 'checked="checked"';
+                                    } ?>>Access</label>
                             </div>
                         </div>
                         <h3>Sensor Settings:</h3>
@@ -288,16 +310,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_towers">Towers
                                 Sensors?</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="station_towers"
-                                                                              name="station[towers]"
-                                                                              value="1" <?php if ($config->station->towers === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="station_towers"
                                                                              name="station[towers]"
                                                                              value="0" <?php if ($config->station->towers === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="station_towers"
+                                                                              name="station[towers]"
+                                                                              value="1" <?php if ($config->station->towers === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                     </div>
@@ -419,12 +441,12 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_imperial">Display
                                 Format:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-info"><input type="radio" id="station_imperial"
+                                <label class="radio-inline bg-warning"><input type="radio" id="station_imperial"
                                                                            name="site[imperial]"
                                                                            value="0" <?php if ($config->site->imperial === false) {
                                         echo 'checked="checked"';
                                     } ?>>Metric</label>
-                                <label class="radio-inline bg-info"><input type="radio" id="station_imperial"
+                                <label class="radio-inline bg-warning"><input type="radio" id="station_imperial"
                                                                            name="site[imperial]"
                                                                            value="1" <?php if ($config->site->imperial === true) {
                                         echo 'checked="checked"';
@@ -475,21 +497,21 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">App Settings:</h2>
+                        <h2 class="panel-heading">Feature Settings:</h2>
                         <h3>Camera Settings:</h3>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="camera_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="camera_enabled"
-                                                                              name="camera[enabled]"
-                                                                              value="1" <?php if ($config->camera->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="camera_enabled"
                                                                              name="camera[enabled]"
                                                                              value="0" <?php if ($config->camera->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="camera_enabled"
+                                                                              name="camera[enabled]"
+                                                                              value="1" <?php if ($config->camera->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -504,32 +526,32 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="archive_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="archive_enabled"
-                                                                              name="archive[enabled]"
-                                                                              value="1" <?php if ($config->archive->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="archive_enabled"
                                                                              name="archive[enabled]"
                                                                              value="0" <?php if ($config->archive->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="archive_enabled"
+                                                                              name="archive[enabled]"
+                                                                              value="1" <?php if ($config->archive->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <h3>Contact Settings:</h3>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="contact_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="contact_enabled"
-                                                                              name="contact[enabled]"
-                                                                              value="1" <?php if ($config->contact->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="contact_enabled"
                                                                              name="contact[enabled]"
                                                                              value="0" <?php if ($config->contact->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="contact_enabled"
+                                                                              name="contact[enabled]"
+                                                                              value="1" <?php if ($config->contact->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <h3>Log Settings:</h3>
@@ -537,16 +559,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="debug_logging_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="debug_logging_enabled"
-                                                                              name="debug[logging][enabled]"
-                                                                              value="1" <?php if ($config->debug->logging === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="debug_logging_enabled"
                                                                              name="debug[logging][enabled]"
                                                                              value="0" <?php if ($config->debug->logging === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="debug_logging_enabled"
+                                                                              name="debug[logging][enabled]"
+                                                                              value="1" <?php if ($config->debug->logging === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                     </div>
@@ -558,16 +580,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="outage_alert_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="outage_alert_enabled"
-                                                                              name="outage_alert[enabled]"
-                                                                              value="1" <?php if ($config->outage_alert->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="outage_alert_enabled"
                                                                              name="outage_alert[enabled]"
                                                                              value="0" <?php if ($config->outage_alert->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="outage_alert_enabled"
+                                                                              name="outage_alert[enabled]"
+                                                                              value="1" <?php if ($config->outage_alert->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -614,16 +636,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="recaptcha_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="recaptcha_enabled"
-                                                                              name="google[recaptcha][enabled]"
-                                                                              value="1" <?php if ($config->google->recaptcha->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="recaptcha_enabled"
                                                                              name="google[recaptcha][enabled]"
                                                                              value="0" <?php if ($config->google->recaptcha->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="recaptcha_enabled"
+                                                                              name="google[recaptcha][enabled]"
+                                                                              value="1" <?php if ($config->google->recaptcha->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -650,16 +672,16 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="analytics_enabled">Status:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="analytics_enabled"
-                                                                              name="google[analytics][enabled]"
-                                                                              value="1" <?php if ($config->google->analytics->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio" id="analytics_enabled"
                                                                              name="google[analytics][enabled]"
                                                                              value="0" <?php if ($config->google->analytics->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio" id="analytics_enabled"
+                                                                              name="google[analytics][enabled]"
+                                                                              value="1" <?php if ($config->google->analytics->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -732,18 +754,18 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="station_updates_sensor_archive">Use for Archive?</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="station_updates_sensor_archive"
-                                                                              name="upload[sensor][archive]"
-                                                                              value="1" <?php if ($config->upload->sensor->archive === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio"
                                                                              id="station_updates_sensor_archive"
                                                                              name="upload[sensor][archive]"
                                                                              value="0" <?php if ($config->upload->sensor->archive === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="station_updates_sensor_archive"
+                                                                              name="upload[sensor][archive]"
+                                                                              value="1" <?php if ($config->upload->sensor->archive === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                     </div>
@@ -755,18 +777,18 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="wu_station_updates">Upload:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="wu_station_updates"
-                                                                              name="upload[wu][enabled]"
-                                                                              value="1" <?php if ($config->upload->wu->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio"
                                                                              id="wu_station_updates"
                                                                              name="upload[wu][enabled]"
                                                                              value="0" <?php if ($config->upload->wu->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="wu_station_updates"
+                                                                              name="upload[wu][enabled]"
+                                                                              value="1" <?php if ($config->upload->wu->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -805,18 +827,18 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="pws_station_updates">Upload:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="pws_station_updates"
-                                                                              name="upload[pws][enabled]"
-                                                                              value="1" <?php if ($config->upload->pws->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio"
                                                                              id="pws_station_updates"
                                                                              name="upload[pws][enabled]"
                                                                              value="0" <?php if ($config->upload->pws->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="pws_station_updates"
+                                                                              name="upload[pws][enabled]"
+                                                                              value="1" <?php if ($config->upload->pws->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -857,18 +879,18 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="cwop_station_updates">Upload:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="cwop_station_updates"
-                                                                              name="upload[cwop][enabled]"
-                                                                              value="1" <?php if ($config->upload->cwop->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio"
                                                                              id="cwop_station_updates"
                                                                              name="upload[cwop][enabled]"
                                                                              value="0" <?php if ($config->upload->cwop->enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="cwop_station_updates"
+                                                                              name="upload[cwop][enabled]"
+                                                                              value="1" <?php if ($config->upload->cwop->enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
@@ -929,46 +951,44 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="myacurite_hub_update">smartHub Upload:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="myacurite_hub_update"
-                                                                              name="upload[myacurite][hub_enabled]"
-                                                                              value="1" <?php if ($config->upload->myacurite->hub_enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio"
                                                                              id="myacurite_hub_update"
                                                                              name="upload[myacurite][hub_enabled]"
                                                                              value="0" <?php if ($config->upload->myacurite->hub_enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="myacurite_hub_update"
+                                                                              name="upload[myacurite][hub_enabled]"
+                                                                              value="1" <?php if ($config->upload->myacurite->hub_enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="form-group row margin-bottom-05">
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                    for="myacurite_access_update">Access Upload:</label>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="myacurite_access_update"
-                                                                              name="upload[myacurite][access_enabled]"
-                                                                              value="1" <?php if ($config->upload->myacurite->access_enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
                                 <label class="radio-inline bg-danger"><input type="radio"
                                                                              id="myacurite_access_update"
                                                                              name="upload[myacurite][access_enabled]"
                                                                              value="0" <?php if ($config->upload->myacurite->access_enabled === false) {
                                         echo 'checked="checked"';
                                     } ?>>Disabled</label>
+                                <label class="radio-inline bg-success"><input type="radio"
+                                                                              id="myacurite_access_update"
+                                                                              name="upload[myacurite][access_enabled]"
+                                                                              value="1" <?php if ($config->upload->myacurite->access_enabled === true) {
+                                        echo 'checked="checked"';
+                                    } ?>>Enabled</label>
                             </div>
                         </div>
                         <div class="row margin-bottom-05">
                             <h4>Upload URL's:</h4>
                             <div class="row">
                                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 bg-info">
-                                    <p><strong>If installed on the same network as your device, use
-                                            secondary.<br>See
-                                            <code>docs/DNS.md</code></strong>
-                                    </p>
+                                    <p><strong>If installed on the same network as your device, use secondary.<br>See
+                                            <code>docs/DNS.md</code></strong></p>
                                 </div>
                             </div>
                             <div class="form-group row margin-bottom-05 margin-top-05">
@@ -1008,7 +1028,7 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </div>
                         </div>
                     </div>
-
+                    <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
                     <!–– Debug Server -->
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <h3 class="panel-heading">Debug Update Server:</h3>
@@ -1018,18 +1038,18 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                                 <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
                                        for="debug_server_enabled">Upload:</label>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-success"><input type="radio"
-                                                                                  id="debug_server_enabled"
-                                                                                  name="debug[server][enabled]"
-                                                                                  value="1" <?php if ($config->debug->server->enabled === true) {
-                                            echo 'checked="checked"';
-                                        } ?>>Enabled</label>
                                     <label class="radio-inline bg-danger"><input type="radio"
                                                                                  id="debug_server_enabled"
                                                                                  name="debug[server][enabled]"
                                                                                  value="0" <?php if ($config->debug->server->enabled === false) {
                                             echo 'checked="checked"';
                                         } ?>>Disabled</label>
+                                    <label class="radio-inline bg-success"><input type="radio"
+                                                                                  id="debug_server_enabled"
+                                                                                  name="debug[server][enabled]"
+                                                                                  value="1" <?php if ($config->debug->server->enabled === true) {
+                                            echo 'checked="checked"';
+                                        } ?>>Enabled</label>
                                 </div>
                             </div>
                             <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
@@ -1041,15 +1061,14 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
                             </div>
                         </div>
                     </div>
-
                 </div>
-                </div>
+                <hr class="hr-dashed">
                 <div class="row">
-                    <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">
-                        <button type="submit" id="submit" value="submit" class="btn btn-primary btn-block"><i
-                                    class="fa fa-check"
+                    <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4 margin-top-05">
+                        <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"><i
+                                    class="fas fa-save"
                                     aria-hidden="true"></i>
-                            Submit
+                            Save Settings
                         </button>
                     </div>
                 </div>
@@ -1059,6 +1078,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         <?php
         include(APP_BASE_PATH . '/inc/footer.php');
     }
-} else {
-    header("Location: /admin/account");
+} // Not logged in or user is not an admin
+else {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    header("Location: /");
 }

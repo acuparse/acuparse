@@ -85,13 +85,13 @@ function trendIcon($trend)
 {
     switch ($trend) {
         case 'Rising':
-            $icon = ' <i class="wi wi-direction-up"></i>';
+            $icon = ' <i class="fas fa-level-up-alt"></i>';
             break;
         case 'Falling':
-            $icon = ' <i class="wi wi-direction-down"></i>';
+            $icon = ' <i class="fas fa-level-down-alt"></i>';
             break;
         case 'Steady':
-            $icon = ' <i class="wi wi-direction-right"></i>';
+            $icon = ' <i class="fas fa-long-arrow-alt-right"></i>';
             break;
     }
     return $icon;

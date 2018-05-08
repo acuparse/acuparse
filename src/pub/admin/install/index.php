@@ -27,71 +27,89 @@
 
 require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 
-// Process an upgrade
+// Process an update
 if (isset($_GET['update']) && $installed === true) {
-    if (isset($_GET['do'])) {
-        $notes = '';
-        foreach (glob("scripts/*.php") as $filename) {
-            include $filename;
+    if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
+
+        // Logged in, process update
+        if (isset($_GET['do'])) {
+            $notes = '';
+            $updatePattern = dirname(dirname(dirname(__DIR__))) . '/fcn/updater/*/*.php';
+            foreach (glob($updatePattern) as $filename) {
+                include $filename;
+            }
+
+            // Save the users config file
+            $export = var_export($config, true);
+            $export = str_ireplace('stdClass::__set_state', '(object)', $export);
+            $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
+            $page_title = 'Acuparse Setup';
+            include(APP_BASE_PATH . '/inc/header.php');
+            ?>
+            <section id="Update System">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">Update Complete</h2>
+                        <div class="alert alert-warning">
+                            <p><strong>Double check your config settings before proceeding!</strong></p>
+                        </div>
+                        <div><h3>Notes:</h3>
+                            <ul class="list-unstyled"><?= $notes; ?></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+                    <button type="button" class="btn btn-primary btn-block" onclick="location.href = '/admin/settings'">
+                        <i
+                                class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
+                    </button>
+                </div>
+            </section>
+            <?php
+            // Get app footer
+            include(APP_BASE_PATH . '/inc/footer.php');
+        } else {
+            $page_title = 'Acuparse Setup';
+            include(APP_BASE_PATH . '/inc/header.php');
+            ?>
+            <section id="Update System">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">Are you sure you want to proceed?</h2>
+                        <div class="alert alert-danger">
+                            <p><strong>Make sure you backup your database, config file, and webcam images before
+                                    proceeding!</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+                    <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"
+                            onclick="location.href = '/admin/install?update&do'"><i
+                                class="fas fa-wrench"
+                                aria-hidden="true"></i>
+                        Process Upgrade
+                    </button>
+                </div>
+            </section>
+            <?php
+            // Get app footer
+            include(APP_BASE_PATH . '/inc/footer.php');
         }
-        // Save the users config file
-        $export = var_export($config, true);
-        $export = str_ireplace('stdClass::__set_state', '(object)', $export);
-        $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
-        $page_title = 'Acuparse Setup';
-        include(APP_BASE_PATH . '/inc/header.php');
-        ?>
-        <section id="Update System">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="page-header">Update Complete</h2>
-                    <div class="alert alert-warning">
-                        <p><strong>Double check your config settings before proceeding!</strong></p>
-                    </div>
-                    <div><h3>Notes:</h3>
-                        <ul class="list-unstyled"><?= $notes; ?></ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
-                <button type="button" class="btn btn-primary btn-block" onclick="location.href = '/admin/settings'"><i
-                            class="fa fa-check" aria-hidden="true"></i> Edit Settings
-                </button>
-            </div>
-        </section>
-        <?php
-        // Get app footer
-        include(APP_BASE_PATH . '/inc/footer.php');
-    } else {
-        $page_title = 'Acuparse Setup';
-        include(APP_BASE_PATH . '/inc/header.php');
-        ?>
-        <section id="Update System">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="page-header">Are you sure you want to proceed?</h2>
-                    <div class="alert alert-danger">
-                        <p><strong>Make sure you backup your database, config file, and webcam images before
-                                proceeding!</strong></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
-                <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"
-                        onclick="location.href = '/admin/install?update&do'"><i
-                            class="fa fa-check"
-                            aria-hidden="true"></i>
-                    Process Upgrade
-                </button>
-            </div>
-        </section>
-        <?php
-        // Get app footer
-        include(APP_BASE_PATH . '/inc/footer.php');
+    } // Not logged in
+    else {
+        // Log it
+        syslog(LOG_WARNING, "(SYSTEM)[WARNING]: UNAUTHORIZED UPDATE ATTEMPT");
+
+        // Bailout
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        header("Location: /");
+        die();
     }
-} // Adding first user account
+
+} // Create initial administrator account
 elseif (isset($_GET['add_admin']) && $installed === true) {
-    // If this is the first user account
+
+    // Check to ensure there are no other accounts
     if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         $username = mysqli_real_escape_string($conn,
             strtolower(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING)));
@@ -143,7 +161,7 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
             setcookie('device_key', $device_key, time() + 60 * 60 * 24 * 30, '/');
             setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
 
-            // Log
+            // Log it
             syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
 
             // Redirect user after successful login
@@ -156,9 +174,20 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
             header("Location: /admin");
         }
+    } // Woah, there is already an account in the DB
+    else {
+        // Log it
+        syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS");
+
+        // Bailout
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        header("Location: /");
+        die();
     }
-} elseif (isset($_GET['add_user']) && $installed === true) {
-    // Check to see if the admin account is added. If not, create it.
+} // Show the initial user form
+elseif (isset($_GET['add_user']) && $installed === true) {
+
+    // Check to ensure there are no other accounts
     if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         $page_title = 'Create First User | ' . $config->site->name;
         include(APP_BASE_PATH . '/inc/header.php');
@@ -187,7 +216,7 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
                                        placeholder="Password" maxlength="32" required>
                             </div>
                             <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                        class="fa fa-check" aria-hidden="true"></i> Submit
+                                        class="fas fa-save" aria-hidden="true"></i> Save
                             </button>
                         </form>
                     </div>
@@ -197,7 +226,17 @@ elseif (isset($_GET['add_admin']) && $installed === true) {
         <?php
         // Get app footer
         include(APP_BASE_PATH . '/inc/footer.php');
+    } // Woah, there is already an account in the DB
+    else {
+        // Log it
+        syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS");
+
+        // Bailout
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        header("Location: /");
+        die();
     }
+
 } // Configure the database connection
 elseif (isset($_GET['config_db']) && $installed === false) {
 
@@ -252,7 +291,7 @@ elseif (isset($_GET['config_db']) && $installed === false) {
         header("Location: /admin/install");
     }
 
-}  // New Install
+}  // New Install, setup site config
 elseif ($installed === false) {
     $page_title = 'Acuparse Setup';
     include(APP_BASE_PATH . '/inc/header.php');
@@ -320,9 +359,9 @@ elseif ($installed === false) {
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">
                     <button type="submit" id="submit" value="submit" class="btn btn-primary btn-block"><i
-                                class="fa fa-check"
+                                class="fas fa-save"
                                 aria-hidden="true"></i>
-                        Submit
+                        Save
                     </button>
                 </div>
             </div>
@@ -332,5 +371,6 @@ elseif ($installed === false) {
     // Get app footer
     include(APP_BASE_PATH . '/inc/footer.php');
 } else {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /");
 }

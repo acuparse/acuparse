@@ -2,8 +2,6 @@
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
-> **Upgrading from Version 2.1?**  Apache config needs to be rebuilt with SSL support. See [docs/updates/from2_1.md](docs/updates/from2_1.md)
-
 Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1 weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
