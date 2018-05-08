@@ -250,10 +250,14 @@ function getCurrentHTML()
                             <li><i class="wi wi-moonset" aria-hidden="true"></i>
                                 <strong>Moonset:</strong> <?= $moon_set; ?></li>
                         <?php } ?>
-                        <li><strong>Current New:</strong> <?= $last_new_moon; ?></li>
-                        <li><strong>Current Full:</strong> <?= $last_full_moon; ?></li>
-                        <li><strong>Upcoming New:</strong> <?= $next_new_moon; ?></li>
-                        <li><strong>Upcoming Full:</strong> <?= $next_full_moon; ?></li>
+                        <li><i class="wi wi-moon-new" aria-hidden="true"></i> <strong>Latest
+                                New:</strong> <?= $last_new_moon; ?></li>
+                        <li><i class="wi wi-moon-full" aria-hidden="true"></i> <strong>Latest
+                                Full:</strong> <?= $last_full_moon; ?></li>
+                        <li><i class="wi wi-moon-new" aria-hidden="true"></i> <strong>Upcoming
+                                New:</strong> <?= $next_new_moon; ?></li>
+                        <li><i class="wi wi-moon-full" aria-hidden="true"></i> <strong>Upcoming
+                                Full:</strong> <?= $next_full_moon; ?></li>
                     </ul>
                 </div> <!-- END Moon -->
             </div> <!-- END Right Column -->
