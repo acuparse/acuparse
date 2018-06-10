@@ -21,10 +21,10 @@
  */
 
 /**
- * File: src/fcn/weather/GetCurrentWeatherData.php
+ * File: src/fcn/weather/getCurrentWeatherData.php
  * Gets the current weather data from the database
  */
-class GetCurrentWeatherData
+class getCurrentWeatherData
 {
     // Set variables
     private $windSmph;

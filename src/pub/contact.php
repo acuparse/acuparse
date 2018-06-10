@@ -31,7 +31,7 @@ require(dirname(__DIR__) . '/inc/loader.php');
 if (isset($_GET['do'])) {
 
     // Check for google recaptcha
-    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) {
+    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['authenticated'])) {
         // Check that Google captcha is correct
         $captcha = $_POST['g-recaptcha-response'];
         $response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $config->google->recaptcha->secret . "&response=" . $captcha),
@@ -68,42 +68,41 @@ if (isset($_GET['do'])) {
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
         header("Location: /");
-
+        die();
     }
 } else {
     if ($config->contact->enabled === true) {
         // Get Header
-        $page_title = 'Contact Owner | ' . $config->site->name;
+        $pageTitle = 'Contact Owner';
         include(APP_BASE_PATH . '/inc/header.php');
         ?>
 
         <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">Contact Owner</h1>
+            <div class="col">
+                <h1 class="page-header">Contact Station Owner</h1>
             </div>
         </div>
-
+        <hr>
         <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <h3>Send a Message</h3>
+            <div class="col-8 mx-auto contact">
                 <form name="message" id="recaptcha-form" action="/contact?do" method="POST">
                     <div class="form-group">
-                        <label>Your Name:</label>
-                        <input type="text" class="form-control" <?php if (isset($_SESSION['UserLoggedIn'])) {
-                            echo 'value="', $_SESSION['Username'], '"';
-                        } ?> name="name" id="name" placeholder="Name">
+                        <label for="name">Your Name:</label>
+                        <input type="text"
+                               class="form-control" <?= (isset($_SESSION['authenticated'])) ? 'value="' . $_SESSION['username'] . '"' : false; ?>
+                               name="name" id="name" placeholder="Name">
                     </div>
                     <div class="form-group">
-                        <label>Email Address:</label>
-                        <input type="email" <?php if (isset($_SESSION['UserLoggedIn'])) {
-                            $uid = $_SESSION['UserID'];
+                        <label for="email">Email Address:</label>
+                        <input type="email" <?php if (isset($_SESSION['authenticated'])) {
+                            $uid = $_SESSION['uid'];
                             $email = mysqli_fetch_array(mysqli_query($conn,
                                 "SELECT `email` FROM `users` WHERE `uid`='$uid'"));
                             echo 'value="', $email['email'], '"';
                         } ?> class="form-control" name="email" id="email" placeholder="Email" required>
                     </div>
                     <div class="form-group">
-                        <label>Subject:</label>
+                        <label for="subject">Subject:</label>
                         <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject"
                                required>
                     </div>
@@ -113,17 +112,16 @@ if (isset($_GET['do'])) {
                                   required></textarea>
                     </div>
                     <?php
-                    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['UserLoggedIn'])) { ?>
-                        <button type="submit" class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
+                    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['authenticated'])) { ?>
+                        <button type="submit" class="margin-top-05 btn btn-outline-success g-recaptcha"
                                 data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit"><i
-                                    class="fas fa-paper-plane"></i> Send
-                            Message
+                                    class="fas fa-paper-plane"></i> Send Message
                         </button>
                         <?php
                     } else { ?>
-                        <button type="submit" class="btn btn-primary center-block"><i class="fas fa-paper-plane"></i>
-                            Send
-                            Message
+                        <button type="submit" class="margin-top-05 btn btn-lg btn-success btn-block"><i
+                                    class="fas fa-paper-plane"></i>
+                            Send Message
                         </button>
                     <?php } ?>
                 </form>

@@ -26,35 +26,35 @@
  */
 
 // Find the right moon icon to show:
-function moonIcon($moon_stage)
+function moonIcon($moonStage)
 {
-    switch ($moon_stage) {
+    switch ($moonStage) {
         case 'New Moon':
-            $moon_icon = 'wi-moon-new';
+            $moonIcon = 'wi-moon-new';
             break;
         case 'Waxing Crescent':
-            $moon_icon = 'wi-moon-waxing-crescent-6';
+            $moonIcon = 'wi-moon-waxing-crescent-6';
             break;
         case 'First Quarter':
-            $moon_icon = 'wi-moon-first-quarter';
+            $moonIcon = 'wi-moon-first-quarter';
             break;
         case 'Waxing Gibbous':
-            $moon_icon = 'wi-moon-waxing-gibbous-6';
+            $moonIcon = 'wi-moon-waxing-gibbous-6';
             break;
         case 'Full Moon':
-            $moon_icon = 'wi-moon-full';
+            $moonIcon = 'wi-moon-full';
             break;
         case 'Waning Gibbous':
-            $moon_icon = 'wi-moon-waning-gibbous-6';
+            $moonIcon = 'wi-moon-waning-gibbous-6';
             break;
         case 'Third Quarter':
-            $moon_icon = 'wi-moon-third-quarter';
+            $moonIcon = 'wi-moon-third-quarter';
             break;
         case 'Waning Crescent':
-            $moon_icon = 'wi-moon-waning-crescent-1';
+            $moonIcon = 'wi-moon-waning-crescent-1';
             break;
     }
-    return $moon_icon;
+    return $moonIcon;
 }
 
 // Find the right temp icon to show:
@@ -62,22 +62,22 @@ function tempIcon($tempC)
 {
     switch ($tempC) {
         case ($tempC < -10):
-            $temp_icon = 'fa-thermometer-empty';
+            $tempIcon = 'fa-thermometer-empty';
             break;
         case ($tempC >= -10 && $tempC <= 0):
-            $temp_icon = 'fa-thermometer-quarter';
+            $tempIcon = 'fa-thermometer-quarter';
             break;
         case ($tempC > 0 && $tempC < 15):
-            $temp_icon = 'fa-thermometer-half';
+            $tempIcon = 'fa-thermometer-half';
             break;
         case ($tempC >= 15 && $tempC <= 30):
-            $temp_icon = 'fa-thermometer-three-quarters';
+            $tempIcon = 'fa-thermometer-three-quarters';
             break;
         case ($tempC > 30):
-            $temp_icon = 'fa-thermometer-full';
+            $tempIcon = 'fa-thermometer-full';
             break;
     }
-    return $temp_icon;
+    return $tempIcon;
 }
 
 // Convert Trend to icon
@@ -85,14 +85,14 @@ function trendIcon($trend)
 {
     switch ($trend) {
         case 'Rising':
-            $icon = ' <i class="fas fa-level-up-alt"></i>';
+            $trendIcon = ' <i class="fas fa-level-up-alt"></i>';
             break;
         case 'Falling':
-            $icon = ' <i class="fas fa-level-down-alt"></i>';
+            $trendIcon = ' <i class="fas fa-level-down-alt"></i>';
             break;
         case 'Steady':
-            $icon = ' <i class="fas fa-long-arrow-alt-right"></i>';
+            $trendIcon = ' <i class="fas fa-long-arrow-alt-right"></i>';
             break;
     }
-    return $icon;
+    return $trendIcon;
 }

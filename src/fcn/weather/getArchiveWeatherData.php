@@ -21,10 +21,10 @@
  */
 
 /**
- * File: src/fcn/weather/GetArchiveWeatherData.php
+ * File: src/fcn/weather/getArchiveWeatherData.php
  * Gets the archive weather data from the database
  */
-class GetArchiveWeatherData
+class getArchiveWeatherData
 {
     // Set variables
 

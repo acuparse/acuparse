@@ -17,7 +17,7 @@ Users currently having trouble sending updates to Weather Underground should fin
 * Customize barometer readings.
 * Display data in both &#8457; and &#8451;. Selectable default.
 * Multiple tower sensors, public or private.
-* Multiple admin/regular user logins.
+* Multiple admin/regular user accounts.
     * Regular users can only view private sensor data. 
 * Archived data display.
 * Watch data flow using the syslog.

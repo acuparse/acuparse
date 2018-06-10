@@ -28,12 +28,12 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
-if (!isset($_SESSION['UserLoggedIn'])) {
+if (!isset($_SESSION['authenticated'])) {
 
     require(APP_BASE_PATH . '/fcn/mailer.php');
 
 // Get Header
-    $page_title = 'Recover Account Password | ' . $config->site->name;
+    $pageTitle = 'Recover Account Password';
     include(APP_BASE_PATH . '/inc/header.php');
 
 // If we are submitting a recovery request
@@ -54,13 +54,12 @@ if (!isset($_SESSION['UserLoggedIn'])) {
         if ($response['success'] === true) {
 
             $email = mysqli_real_escape_string($conn, filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
-
             $result = mysqli_query($conn, "SELECT `uid` FROM `users` WHERE `email`='$email'");
 
             // If there are no results
             if (mysqli_num_rows($result) === 0) {
                 // Display success message anyway, because security?
-                echo '<div class="row"><div class="col-lg-12"><div class="alert alert-success">If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
+                echo '<div class="row"><div class="col"><div class="alert alert-success text-center">If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
             } // If there is a member with that email
             else {
                 // Get uid
@@ -74,7 +73,6 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                 if (mysqli_num_rows($result) === 1) {
                     $hash = mysqli_fetch_array($result);
                     $hash = $hash['hash'];
-
                     $subject = 'Password Change Request';
                     $message = '<h2>Reset Account Password</h2><p>You or someone pretending to be you requested to reset your password for ' . $config->site->name .
                         '.</p><p><b>To finish resetting your password. Please visit the link below.</b><br><a href="http://' . $config->site->hostname . '/recover?do&hash=' . $hash . '">Reset Password</a></p>';
@@ -84,7 +82,7 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                     // Log it
                     syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid received");
                     // Display message
-                    echo '<div class="row"><div class="col-lg-12"><div class="alert alert-success">If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
+                    echo '<div class="row"><div class="col"><div class="alert alert-success text-center"><strong>Success:</strong> If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
                 } //Otherwise
                 else {
                     $uuid = uniqid();
@@ -102,13 +100,13 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                         // Log it
                         syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid received");
                         // Display message
-                        echo '<div class="row"><div class="col-lg-12"><div class="alert alert-success">If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
+                        echo '<div class="row"><div class="col"><div class="alert alert-success text-center"><strong>Success:</strong> If that email exists in our database, you will receive an email with instructions to reset your password.</div></div></div>';
                     } // Something went wrong
                     else {
                         // Log it
                         syslog(LOG_ERR, "(SYSTEM)[INFO]: Failed to save password reset request for UID $uid");
                         //Display message
-                        echo '<div class="row"><div class="col-lg-12"><div class="alert alert-danger">Something went wrong while completing your request. Please try again.</div></div></div>';
+                        echo '<div class="row"><div class="col"><div class="alert alert-danger text-center">Something went wrong while completing your request. Please try again.</div></div></div>';
                     }
                 }
             }
@@ -124,28 +122,26 @@ if (!isset($_SESSION['UserLoggedIn'])) {
         if ($count === 1) {
             ?>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col">
                     <h2 class="page-header">Recover Password</h2>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4 col-lg-offset-4">
-                    <div id="change_password_form">
-                        <p>Enter your new password below:</p>
-                        <form class="form" role="form" action="recover?password" method="POST">
-                            <div class="form-group">
-                                <label for="password" class="sr-only">Password</label>
-                                <input type="password" class="form-control" name="pass" id="pass" placeholder="Password"
-                                       maxlength="32" required>
-                            </div>
-                            <input type="hidden" name="hash" value="<?= $hash; ?>">
-                            <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                        class="fas fa-key" aria-hidden="true"></i> Submit
-                            </button>
-                        </form>
-                    </div>
+            <hr>
+            <section id="change-password" class="row change-password">
+                <div class="col-md-6 col-12 mx-auto">
+                    <form class="form" role="form" action="recover?password" method="POST">
+                        <div class="form-group">
+                            <label for="password" class="col-form-label">New Password</label>
+                            <input type="password" class="form-control" name="pass" id="pass" placeholder="Password"
+                                   maxlength="32" required>
+                        </div>
+                        <input type="hidden" name="hash" value="<?= $hash; ?>">
+                        <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
+                                    class="fas fa-key" aria-hidden="true"></i> Submit
+                        </button>
+                    </form>
                 </div>
-            </div>
+            </section>
             <?php
             // Done with the password form
         } // That hash does not exist
@@ -154,6 +150,7 @@ if (!isset($_SESSION['UserLoggedIn'])) {
             syslog(LOG_ERR, "(SYSTEM)[ERROR]:Invalid hash received. $hash");
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Your request cannot be processed. Try submitting your password reset request again.</div>';
             header("Location: /");
+            die();
         }
 // Done with resetting password
     } // Process Password Change
@@ -204,12 +201,14 @@ if (!isset($_SESSION['UserLoggedIn'])) {
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
                 header("Location: /admin/account");
+                die();
 
             } else {
                 // Log it
                 syslog(LOG_ERR, "(SYSTEM)[ERROR]: Password change request for UID $uid failed");
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Something went wrong while completing your request. Please try again.</div>';
                 header("Location: /recover&do?hash=$hash");
+                die();
             }
 
         }
@@ -218,37 +217,36 @@ if (!isset($_SESSION['UserLoggedIn'])) {
     else {
         ?>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col">
                 <h2 class="page-header">Recover Password</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-4 col-lg-offset-4">
-                <div id="recover_password_form">
-                    <p>To reset your password, enter your email below:</p>
-                    <form id="recaptcha-form" role="form" class="form-signin" action="recover?start" method="POST">
-                        <div class="form-group">
-                            <label for="email" class="sr-only">Email</label>
-                            <input type="email" class="form-control" name="email" id="email" maxlength="64"
-                                   placeholder="Email" required>
-                        </div>
+        <hr>
+        <section class="row change-password">
+            <div class="col-md-6 col-12 mx-auto">
+                <p>To reset your password, enter your email below:</p>
+                <form id="recaptcha-form" role="form" action="recover?start" method="POST">
+                    <div class="form-group">
+                        <label class="col-form-label" for="email">Email Address:</label>
+                        <input type="email" class="form-control" name="email" id="email" maxlength="64"
+                               placeholder="username@example.com" required>
+                    </div>
+                    <?php
+                    if ($config->google->recaptcha->enabled === true) { ?>
+                        <button type="submit" class="margin-top-05 btn btn-primary g-recaptcha"
+                                data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
+                            <i class="fas fa-key" aria-hidden="true"></i> Submit
+                        </button>
                         <?php
-                        if ($config->google->recaptcha->enabled === true) { ?>
-                            <button class="margin-top-05 btn btn-lg btn-primary btn-block g-recaptcha"
-                                    data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
-                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Submit
-                            </button>
-                            <?php
-                        } else { ?>
-                            <button class="margin-top-05 btn btn-lg btn-primary btn-block" type="submit"><i
-                                        class="fas fa-sign-in-alt" aria-hidden="true"></i> Submit
-                            </button>
-                            <?php
-                        } ?>
-                    </form>
-                </div>
+                    } else { ?>
+                        <button type="submit" class="margin-top-05 btn btn-primary"><i
+                                    class="fas fa-key" aria-hidden="true"></i> Submit
+                        </button>
+                        <?php
+                    } ?>
+                </form>
             </div>
-        </div>
+        </section>
         <?php
     }
 

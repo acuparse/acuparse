@@ -29,7 +29,7 @@ require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 
 // Process an update
 if (isset($_GET['update']) && $installed === true) {
-    if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
+    if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
         // Logged in, process update
         if (isset($_GET['do'])) {
@@ -43,12 +43,12 @@ if (isset($_GET['update']) && $installed === true) {
             $export = var_export($config, true);
             $export = str_ireplace('stdClass::__set_state', '(object)', $export);
             $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
-            $page_title = 'Acuparse Setup';
+            $pageTitle = 'Acuparse Setup';
             include(APP_BASE_PATH . '/inc/header.php');
             ?>
-            <section id="Update System">
+            <section id="update-system">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col">
                         <h2 class="page-header">Update Complete</h2>
                         <div class="alert alert-warning">
                             <p><strong>Double check your config settings before proceeding!</strong></p>
@@ -58,23 +58,25 @@ if (isset($_GET['update']) && $installed === true) {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
-                    <button type="button" class="btn btn-primary btn-block" onclick="location.href = '/admin/settings'">
-                        <i
-                                class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
-                    </button>
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary btn-block"
+                                onclick="location.href = '/admin/settings'">
+                            <i class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
+                        </button>
+                    </div>
                 </div>
             </section>
             <?php
             // Get app footer
             include(APP_BASE_PATH . '/inc/footer.php');
         } else {
-            $page_title = 'Acuparse Setup';
+            $pageTitle = 'Acuparse Setup';
             include(APP_BASE_PATH . '/inc/header.php');
             ?>
-            <section id="Update System">
+            <section id="update-system">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col">
                         <h2 class="page-header">Are you sure you want to proceed?</h2>
                         <div class="alert alert-danger">
                             <p><strong>Make sure you backup your database, config file, and webcam images before
@@ -82,7 +84,7 @@ if (isset($_GET['update']) && $installed === true) {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+                <div class="col">
                     <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"
                             onclick="location.href = '/admin/install?update&do'"><i
                                 class="fas fa-wrench"
@@ -107,138 +109,143 @@ if (isset($_GET['update']) && $installed === true) {
     }
 
 } // Create initial administrator account
-elseif (isset($_GET['add_admin']) && $installed === true) {
+elseif (isset($_GET['account']) && $installed === true) {
+    // Process the new account
+    if (isset($_GET['do'])) {
 
-    // Check to ensure there are no other accounts
-    if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
-        $username = mysqli_real_escape_string($conn,
-            strtolower(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING)));
-        $password = password_hash(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW), PASSWORD_DEFAULT);
-        $email = mysqli_real_escape_string($conn,
-            strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL)));
-        $result = mysqli_query($conn,
-            "INSERT INTO `users` (`username`, `password`, `email`, `admin`) VALUES ('$username', '$password', '$email', '1')");
-        if (!$result) {
-            // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first user failed: " . mysqli_error($conn));
-        }
-
-        // If adding the account was successful
-        if (mysqli_affected_rows($conn) === 1) {
-
-            // Mail it
-            require(APP_BASE_PATH . '/fcn/mailer.php');
-            $subject = 'Admin Account Created';
-            $message = '<h2>Admin Account Created Successfully!</h2><p>Your admin account has been added successfully. You can now login.</p>';
-            mailer($email, $subject, $message);
-            // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: First account for $username added successfully");
-            // Display message
-            $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Added Successfully!</div>';
-
-            // Let's remember the user is logged in
-            $_SESSION['UserLoggedIn'] = true;
-            $_SESSION['Username'] = $username;
-            $_SESSION['UserID'] = (int)mysqli_insert_id($conn);
-            $_SESSION['IsAdmin'] = true;
-            $uid = $_SESSION['UserID'];
-
-            // Generate the device key and token for this session
-            $device_key = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', mt_rand(1, 10))), 1,
-                40);
-            $token = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', mt_rand(1, 10))), 1, 40);
-            $user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-            // Save the session to the database
+        // Check to ensure there are no other accounts
+        if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
+            $username = mysqli_real_escape_string($conn,
+                strtolower(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING)));
+            $password = password_hash(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW), PASSWORD_DEFAULT);
+            $email = mysqli_real_escape_string($conn,
+                strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL)));
             $result = mysqli_query($conn,
-                "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$device_key', '$token', '$user_agent')");
+                "INSERT INTO `users` (`username`, `password`, `email`, `admin`) VALUES ('$username', '$password', '$email', '1')");
             if (!$result) {
                 // Log it
-                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed: " . mysqli_error($conn));
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first user failed: " . mysqli_error($conn));
             }
 
-            // Send the session cookie
-            setcookie('device_key', $device_key, time() + 60 * 60 * 24 * 30, '/');
-            setcookie('token', md5($token), time() + 60 * 60 * 24 * 30, '/');
+            // If adding the account was successful
+            if (mysqli_affected_rows($conn) === 1) {
 
-            // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
+                // Mail it
+                require(APP_BASE_PATH . '/fcn/mailer.php');
+                $subject = 'Admin Account Created';
+                $message = '<h2>Admin Account Created Successfully!</h2><p>Your admin account has been added successfully. You can now sign in.</p>';
+                mailer($email, $subject, $message);
+                // Log it
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: First account for $username added successfully");
+                // Display message
+                $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Added Successfully!</div>';
 
-            // Redirect user after successful login
-            header("Location: /admin/settings");
-        } // Something went wrong ...
+                // Let's remember the user is logged in
+                $_SESSION['authenticated'] = true;
+                $_SESSION['username'] = $username;
+                $_SESSION['uid'] = (int)mysqli_insert_id($conn);
+                $_SESSION['admin'] = true;
+                $uid = $_SESSION['uid'];
+
+                // Generate the device key and token for this session
+                $deviceKey = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz',
+                    mt_rand(1, 10))), 1,
+                    40);
+                $token = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', mt_rand(1, 10))),
+                    1, 40);
+                $tokenHash = (string)md5($token);
+                $userAgent = (string)$_SERVER['HTTP_USER_AGENT'];
+
+                // Save the session to the database
+                $result = mysqli_query($conn,
+                    "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$deviceKey', '$token', '$userAgent')");
+                if (!$result) {
+                    // Log it
+                    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed: " . mysqli_error($conn));
+                }
+
+                // Send the session cookie
+                setcookie('device', $deviceKey, time() + 60 * 60 * 24 * 30, '/');
+                setcookie('token', $tokenHash, time() + 60 * 60 * 24 * 30, '/');
+
+                // Log it
+                syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
+
+                // Redirect user after successful authentication
+                header("Location: /admin/settings");
+                die();
+            } // Something went wrong ...
+            else {
+                // Log it
+                syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first admin $username failed");
+                // Display message
+                $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
+                header("Location: /admin");
+                die();
+            }
+        } // Woah, there is already an account in the DB
         else {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first admin $username failed");
-            // Display message
-            $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
-            header("Location: /admin");
+            syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS");
+
+            // Bailout
+            header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+            header("Location: /");
+            die();
         }
-    } // Woah, there is already an account in the DB
+    } // Show the initial user form
     else {
-        // Log it
-        syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS");
-
-        // Bailout
-        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-        header("Location: /");
-        die();
-    }
-} // Show the initial user form
-elseif (isset($_GET['add_user']) && $installed === true) {
-
-    // Check to ensure there are no other accounts
-    if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
-        $page_title = 'Create First User | ' . $config->site->name;
-        include(APP_BASE_PATH . '/inc/header.php');
-        ?>
-        <section id="add_user" class="add_user_display">
+        // Check to ensure there are no other accounts
+        if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
+            $pageTitle = 'Create First User';
+            include(APP_BASE_PATH . '/inc/header.php');
+            ?>
             <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="page-header">Creating First User</h2>
+                <div class="col">
+                    <h2 class="page-header">Add Administrator Account</h2>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4 col-lg-offset-4">
-                    <div id="add_admin_user">
-                        <p>Enter the admin user details:</p>
-                        <form class="form" role="form" action="?add_admin" method="POST">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="username" id="username"
-                                       placeholder="Username" maxlength="32" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email"
-                                       maxlength="255" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" name="password" id="pass"
-                                       placeholder="Password" maxlength="32" required>
-                            </div>
-                            <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                        class="fas fa-save" aria-hidden="true"></i> Save
-                            </button>
-                        </form>
-                    </div>
+            <hr>
+            <section id="add-user" class="row add-user">
+                <div class="col-md-8 col-12 mx-auto">
+                    <form class="form" role="form" action="?account&do" method="POST">
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" class="form-control" name="username" id="username"
+                                   placeholder="Username" maxlength="32" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Email"
+                                   maxlength="255" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" name="password" id="pass"
+                                   placeholder="Password" maxlength="32" required>
+                        </div>
+                        <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                    class="fas fa-save" aria-hidden="true"></i> Save
+                        </button>
+                    </form>
                 </div>
-            </div>
-        </section>
-        <?php
-        // Get app footer
-        include(APP_BASE_PATH . '/inc/footer.php');
-    } // Woah, there is already an account in the DB
-    else {
-        // Log it
-        syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS");
+            </section>
+            <?php
+            // Get app footer
+            include(APP_BASE_PATH . '/inc/footer.php');
+        } // Woah, there is already an account in the DB
+        else {
+            // Log it
+            syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS");
 
-        // Bailout
-        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-        header("Location: /");
-        die();
+            // Bailout
+            header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+            header("Location: /");
+            die();
+        }
     }
-
 } // Configure the database connection
-elseif (isset($_GET['config_db']) && $installed === false) {
+elseif (isset($_GET['database']) && $installed === false) {
 
     // Do some input filtering
     $raw = $_POST;
@@ -259,22 +266,22 @@ elseif (isset($_GET['config_db']) && $installed === false) {
     $export = str_ireplace('stdClass::__set_state', '(object)', $export);
     $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
     if ($save !== false) {
-        $sql_path = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql';
+        $sqlPath = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql';
         // Load the database with the default schema
-        $schema = $sql_path . '/master.sql';
+        $schema = $sqlPath . '/master.sql';
         $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
         $schema = shell_exec($schema);
 
         // Check and adjust database trim level
         if ($config->mysql->trim === 1) {
             // Load the database with the trim schema
-            $schema = $sql_path . '/trim/enable.sql';
+            $schema = $sqlPath . '/trim/enable.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
             $schema = shell_exec($schema);
             syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All Enabled");
         } elseif ($config->mysql->trim === 2) {
             // Load the database with the trim schema
-            $schema = $sql_path . '/trim/enable_xtower.sql';
+            $schema = $sqlPath . '/trim/enable_xtower.sql';
             $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
             $schema = shell_exec($schema);
             syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All except towers Enabled");
@@ -283,89 +290,103 @@ elseif (isset($_GET['config_db']) && $installed === false) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM)[INFO]: Database configuration saved successfully");
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Database Configuration saved successfully!</div>';
-        header("Location: /admin/install/?add_user");
+        header("Location: /admin/install/?account");
+        die();
     } else {
         // Log it
         syslog(LOG_INFO, "(SYSTEM)[INFO]: Database configuration failed");
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving Database Configuration failed!</div>';
         header("Location: /admin/install");
+        die();
     }
 
 }  // New Install, setup site config
 elseif ($installed === false) {
-    $page_title = 'Acuparse Setup';
+    $pageTitle = 'Acuparse Setup';
     include(APP_BASE_PATH . '/inc/header.php');
     ?>
 
-    <section id="create_database">
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Database Connection Details:</h2>
-            </div>
+    <div class="row">
+        <div class="col">
+            <h2 class="page-header">Initial Database Settings:</h2>
         </div>
-        <form class="form" role="form" action="?config_db" method="POST">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="form-group row margin-bottom-05">
-                        <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_host">Hostname:</label>
-                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                            <input type="text" class="form-control" name="mysql[host]" id="mysql_host"
-                                   placeholder="MySQL Hostname" maxlength="32" value="localhost" required>
-                        </div>
-                    </div>
-                    <div class="form-group row margin-bottom-05">
-                        <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_database">Database:</label>
-                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                            <input type="text" class="form-control" name="mysql[database]" id="mysql_database"
-                                   placeholder="MySQL Database" value="acuparse" maxlength="32" required>
-                        </div>
-                    </div>
-                    <div class="form-group row margin-bottom-05">
-                        <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_username">Username:</label>
-                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                            <input type="text" class="form-control" name="mysql[username]" id="mysql_username"
-                                   placeholder="MySQL Username" value="acuparse" maxlength="32" required>
-                        </div>
-                    </div>
-                    <div class="form-group row margin-bottom-05">
-                        <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_password">Password:</label>
-                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                            <input type="text" class="form-control" name="mysql[password]" id="mysql_password"
-                                   placeholder="MySQL Password" maxlength="32" required>
-                        </div>
-                    </div>
-                    <div class="form-group row margin-bottom-05">
-                        <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_trim">Database Trimming:</label>
-                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                            <label class="radio-inline bg-danger"><input type="radio" id="mysql_trim"
-                                                                         name="mysql[trim]"
-                                                                         value="0" <?php if ($config->mysql->trim === 0) {
-                                    echo 'checked="checked"';
-                                } ?>>Disabled</label>
-                            <label class="radio-inline bg-success"><input type="radio" id="mysql_trim"
-                                                                          name="mysql[trim]"
-                                                                          value="1" <?php if ($config->mysql->trim === 1) {
-                                    echo 'checked="checked"';
-                                } ?>>Trim All</label>
-                            <label class="radio-inline bg-success"><input type="radio" id="mysql_trim"
-                                                                          name="mysql[trim]"
-                                                                          value="2" <?php if ($config->mysql->trim === 2) {
-                                    echo 'checked="checked"';
-                                } ?>>Trim all but towers</label>
-                        </div>
+    </div>
+    <hr>
+    <section id="config-database" class="row config-database">
+        <div class="col-md-8 col-12 mx-auto">
+
+            <form class="form" role="form" action="?database" method="POST">
+
+                <div class="form-row">
+                    <label class="col-form-label" for="mysql-host">Hostname:</label>
+                    <div class="col form-group">
+                        <input type="text" class="form-control"
+                               name="mysql[host]"
+                               id="mysql-host"
+                               placeholder="localhost"
+                               maxlength="35">
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">
-                    <button type="submit" id="submit" value="submit" class="btn btn-primary btn-block"><i
-                                class="fas fa-save"
-                                aria-hidden="true"></i>
-                        Save
-                    </button>
+                <div class="form-row">
+                    <label class="col-form-label" for="mysql-database">Database:</label>
+                    <div class="col form-group">
+                        <input type="text" class="form-control"
+                               name="mysql[database]"
+                               id="mysql-database"
+                               placeholder="acuparse"
+                               maxlength="35">
+                    </div>
                 </div>
-            </div>
-        </form>
+                <div class="form-row">
+                    <label class="col-form-label" for="mysql-username">Username:</label>
+                    <div class="col form-group">
+                        <input type="text" class="form-control"
+                               name="mysql[username]"
+                               id="mysql-username"
+                               placeholder="acuparse.dbadmin"
+                               maxlength="35">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label class="col-form-label" for="mysql-password">Password:</label>
+                    <div class="col form-group">
+                        <input type="text" class="form-control"
+                               name="mysql[password]"
+                               id="mysql-password"
+                               placeholder="Password"
+                               maxlength="32">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p><strong>Database Trimming?</strong></p>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio"
+                               name="mysql[trim]"
+                               id="mysql-trim-enabled-0" value="0">
+                        <label class="form-check-label alert-danger"
+                               for="mysql-trim-enabled-0">Disabled</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio"
+                               name="mysql[trim]"
+                               id="mysql-trim-enabled-1" value="1">
+                        <label class="form-check-label alert-success"
+                               for="mysql-trim-enabled-1">Enabled</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio"
+                               name="mysql[trim]"
+                               id="mysql-trim-enabled-2" value="2">
+                        <label class="form-check-label alert-warning"
+                               for="mysql-trim-enabled-2">Enabled, <strong>EXCEPT</strong>
+                            Towers</label>
+                    </div>
+                </div>
+                <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                            class="fas fa-save" aria-hidden="true"></i> Save Settings
+                </button>
+            </form>
+        </div>
     </section>
     <?php
     // Get app footer

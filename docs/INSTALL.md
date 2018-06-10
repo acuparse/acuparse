@@ -9,7 +9,7 @@ Can be run locally or on a remote/cloud server.
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 
 ## DNS Redirect
-> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
+> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access](/admin/access) once logged into your site.
 
 If you are connecting your Access/SmartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally. Otherwise, you will need a DNS server installed on your network.
 See [docs/DNS.md](DNS.md)
@@ -230,7 +230,7 @@ combined.sh | Processes an image when the camera and Acuparse are both installed
 > **Info:** Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
 
 # Invisible reCAPTCHA:
-Recaptcha loads on the login and contact forms, as well as, when requesting a password reset.
+Recaptcha loads on the authentication and contact forms, as well as, when requesting a password reset.
 * Sign up for a reCAPTCHA account at [google.com/recaptcha](https://www.google.com/recaptcha).
 * Select Invisible reCAPTCHA when registering your new site.
 * Enter your site key and secret in your site settings.

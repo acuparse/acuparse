@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/updater/2_4.php
+ * File: src/fcn/updater/2_x/2_4.php
  * 2.4 Site Update Tasks
  */
 

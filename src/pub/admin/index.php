@@ -28,52 +28,55 @@
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
 // Logged in admin
-if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_SESSION['IsAdmin'] === true) {
+if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
-    $page_title = 'Admin Functions | ' . $config->site->name;
+    $pageTitle = 'Admin Functions';
     include(APP_BASE_PATH . '/inc/header.php');
     ?>
-    <section id="admin_functions" class="admin_functions_display">
+    <section id="admin-functions" class="admin-functions">
         <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Admin Functions</h2>
+            <div class="col">
+                <h1 class="page-header">Administrator Functions</h1>
             </div>
         </div>
+
+        <hr>
+
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                <h3>User Functions:</h3>
-                <button type="button" id="add_user" class="btn btn-default center-block"
-                        onclick="location.href = '/admin/account?add_user'"><i class="fas fa-user-plus"
-                                                                               aria-hidden="true"></i> Add New User
+            <div class="col-md-4 col-12">
+                <h3>Users:</h3>
+                <button type="button" id="add-user" class="btn btn-outline-secondary btn-block"
+                        onclick="location.href = '/admin/account?add'"><i class="fas fa-user-plus"
+                                                                          aria-hidden="true"></i> Add New User
                 </button>
-                <button type="button" id="view_users" class="btn btn-default center-block margin-top-10"
+                <button type="button" id="view-users" class="btn btn-outline-secondary btn-block margin-top-10"
                         onclick="location.href = '/admin/account?view'"><i class="far fa-list-alt"
                                                                            aria-hidden="true"></i> View/Edit Users
                 </button>
             </div>
             <?php if ($config->station->towers === true) { ?>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-4 col-12">
                     <h3>Tower Sensors:</h3>
-                    <button type="button" id="add_tower" class="btn btn-default center-block"
+                    <button type="button" id="add-tower" class="btn btn-outline-secondary btn-block"
                             onclick="location.href = '/admin/tower?add'"><i class="far fa-plus-square"
                                                                             aria-hidden="true"></i> Add New Tower
                     </button>
-                    <button type="button" id="view_towers" class="btn btn-default center-block margin-top-10"
+                    <button type="button" id="view-towers" class="btn btn-outline-secondary btn-block margin-top-10"
                             onclick="location.href = '/admin/tower?view'"><i class="far fa-list-alt"
                                                                              aria-hidden="true"></i> View/Edit Towers
                     </button>
                 </div>
             <?php } ?>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                <h3>Admin Functions:</h3>
-                <button type="button" id="add_user" class="btn btn-default center-block"
+            <div class="col-md-4 col-12">
+                <h3>Configuration:</h3>
+                <button type="button" id="add-user" class="btn btn-outline-secondary btn-block"
                         onclick="location.href = '/admin/settings'"><i class="fas fa-cogs"
-                                                                       aria-hidden="true"></i> Modify Config
+                                                                       aria-hidden="true"></i> System Settings
                 </button>
-                <h4>Access Tools:</h4>
-                <button type="button" id="access_server" class="btn btn-default center-block margin-top-10"
-                        onclick="location.href = '/admin/access_server'"><i class="fas fa-server"
-                                                                            aria-hidden="true"></i> Change Upload Server
+                <h4 class="margin-top-05">Access Tools:</h4>
+                <button type="button" id="access-server" class="btn btn-outline-secondary btn-block margin-top-10"
+                        onclick="location.href = '/admin/access'"><i class="fas fa-server"
+                                                                     aria-hidden="true"></i> Upload Server
                 </button>
             </div>
         </div>

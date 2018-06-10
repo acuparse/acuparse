@@ -28,17 +28,13 @@
 // Get the loader
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
-if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
+if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
     // Process the changes
     if (isset($_GET['do'])) {
 
-        // Do some input filtering
-        $raw = $_POST;
-        array_walk_recursive($raw, function (&$i) {
-            $i = filter_var(trim($i), FILTER_SANITIZE_STRING);
-        });
-        $_POST = $raw;
+        // Do some quick input filtering
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
         //Database
         $config->mysql->host = $_POST['mysql']['host'];
@@ -101,6 +97,11 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         // Contact
         $config->contact->enabled = (bool)$_POST['contact']['enabled'];
 
+        // Email Outage Alerts
+        $config->outage_alert->enabled = (bool)$_POST['outage_alert']['enabled'];
+        $config->outage_alert->offline_for = $_POST['outage_alert']['offline_for'];
+        $config->outage_alert->interval = $_POST['outage_alert']['interval'];
+
         // Google
 
         // reCAPTCHA
@@ -116,8 +117,8 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
 
         // Master Sensor
         $config->upload->sensor->external = $_POST['upload']['sensor']['external'];
-        $config->upload->sensor->id = (isset($_POST['upload']['sensor']['id'])) ? $_POST['upload']['sensor']['id'] : '';
-        $config->upload->sensor->archive = (bool)$_POST['upload']['sensor']['archive'];
+        $config->upload->sensor->id = (isset($_POST['upload']['sensor']['id'])) ? $_POST['upload']['sensor']['id'] : null;
+        $config->upload->sensor->archive = (isset($_POST['upload']['sensor']['archive'])) ? (bool)$_POST['upload']['sensor']['archive'] : false;
 
         // WU
         $config->upload->wu->enabled = (bool)$_POST['upload']['wu']['enabled'];
@@ -144,15 +145,10 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
         $config->upload->myacurite->access_enabled = (bool)$_POST['upload']['myacurite']['access_enabled'];
         $config->upload->myacurite->access_url = $_POST['upload']['myacurite']['access_url'];
 
-        // Email Outage Alerts
-        $config->outage_alert->enabled = (bool)$_POST['outage_alert']['enabled'];
-        $config->outage_alert->offline_for = $_POST['outage_alert']['offline_for'];
-        $config->outage_alert->interval = $_POST['outage_alert']['interval'];
-
         // Debug
-        $config->debug->logging = (bool)$_POST['debug']['logging']['enabled'];
+        $config->debug->logging = (bool)$_POST['debug']['logging'];
         $config->debug->server->enabled = (bool)$_POST['debug']['server']['enabled'];
-        $config->debug->server->url = $_POST['debug']['server']['url'];
+        $config->debug->server->url = (isset($_POST['debug']['server']['url'])) ? $_POST['debug']['server']['url'] : null;
 
         // Save the config file
         $export = var_export($config, true);
@@ -163,918 +159,1204 @@ if (isset($_SESSION['UserLoggedIn']) && $_SESSION['IsAdmin'] === true) {
             syslog(LOG_INFO, "(SYSTEM)[INFO]: Site configuration saved successfully");
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Configuration saved successfully!</div>';
             header("Location: /admin");
+            die();
         } else {
             // Log it
             syslog(LOG_INFO, "(SYSTEM)[INFO]: Saving configuration failed");
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving configuration failed!</div>';
             header("Location: /admin");
+            die();
         }
     } // Show the change form
     else {
-        $page_title = 'Modify Configuration | ' . $config->site->name;
+        $pageTitle = 'Global System Configuration<';
         include(APP_BASE_PATH . '/inc/header.php');
         ?>
 
-        <section id="modify_settings" class="modify_settings_display">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="page-header">Modify System Settings</h2>
-                </div>
+        <div class="row">
+            <div class="col">
+                <h2 class="page-header">Global System Configuration</h2>
             </div>
-            <form class="form" role="form" action="/admin/settings?do" method="POST">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">Database Settings:</h2>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_host">Hostname:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="mysql[host]" id="mysql_host"
-                                       placeholder="MySQL Hostname" maxlength="32"
-                                       value="<?= $config->mysql->host; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_database">Database:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="mysql[database]" id="mysql_database"
-                                       placeholder="MySQL Database" maxlength="32"
-                                       value="<?= $config->mysql->database; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_username">Username:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="mysql[username]" id="mysql_username"
-                                       placeholder="MySQL Username" maxlength="32"
-                                       value="<?= $config->mysql->username; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_password">Password:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="mysql[password]" id="mysql_password"
-                                       placeholder="MySQL Password" maxlength="32"
-                                       value="<?= $config->mysql->password; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_trim">Database
-                                Trimming?</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="mysql_trim"
-                                                                             name="mysql[trim]"
-                                                                             value="0" <?php if ($config->mysql->trim === 0) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="mysql_trim"
-                                                                              name="mysql[trim]"
-                                                                              value="1" <?php if ($config->mysql->trim === 1) {
-                                        echo 'checked="checked"';
-                                    } ?>>Trim All</label>
-                                <label class="radio-inline bg-warning"><input type="radio" id="mysql_trim"
-                                                                              name="mysql[trim]"
-                                                                              value="2" <?php if ($config->mysql->trim === 2) {
-                                        echo 'checked="checked"';
-                                    } ?>>Trim all but towers</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">Acurite Sensor Settings:</h2>
-                        <h3>Device Settings:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_access_mac">Access
-                                MAC:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="station[access_mac]"
-                                       id="station_access_mac"
-                                       placeholder="Access MAC" maxlength="12"
-                                       value="<?= $config->station->access_mac; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_hub_mac">smartHUB
-                                MAC:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="station[hub_mac]" id="station_hub_mac"
-                                       placeholder="smartHUB MAC" maxlength="12"
-                                       value="<?= $config->station->hub_mac; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="baro_offset">Barometer
-                                Offset:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="number" class="form-control" name="station[baro_offset]"
-                                       id="baro_offset" step=".01" placeholder="Barometer Offset"
-                                       value="<?= $config->station->baro_offset; ?>">
-                                <p class="bg-info">inHg. Adjust this as required to match the offset for your
-                                    elevation</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="mysql_trim">Use which
-                                Barometer?</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="station_baro_source"
-                                                                              name="station[baro_source]"
-                                                                              value="0" <?php if ($config->station->baro_source === 0) {
-                                        echo 'checked="checked"';
-                                    } ?>>Default</label>
-                                <label class="radio-inline bg-warning"><input type="radio" id="station_baro_source"
-                                                                              name="station[baro_source]"
-                                                                              value="1" <?php if ($config->station->baro_source === 1) {
-                                        echo 'checked="checked"';
-                                    } ?>>Hub</label>
-                                <label class="radio-inline bg-warning"><input type="radio" id="station_baro_source"
-                                                                              name="station[baro_source]"
-                                                                              value="2" <?php if ($config->station->baro_source === 2) {
-                                        echo 'checked="checked"';
-                                    } ?>>Access</label>
-                            </div>
-                        </div>
-                        <h3>Sensor Settings:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_sensor_5n1">5N1 Weather
-                                Station
-                                ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="station[sensor_5n1]"
-                                       id="station_sensor_5n1"
-                                       placeholder="5n1 Sensor ID" maxlength="8"
-                                       value="<?= $config->station->sensor_5n1; ?>">
-                                <p class="bg-info">8 Digits including leading 0's</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_towers">Towers
-                                Sensors?</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="station_towers"
-                                                                             name="station[towers]"
-                                                                             value="0" <?php if ($config->station->towers === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="station_towers"
-                                                                              name="station[towers]"
-                                                                              value="1" <?php if ($config->station->towers === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                    </div>
+        </div>
 
-                    <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
+        <hr>
 
-                    <hr class="hr-dashed">
+        <section id="modify-settings" class="row modify-settings">
+            <div class="col">
 
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">Site Settings:</h2>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_name">Name:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="site[name]" id="site_name"
-                                       placeholder="Station Name" maxlength="32"
-                                       value="<?= $config->site->name; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_desc">Description:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="site[desc]" id="site_desc"
-                                       placeholder="Station Description" maxlength="100"
-                                       value="<?= $config->site->desc; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_location">Location:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="site[location]" id="site_location"
-                                       placeholder="Station Location" maxlength="32"
-                                       value="<?= $config->site->location; ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_hostname">Hostname:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="site[hostname]" id="site_hostname"
-                                       placeholder="Station Hostname" maxlength="32"
-                                       value="<?= $config->site->hostname; ?>" required>
-                                <p class="bg-info">Station Domain/IP Address</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_email">Email:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="site[email]" id="site_email"
-                                       placeholder="Station Email" maxlength="32"
-                                       value="<?= $config->site->email; ?>" required>
-                                <p class="bg-info">System Email Address (mail from)</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_timezone">Timezone:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <select name="site[timezone]" id="site_timezone" class="form-control" required>
-                                    <?php
-                                    $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-                                    foreach ($tzlist as $tz) { ?>
-                                        <option value="<?= $tz; ?>" <?php if ($config->site->timezone === $tz) {
-                                            echo 'selected="selected"';
-                                        } ?>><?= $tz; ?></option>
-                                        <?php
-                                    } ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_display_date">Display
-                                Date:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="site[display_date]" id="site_display_date"
-                                       placeholder="Header Date Format" maxlength="32"
-                                       value="<?= $config->site->display_date; ?>" required>
-                                <p class="bg-info"><a href="http://php.net/manual/en/function.date.php">PHP Date</a></p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_lat">Latitude:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="number" step=".001" class="form-control" name="site[lat]" id="site_lat"
-                                       placeholder="Station Latitude" max="90" min="-90"
-                                       value="<?= $config->site->lat; ?>" required>
-                                <p class="bg-info">Decimal Format</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_long">Longitude:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="number" step=".001" class="form-control" name="site[long]" id="site_long"
-                                       placeholder="Station Longitude" max="180" min="-180"
-                                       value="<?= $config->site->long; ?>" required>
-                                <p class="bg-info">Decimal Format</p>
-                            </div>
-                        </div>
-                        <?php
-                        $themes = scandir(APP_BASE_PATH . '/pub/themes/');
-                        $ignore = Array(".", "..");
-                        ?>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_theme">Theme:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <select name="site[theme]" id="site_theme" class="form-control" required>
-                                    <?php
-                                    foreach ($themes as $theme) {
-                                        if (!in_array($theme, $ignore)) {
-                                            $theme_name = str_replace('.css', '', $theme);
-                                            ?>
-                                            <option value="<?= $theme_name; ?>" <?php if ($config->site->theme === $theme_name) {
-                                                echo 'selected="selected"';
-                                            } ?>><?= $theme_name; ?></option>
-                                            <?php
-                                        }
-                                    } ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_imperial">Display
-                                Format:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-warning"><input type="radio" id="station_imperial"
-                                                                           name="site[imperial]"
-                                                                           value="0" <?php if ($config->site->imperial === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Metric</label>
-                                <label class="radio-inline bg-warning"><input type="radio" id="station_imperial"
-                                                                           name="site[imperial]"
-                                                                           value="1" <?php if ($config->site->imperial === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Imperial</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="station_hide_alternate">Hide
-                                Alternate Measurements?</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="station_hide_alternate"
-                                                                             name="site[hide_alternate]"
-                                                                             value="false" <?php if ($config->site->hide_alternate === 'false') {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="station_hide_alternate"
-                                                                              name="site[hide_alternate]"
-                                                                              value="true" <?php if ($config->site->hide_alternate === 'true') {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                                <label class="radio-inline bg-warning"><input type="radio" id="station_hide_alternate"
-                                                                              name="site[hide_alternate]"
-                                                                              value="live" <?php if ($config->site->hide_alternate === 'live') {
-                                        echo 'checked="checked"';
-                                    } ?>>Live</label>
-                                <label class="radio-inline bg-warning"><input type="radio" id="station_hide_alternate"
-                                                                              name="site[hide_alternate]"
-                                                                              value="archive" <?php if ($config->site->hide_alternate === 'archive') {
-                                        echo 'checked="checked"';
-                                    } ?>>Archive</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="site_updates">Check for
-                                updates?</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio" id="site_updates"
-                                                                              name="site[updates]"
-                                                                              value="1" <?php if ($config->site->updates === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                                <label class="radio-inline bg-danger"><input type="radio" id="site_updates"
-                                                                             name="site[updates]"
-                                                                             value="0" <?php if ($config->site->updates === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                            </div>
-                        </div>
+                <!-- Modify Settings Navigation -->
+                <nav>
+                    <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-site-tab" data-toggle="tab" href="#nav-site"
+                           role="tab" aria-controls="nav-site" aria-selected="false">Site</a>
+                        <a class="nav-item nav-link" id="nav-sensor-tab" data-toggle="tab" href="#nav-sensor" role="tab"
+                           aria-controls="nav-profile" aria-selected="false">Sensor</a>
+                        <a class="nav-item nav-link" id="nav-features-tab" data-toggle="tab" href="#nav-features"
+                           role="tab" aria-controls="nav-features" aria-selected="false">Features</a>
+                        <a class="nav-item nav-link" id="nav-upload-tab" data-toggle="tab" href="#nav-upload"
+                           role="tab" aria-controls="nav-upload" aria-selected="false">Upload</a>
+                        <a class="nav-item nav-link" id="nav-database-tab" data-toggle="tab" href="#nav-database"
+                           role="tab" aria-controls="nav-database" aria-selected="true">Database</a>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">Feature Settings:</h2>
-                        <h3>Camera Settings:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="camera_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="camera_enabled"
-                                                                             name="camera[enabled]"
-                                                                             value="0" <?php if ($config->camera->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="camera_enabled"
-                                                                              name="camera[enabled]"
-                                                                              value="1" <?php if ($config->camera->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="camera_text">Image Text:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="camera[text]" id="camera_text"
-                                       placeholder="Display Text" maxlength="32"
-                                       value="<?= $config->camera->text; ?>" required>
-                            </div>
-                        </div>
-                        <h3>Archive Settings:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="archive_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="archive_enabled"
-                                                                             name="archive[enabled]"
-                                                                             value="0" <?php if ($config->archive->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="archive_enabled"
-                                                                              name="archive[enabled]"
-                                                                              value="1" <?php if ($config->archive->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <h3>Contact Settings:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="contact_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="contact_enabled"
-                                                                             name="contact[enabled]"
-                                                                             value="0" <?php if ($config->contact->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="contact_enabled"
-                                                                              name="contact[enabled]"
-                                                                              value="1" <?php if ($config->contact->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <h3>Log Settings:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="debug_logging_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="debug_logging_enabled"
-                                                                             name="debug[logging][enabled]"
-                                                                             value="0" <?php if ($config->debug->logging === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="debug_logging_enabled"
-                                                                              name="debug[logging][enabled]"
-                                                                              value="1" <?php if ($config->debug->logging === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                    </div>
+                </nav>
+                <form role="form" action="/admin/settings?do" method="POST">
+                    <!-- Content Tabs-->
+                    <div class="tab-content margin-top-15" id="nav-tabContent">
 
-                    <!–– Outage Alerts -->
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h2 class="panel-heading">Outage Alerts:</h2>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="outage_alert_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="outage_alert_enabled"
-                                                                             name="outage_alert[enabled]"
-                                                                             value="0" <?php if ($config->outage_alert->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="outage_alert_enabled"
-                                                                              name="outage_alert[enabled]"
-                                                                              value="1" <?php if ($config->outage_alert->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="outage_alert_offline_for">Offline
-                                For:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <select name="outage_alert[offline_for]" id="outage_alert_offline_for"
-                                        class="form-control" required>
-                                    <?php
-                                    foreach ($config->intervals as $interval) { ?>
-                                        <option value="<?= $interval; ?>" <?php if ($config->outage_alert->offline_for === $interval) {
-                                            echo 'selected="selected"';
-                                        } ?>><?= $interval; ?></option>
-                                        <?php
-                                    } ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="outage_alert_interval">Send
-                                Interval:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <select name="outage_alert[interval]" id="outage_alert_interval" class="form-control"
-                                        required>
-                                    <?php
-                                    foreach ($config->intervals as $interval) { ?>
-                                        <option value="<?= $interval; ?>" <?php if ($config->outage_alert->interval === $interval) {
-                                            echo 'selected="selected"';
-                                        } ?>><?= $interval; ?></option>
-                                        <?php
-                                    } ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr class="hr-dashed">
-
-                <!–– Google Settings -->
-                <div class="row">
-                    <h2 class="panel-heading">Google Settings:</h2>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">Invisible reCAPTCHA:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="recaptcha_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="recaptcha_enabled"
-                                                                             name="google[recaptcha][enabled]"
-                                                                             value="0" <?php if ($config->google->recaptcha->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="recaptcha_enabled"
-                                                                              name="google[recaptcha][enabled]"
-                                                                              value="1" <?php if ($config->google->recaptcha->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="recaptcha_secret">Secret:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="google[recaptcha][secret]"
-                                       id="recaptcha_secret"
-                                       placeholder="Secret" maxlength="32"
-                                       value="<?= $config->google->recaptcha->secret; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="recaptcha_sitekey">Sitekey:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="google[recaptcha][sitekey]"
-                                       id="recaptcha_sitekey"
-                                       placeholder="Sitekey" maxlength="32"
-                                       value="<?= $config->google->recaptcha->sitekey; ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">Analytics:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="analytics_enabled">Status:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio" id="analytics_enabled"
-                                                                             name="google[analytics][enabled]"
-                                                                             value="0" <?php if ($config->google->analytics->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio" id="analytics_enabled"
-                                                                              name="google[analytics][enabled]"
-                                                                              value="1" <?php if ($config->google->analytics->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="analytics_id">ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="google[analytics][id]" id="analytics_id"
-                                       placeholder="ID" maxlength="32"
-                                       value="<?= $config->google->analytics->id; ?>">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr class="hr-dashed">
-
-                <!–– Upload Settings -->
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3">
-                        <h2 class="panel-heading">Upload Settings:</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3">
-                        <h3 class="panel-heading">Master Temp/Humidity Sensor:</h3>
-                        <p>Choose the main sensor used when uploading Temp/Humidity data to 3rd party sites. This does
-                            not affect the main dashboard.</p>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="wu_station_updates">Primary Sensor:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="station_updates_sensor"
-                                                                              name="upload[sensor][external]"
-                                                                              onclick='document.getElementById("station_updates_sensor_id").disabled=true;'
-                                                                              value="default" <?php if ($config->upload->sensor->external === 'default') {
-                                        echo 'checked="checked"';
-                                    } ?>>Default (5N1)</label>
-                                <label class="radio-inline bg-warning"><input type="radio"
-                                                                              id="station_updates_sensor"
-                                                                              name="upload[sensor][external]"
-                                                                              onclick='document.getElementById("station_updates_sensor_id").disabled=false;'
-                                                                              value="tower" <?php if ($config->upload->sensor->external === 'tower') {
-                                        echo 'checked="checked"';
-                                    } ?>>Tower</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="station_updates_sensor_id">Tower ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <select name="upload[sensor][id]"
-                                        id="station_updates_sensor_id"
-                                    <?php if ($config->upload->sensor->external === 'default') {
-                                        echo 'disabled="disabled"';
-                                    } ?>
-                                        class="form-control">
-                                    <option value=""></option>
-                                    <?php
-                                    $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        ?>
-                                        <option value="<?= $row['sensor']; ?>" <?php if ($config->upload->sensor->id === $row['sensor']) {
-                                            echo 'selected="selected"';
-                                        } ?>> <?= $row['sensor'] . ' - ' . $row['name']; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="station_updates_sensor_archive">Use for Archive?</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio"
-                                                                             id="station_updates_sensor_archive"
-                                                                             name="upload[sensor][archive]"
-                                                                             value="0" <?php if ($config->upload->sensor->archive === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="station_updates_sensor_archive"
-                                                                              name="upload[sensor][archive]"
-                                                                              value="1" <?php if ($config->upload->sensor->archive === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">Weather Underground:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="wu_station_updates">Upload:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio"
-                                                                             id="wu_station_updates"
-                                                                             name="upload[wu][enabled]"
-                                                                             value="0" <?php if ($config->upload->wu->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="wu_station_updates"
-                                                                              name="upload[wu][enabled]"
-                                                                              value="1" <?php if ($config->upload->wu->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_station_id">Station
-                                ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[wu][id]" id="wu_station_id"
-                                       placeholder="Station ID" maxlength="15"
-                                       value="<?= $config->upload->wu->id; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_station_password">Station
-                                Password:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[wu][password]"
-                                       id="wu_station_password"
-                                       placeholder="Station Password" maxlength="35"
-                                       value="<?= $config->upload->wu->password; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="wu_update_url">Upload
-                                URL:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[wu][url]"
-                                       id="wu_update_url"
-                                       placeholder="Update URL" value="<?= $config->upload->wu->url; ?>"
-                                       readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">PWS Weather:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="pws_station_updates">Upload:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio"
-                                                                             id="pws_station_updates"
-                                                                             name="upload[pws][enabled]"
-                                                                             value="0" <?php if ($config->upload->pws->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="pws_station_updates"
-                                                                              name="upload[pws][enabled]"
-                                                                              value="1" <?php if ($config->upload->pws->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_station_id">Station
-                                ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[pws][id]"
-                                       id="pws_station_id"
-                                       placeholder="Station ID" maxlength="15"
-                                       value="<?= $config->upload->pws->id; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_station_password">Station
-                                Password:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[pws][password]"
-                                       id="pws_station_password"
-                                       placeholder="Station Password" maxlength="35"
-                                       value="<?= $config->upload->pws->password; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="pws_update_url">Upload
-                                URL:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[pws][url]"
-                                       id="pws_update_url"
-                                       placeholder="Update URL" value="<?= $config->upload->pws->url; ?>"
-                                       readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">CWOP:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="cwop_station_updates">Upload:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio"
-                                                                             id="cwop_station_updates"
-                                                                             name="upload[cwop][enabled]"
-                                                                             value="0" <?php if ($config->upload->cwop->enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="cwop_station_updates"
-                                                                              name="upload[cwop][enabled]"
-                                                                              value="1" <?php if ($config->upload->cwop->enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_station_id">Station
-                                ID:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[cwop][id]"
-                                       id="cwop_station_id"
-                                       placeholder="Station ID" maxlength="15"
-                                       value="<?= $config->upload->cwop->id; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="cwop_station_location">Location</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[cwop][location]"
-                                       id="cwop_station_location"
-                                       placeholder="Station Location" maxlength="35"
-                                       value="<?= $config->upload->cwop->location; ?>">
-                                <p class="bg-info">in format <code>ddmm.hhN/dddmm.hhW</code>.<br>See <a
-                                            href="http://boulter.com/gps">Degrees, Minutes & Seconds</a></p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_station_interval">Update
-                                Interval</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <select name="upload[cwop][interval]" id="cwop_station_interval"
-                                        class="form-control">
-                                    <?php
-                                    foreach ($config->intervals as $interval) { ?>
-                                        <option value="<?= $interval; ?>" <?php if ($config->upload->cwop->interval === $interval) {
-                                            echo 'selected="selected"';
-                                        } ?>><?= $interval; ?></option>
-                                        <?php
-                                    } ?>
-                                </select>
-                                <p class="bg-info">Should be at least 5 minutes; 10 is good.</p>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4" for="cwop_update_url">Upload
-                                URL:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="upload[cwop][url]"
-                                       id="cwop_update_url"
-                                       placeholder="Update URL" value="<?= $config->upload->cwop->url; ?>"
-                                       readonly>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!–– MyAcuRite -->
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">MyAcuRite:</h3>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="myacurite_hub_update">smartHub Upload:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio"
-                                                                             id="myacurite_hub_update"
-                                                                             name="upload[myacurite][hub_enabled]"
-                                                                             value="0" <?php if ($config->upload->myacurite->hub_enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="myacurite_hub_update"
-                                                                              name="upload[myacurite][hub_enabled]"
-                                                                              value="1" <?php if ($config->upload->myacurite->hub_enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="form-group row margin-bottom-05">
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="myacurite_access_update">Access Upload:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <label class="radio-inline bg-danger"><input type="radio"
-                                                                             id="myacurite_access_update"
-                                                                             name="upload[myacurite][access_enabled]"
-                                                                             value="0" <?php if ($config->upload->myacurite->access_enabled === false) {
-                                        echo 'checked="checked"';
-                                    } ?>>Disabled</label>
-                                <label class="radio-inline bg-success"><input type="radio"
-                                                                              id="myacurite_access_update"
-                                                                              name="upload[myacurite][access_enabled]"
-                                                                              value="1" <?php if ($config->upload->myacurite->access_enabled === true) {
-                                        echo 'checked="checked"';
-                                    } ?>>Enabled</label>
-                            </div>
-                        </div>
-                        <div class="row margin-bottom-05">
-                            <h4>Upload URL's:</h4>
+                        <!-- Site Settings -->
+                        <div class="tab-pane fade show active" id="nav-site" role="tabpanel"
+                             aria-labelledby="nav-site-tab">
                             <div class="row">
-                                <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 bg-info">
-                                    <p><strong>If installed on the same network as your device, use secondary.<br>See
-                                            <code>docs/DNS.md</code></strong></p>
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05 margin-top-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="myacurite_hub_update_url">smartHub:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <select name="upload[myacurite][hub_url]" id="myacurite_hub_update_url"
-                                            class="form-control">
-                                        <option value="http://hubapi.myacurite.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.myacurite.com") {
-                                            echo 'selected="selected"';
-                                        } ?>>myacurite.com (official)
-                                        </option>
-                                        <option value="http://hubapi.acuparse.com" <?php if ($config->upload->myacurite->hub_url === "http://hubapi.acuparse.com") {
-                                            echo 'selected="selected"';
-                                        } ?>>acuparse.com (secondary)
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="myacurite_access_update_url">Access:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <select name="upload[myacurite][access_url]"
-                                            id="myacurite_access_update_url"
-                                            class="form-control">
-                                        <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") {
-                                            echo 'selected="selected"';
-                                        } ?>>myacurite.com (official)
-                                        </option>
-                                        <option value="https://atlasapi.acuparse.com" <?php if ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") {
-                                            echo 'selected="selected"';
-                                        } ?>>acuparse.com (secondary)
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
-                    <!–– Debug Server -->
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <h3 class="panel-heading">Debug Update Server:</h3>
-                        <p>Sends MyAcuRite data to an additional debug server</p>
-                        <div class="form-group row margin-bottom-05">
-                            <div class="form-group row margin-bottom-05">
-                                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                       for="debug_server_enabled">Upload:</label>
-                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <label class="radio-inline bg-danger"><input type="radio"
-                                                                                 id="debug_server_enabled"
-                                                                                 name="debug[server][enabled]"
-                                                                                 value="0" <?php if ($config->debug->server->enabled === false) {
-                                            echo 'checked="checked"';
-                                        } ?>>Disabled</label>
-                                    <label class="radio-inline bg-success"><input type="radio"
-                                                                                  id="debug_server_enabled"
-                                                                                  name="debug[server][enabled]"
-                                                                                  value="1" <?php if ($config->debug->server->enabled === true) {
-                                            echo 'checked="checked"';
-                                        } ?>>Enabled</label>
-                                </div>
-                            </div>
-                            <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4"
-                                   for="debug_server_url">URL:</label>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" class="form-control" name="debug[server][url]"
-                                       id="debug_server_url"
-                                       placeholder="Server URL" value="<?= $config->debug->server->url; ?>">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr class="hr-dashed">
-                <div class="row">
-                    <div class="col-lg-4 col-lg-offset-4 col-md-4  col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4 margin-top-05">
-                        <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"><i
-                                    class="fas fa-save"
-                                    aria-hidden="true"></i>
-                            Save Settings
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </section>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2 class="panel-heading">Site Settings:</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-12 mx-auto">
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-name">Name:</label>
+                                                <input type="text" class="form-control" name="site[name]"
+                                                       id="site-name" placeholder="Station Name" maxlength="32"
+                                                       value="<?= $config->site->name; ?>" required>
 
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-desc">Description:</label>
+                                                <input type="text" class="form-control" name="site[desc]"
+                                                       id="site-desc" placeholder="Station Description"
+                                                       maxlength="100"
+                                                       value="<?= $config->site->desc; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-location">Location:</label>
+                                                <input type="text" class="form-control" name="site[location]"
+                                                       id="site-location" placeholder="Station Location"
+                                                       maxlength="32"
+                                                       value="<?= $config->site->location; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-hostname">Hostname:</label>
+                                                <input type="text" class="form-control" name="site[hostname]"
+                                                       id="site-hostname" placeholder="www.example.com"
+                                                       maxlength="32" aria-describedby="hostname-help"
+                                                       value="<?= $config->site->hostname; ?>" required>
+                                                <small id="hostname-help" class="form-text text-muted">FQDN/IP
+                                                    Address
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-email">Email:</label>
+                                                <input type="text" class="form-control" name="site[email]"
+                                                       id="site-email" aria-describedby="email-help"
+                                                       placeholder="weather@example.com" maxlength="32"
+                                                       value="<?= $config->site->email; ?>" required>
+                                                <small id="email-help" class="form-text text-muted">System Email
+                                                    Address (mail from)
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-timezone">Timezone:</label>
+                                                <select name="site[timezone]" id="site-timezone"
+                                                        class="form-control custom-select" required>
+                                                    <?php
+                                                    $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+                                                    foreach ($tzlist as $tz) { ?>
+                                                        <option value="<?= $tz; ?>" <?= ($config->site->timezone === $tz) ? 'selected="selected"' : false; ?>><?= $tz; ?></option>
+                                                        <?php
+                                                    } ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-display-date">Date/Time
+                                                    Format:</label>
+                                                <input type="text" class="form-control" name="site[display_date]"
+                                                       id="site-display-date" aria-describedby="date-help"
+                                                       placeholder="l, j F Y G:i:s T" maxlength="32"
+                                                       value="<?= $config->site->display_date; ?>" required>
+                                                <small id="date-help" class="form-text text-muted">See: <a
+                                                            href="http://php.net/manual/en/function.date.php">PHP
+                                                        Date</a> (Default = l, j F Y G:i:s T)
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-lat">Latitude:</label>
+                                                <input type="number" step=".001" class="form-control"
+                                                       name="site[lat]" id="site-lat" aria-describedby="lat-help"
+                                                       placeholder="Station Latitude" max="90" min="-90"
+                                                       value="<?= $config->site->lat; ?>" required>
+                                                <small id="lat-help" class="form-text text-muted">Decimal Format
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-long">Longitude:</label>
+                                                <input type="number" step=".001" class="form-control"
+                                                       name="site[long]" id="site-long" aria-describedby="long-help"
+                                                       placeholder="Station Longitude" max="180" min="-180"
+                                                       value="<?= $config->site->long; ?>" required>
+                                                <small id="long-help" class="form-text text-muted">Decimal Format
+                                                </small>
+                                            </div>
+                                            <?php
+                                            $themes = scandir(APP_BASE_PATH . '/pub/themes/');
+                                            $ignore = Array(".", "..");
+                                            ?>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="site-theme">Theme:</label>
+                                                <select name="site[theme]" id="site-theme"
+                                                        class="form-control custom-select"
+                                                        required>
+                                                    <?php
+                                                    foreach ($themes as $theme) {
+                                                        if (!in_array($theme, $ignore)) {
+                                                            $theme_name = str_replace('.css', '', $theme);
+                                                            ?>
+                                                            <option value="<?= $theme_name; ?>" <?= ($config->site->theme === $theme_name) ? 'selected="selected"' : false; ?>><?= ucfirst($theme_name); ?></option>
+                                                            <?php
+                                                        }
+                                                    } ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <p><strong>Primary Display Format:</strong></p>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="site[imperial]"
+                                                           id="station-imperial-0" value="0"
+                                                        <?= ($config->site->imperial === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-primary"
+                                                           for="station-imperial-0">Metric</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="site[imperial]"
+                                                           id="station-imperial-1" value="1"
+                                                        <?= ($config->site->imperial === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-secondary"
+                                                           for="station-imperial-1">Imperial</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <p><strong>Hide Alternate Readings?</strong></p>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="site[hide_alternate]" id="site-hide-alt-0"
+                                                           value="false"
+                                                        <?= ($config->site->hide_alternate === 'false') ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="site-hide-alt-0">Disabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="site[hide_alternate]" id="site-hide-alt-1" value="true"
+                                                        <?= ($config->site->hide_alternate === 'true') ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="site-hide-alt-1">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="site[hide_alternate]" id="site-hide-alt-2"
+                                                           value="live"
+                                                        <?= ($config->site->hide_alternate === 'live') ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-warning"
+                                                           for="site-hide-alt-2">Live</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="site[hide_alternate]" id="site-hide-alt-3"
+                                                           value="archive"
+                                                        <?= ($config->site->hide_alternate === 'archive') ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-warning"
+                                                           for="site-hide-alt-3">Archive</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <p><strong>Check for updates?</strong></p>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="site[updates]"
+                                                           id="site-updates-0" value="1"
+                                                        <?= ($config->site->updates === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="site-updates-0">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="site[updates]"
+                                                           id="site-updates-1" value="0"
+                                                        <?= ($config->site->updates === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="site-updates-1">Disabled</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: Site Settings -->
+
+                        <!-- Sensor Settings -->
+                        <div class="tab-pane fade" id="nav-sensor" role="tabpanel" aria-labelledby="nav-sensor-tab">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2 class="panel-heading">Sensor Settings:</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-12 mx-auto alert alert-secondary">
+                                            <h3>MAC Addresses:</h3>
+                                            <p class="alert alert-info">Enter the addresses for your devices below.
+                                                Only one is required, enter only the MAC's you wish to store readings
+                                                from.</p>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="station-access-mac">Access:</label>
+                                                <input type="text" class="form-control" name="station[access_mac]"
+                                                       id="station-access-mac" placeholder="Access MAC"
+                                                       maxlength="12"
+                                                       value="<?= $config->station->access_mac; ?>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="station_hub_mac">smartHUB:</label>
+                                                <input type="text" class="form-control" name="station[hub_mac]"
+                                                       id="station-hub-mac" placeholder="smartHUB MAC"
+                                                       maxlength="12"
+                                                       value="<?= $config->station->hub_mac; ?>">
+                                            </div>
+                                            <div class="form-group">
+                                                <p>Barometer Source:</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="station[baro_source]" id="station-baro-source-0"
+                                                           value="0"
+                                                        <?= ($config->station->baro_source === 0) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="station-baro-source-0">Default</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="station[baro_source]" id="station-baro-source-1"
+                                                           value="1"
+                                                        <?= ($config->station->baro_source === 1) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-warning"
+                                                           for="station-baro-source-1">Hub</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="station[baro_source]" id="station-baro-source-2"
+                                                           value="2"
+                                                        <?= ($config->station->baro_source === 2) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-warning"
+                                                           for="station-baro-source-2">Access</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="station[baro_source]" id="station-baro-source-3"
+                                                           value="3" disabled
+                                                        <?= ($config->station->baro_source === 3) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-warning"
+                                                           for="station-baro-source-3">Atlas</label>
+                                                </div>
+                                                <small id="station-baro-source-help" class="form-text text-muted">Which
+                                                    device will report barometer readings? Default will save readings
+                                                    from all devices. Using multiple devices can result in skewed
+                                                    readings!
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-12 mx-auto">
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="station-sensor-5n1">5N1 Weather
+                                                    Station
+                                                    ID:</label>
+                                                <input type="number" class="form-control" name="station[sensor_5n1]"
+                                                       id="station-sensor-5n1" placeholder="00000000"
+                                                       value="<?= $config->station->sensor_5n1; ?>">
+                                                <small id="station-sensor-5n1-help" class="form-text text-muted">8
+                                                    Digits including leading 0's
+                                                </small>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="station-baro-offset">Barometer
+                                                    Offset:</label>
+                                                <input type="number" class="form-control"
+                                                       name="station[baro_offset]"
+                                                       id="station-baro-offset" step=".01"
+                                                       placeholder="Barometer Offset"
+                                                       value="<?= $config->station->baro_offset; ?>">
+                                                <small id="station-sensor-baro-offset-help"
+                                                       class="form-text text-muted">
+                                                    inHg. Adjust this as required to match the offset for your
+                                                    elevation.
+                                                </small>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <p><strong>Tower Sensors?</strong></p>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="station[towers]"
+                                                           id="station-towers-0" value="1"
+                                                        <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="station-towers-0">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="station[towers]"
+                                                           id="station-towers-1" value="0"
+                                                        <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="station-towers-1">Disabled</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: Sensor Settings -->
+
+                        <!-- Feature Settings -->
+                        <div class="tab-pane fade" id="nav-features" role="tabpanel"
+                             aria-labelledby="nav-features-tab">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="panel-heading">Additional Pages:</h2>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="row">
+                                        <div class="col border">
+                                            <h3>Camera:</h3>
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="camera[enabled]"
+                                                           id="camera-enabled-1" value="1"
+                                                           onclick='document.getElementById("camera-text").disabled=false;'
+                                                        <?= ($config->camera->enabled === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="camera-enabled-1">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="camera[enabled]"
+                                                           id="camera-enabled-0" value="0"
+                                                           onclick='document.getElementById("camera-text").disabled=true;'
+                                                        <?= ($config->camera->enabled === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="camera-enabled-0">Disabled</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <label class="col-form-label" for="camera-text">Image Text:</label>
+                                                <div class="col form-group">
+                                                    <input type="text" class="form-control" name="camera[text]"
+                                                           id="camera-text"
+                                                        <?= ($config->camera->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                           placeholder="Image updated every XX minutes."
+                                                           value="<?= $config->camera->text; ?>">
+                                                    <small id="camera-text-help" class="form-text text-muted">Text under
+                                                        live camera image.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3>Archive:</h3>
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="archive[enabled]"
+                                                           id="archive-enabled-1" value="1"
+                                                        <?= ($config->archive->enabled === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="archive-enabled-1">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="archive[enabled]"
+                                                           id="archive-enabled-0" value="0"
+                                                        <?= ($config->archive->enabled === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="archive-enabled-0">Disabled</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3>Contact:</h3>
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="contact[enabled]"
+                                                           id="contact-enabled-1" value="1"
+                                                        <?= ($config->archive->enabled === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="contact-enabled-1">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="contact[enabled]"
+                                                           id="contact-enabled-0" value="0"
+                                                        <?= ($config->contact->enabled === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="contact-enabled-0">Disabled</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="hr-dotted">
+
+                            <div class="row">
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2 class="panel-heading">Outage Alerts:</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="outage_alert[enabled]"
+                                                           id="outage-alert-enabled-1" value="1"
+                                                           onclick='document.getElementById("outage-alert-offline-for").disabled=false;document.getElementById("outage-alert-interval").disabled=false;'
+                                                        <?= ($config->outage_alert->enabled === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="outage-alert-enabled-1">Enabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="outage_alert[enabled]"
+                                                           id="outage-alert-enabled-0" value="0"
+                                                           onclick='document.getElementById("outage-alert-offline-for").disabled=true;document.getElementById("outage-alert-interval").disabled=true;'
+                                                        <?= ($config->outage_alert->enabled === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="outage-alert-enabled-0">Disabled</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="col form-group">
+                                                    <label class="col-form-label" for="outage-alert-offline-for">Offline
+                                                        For:</label>
+                                                    <select name="outage_alert[offline_for]"
+                                                            id="outage-alert-offline-for"
+                                                        <?= ($config->outage_alert->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                            class="form-control custom-select">
+                                                        <?php
+                                                        foreach ($config->intervals as $interval) { ?>
+                                                            <option value="<?= $interval; ?>" <?= ($config->outage_alert->offline_for === $interval) ? 'selected="selected"' : false; ?>><?= $interval; ?></option>
+                                                            <?php
+                                                        } ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col form-group">
+                                                    <label class="col-form-label" for="outage-alert-interval">Send
+                                                        Interval:</label>
+                                                    <select name="outage_alert[interval]" id="outage-alert-interval"
+                                                            class="form-control custom-select">
+                                                        <?php
+                                                        foreach ($config->intervals as $interval) { ?>
+                                                            <option value="<?= $interval; ?>" <?= ($config->outage_alert->interval === $interval) ? 'selected="selected"' : false; ?>><?= $interval; ?></option>
+                                                            <?php
+                                                        } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="hr-dotted">
+                            <div class="row">
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2 class="panel-heading">Google Settings:</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-12 border">
+                                            <h3 class="panel-heading">Invisible reCAPTCHA:</h3>
+                                            <div class="form-group">
+                                                <h4>Status:</h4>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="google[recaptcha][enabled]"
+                                                           id="recaptcha-enabled-0" value="0"
+                                                           onclick='document.getElementById("recaptcha-secret").disabled=true;document.getElementById("recaptcha-sitekey").disabled=true;'
+                                                        <?= ($config->google->recaptcha->enabled === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="recaptcha-enabled-0">Disabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="google[recaptcha][enabled]"
+                                                           id="recaptcha-enabled-1" value="1"
+                                                           onclick='document.getElementById("recaptcha-secret").disabled=false;document.getElementById("recaptcha-sitekey").disabled=false;'
+                                                        <?= ($config->google->recaptcha->enabled === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="recaptcha-enabled-1">Enabled</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <label class="col-form-label" for="recaptcha-secret">Secret:</label>
+                                                <div class="col form-group">
+                                                    <input type="text" class="form-control"
+                                                           name="google[recaptcha][secret]"
+                                                           id="recaptcha-secret"
+                                                           placeholder="Secret Key"
+                                                        <?= ($config->google->recaptcha->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                           value="<?= $config->google->recaptcha->secret; ?>">
+                                                    <small id="recaptcha-secret-help" class="form-text text-muted">Your
+                                                        <a href="https://www.google.com/recaptcha/admin">reCAPTCHA
+                                                            API</a> Secret Key
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <label class="col-form-label" for="recaptcha-sitekey">Site Key:</label>
+                                                <div class="col form-group">
+                                                    <input type="text" class="form-control"
+                                                           name="google[recaptcha][sitekey]"
+                                                           id="recaptcha-sitekey"
+                                                           placeholder="Site Key"
+                                                        <?= ($config->google->recaptcha->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                           value="<?= $config->google->recaptcha->sitekey; ?>">
+                                                    <small id="recaptcha-sitekey-help" class="form-text text-muted">Your
+                                                        <a href="https://www.google.com/recaptcha/admin">reCAPTCHA
+                                                            API</a> Site Key
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-12 border">
+                                            <h3 class="panel-heading">Analytics:</h3>
+                                            <div class="form-group">
+                                                <h4>Status:</h4>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="google[analytics][enabled]"
+                                                           onclick='document.getElementById("analytics-id").disabled=true;'
+                                                           id="analytics-enabled-0" value="0"
+                                                        <?= ($config->google->analytics->enabled === false) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-danger"
+                                                           for="analytics-enabled-0">Disabled</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="google[analytics][enabled]"
+                                                           onclick='document.getElementById("analytics-id").disabled=false;'
+                                                           id="analytics-enabled-1" value="1"
+                                                        <?= ($config->google->analytics->enabled === true) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label alert-success"
+                                                           for="analytics-enabled-1">Enabled</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <label class="col-form-label" for="analytics-id">ID:</label>
+                                                <div class="col form-group">
+                                                    <input type="text" class="form-control" name="google[analytics][id]"
+                                                           id="analytics-id"
+                                                           placeholder="Analytics ID"
+                                                        <?= ($config->google->analytics->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                           value="<?= $config->google->analytics->id ?>">
+                                                    <small id="recaptcha-secret-help" class="form-text text-muted">Your
+                                                        <a href="https://analytics.google.com/analytics/web/">Google
+                                                            Analytics</a> tracking ID.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="hr-dotted">
+                            <div class="row">
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2 class="panel-heading">Debug Logging:</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="debug[logging]"
+                                                               id="debug-logging-enabled-1" value="1"
+                                                            <?= ($config->debug->logging === true) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert-success"
+                                                               for="debug-logging-enabled-1">Enabled</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="debug[logging]"
+                                                               id="debug-logging-enabled-0" value="0"
+                                                            <?= ($config->debug->logging === false) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert-danger"
+                                                               for="debug-logging-enabled-0">Disabled</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload Settings -->
+                        <div class="tab-pane fade" id="nav-upload" role="tabpanel"
+                             aria-labelledby="nav-upload-tab">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="panel-heading">Upload Settings:</h2>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Master Temp Sensor -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">Master Temp/Humidity Sensor:</h3>
+                                    <p>Choose the main sensor used when uploading Temp/Humidity data to
+                                        3rd party sites. This does not affect the main dashboard.</p>
+                                    <div class="form-group">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[sensor][external]"
+                                                   onclick='document.getElementById("station-updates-sensor-id").disabled=true;document.getElementById("station-updates-sensor-archive-0").disabled=true;document.getElementById("station-updates-sensor-archive-1").disabled=true;'
+                                                   id="station-updates-sensor-0" value="default"
+                                                <?= ($config->upload->sensor->external === 'default') ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="station-updates-sensor-0">Default (5N1)</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[sensor][external]"
+                                                   onclick='document.getElementById("station-updates-sensor-id").disabled=false;document.getElementById("station-updates-sensor-archive-0").disabled=false;document.getElementById("station-updates-sensor-archive-1").disabled=false;'
+                                                   id="station-updates-sensor-1" value="tower"
+                                                <?= ($config->upload->sensor->external === 'tower') ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="station-updates-sensor-1">Tower</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="tower-id">Tower ID:</label>
+                                        <div class="col form-group">
+                                            <select name="upload[sensor][id]"
+                                                    id="station-updates-sensor-id"
+                                                <?= ($config->upload->sensor->external === 'default') ? 'disabled="disabled"' : false; ?>
+                                                    class="form-control custom-select">
+                                                <option value=""></option>
+                                                <?php
+                                                $result = mysqli_query($conn,
+                                                    "SELECT * FROM `towers` ORDER BY `arrange` ASC");
+                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                    ?>
+                                                    <option value="<?= $row['sensor']; ?>" <?= ($config->upload->sensor->id === $row['sensor']) ? 'selected="selected"' : false; ?>><?= $row['sensor'] . ' - ' . $row['name']; ?>
+                                                    </option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <h4>Use for Archive?</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[sensor][archive]"
+                                                <?= ($config->upload->sensor->external === 'default') ? 'disabled="disabled"' : false; ?>
+                                                   id="station-updates-sensor-archive-0" value="0"
+                                                <?= ($config->upload->sensor->archive === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="station-updates-sensor-archive-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="upload[sensor][archive]"
+                                                    <?= ($config->upload->sensor->external === 'default') ? 'disabled="disabled"' : false; ?>
+                                                       id="station-updates-sensor-archive-1" value="1"
+                                                    <?= ($config->upload->sensor->archive === true) ? 'checked="checked"' : false; ?>>
+                                                <label class="form-check-label alert-success"
+                                                       for="station-updates-sensor-archive-1">Enabled</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Weather Underground -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">Weather Underground:</h3>
+                                    <div class="form-group">
+                                        <h4>Status:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[wu][enabled]"
+                                                   id="wu-updates-enabled-0" value="0"
+                                                   onclick='document.getElementById("wu-updates-id").disabled=true;document.getElementById("wu-updates-password").disabled=true;'
+                                                <?= ($config->upload->wu->enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="wu-updates-enabled-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[wu][enabled]"
+                                                   id="wu-updates-enabled-1" value="1"
+                                                   onclick='document.getElementById("wu-updates-id").disabled=false;document.getElementById("wu-updates-password").disabled=false;'
+                                                <?= ($config->upload->wu->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="wu-updates-enabled-1">Enabled</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="wu-updates-id">Station ID:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wu][id]"
+                                                   id="wu-updates-id"
+                                                   maxlength="15"
+                                                   placeholder="WU Station ID"
+                                                <?= ($config->upload->wu->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->wu->id; ?>">
+                                            <small id="wu-updates-id-help" class="form-text text-muted">Your <a
+                                                        href="https://www.wunderground.com/personal-weather-station/mypws">wunderground</a>
+                                                Station ID
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label"
+                                               for="wu-updates-password">Password:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wu][password]"
+                                                   id="wu-updates-password"
+                                                   placeholder="WU Password"
+                                                   maxlength="35"
+                                                <?= ($config->upload->wu->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->wu->password; ?>">
+                                            <small id="wu-updates-password-help" class="form-text text-muted">Your <a
+                                                        href="https://www.wunderground.com/personal-weather-station/mypws">wunderground</a>
+                                                Password
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="wu-updates-url">URL:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wu][url]"
+                                                   id="wu-updates-url"
+                                                   readonly
+                                                   value="<?= $config->upload->wu->url; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="hr-dashed">
+
+                            <div class="row">
+                                <!-- PWS Weather -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">PWS Weather:</h3>
+                                    <div class="form-group">
+                                        <h4>Status:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[pws][enabled]"
+                                                   id="pws-updates-enabled-0" value="0"
+                                                   onclick='document.getElementById("pws-updates-id").disabled=true;document.getElementById("pws-updates-password").disabled=true;'
+                                                <?= ($config->upload->pws->enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="pws-updates-enabled-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[pws][enabled]"
+                                                   id="pws-updates-enabled-1" value="1"
+                                                   onclick='document.getElementById("pws-updates-id").disabled=false;document.getElementById("pws-updates-password").disabled=false;'
+                                                <?= ($config->upload->pws->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="pws-updates-enabled-1">Enabled</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="pws-updates-id">Station ID:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[pws][id]"
+                                                   id="pws-updates-id"
+                                                   maxlength="15"
+                                                   placeholder="PWS Station ID"
+                                                <?= ($config->upload->pws->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->pws->id; ?>">
+                                            <small id="pws-updates-id-help" class="form-text text-muted">Your <a
+                                                        href="https://www.pwsweather.com">PWS</a>
+                                                Station ID
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label"
+                                               for="pws-updates-password">Password:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[pws][password]"
+                                                   id="pws-updates-password"
+                                                   placeholder="PWS Password"
+                                                   maxlength="35"
+                                                <?= ($config->upload->pws->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->pws->password; ?>">
+                                            <small id="pws-updates-password-help" class="form-text text-muted">
+                                                Your <a
+                                                        href="https://www.pwsweather.com">PWS</a>
+                                                Password
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="pws-updates-url">URL:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[pws][url]"
+                                                   id="pws-updates-url"
+                                                   readonly
+                                                   value="<?= $config->upload->pws->url; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- CWOP -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">CWOP:</h3>
+                                    <div class="form-group">
+                                        <h4>Status:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[cwop][enabled]"
+                                                   id="cwop-updates-enabled-0" value="0"
+                                                   onclick='document.getElementById("cwop-updates-id").disabled=true;document.getElementById("cwop-updates-interval").disabled=true;document.getElementById("cwop-updates-location").disabled=true;'
+                                                <?= ($config->upload->cwop->enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="cwop-updates-enabled-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[cwop][enabled]"
+                                                   id="cwop-updates-enabled-1" value="1"
+                                                   onclick='document.getElementById("cwop-updates-id").disabled=false;document.getElementById("cwop-updates-interval").disabled=false;document.getElementById("cwop-updates-location").disabled=false;'
+                                                <?= ($config->upload->cwop->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="cwop-updates-enabled-1">Enabled</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="cwop-updates-id">Station ID:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[cwop][id]"
+                                                   id="cwop-updates-id"
+                                                   maxlength="15"
+                                                   placeholder="CWOP Station ID"
+                                                <?= ($config->upload->cwop->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->cwop->id; ?>">
+                                            <small id="cwop-updates-id-help" class="form-text text-muted">Your <a
+                                                        href="http://www.wxqa.com/SIGN-UP.html">CWOP</a>
+                                                Station ID
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col form-group">
+                                            <label class="col-form-label form-check-label" for="cwop-updates-interval">Interval:</label>
+                                            <select name="upload[cwop][interval]"
+                                                    id="cwop-updates-interval"
+                                                <?= ($config->upload->cwop->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                    class="form-control custom-select">
+                                                <?php
+                                                if ($config->upload->cwop->interval === '5 minutes') {
+                                                    $config->upload->cwop->interval = '10 minutes';
+                                                }
+                                                foreach ($config->intervals as $interval) {
+                                                    if ($interval != '5 minutes') {
+                                                        ?>
+                                                        <option value="<?= $interval; ?>" <?= ($config->upload->cwop->interval === $interval) ? 'selected="selected"' : false; ?>><?= $interval; ?></option>
+                                                        <?php
+                                                    }
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label"
+                                               for="cwop-updates-location">Location:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[cwop][location]"
+                                                   id="cwop-updates-location"
+                                                   placeholder="ddmm.hhN/dddmm.hhW"
+                                                   maxlength="35"
+                                                <?= ($config->upload->cwop->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->cwop->location; ?>">
+                                            <small id="cwop-updates-location-help" class="form-text text-muted">
+                                                in format <code>ddmm.hhN/dddmm.hhW</code>. See
+                                                <a href="http://boulter.com/gps">Degrees, Minutes & Seconds</a>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="cwop-updates-url">URL:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[cwop][url]"
+                                                   id="cwop-updates-url"
+                                                   readonly
+                                                   value="<?= $config->upload->cwop->url; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="hr-dashed">
+
+                            <div class="row">
+                                <!-- MyAcuRite -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">MyAcuRite:</h3>
+                                    <div class="form-group">
+                                        <h4>smartHub Upload:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][hub_enabled]"
+                                                   id="myacurite-hub-enabled-1" value="1"
+                                                   onclick='document.getElementById("myacurite-hub-url").disabled=false;'
+                                                <?= ($config->upload->myacurite->hub_enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="myacurite-hub-enabled-1">Enabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][hub_enabled]"
+                                                   id="myacurite-hub-enabled-0" value="0"
+                                                   onclick='document.getElementById("myacurite-hub-url").disabled=true;'
+                                                <?= ($config->upload->myacurite->hub_enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="myacurite-hub-enabled-0">Disabled</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <h4>Access Upload:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][access_enabled]"
+                                                   id="myacurite-access-enabled-1" value="1"
+                                                   onclick='document.getElementById("myacurite-access-url").disabled=false;'
+                                                <?= ($config->upload->myacurite->hub_enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="myacurite-access-enabled-1">Enabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][access_enabled]"
+                                                   id="myacurite-access-enabled-0" value="0"
+                                                   onclick='document.getElementById("myacurite-access-url").disabled=true;'
+                                                <?= ($config->upload->myacurite->hub_enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="myacurite-access-enabled-0">Disabled</label>
+                                        </div>
+                                    </div>
+                                    <hr class="hr-dashed">
+                                    <h4>Upload URL's:</h4>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="alert-info">If installed on the same network as your device,
+                                                use secondary.<br>See
+                                                <code>docs/DNS.md</code></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col form-group">
+                                            <label class="col-form-label" for="myacurite-hub-url">Hub URL:</label>
+                                            <select name="upload[myacurite][hub_url]"
+                                                    id="myacurite-hub-url"
+                                                    class="form-control custom-select">
+                                                <option value="http://hubapi.myacurite.com" <?= ($config->upload->myacurite->hub_url === "http://hubapi.myacurite.com") ? 'selected="selected"' : false; ?>>
+                                                    myacurite.com (official)
+                                                </option>
+                                                <option value="http://hubapi.acuparse.com" <?= ($config->upload->myacurite->hub_url === "http://hubapi.acuparse.com") ? 'selected="selected"' : false; ?>>
+                                                    acuparse.com (secondary)
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col form-group">
+                                            <label class="col-form-label" for="myacurite-access-url">Access URL:</label>
+                                            <select name="upload[myacurite][access_url]"
+                                                    id="myacurite-access-url"
+                                                    class="form-control custom-select">
+                                                <option value="https://atlasapi.acuparse.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") ? 'selected="selected"' : false; ?>>
+                                                    myacurite.com (official)
+                                                </option>
+                                                <option value="https://atlasapi.acuparse.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") ? 'selected="selected"' : false; ?>>
+                                                    acuparse.com (secondary)
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Debug Server -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">Debug Update Server:</h3>
+                                    <p>Sends MyAcuRite data to a debug/testing server.</p>
+                                    <div class="form-group">
+                                        <h4>Status:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="debug[server][enabled]"
+                                                   onclick='document.getElementById("debug-server-url").disabled=true;'
+                                                   id="debug-server-enabled-0" value="0"
+                                                <?= ($config->debug->server->enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="debug-server-enabled-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="debug[server][enabled]"
+                                                   onclick='document.getElementById("debug-server-url").disabled=false;'
+                                                   id="debug-server-enabled-1" value="1"
+                                                <?= ($config->debug->server->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="debug-server-enabled-1">Enabled</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="debug-server-url">URL:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="debug[server][url]"
+                                                   id="debug-server-url"
+                                                   placeholder="www.example.com"
+                                                <?= ($config->debug->server->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->debug->server->url; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col mx-auto">
+                                            <p class="alert alert-info">This section is generally used for
+                                                development purposes and is not required.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Database Settings -->
+                        <div class="tab-pane fade" id="nav-database" role="tabpanel"
+                             aria-labelledby="nav-database-tab">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="panel-heading">Database Settings:</h2>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="mysql-host">Hostname:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="mysql[host]"
+                                                   id="mysql-host"
+                                                   placeholder="localhost"
+                                                   maxlength="35"
+                                                   value="<?= $config->mysql->host; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="mysql-database">Database:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="mysql[database]"
+                                                   id="mysql-database"
+                                                   placeholder="acuparse"
+                                                   maxlength="35"
+                                                   value="<?= $config->mysql->database; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="mysql-username">Username:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="mysql[username]"
+                                                   id="mysql-username"
+                                                   placeholder="acuparse.dbadmin"
+                                                   maxlength="35"
+                                                   value="<?= $config->mysql->username; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="mysql-password">Password:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="mysql[password]"
+                                                   id="mysql-password"
+                                                   placeholder="Password"
+                                                   maxlength="32"
+                                                   value="<?= $config->mysql->password; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <p><strong>Database Trimming?</strong></p>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="mysql[trim]"
+                                                   id="mysql-trim-enabled-0" value="0"
+                                                <?= ($config->mysql->trim === 0) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="mysql-trim-enabled-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="mysql[trim]"
+                                                   id="mysql-trim-enabled-1" value="1"
+                                                <?= ($config->mysql->trim === 1) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="mysql-trim-enabled-1">Enabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="mysql[trim]"
+                                                   id="mysql-trim-enabled-2" value="2"
+                                                <?= ($config->mysql->trim === 2) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-warning"
+                                                   for="mysql-trim-enabled-2">Enabled, <strong>EXCEPT</strong>
+                                                Towers</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="hr-dotted">
+
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                        class="fas fa-save" aria-hidden="true"></i> Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
         <?php
         include(APP_BASE_PATH . '/inc/footer.php');
     }

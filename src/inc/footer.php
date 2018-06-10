@@ -37,28 +37,8 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
             document.getElementById("recaptcha-form").submit();
         }
     </script>
-    <?php
-}
+    <?php } ?>
 
-if ($config->google->analytics->enabled === true) { ?>
-    <!-- Google Analytics -->
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', '<?= $config->google->analytics->id; ?>', 'auto');
-        ga('send', 'pageview');
-    </script>
-<?php } ?>
 <script type="text/javascript" src="/lib/mit/jquery/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
 <script>
@@ -67,7 +47,7 @@ if ($config->google->analytics->enabled === true) { ?>
             $.ajax({
                 url: '/?time',
                 success: function (data) {
-                    $("#time").html(data);
+                    $("#local-time-display").html(data);
                     window.setTimeout(update, 1000);
                 }
             });
@@ -76,27 +56,29 @@ if ($config->google->analytics->enabled === true) { ?>
         update();
     });
 </script>
+
 <!-- Page Specific Scripts -->
 <?php
 if (isset($page_footer)) {
     echo $page_footer;
 }
 ?>
+
 <!-- Page Footer -->
-<footer id="footer_display" class="footer_display">
-    <hr>
-    <div class="row footer_appinfo">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <?php $app_name = ucfirst($app_info->name); ?>
-            Powered by <a href="<?= $app_info->homepage; ?>" target='_blank'><strong><?= $app_name; ?></strong></a>
-            <?php if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_SESSION['IsAdmin'] === true) { ?>
-                <br> Version <?= $config->version->app;
-            } ?>
+<hr>
+
+<footer>
+    <div class="row footer-appname">
+        <div class="col-auto mx-auto">
+            <p>Powered by <a href="<?= $appInfo->homepage; ?>"
+                             target='_blank'><strong><?= ucfirst($appInfo->name); ?></strong></a>
+                <?php if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) { ?>
+                    <br><span class="small">Version <?= $config->version->app; ?></span> <?php } ?></p>
         </div>
     </div>
 </footer>
-<!-- END Page Container -->
 </div>
+<!-- END Page Container -->
 
 </body>
 </html>

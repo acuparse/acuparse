@@ -29,19 +29,27 @@
 require(dirname(__DIR__) . '/inc/loader.php');
 
 if ($config->archive->enabled === true) {
-    $page_title = 'Weather Archive | ' . $config->site->name;
+    $pageTitle = 'Weather Archive';
     include(APP_BASE_PATH . '/inc/header.php');
     ?>
 
     <div class="row">
-        <h1 class="page-header ">Weather Archive</h1>
+        <div class="col">
+            <h1 class="page-header">Weather Station Archive</h1>
+        </div>
     </div>
-    <section id="weather_archive_display" class="weather_archive_display">
+
+    <hr>
+
+    <section id="weather-archive">
         <div class="row">
-            <div id="archive"><img src="/img/archive.gif">
-                <h2>Going back in time ...</h2></div>
+            <div class="col mx-auto text-center">
+                <img src="/img/archive.gif">
+                <h3>Going back through time ...</h3>
+            </div>
         </div>
     </section>
+
     <?php
 // Set the footer to include scripts required for this page
     $page_footer =
@@ -51,7 +59,7 @@ if ($config->archive->enabled === true) {
                 $.ajax({
                     url: \'/?archive\',
                     success: function (data) {
-                        $("#archive").html(data);
+                        $("#weather-archive").html(data);
                     }
                 });
             }
