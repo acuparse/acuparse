@@ -175,6 +175,15 @@ CREATE TABLE IF NOT EXISTS `wu_updates` (
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
+CREATE TABLE IF NOT EXISTS `wc_updates` (
+  `timestamp` timestamp                 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `query`     tinytext COLLATE utf8_bin NOT NULL,
+  `result`    tinytext COLLATE utf8_bin NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
 CREATE TABLE IF NOT EXISTS `system` (
   `name`  VARCHAR(255) NOT NULL,
   `value` VARCHAR(255) NOT NULL
@@ -253,6 +262,9 @@ ALTER TABLE `windspeed`
   ADD PRIMARY KEY `timestamp` (`timestamp`);
 
 ALTER TABLE `wu_updates`
+  ADD PRIMARY KEY (`timestamp`);
+
+ALTER TABLE `wc_updates`
   ADD PRIMARY KEY (`timestamp`);
 
 ALTER TABLE `password_recover`

@@ -179,6 +179,33 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             }
         }
     }
+
+    // Build Weathercloud Update
+    if ($config->upload->wc->enabled === true) {
+        $sql = "SELECT `timestamp` FROM `wc_updates` ORDER BY `timestamp` DESC LIMIT 1";
+        $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
+        $count = mysqli_num_rows(mysqli_query($conn, $sql));
+
+        // Make sure update interval has passed since last update
+        if ((strtotime($result['timestamp']) < strtotime('-10 minutes')) OR ($count == 0)) {
+            $wcQueryUrl = $config->upload->wc->url . '?wid=' . $config->upload->wc->id . '&key=' . $config->upload->wc->key;
+            $wcQuery = '&temp=' . ($data->tempC * 10) . '&wdir=' . $data->windDEG . '&wdiravg=' . $data->windDEG_avg10 . '&wspd=' . (($data->windSkmh * 0.277778) * 10) . '&wspdavg=' . (($data->windSmph_avg10 * 0.44704) * 10) . '&bar=' . ($data->pressure_kPa * 100) . '&hum=' . $data->relH . '&dew=' . ($data->dewptC * 10) . '&rainrate=' . ($data->rainMM * 10) . '&rain=' . ($data->rainTotalMM_today * 10);
+            $wcQueryStatic = '&type=555e1df0d6eb' . '&version=' . $config->version->app;
+            $wcQueryResult = file_get_contents($wcQueryUrl . $wcQuery . $wcQueryStatic);
+            // Save to DB
+            mysqli_query($conn, "INSERT INTO `wc_updates` (`query`,`result`) VALUES ('$wcQuery', '$wcQueryResult')");
+            if ($config->debug->logging === true) {
+                // Log it
+                syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Query = $wcQuery | Result = $wcQueryResult");
+            }
+        } // No new update to send
+        else {
+            if ($config->debug->logging === true) {
+                // Log it
+                syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Update not sent. Not enough time has passed");
+            }
+        }
+    }
 } // Nothing has changed
 else {
     $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,

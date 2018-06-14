@@ -130,6 +130,15 @@ return (object)array(
             'url' => 'cwop.aprs.net', // CWOP Server to send updates to
         ),
 
+        // Weathercloud Settings
+        'wc' => (object)array(
+            'enabled' => false, // true or false
+            'id' => '', // ID
+            'key' => '', // Station Key
+            'device' => '', // Device ID
+            'url' => 'http://api.weathercloud.net/v01/set', // Weathercloud API path
+        ),
+
         // MyAcurite
         'myacurite' => (object)array(
             'hub_enabled' => true, // true or false

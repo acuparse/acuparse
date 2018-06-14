@@ -139,6 +139,13 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->cwop->interval = $_POST['upload']['cwop']['interval'];
         $config->upload->cwop->url = $_POST['upload']['cwop']['url'];
 
+        // WC
+        $config->upload->wc->enabled = (bool)$_POST['upload']['wc']['enabled'];
+        $config->upload->wc->id = $_POST['upload']['wc']['id'];
+        $config->upload->wc->key = $_POST['upload']['wc']['key'];
+        $config->upload->wc->device = $_POST['upload']['wc']['device'];
+        $config->upload->wc->url = $_POST['upload']['wc']['url'];
+
         // MyAcurite
         $config->upload->myacurite->hub_enabled = (bool)$_POST['upload']['myacurite']['hub_enabled'];
         $config->upload->myacurite->hub_url = $_POST['upload']['myacurite']['hub_url'];
@@ -1124,6 +1131,95 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     </div>
                                 </div>
                             </div>
+                            <hr class="hr-dashed">
+
+                            <div class="row">
+                                <!-- Weathercloud -->
+                                <div class="col-md-6 col-12 border">
+                                    <h3 class="panel-heading">Weather Cloud:</h3>
+                                    <div class="form-group">
+                                        <h4>Status:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[wc][enabled]"
+                                                   id="wc-updates-enabled-0" value="0"
+                                                   onclick='document.getElementById("wc-updates-id").disabled=true;document.getElementById("wc-updates-key").disabled=true;document.getElementById("wc-updates-device").disabled=true;'
+                                                <?= ($config->upload->wc->enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-danger"
+                                                   for="wc-updates-enabled-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[wc][enabled]"
+                                                   id="wc-updates-enabled-1" value="1"
+                                                   onclick='document.getElementById("wc-updates-id").disabled=false;document.getElementById("wc-updates-key").disabled=false;document.getElementById("wc-updates-device").disabled=false;'
+                                                <?= ($config->upload->wc->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert-success"
+                                                   for="wc-updates-enabled-1">Enabled</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="wc-updates-id">ID:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wc][id]"
+                                                   id="wc-updates-id"
+                                                   maxlength="35"
+                                                   placeholder="ID"
+                                                <?= ($config->upload->wc->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->wc->id; ?>">
+                                            <small id="wc-updates-id-help" class="form-text text-muted">Your <a
+                                                        href="https://app.weathercloud.net/devices">Weathercloud</a>
+                                                API ID
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label"
+                                               for="wc-updates-key">Key:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wc][key]"
+                                                   id="wc-updates-key"
+                                                   placeholder="Key"
+                                                   maxlength="35"
+                                                <?= ($config->upload->wc->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->wc->key; ?>">
+                                            <small id="wc-updates-key-help" class="form-text text-muted">Your <a
+                                                        href="https://app.weathercloud.net/devices">Weathercloud</a>
+                                                API Key
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="wc-updates-device">Device:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wc][device]"
+                                                   id="wc-updates-device"
+                                                   maxlength="35"
+                                                   placeholder="dxxxxxxxxxx"
+                                                <?= ($config->upload->wc->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->wc->device; ?>">
+                                            <small id="wc-updates-device-help" class="form-text text-muted">Your <a
+                                                        href="https://app.weathercloud.net/">Weathercloud</a>
+                                                device ID (Begins with dxxx...)
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="wc-updates-url">URL:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[wc][url]"
+                                                   id="wc-updates-url"
+                                                   readonly
+                                                   value="<?= $config->upload->wc->url; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr class="hr-dashed">
 
                             <div class="row">

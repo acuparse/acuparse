@@ -92,6 +92,12 @@
                                    target="_blank"><img src="/img/external/findu.ico" width="16" height="16"
                                                         aria-hidden="true"> CWOP via findU</a>
                             <?php } ?>
+                            <?php if ($config->upload->wc->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//app.weathercloud.net/<?= $config->upload->wc->device; ?>"
+                                   target="_blank"><img src="/img/external/wc.ico" width="16" height="16"
+                                                        aria-hidden="true"> Weathercloud</a>
+                            <?php } ?>
                         </div>
                     </li>
                 <?php }
