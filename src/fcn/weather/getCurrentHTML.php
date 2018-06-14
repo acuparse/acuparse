@@ -69,6 +69,20 @@ function getCurrentHTML()
     $sunrise = date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
     $sunset = date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
 
+    // Warn if offline
+    $systemStatus = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
+    if ($systemStatus['status'] === '0') {
+        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `timestamp` FROM `last_update`"));
+        ?>
+        <!-- Offline -->
+        <section id="offline" class="row live-weather-offline">
+            <div class="col-md-8 col-12 mx-auto text-center">
+                <p class="alert alert-warning">Live data is temporarily unavailable!<br>Last update: <?= $lastUpdate['timestamp']; ?></p>
+            </div>
+        </section>
+        <?php
+    }
     ?>
     <!-- Live Weather Data -->
     <section id="live-weather-data" class="row live-weather-data">

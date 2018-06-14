@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Open Graph Tags and default sharing image.
+- Notification on dashboard when offline.
 
 ## [[2.4.0]](https://www.acuparse.com/releases/v2-4-0/) - 2018-05-07
 ### Added
