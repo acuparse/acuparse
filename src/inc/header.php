@@ -49,7 +49,7 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
     <title><?= $pageTitle ?></title>
 
     <!-- JS -->
-    <script defer src="/lib/mit/fontawesome/svg-with-js/js/fontawesome-all.min.js"></script>
+    <script defer src="/lib/mit/fontawesome/js/all.js"></script>
 
     <!-- CSS -->
     <link href="/lib/mit/bootstrap/css/bootstrap.min.css" rel="stylesheet">
