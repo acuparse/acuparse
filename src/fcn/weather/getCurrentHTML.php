@@ -109,7 +109,7 @@ function getCurrentHTML()
                             } else {
                                 $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457;" : "$wx->feelsC&#8451;";
                             }
-                            echo "<h3>Feels Like:</h3> " . $feels;
+                            echo '<h3>Feels Like:</h3> ' . $feels . '<br>';
                         } ?>
 
                         <!-- Daily Low -->

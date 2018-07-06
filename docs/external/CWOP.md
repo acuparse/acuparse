@@ -1,5 +1,3 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### Citizen Weather Observer Program Updater
 
 CWOP has a more complicated format and initialization process. Review the following site for more details: http://www.wxqa.com/faq.html.

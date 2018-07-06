@@ -1,6 +1,3 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-
 # Installation Guide:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
 
@@ -21,7 +18,7 @@ See [docs/DNS.md](DNS.md)
 * Setup a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 
 ## Automated Acuparse Installation:
-> **Info:** Installer currently supports Debian Stretch(9), Ubuntu 16.04 LTS and Raspbian.
+> **Info:** Installer supports Debian Stretch(9), Ubuntu 18.04 LTS, and Raspbian Stretch(9).
 
 * Install the base operating system and update:
     * `apt-get update && apt-get dist-upgrade`
@@ -40,9 +37,12 @@ See [docs/DNS.md](DNS.md)
     * `cd ~`
 
 * Install the required packages:
+    * Debian Stretch(9) and Raspbian Stretch(9):
+    
+    `apt install ca-certificates apt-transport-https && wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add - && echo "deb https://packages.sury.org/php/ stretch main" | sudo tee /etc/apt/sources.list.d/php.list && apt-update`
 
-    * Debian 9 / Ubuntu 16 / Raspbian:
-        * `apt-get install git ntp imagemagick exim4 apache2 mysql-server php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-gd php7.0-curl php7.0-json php7.0-cli`
+    * Debian Stretch(9), Ubuntu 18.04 LTS, and Raspbian Stretch(9):
+        * `apt-get install git ntp imagemagick exim4 apache2 mysql-server php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-gd php7.2-curl php7.2-json php7.2-cli php7.2-common`
 
 * Secure your MySQL install:
     * `mysql_secure_installation`

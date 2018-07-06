@@ -1,5 +1,3 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### Weathercloud Updater
 
 # Registration:

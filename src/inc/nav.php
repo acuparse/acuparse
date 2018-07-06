@@ -80,6 +80,12 @@
                                    target="_blank"><img src="/img/external/wu.ico" width="16" height="16"
                                                         aria-hidden="true"> Weather Underground</a>
                             <?php } ?>
+                            <?php if ($config->upload->wc->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//app.weathercloud.net/<?= $config->upload->wc->device; ?>"
+                                   target="_blank"><img src="/img/external/wc.ico" width="16" height="16"
+                                                        aria-hidden="true"> Weathercloud</a>
+                            <?php } ?>
                             <?php if ($config->upload->pws->enabled === true) { ?>
                                 <a class="dropdown-item"
                                    href="//www.pwsweather.com/obs/<?= $config->upload->pws->id; ?>.html"
@@ -91,12 +97,6 @@
                                    href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
                                    target="_blank"><img src="/img/external/findu.ico" width="16" height="16"
                                                         aria-hidden="true"> CWOP via findU</a>
-                            <?php } ?>
-                            <?php if ($config->upload->wc->enabled === true) { ?>
-                                <a class="dropdown-item"
-                                   href="//app.weathercloud.net/<?= $config->upload->wc->device; ?>"
-                                   target="_blank"><img src="/img/external/wc.ico" width="16" height="16"
-                                                        aria-hidden="true"> Weathercloud</a>
                             <?php } ?>
                         </div>
                     </li>

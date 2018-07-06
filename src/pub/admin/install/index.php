@@ -50,7 +50,7 @@ if (isset($_GET['update']) && $installed === true) {
                 <div class="row">
                     <div class="col">
                         <h2 class="page-header">Update Complete</h2>
-                        <div class="alert alert-warning">
+                        <div class="alert alert-warning text-center">
                             <p><strong>Double check your config settings before proceeding!</strong></p>
                         </div>
                         <div><h3>Notes:</h3>
@@ -78,7 +78,7 @@ if (isset($_GET['update']) && $installed === true) {
                 <div class="row">
                     <div class="col">
                         <h2 class="page-header">Are you sure you want to proceed?</h2>
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger text-center">
                             <p><strong>Make sure you backup your database, config file, and webcam images before
                                     proceeding!</strong></p>
                         </div>
@@ -323,7 +323,7 @@ elseif ($installed === false) {
                         <input type="text" class="form-control"
                                name="mysql[host]"
                                id="mysql-host"
-                               placeholder="localhost"
+                               value="localhost"
                                maxlength="35">
                     </div>
                 </div>
@@ -333,7 +333,7 @@ elseif ($installed === false) {
                         <input type="text" class="form-control"
                                name="mysql[database]"
                                id="mysql-database"
-                               placeholder="acuparse"
+                               value="acuparse"
                                maxlength="35">
                     </div>
                 </div>
@@ -343,7 +343,7 @@ elseif ($installed === false) {
                         <input type="text" class="form-control"
                                name="mysql[username]"
                                id="mysql-username"
-                               placeholder="acuparse.dbadmin"
+                               value="acuparse"
                                maxlength="35">
                     </div>
                 </div>
@@ -369,7 +369,7 @@ elseif ($installed === false) {
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio"
                                name="mysql[trim]"
-                               id="mysql-trim-enabled-1" value="1">
+                               id="mysql-trim-enabled-1" value="1" checked="checked">
                         <label class="form-check-label alert-success"
                                for="mysql-trim-enabled-1">Enabled</label>
                     </div>

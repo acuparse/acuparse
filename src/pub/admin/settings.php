@@ -455,6 +455,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                     <label class="form-check-label alert-warning"
                                                            for="station-baro-source-2">Access</label>
                                                 </div>
+                                                <!--
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio"
                                                            name="station[baro_source]" id="station-baro-source-3"
@@ -463,6 +464,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                     <label class="form-check-label alert-warning"
                                                            for="station-baro-source-3">Atlas</label>
                                                 </div>
+                                                -->
                                                 <small id="station-baro-source-help" class="form-text text-muted">Which
                                                     device will report barometer readings? Default will save readings
                                                     from all devices. Using multiple devices can result in skewed
