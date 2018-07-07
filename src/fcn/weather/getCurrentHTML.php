@@ -78,7 +78,8 @@ function getCurrentHTML()
         <!-- Offline -->
         <section id="offline" class="row live-weather-offline">
             <div class="col-md-8 col-12 mx-auto text-center">
-                <p class="alert alert-warning">Live data is temporarily unavailable!<br>Last update: <?= $lastUpdate['timestamp']; ?></p>
+                <p class="alert alert-warning">Live data is temporarily unavailable!<br>Last
+                    update: <?= $lastUpdate['timestamp']; ?></p>
             </div>
         </section>
         <?php

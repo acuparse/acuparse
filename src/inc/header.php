@@ -93,6 +93,7 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
           "description": "<?= $config->site->desc; ?>",
           "url": "https://<?= $config->site->hostname; ?>/"
         }
+
         </script>
     <?php } ?>
 

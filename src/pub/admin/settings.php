@@ -1344,6 +1344,9 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                    placeholder="www.example.com"
                                                 <?= ($config->debug->server->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                    value="<?= $config->debug->server->url; ?>">
+                                            <small id="debug-server-url-help" class="form-text text-muted">Hostname/IP
+                                                only. No HTTP/HTTPS!
+                                            </small>
                                         </div>
                                     </div>
                                     <div class="row">

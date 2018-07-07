@@ -211,7 +211,7 @@ $context = stream_context_create($opts);
 
 // Send data to debug server
 if ($config->debug->server->enabled === true) {
-    file_get_contents($config->debug->server->url . '/weatherstation/updateweatherstation?&' . $myacuriteQuery,
+    file_get_contents('https://' . $config->debug->server->url . '/weatherstation/updateweatherstation?&' . $myacuriteQuery,
         false, $context);
 }
 

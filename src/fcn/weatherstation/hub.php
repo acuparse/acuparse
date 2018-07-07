@@ -205,7 +205,7 @@ mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate'");
 
 // Send data to debug server
 if ($config->debug->server->enabled === true) {
-    file_get_contents($config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
+    file_get_contents('http://' . $config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
 }
 
 // Forward the raw data to MyAcurite
