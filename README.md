@@ -54,14 +54,19 @@ The Acurite Access sends data to MyAcuRite using an SSL connection. By Default A
 
 Install the base operating system and update. Then download and run the installer.
 
-``` wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh```
+`wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh | tee ~/acuparse.log`
+
+### Troubleshooting:
+If you experience unexpected results during or after your install, remove the config file and try again.
+
+`sudo rm /opt/acuparse/src/usr/config.php`
 
 # Updating:
 Detailed upgrade instructions for significant releases will be published in the docs/updates folder if required.
 
 * Pull the changes from Git.
 
-    ``` cd /opt/acuparse && sudo git pull ```
+    `cd /opt/acuparse && sudo git pull`
 * Connect to your site to complete the update.
 
 # Donations:

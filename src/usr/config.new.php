@@ -33,7 +33,7 @@ return (object)array(
         'database' => 'acuparse', // Database to use
         'username' => 'acuparse', // Database User
         'password' => '', // Database Password
-        'trim' => 0, // Database trim level
+        'trim' => 1, // Database trim level
     ),
 
     // Sensor specific config variables
@@ -51,8 +51,8 @@ return (object)array(
         'name' => 'Acuparse Weather Station', // Name of the weather station
         'desc' => 'A Simple Weather Station Script', // Station Description
         'location' => 'Somewhere, Earth', // Station Location
-        'hostname' => '', // Station Domain or IP Address
-        'email' => '', // System email address.
+        'hostname' => 'localhost', // Station Domain or IP Address
+        'email' => 'noreply@localhost', // System email address.
         'timezone' => 'UTC', // Station Timezone - http://php.net/manual/en/timezones.php
         'display_date' => 'l, j F Y G:i:s T', // Header Date Format
         'lat' => 0, // Station Latitude - Decimal Format
@@ -71,7 +71,7 @@ return (object)array(
 
     // Archive variables
     'archive' => (object)array(
-        'enabled' => false, // Archive Enabled, True/False
+        'enabled' => true, // Archive Enabled, True/False
     ),
 
     // Contact variables
@@ -177,7 +177,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.4.0-release',
-        'schema' => '2.3',
+        'app' => '2.5.0-release',
+        'schema' => '2.5',
     ),
 );

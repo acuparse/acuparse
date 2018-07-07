@@ -25,7 +25,7 @@ See [docs/DNS.md](DNS.md)
 
 * Download and run the Acuparse installer:
 
-    * `wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh`
+`wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh | tee ~/acuparse.log`
 
 ### Raspberry Pi
 * For a detailed installation guide on Raspbian, view the [Wiki Doc](https://github.com/acuparse/acuparse/wiki/Installation-on-Raspberry-Pi)
@@ -95,6 +95,10 @@ By Default Apache will use the snake oil cert to serve over HTTPS. For most user
     
 * Visit `http://{IP_ADDRESS/HOSTNAME}` to populate the database, create an account, and finish configuration.
 
+#### Optional:
+* Install phpMyAdmin for database administration
+    * `apt-get install phpmyadmin`
+    
 # Check Installation:
 
 ## Syslog:

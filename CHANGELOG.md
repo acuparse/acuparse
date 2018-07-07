@@ -8,14 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.5.0]](https://www.acuparse.com/releases/v2-5-0/) - 2018-07-07
 ### Changed
 - Bootstrap to v4.1.1
     - Major changes to HTML/CSS.
 - PHP/HTML/CSS variable changes and restructuring.
 - Encode special characters in WU upload string.
-- Font Awesome to 5.0.13.
+- Font Awesome to 5.1.
 - jQuery DateTimePicker to 2.5.20.
 - Update Google Analytics and moved to `<head>` (Search console won't verify a site with GA in the `<body>`).
+- Ubuntu 18.04 LTS and PHP 7.2 support.
 
 ### Added
 - Open Graph Tags and default sharing image.

@@ -300,4 +300,4 @@ INSERT INTO `outage_alert` (`last_sent`, `status`) VALUES ('2018-01-01 00:00:00'
 
 INSERT INTO `last_update` (`timestamp`) VALUES ('2018-01-01 00:00:00');
 
-INSERT INTO `system` (`name`, `value`) VALUES ('schema', '2.3');
+INSERT INTO `system` (`name`, `value`) VALUES ('schema', '2.5');
