@@ -24,20 +24,32 @@
  * File: src/inc/header.php
  * Build the main site's header
  */
+
+$pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . ' | ' . $config->site->location : $pageTitle;
 ?>
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    <meta http-equiv="cleartype" content="on">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html">
     <meta name="handheldfriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5">
     <meta name="description" content="<?= $config->site->desc; ?>">
-    <meta name="keywords" content="weather">
-    <title><?= $page_title ?></title>
+    <meta name="keywords" content="weather, <?= strtolower($config->site->location); ?>">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<?= $config->site->name; ?>">
+    <meta property="og:title" content="<?= $pageTitle ?>">
+    <meta property="og:description" content="<?= $config->site->desc; ?>">
+    <meta property="og:url" content="<?= $config->site->hostname; ?>">
+    <meta property="og:image"
+          content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
+
+    <title><?= $pageTitle ?></title>
 
     <!-- JS -->
-    <script defer src="/lib/mit/fontawesome/js/fontawesome-all.min.js"></script>
+    <script defer src="/lib/mit/fontawesome/js/all.js"></script>
 
     <!-- CSS -->
     <link href="/lib/mit/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -51,23 +63,57 @@
         <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
         <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
     <?php } ?>
+
     <!-- Site Theme -->
     <link href="/themes/<?= $config->site->theme; ?>.css" rel="stylesheet">
+
+    <?php
+    if ($config->google->analytics->enabled === true) { ?>
+
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config->google->analytics->id; ?>"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', '<?= $config->google->analytics->id; ?>');
+        </script>
+
+        <!-- Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "WebSite",
+          "name": "<?= $config->site->name; ?>",
+          "description": "<?= $config->site->desc; ?>",
+          "url": "https://<?= $config->site->hostname; ?>/"
+        }
+
+        </script>
+    <?php } ?>
+
 </head>
 <body>
-<!-- Page Header -->
-<?php include 'nav.php'; ?>
 
-<!-- Page Container -->
+<!-- Site Container -->
 <div class="container">
+
+    <!-- Navigation -->
+    <?php include 'nav.php'; ?>
+
     <?php
     // Messages
     if (isset($_SESSION['messages'])) {
-        echo '<div class="row" id="messages"><br><div class="col-lg-12">', $_SESSION['messages'], '</div></div>';
+        echo '<div id="system-messages" class="row system-messages"><br><div class="col-md-8 col-12 mx-auto"><strong>', $_SESSION['messages'], '</strong></div></div>';
         unset($_SESSION['messages']);
     }
     // Logged in admin
-    if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_SESSION['IsAdmin'] === true) {
+    if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
         // Check Git for updates
         if ($config->site->updates === true) {
@@ -75,27 +121,27 @@
                 $result = mysqli_fetch_assoc(mysqli_query($conn,
                     "SELECT `value` FROM `system` WHERE `name`='schema'"));
                 $schema = $result['value'];
-                $repo = "$app_info->updater_url";
+                $repo = "$appInfo->repo";
                 $headers = get_headers($repo);
 
-                if (($schema > $app_info->schema) || ($app_info->version > $config->version->app)) {
+                if (($schema > $appInfo->schema) || ($appInfo->version > $config->version->app)) {
                     header("Location: /admin/install/?update");
                     die();
                 } elseif (strpos($headers[0], "200")) {
-                    $git_version = json_decode(file_get_contents($repo));
-                    if ($git_version !== null) {
-                        if ($app_info->version < $git_version->version) {
+                    $gitVersion = json_decode(file_get_contents($repo));
+                    if ($gitVersion !== null) {
+                        if ($appInfo->version < $gitVersion->version) {
                             ?>
-                            <div class="row" id="update_message"><br>
-                                <div class="col-lg-12">
-                                    <div class="alert alert-info alert-dismissable">
+                            <section id="update-message" class="row update-message"><br>
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="alert alert-warning alert-dismissable">
                                         <a href="#" class="close" data-dismiss="alert">&times;</a>
-                                        <strong>Version <?= $git_version->version; ?> is available!</strong><br>
+                                        <strong>Version <?= $gitVersion->version; ?> is available!</strong><br>
                                         Execute "git pull" or upload new source to update.<br>
-                                        <a href="<?= $app_info->homepage; ?>">See docs for details.</a>
+                                        <a href="<?= $appInfo->homepage; ?>">See docs for details.</a>
                                     </div>
                                 </div>
-                            </div>
+                            </section>
                             <?php
                         }
                     }
@@ -105,8 +151,8 @@
     }
     ?>
     <!-- Time Section -->
-    <section id="current_time" class="current_time_display">
-        <div class="row">
-            <div id="time"></div>
+    <section id="local-time" class="row local-time">
+        <div class="col-auto mx-auto">
+            <div id="local-time-display"></div>
         </div>
     </section>

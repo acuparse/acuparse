@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.5.0]](https://www.acuparse.com/releases/v2-5-0/) - 2018-07-07
+### Changed
+- Bootstrap to v4.1.1
+    - Major changes to HTML/CSS.
+- PHP/HTML/CSS variable changes and restructuring.
+- Encode special characters in WU upload string.
+- Font Awesome to 5.1.
+- jQuery DateTimePicker to 2.5.20.
+- Update Google Analytics and moved to `<head>` (Search console won't verify a site with GA in the `<body>`).
+- Ubuntu 18.04 LTS and PHP 7.2 support.
+
+### Added
+- Open Graph Tags and default sharing image.
+- Notification on dashboard when offline.
+- Upload data to Weathercloud.
+
 ## [[2.4.0]](https://www.acuparse.com/releases/v2-4-0/) - 2018-05-07
 ### Added
 - Ability to select which readings to store and use for Barometer readings.
@@ -20,8 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [[2.3.2-beta]](https://www.acuparse.com/releases/v2-3-2-beta/) - 2018-05-06
 ### Changed
-- Bumped jQuery datetimepicker to 2.5.19.
-- Bumped jQuery to 3.3.1.
+- jQuery DateTimePicker to 2.5.19.
+- jQuery to 3.3.1.
 - Font Awesome to 5.0.12 and icon updates.
 - Lightbox to v2.10.0.
 - Installer and general security fixes.

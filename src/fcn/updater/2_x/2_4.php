@@ -21,14 +21,16 @@
  */
 
 /**
- * File: src/fcn/updater/2_4.php
+ * File: src/fcn/updater/2_x/2_4.php
  * 2.4 Site Update Tasks
  */
 
 switch ($config->version->app) {
 
     // Update from 2.3.2-beta
-    case '2.3.2-beta' || '2.3.2 || 2.4.0-beta':
+    case '2.3.2-beta':
+    case '2.3.2':
+    case '2.4.0-beta':
         $config->version->app = '2.4.0-release';
         $config->station->baro_source = 0;
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Added ability to select which barometer values are retained.</li>';

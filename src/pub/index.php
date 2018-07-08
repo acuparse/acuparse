@@ -31,7 +31,7 @@ require(dirname(__DIR__) . '/inc/loader.php');
 // System Time
 if (isset($_GET['time'])) {
     $date = date($config->site->display_date);
-    echo "<p><strong>$date</strong></p>";
+    echo "<p>$date</p>";
     die();
 }
 // End system time
@@ -52,9 +52,9 @@ if (isset($_GET['archive'])) {
 
 // Get Weather JSON
 if (isset($_GET['json'])) {
-    require(APP_BASE_PATH . '/fcn/weather/GetCurrentWeatherData.php');
-    $GetData = new GetCurrentWeatherData();
-    echo json_encode($GetData->getConditions());
+    require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
+    $getData = new getCurrentWeatherData();
+    echo json_encode($getData->getConditions());
     die();
 }
 
@@ -67,23 +67,26 @@ if (isset($_GET['cam'])) {
 
 if ($installed === false) {
     header("Location: /admin/install");
+    die();
 } else {
 
-    $page_title = $config->site->name;
+    $pageTitle = 'Live Weather';
     include(APP_BASE_PATH . '/inc/header.php');
 
 // PHP Info
-    if (isset($_GET['info']) && isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true) {
+    if (isset($_GET['info']) && isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
         phpinfo();
         die();
     }
 // Get Forcast Data
     ?>
     <!-- Live Weather Section -->
-    <section id="live_weather_display" class="live_weather_display">
+    <section id="live-weather">
         <div class="row">
-            <div id="weather"><img src="/img/weather.gif">
-                <h2>Crunching numbers ...</h2></div>
+            <div class="col mx-auto text-center">
+                <img src="/img/weather.gif">
+                <h3>Crunching numbers ...</h3>
+            </div>
         </div>
     </section>
     <?php
@@ -95,8 +98,8 @@ if ($installed === false) {
                 $.ajax({
                     url: \'/?weather\',
                     success: function (data) {
-                        $("#weather").html(data);
-                        window.setTimeout(update, 30000);
+                        $("#live-weather").html(data);
+                        window.setTimeout(update, 39000);
                     }
                 });
             }

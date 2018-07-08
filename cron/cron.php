@@ -29,8 +29,8 @@
 require(dirname(__DIR__) . '/src/inc/loader.php');
 
 // Load weather Data:
-require(APP_BASE_PATH . '/fcn/weather/GetCurrentWeatherData.php');
-$get_data = new GetCurrentWeatherData();
+require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
+$get_data = new getCurrentWeatherData();
 $data = $get_data->getConditions();
 
 // If using tower data for archiving, set it now
@@ -46,7 +46,7 @@ if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->ar
 }
 
 // Set the UTC date for the update
-$utc_date = gmdate("Y-m-d+H:i:s");
+$utcDate = gmdate("Y-m-d+H:i:s");
 
 // Make sure new data is being sent
 $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
@@ -82,12 +82,13 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             syslog(LOG_INFO, "(SYSTEM)[INFO]: Station Online. Email sent to admin.");
 
             // Update the time the email was sent
-            $last_sent = date("Y-m-d H:i:s");
-            mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$last_sent', `status` = '1'");
+            $lastSent = date("Y-m-d H:i:s");
+            mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$lastSent', `status` = '1'");
 
         } else {
             // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: ONLINE: Receiving updates from Access/smartHUB. Email notifications not enabled.");
+            syslog(LOG_INFO,
+                "(SYSTEM)[INFO]: ONLINE: Receiving updates from Access/smartHUB. Email notifications not enabled.");
             // Update the status
             mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '1'");
         }
@@ -107,29 +108,29 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
 
     // Build PWS Update
     if ($config->upload->pws->enabled === true) {
-        $pws_query_url = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->password;
-        $pws_query = '&dateutc=' . $utc_date . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSmph . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-        $pws_query_static = '&softwaretype=' . $app_info->name . '&action=updateraw';
-        $pws_query_result = file_get_contents($pws_query_url . $pws_query . $pws_query_static);
+        $pwsQueryUrl = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->password;
+        $pwsQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSmph . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
+        $pwsQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
+        $pwsQueryResult = file_get_contents($pwsQueryUrl . $pwsQuery . $pwsQueryStatic);
         // Save to DB
-        mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pws_query', '$pws_query_result')");
+        mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pwsQuery', '$pwsQueryResult')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "(EXTERNAL)[PWS]: Query = $pws_query | Result = $pws_query_result");
+            syslog(LOG_DEBUG, "(EXTERNAL)[PWS]: Query = $pwsQuery | Result = $pwsQueryResult");
         }
     }
 
     // Build Weather Underground Update
     if ($config->upload->wu->enabled === true) {
-        $wu_query_url = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
-        $wu_query = '&dateutc=' . $utc_date . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&winddir_avg2m=' . $data->windDEG_avg2 . '&windspeedmph=' . $data->windSmph . '&windspdmph_avg2m=' . $data->windSmph_avg2 . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-        $wu_query_static = '&softwaretype=' . $app_info->name . '&action=updateraw';
-        $wu_query_result = file_get_contents($wu_query_url . $wu_query . $wu_query_static);
+        $wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
+        $wuQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&winddir_avg2m=' . $data->windDEG_avg2 . '&windspeedmph=' . $data->windSmph . '&windspdmph_avg2m=' . $data->windSmph_avg2 . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
+        $wuQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
+        $wuQueryResult = file_get_contents(htmlspecialchars($wuQueryUrl . $wuQuery . $wuQueryStatic));
         // Save to DB
-        mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wu_query', '$wu_query_result')");
+        mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wuQuery', '$wuQueryResult')");
         if ($config->debug->logging === true) {
             // Log it
-            syslog(LOG_DEBUG, "(EXTERNAL)[WU]: Query = $wu_query | Result = $wu_query_result");
+            syslog(LOG_DEBUG, "(EXTERNAL)[WU]: Query = $wuQuery | Result = $wuQueryResult");
         }
     }
 
@@ -142,33 +143,33 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         // Make sure update interval has passed since last update
         if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->interval)) OR ($count == 0)) {
             // Process and send update
-            $cwop_date = gmdate("dHi", time());
+            $cwopDate = gmdate("dHi", time());
             $relH = $data->relH;
             if ($relH == 100) {
                 $relH = '00';
             }
-            $cwop_query = $config->upload->cwop->id . '>APRS,TCPIP*:@' . $cwop_date . 'z' . $config->upload->cwop->location . '_';
-            $cwop_query = $cwop_query . sprintf('%03d/%03dg%03dt%03dr%03dP%03dh%02db%05d', $data->windDEG,
+            $cwopQuery = $config->upload->cwop->id . '>APRS,TCPIP*:@' . $cwopDate . 'z' . $config->upload->cwop->location . '_';
+            $cwopQuery = $cwopQuery . sprintf('%03d/%03dg%03dt%03dr%03dP%03dh%02db%05d', $data->windDEG,
                     $data->windSmph, $data->windSmph_max5, $data->tempF, $data->rainIN * 100,
                     $data->rainTotalIN_today * 100, $relH, $data->pressure_kPa * 100);
-            $cwop_socket = fsockopen($config->upload->cwop->url, 14580, $cwop_socket_errno, $cwop_socket_errstr, 30);
-            if (!$cwop_socket) {
+            $cwopSocket = fsockopen($config->upload->cwop->url, 14580, $cwopSocket_errno, $cwopSocket_errstr, 30);
+            if (!$cwopSocket) {
                 if ($config->debug->logging === true) {
                     // Log it
-                    syslog(LOG_DEBUG, "(EXTERNAL)[CWOP] Socket Error: $cwop_socket_errno ($cwop_socket_errstr)");
+                    syslog(LOG_DEBUG, "(EXTERNAL)[CWOP] Socket Error: $cwopSocket_errno ($cwopSocket_errstr)");
                 }
             } else {
-                $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $app_info->name . "\r" . $cwop_query . '.' . $app_info->name . "\r";
-                fwrite($cwop_socket, $cwop_out);
-                fclose($cwop_socket);
+                $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $appInfo->name . "\r" . $cwopQuery . '.' . ucfirst($appInfo->name) . "\r";
+                fwrite($cwopSocket, $cwop_out);
+                fclose($cwopSocket);
             }
 
             // Save to DB
-            mysqli_query($conn, "INSERT INTO `cwop_updates` (`query`) VALUES ('$cwop_query')");
+            mysqli_query($conn, "INSERT INTO `cwop_updates` (`query`) VALUES ('$cwopQuery')");
             // Log
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_DEBUG, "(EXTERNAL)[CWOP]: Query = $cwop_query");
+                syslog(LOG_DEBUG, "(EXTERNAL)[CWOP]: Query = $cwopQuery");
             }
         } // No new update to send
         else {
@@ -178,16 +179,43 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
             }
         }
     }
+
+    // Build Weathercloud Update
+    if ($config->upload->wc->enabled === true) {
+        $sql = "SELECT `timestamp` FROM `wc_updates` ORDER BY `timestamp` DESC LIMIT 1";
+        $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
+        $count = mysqli_num_rows(mysqli_query($conn, $sql));
+
+        // Make sure update interval has passed since last update
+        if ((strtotime($result['timestamp']) < strtotime('-10 minutes')) OR ($count == 0)) {
+            $wcQueryUrl = $config->upload->wc->url . '?wid=' . $config->upload->wc->id . '&key=' . $config->upload->wc->key;
+            $wcQuery = '&temp=' . ($data->tempC * 10) . '&wdir=' . $data->windDEG . '&wdiravg=' . $data->windDEG_avg10 . '&wspd=' . (($data->windSkmh * 0.277778) * 10) . '&wspdavg=' . (($data->windSmph_avg10 * 0.44704) * 10) . '&bar=' . ($data->pressure_kPa * 100) . '&hum=' . $data->relH . '&dew=' . ($data->dewptC * 10) . '&rainrate=' . ($data->rainMM * 10) . '&rain=' . ($data->rainTotalMM_today * 10);
+            $wcQueryStatic = '&type=555e1df0d6eb' . '&version=' . $config->version->app;
+            $wcQueryResult = file_get_contents($wcQueryUrl . $wcQuery . $wcQueryStatic);
+            // Save to DB
+            mysqli_query($conn, "INSERT INTO `wc_updates` (`query`,`result`) VALUES ('$wcQuery', '$wcQueryResult')");
+            if ($config->debug->logging === true) {
+                // Log it
+                syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Query = $wcQuery | Result = $wcQueryResult");
+            }
+        } // No new update to send
+        else {
+            if ($config->debug->logging === true) {
+                // Log it
+                syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Update not sent. Not enough time has passed");
+            }
+        }
+    }
 } // Nothing has changed
 else {
-    $last_update = mysqli_fetch_assoc(mysqli_query($conn,
+    $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
         "SELECT `timestamp` FROM `last_update`"));
     // Check to see if the station is down
-    if ((strtotime($last_update['timestamp']) < strtotime("-" . $config->outage_alert->offline_for))) {
-        $outage_alert = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `last_sent`, `status` FROM `outage_alert`"));
+    if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert->offline_for))) {
+        $outageAlert = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `last_sent`, `status` FROM `outage_alert`"));
 
         // Should a notification be sent?
-        if (strtotime($outage_alert['last_sent']) < strtotime("-" . $config->outage_alert->interval)) {
+        if (strtotime($outageAlert['last_sent']) < strtotime("-" . $config->outage_alert->interval)) {
 
             if ($config->outage_alert->enabled === true) {
                 require(APP_BASE_PATH . '/fcn/mailer.php');
@@ -204,10 +232,11 @@ else {
                     mailer($to, $subject, $message);
                 }
                 // Log it
-                syslog(LOG_ERR, "(SYSTEM)[ERROR]: OFFLINE: not receiving data from the Access/smartHUB. Email sent to admin.");
+                syslog(LOG_ERR,
+                    "(SYSTEM)[ERROR]: OFFLINE: not receiving data from the Access/smartHUB. Email sent to admin.");
                 // Update the time the email was sent
-                $last_sent = date("Y-m-d H:i:s");
-                mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$last_sent', `status` = '0'");
+                $lastSent = date("Y-m-d H:i:s");
+                mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$lastSent', `status` = '0'");
 
             } else {
                 // Log it

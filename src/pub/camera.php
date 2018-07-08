@@ -45,7 +45,7 @@ if ($config->camera->enabled === true) {
         }
 
         // Get the page header
-        $page_title = 'Weather Camera Archive | ' . $config->site->name;
+        $pageTitle = 'Weather Camera Archive';
         include(APP_BASE_PATH . '/inc/header.php');
 
         // Check the cam directory for images
@@ -63,133 +63,134 @@ if ($config->camera->enabled === true) {
         // Today's Date
         $today = date('Y-m-d');
         ?>
-
-        <section id="camera_archive" class="camera_archive_display">
         <div class="row">
-            <h1 class="page-header">Weather Camera Archive</h1>
+            <div class="col">
+                <h1 class="page-header">Weather Camera Archive</h1>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-xs-3 text-left">
-                <?php if (($backward_date < $cam_dir) || $cam_dir_has_images === false) {
-                    // Don't display backward button
-                } elseif ($backward_date > $today) {
-                    ?>
-                    <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fas fa-backward"
-                                                                            aria-hidden="true"></i></h3></a>
-                    <?php
-                } else { ?>
-                    <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fas fa-backward"
-                                                                                 aria-hidden="true"></i></h3></a>
-                <?php } ?>
-            </div>
-            <div class="col-lg-6 col-md-6 col-xs-6">
-                <form role="form" class="form-horizontal form-inline" action="/camera" method="GET">
-                    <div class="form-group">
-                        <input type="hidden" name="archive">
-                        <input class="form-control form-cam-archive-date" type="date" name="date" id="date"
-                               onchange="this.form.submit()" value="<?= $date; ?>"
-                               min="<?= $cam_dir; ?>" max="<?= date('Y-m-d'); ?>">
-                    </div>
-                </form>
-            </div>
-            <div class="col-lg-3 col-md-3 col-xs-3 text-right">
-                <?php if (($forward_date > $today) || $cam_dir_has_images === false) {
-                    // Don't display forward button
-                } else {
-                    if ($forward_date < $cam_dir) {
+
+        <hr>
+
+        <section id="camera-archive" class="camera-archive">
+            <div class="row">
+                <div class="col-3 text-left">
+                    <?php if (($backward_date < $cam_dir) || $cam_dir_has_images === false) {
+                        // Don't display backward button
+                    } elseif ($backward_date > $today) {
                         ?>
-                        <a href="/camera?archive&date=<?= $cam_dir; ?>"><h3><i class="fas fa-forward"
-                                                                               aria-hidden="true"></i></h3>
-                        </a>
+                        <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fas fa-backward"
+                                                                                aria-hidden="true"></i></h3></a>
                         <?php
+                    } else { ?>
+                        <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fas fa-backward"
+                                                                                     aria-hidden="true"></i></h3>
+                        </a>
+                    <?php } ?>
+                </div>
+                <div class="col-6">
+                    <form role="form" class="form-horizontal form-inline justify-content-center" action="/camera"
+                          method="GET">
+                        <div class="form-group">
+                            <input type="hidden" name="archive">
+                            <input class="form-control form-cam-archive-date" type="date" name="date" id="date"
+                                   onchange="this.form.submit()" value="<?= $date; ?>"
+                                   min="<?= $cam_dir; ?>" max="<?= date('Y-m-d'); ?>">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-3 text-right">
+                    <?php if (($forward_date > $today) || $cam_dir_has_images === false) {
+                        // Don't display forward button
                     } else {
-                        ?>
-                        <a href="/camera?archive&date=<?= $forward_date; ?>"><h3><i class="fas fa-forward"
-                                                                                    aria-hidden="true"></i></h3>
-                        </a>
-                        <?php
-                    }
-                } ?>
-            </div>
-        </div>
-        <?php
-        $dirname = "img/cam/$date/";
-        $images = scandir($dirname);
-        $ignore = Array(".", "..", "daily.gif");
-
-        if ($images == 0) { ?>
-            <div class="row margin-top-10">
-                <div class="alert alert-warning"><strong>No images to display!</strong></div>
-            </div><?php
-        } else { ?>
-            <div class="row margin-top-10">
-                <div class="col-lg-6 col-lg-offset-3 thumb">
-                    <a class="thumbnail" href="<?= $dirname . 'daily.gif'; ?>"
-                       data-lightbox="timelapse">
-                        <img class="img-responsive" src="<?= $dirname . 'daily.gif'; ?>" alt=""
-                             title="Daily Timelapse">Daily Timelapse</a>
+                        if ($forward_date < $cam_dir) {
+                            ?>
+                            <a href="/camera?archive&date=<?= $cam_dir; ?>"><h3><i class="fas fa-forward"
+                                                                                   aria-hidden="true"></i></h3>
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <a href="/camera?archive&date=<?= $forward_date; ?>"><h3><i class="fas fa-forward"
+                                                                                        aria-hidden="true"></i></h3>
+                            </a>
+                            <?php
+                        }
+                    } ?>
                 </div>
             </div>
-            <hr class="hr-dotted">
-            <div class="row">
-                <?php
-                $counter = 0;
-                foreach ($images as $curimg) {
-                    if (!in_array($curimg, $ignore)) {
-                        $image_time = str_replace('.jpg', '', $curimg);
-                        $image_time = str_split($image_time, 2);
-                        $image_time = implode(':', $image_time);
+            <?php
+            $dirname = "img/cam/$date/";
+            $images = scandir($dirname);
+            $ignore = Array(".", "..", "daily.gif");
 
-                        ?>
-                        <div class="col-lg-2 col-md-4 col-xs-6 thumb">
-                            <a class="thumbnail" href="<?= $dirname . $curimg; ?>"
-                               data-lightbox="weather-cam">
-                                <img class="img-responsive" src="<?= $dirname . $curimg; ?>" alt=""
-                                     title="<?= "$image_time"; ?>"><?= "$image_time"; ?></a>
-                        </div>
-                        <?php
+            if ($images == 0) { ?>
+                <div class="row margin-top-10">
+                    <div class="col">
+                        <div class="alert alert-danger"><strong>No images found!</strong></div>
+                    </div>
+                </div><?php
+            } else { ?>
+                <div class="row margin-top-10">
+                    <div class="col camera-archive-timelapse">
+                        <a href="<?= $dirname . 'daily.gif'; ?>"
+                           data-lightbox="camera-archive-timelapse">
+                            <img class="img-fluid img-thumbnail" src="<?= $dirname . 'daily.gif'; ?>" alt=""
+                                 title="Daily Timelapse"><br>Timelapse</a>
+                    </div>
+                </div>
+                <hr class="hr-dotted">
+                <div class="row">
+                    <?php
+                    foreach ($images as $curimg) {
+                        if (!in_array($curimg, $ignore)) {
+                            $image_time = str_replace('.jpg', '', $curimg);
+                            $image_time = str_split($image_time, 2);
+                            $image_time = implode(':', $image_time);
 
-                        // Apply clearfixes to keep columns in place
-                        $counter++;
-                        if ($counter % 2 === 0) {
-                            echo '<div class="clearfix visible-sm-block"></div>';
-                        }
-                        if ($counter % 3 === 0) {
-                            echo '<div class="clearfix visible-md-block"></div>';
-                        }
-                        if ($counter % 6 === 0) {
-                            echo '<div class="clearfix visible-lg-block"></div>';
+                            ?>
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <a href="<?= $dirname . $curimg; ?>"
+                                   data-lightbox="camera-archive">
+                                    <img class="img-fluid img-thumbnail" src="<?= $dirname . $curimg; ?>" alt=""
+                                         title="<?= "$image_time"; ?>"><br><?= "$image_time"; ?></a>
+                            </div>
+                            <?php
                         }
                     }
-                }
-                ?>
-            </div>
-            </section>
-            <?php
-        }
+                    ?>
+                </div>
+                <?php
+            }
+            ?>
+        </section>
+        <?php
+        // Set the footer to include scripts required for this page
+        $page_footer =
+            '<script src="/lib/mit/lightbox/js/lightbox.min.js"></script>';
     }
     // End archive
 
     // Display camera
     else {
-        $page_title = 'Live Weather Camera | ' . $config->site->name;
+        $pageTitle = 'Live Weather Camera';
         include(APP_BASE_PATH . '/inc/header.php');
         ?>
-        <section id="live_camera" class="live_camera_display">
-            <div class="row">
-                <h1 class="page-header">Weather Camera</h1>
+        <div class="row">
+            <div class="col">
+                <h1 class="page-header">Live Weather Camera</h1>
             </div>
+        </div>
+
+        <hr>
+
+        <section id="live-camera" class="row live-camera">
             <?php
             if (file_exists('img/cam/latest.jpg')) {
                 ?>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <img class="center-block" src="/img/cam/latest.jpg?<?= time(); ?>">
-                    </div>
-                </div>
-                <div class="row"><strong><?= $config->camera->text; ?></strong></div>
-                <div class="row margin-top-15">
-                    <button type="button" id="archive" class="btn btn-default center-block"
+                <div class="col">
+                    <img src="/img/cam/latest.jpg?<?= time(); ?>">
+                    <p class="margin-top-10"><?= $config->camera->text; ?></p>
+                    <button type="button" id="archive" class="btn btn-outline-secondary center-block"
                             onclick="location.href = '/camera?archive'"><i class="far fa-images" aria-hidden="true"></i>
                         View Camera Archive
                     </button>
@@ -197,11 +198,10 @@ if ($config->camera->enabled === true) {
                 <?php
             } else {
                 ?>
-                <div class="row">
-                    <div class="col-lg-12 margin-top-10">
-                        <div class=" alert alert-warning"><strong>Recent camera image not found!</strong>
-                        </div>
+                <div class="col-12 margin-top-10">
+                    <div class=" alert alert-warning"><strong>Recent camera image not found!</strong>
                     </div>
+                </div>
                 </div>
                 <?php
             }
@@ -209,10 +209,6 @@ if ($config->camera->enabled === true) {
         </section>
         <?php
     }
-
-    // Set the footer to include scripts required for this page
-    $page_footer =
-        '<script src="/lib/mit/lightbox/js/lightbox.min.js"></script>';
 
     include(APP_BASE_PATH . '/inc/footer.php');
 

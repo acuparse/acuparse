@@ -1,6 +1,3 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-
 # Installation Guide:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
 
@@ -9,7 +6,7 @@ Can be run locally or on a remote/cloud server.
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 
 ## DNS Redirect
-> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
+> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access](/admin/access) once logged into your site.
 
 If you are connecting your Access/SmartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally. Otherwise, you will need a DNS server installed on your network.
 See [docs/DNS.md](DNS.md)
@@ -21,14 +18,14 @@ See [docs/DNS.md](DNS.md)
 * Setup a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 
 ## Automated Acuparse Installation:
-> **Info:** Installer currently supports Debian Stretch(9), Ubuntu 16.04 LTS and Raspbian.
+> **Info:** Installer supports Debian Stretch(9), Ubuntu 18.04 LTS, and Raspbian Stretch(9).
 
 * Install the base operating system and update:
     * `apt-get update && apt-get dist-upgrade`
 
 * Download and run the Acuparse installer:
 
-    * `wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh`
+`wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh | tee ~/acuparse.log`
 
 ### Raspberry Pi
 * For a detailed installation guide on Raspbian, view the [Wiki Doc](https://github.com/acuparse/acuparse/wiki/Installation-on-Raspberry-Pi)
@@ -40,9 +37,12 @@ See [docs/DNS.md](DNS.md)
     * `cd ~`
 
 * Install the required packages:
+    * Debian Stretch(9) and Raspbian Stretch(9):
+    
+    `apt install ca-certificates apt-transport-https && wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add - && echo "deb https://packages.sury.org/php/ stretch main" | sudo tee /etc/apt/sources.list.d/php.list && apt-update`
 
-    * Debian 9 / Ubuntu 16 / Raspbian:
-        * `apt-get install git ntp imagemagick exim4 apache2 mysql-server php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-gd php7.0-curl php7.0-json php7.0-cli`
+    * Debian Stretch(9), Ubuntu 18.04 LTS, and Raspbian Stretch(9):
+        * `apt-get install git ntp imagemagick exim4 apache2 mysql-server php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-gd php7.2-curl php7.2-json php7.2-cli php7.2-common`
 
 * Secure your MySQL install:
     * `mysql_secure_installation`
@@ -95,6 +95,10 @@ By Default Apache will use the snake oil cert to serve over HTTPS. For most user
     
 * Visit `http://{IP_ADDRESS/HOSTNAME}` to populate the database, create an account, and finish configuration.
 
+#### Optional:
+* Install phpMyAdmin for database administration
+    * `apt-get install phpmyadmin`
+    
 # Check Installation:
 
 ## Syslog:
@@ -230,7 +234,7 @@ combined.sh | Processes an image when the camera and Acuparse are both installed
 > **Info:** Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
 
 # Invisible reCAPTCHA:
-Recaptcha loads on the login and contact forms, as well as, when requesting a password reset.
+Recaptcha loads on the authentication and contact forms, as well as, when requesting a password reset.
 * Sign up for a reCAPTCHA account at [google.com/recaptcha](https://www.google.com/recaptcha).
 * Select Invisible reCAPTCHA when registering your new site.
 * Enter your site key and secret in your site settings.

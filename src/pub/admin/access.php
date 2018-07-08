@@ -21,78 +21,77 @@
  */
 
 /**
- * File: src/pub/admin/access_server.php
+ * File: src/pub/admin/access.php
  * Sends a POST request to modify the update server in an Access
  */
 
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
 // Logged in admin
-if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true && $_SESSION['IsAdmin'] === true) {
+if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
-    $page_title = 'Change Access Server | ' . $config->site->name;
+    $pageTitle = 'Change Access Server';
     include(APP_BASE_PATH . '/inc/header.php');
     ?>
-    <section id="change_access_server">
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Change Access Update Server</h2>
-            </div>
+
+    <div class="row">
+        <div class="col">
+            <h2 class="page-header">Change Access Update Server</h2>
         </div>
-        <?php
-        if (isset($_GET['ip'])) {
-        $ip = filter_input(INPUT_GET, 'ip', FILTER_SANITIZE_STRING);
-        ?>
-        <div class="row">
-            <div class="col-lg-4 col-lg-offset-4">
-                <form name="access_server" id="access_server"
-                      action="<?php echo 'http://' . $ip . '/config.cgi'; ?>" method="POST">
+    </div>
+    <hr>
+    <div id="change-access-server" class="row change-access-server">
+        <div class="col-md-8 col-12 mx-auto">
+            <?php
+            if (isset($_GET['ip'])) {
+                $ip = filter_input(INPUT_GET, 'ip', FILTER_SANITIZE_STRING);
+                ?>
+
+                <form name="access-server" id="access-server" action="http://<?= $ip; ?>/config.cgi" method="POST">
                     <div class="form-group">
-                        <label>New Server Hostname:</label>
-                        <input type="text" class="form-control" name="ser" id="ser"
-                               placeholder="New Hostname" value="<?= $config->site->hostname; ?>"
+                        <label for="server-hostname">New Server Hostname:</label>
+                        <input type="text" class="form-control" name="ser" id="server-hostname"
+                               placeholder="atlasapi.myacurite.com" value="<?= $config->site->hostname; ?>"
                                required>
-                        <p class="margin-top-05"><strong>Default: </strong>
-                        <pre>atlasapi.myacurite.com</pre>
-                        </p>
+                        <p class="alert alert-info margin-top-05">Default: <code>atlasapi.myacurite.com</code></p>
                     </div>
-                    <button type="submit" class="btn btn-primary center-block"><i
-                                class="fas fa-power-off"></i> Reboot
-                    </button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-power-off"></i> Reboot</button>
                 </form>
                 <p class="margin-top-05">When you submit this form, you'll be redirected to your Access. It will then
                     reboot with the new settings.</p>
                 <?php
-                } else {
+            } else {
                 ?>
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col">
                         <p>This script sets the hostname where your Access sends it's data; via a POST request from your
                             browser to your Access.</p>
                     </div>
-                    <div class="alert alert-warning col-lg-6 col-lg-offset-3">
+                </div>
+                <div class="row">
+                    <div class="alert alert-warning mx-auto">
                         <p><strong>Warning: </strong>Use a browser located on the same network as your Access!</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-lg-offset-4">
-                        <form name="access_server" id="access_server" action="" method="GET">
+                    <div class="col-md-8 col-12 mx-auto">
+                        <form name="access-server" id="access-server" action="" method="GET">
                             <div class="form-group">
-                                <label>Access IP:</label>
-                                <input type="text" class="form-control" name="ip" id="ip" placeholder="Access IP">
+                                <label for="access-ip">Access IP:</label>
+                                <input type="text" class="form-control" name="ip" id="access-ip"
+                                       placeholder="192.168.0.10">
                             </div>
-                            <button type="submit" class="btn btn-primary center-block"><i
-                                        class="far fa-arrow-alt-circle-right"></i>
+                            <button type="submit" class="btn btn-primary"><i class="far fa-arrow-alt-circle-right"></i>
                                 Next
                             </button>
-
                         </form>
-                        <?php
-                        }
-                        ?>
                     </div>
                 </div>
-    </section>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
     <?php
     include(APP_BASE_PATH . '/inc/footer.php');
 } // Not logged in, go home

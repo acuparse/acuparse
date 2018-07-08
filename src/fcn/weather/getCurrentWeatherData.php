@@ -21,22 +21,25 @@
  */
 
 /**
- * File: src/fcn/weather/GetCurrentWeatherData.php
+ * File: src/fcn/weather/getCurrentWeatherData.php
  * Gets the current weather data from the database
  */
-class GetCurrentWeatherData
+class getCurrentWeatherData
 {
     // Set variables
     private $windSmph;
     private $windSkmh;
     private $windDEG;
     private $windDEG_avg2;
+    private $windDEG_avg10;
     private $windDEG_peak;
     private $wind_recorded_peak;
     private $windSmph_peak;
     private $windSkmh_peak;
     private $windSmph_avg2;
     private $windSkmh_avg2;
+    private $windSmph_avg10;
+    private $windSkmh_avg10;
     private $windSmph_max5;
     private $windSkmh_max5;
     private $pressure_inHg;
@@ -82,6 +85,11 @@ class GetCurrentWeatherData
             "SELECT AVG(degrees) AS `avg_degrees` FROM `winddirection` WHERE `timestamp` <= DATE_SUB(NOW(), INTERVAL 2 MINUTE)"));
         $this->windDEG_avg2 = (int)round($result['avg_degrees']); // Degrees
 
+        // Process Average Wind Direction over the last 10 minutes:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT AVG(degrees) AS `avg_degrees` FROM `winddirection` WHERE `timestamp` <= DATE_SUB(NOW(), INTERVAL 10 MINUTE)"));
+        $this->windDEG_avg10 = (int)round($result['avg_degrees']); // Degrees
+
         // Today's Peak Windspeed:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
@@ -100,6 +108,12 @@ class GetCurrentWeatherData
             "SELECT AVG(speedMPH) AS `avg_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)"));
         $this->windSmph_avg2 = (int)round($result['avg_speedMPH']); // Miles per hour
         $this->windSkmh_avg2 = (int)round($result['avg_speedMPH'] * 1.60934); // Convert to Kilometers per hour
+
+        // 10 Min Average Windspeed:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT AVG(speedMPH) AS `avg_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 10 MINUTE)"));
+        $this->windSmph_avg10 = (int)round($result['avg_speedMPH']); // Miles per hour
+        $this->windSkmh_avg10 = (int)round($result['avg_speedMPH'] * 1.60934); // Convert to Kilometers per hour
 
         // Process Average Wind Speed over the last 5 minutes
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -379,6 +393,7 @@ class GetCurrentWeatherData
             'windDEG' => $this->windDEG,
             'windDIR' => $this->windDirection($this->windDEG),
             'windDEG_avg2' => $this->windDEG_avg2,
+            'windDEG_avg10' => $this->windDEG_avg10,
             'windDIR_avg2' => $this->windDirection_range($this->windDEG_avg2),
             'windDEG_peak' => $this->windDEG_peak,
             'windDIR_peak' => $this->windDirection_range($this->windDEG_peak),
@@ -387,6 +402,8 @@ class GetCurrentWeatherData
             'windSkmh_peak' => $this->windSkmh_peak,
             'windSmph_avg2' => $this->windSmph_avg2,
             'windSkmh_avg2' => $this->windSkmh_avg2,
+            'windSmph_avg10' => $this->windSmph_avg10,
+            'windSkmh_avg10' => $this->windSkmh_avg10,
             'windSmph_max5' => $this->windSmph_max5,
             'windSkmh_max5' => $this->windSkmh_max5,
             'rainIN' => $this->rainIN,

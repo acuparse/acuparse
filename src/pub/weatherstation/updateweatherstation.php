@@ -30,17 +30,15 @@ require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
 // Process Access Update
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && $_GET['id'] === $config->station->access_mac) {
-    $myacurite_query = str_replace('/weatherstation/updateweatherstation?&', '', $_SERVER['REQUEST_URI']);
+    $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?&', '', $_SERVER['REQUEST_URI']);
     require(dirname(dirname(__DIR__)) . '/fcn/weatherstation/access.php');
 } // Process smartHUB Update
 elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->station->hub_mac) {
-    $myacurite_query = str_replace('/weatherstation/updateweatherstation?', '', $_SERVER['REQUEST_URI']);
+    $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?', '', $_SERVER['REQUEST_URI']);
     require(dirname(dirname(__DIR__)) . '/fcn/weatherstation/hub.php');
 } // This MAC is not configured
 else {
     $mac = $_GET['id'];
     // Log it
     syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured.");
-    die();
 }
-

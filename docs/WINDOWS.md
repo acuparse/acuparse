@@ -1,6 +1,3 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-
 # Installing on Windows:
 Acuparse is written in PHP/MySQL and can technically run natively on Windows using [XAMPP]( https://www.apachefriends.org).
 

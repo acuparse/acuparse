@@ -40,14 +40,14 @@ if (!isset($config)) {
     }
 }
 
-if (!isset($app_info)) {
-    $app_info = json_decode(file_get_contents(dirname(dirname(__DIR__)) . '/.version'), true);
-    $app_info = (object)array(
-        'name' => $app_info['name'], // Application Name
-        'version' => $app_info['version'], // Application version
-        'schema' => $app_info['schema'], // Database Schema Version
-        'updater_url' => $app_info['updater_url'], // Git Repository
-        'homepage' => $app_info['homepage'] // Project Homepage
+if (!isset($appInfo)) {
+    $appInfo = json_decode(file_get_contents(dirname(dirname(__DIR__)) . '/.version'), true);
+    $appInfo = (object)array(
+        'name' => $appInfo['name'], // Application Name
+        'version' => $appInfo['version'], // Application version
+        'schema' => $appInfo['schema'], // Database Schema Version
+        'repo' => $appInfo['repo'], // Git Repository
+        'homepage' => $appInfo['homepage'] // Project Homepage
     );
 }
 
@@ -70,15 +70,20 @@ if (!isset($conn)) {
 // Start Logging
 if (!isset($openlog)) {
     $facility = (php_uname("s") === 'Linux') ? LOG_LOCAL0 : LOG_USER;
-    $openlog = openlog("$app_info->name($app_info->version)", LOG_ODELAY, $facility);
+    $openLog = openlog("$appInfo->name($appInfo->version)", LOG_ODELAY, $facility);
 }
 
 // Start the session
 if (!isset($_SESSION)) {
-    require(APP_BASE_PATH . '/inc/session.php');
+    if ((isset($_SERVER["HTTP_X_PURPOSE"]) and (strtolower($_SERVER["HTTP_X_PURPOSE"]) == "preview")) or
+        (isset($_SERVER["HTTP_X_MOZ"]) and (strtolower($_SERVER["HTTP_X_MOZ"]) == "prefetch"))) {
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: Prefetch Detected");
+    } else {
+        include(APP_BASE_PATH . '/inc/session.php');
+    }
 }
 
 // Output buffering
-if (!isset($ob_start)) {
-    $ob_start = ob_start();
+if (!isset($obStart)) {
+    $obStart = ob_start();
 }

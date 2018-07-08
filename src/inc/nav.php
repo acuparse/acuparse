@@ -25,155 +25,145 @@
  * Build the navigation bar for the main site
  */
 ?>
-<header id="header_display" class="header_display">
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/"><?= $config->site->name; ?><br>
-                    <small><?= $config->site->location; ?></small>
-                </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li <?php if ($_SERVER['PHP_SELF'] === '/index.php' && empty($_GET)) {
-                        echo 'class="active"';
-                    } ?>>
-                        <a href="/"><i class="fas fa-thermometer-half" aria-hidden="true"></i> Live</a>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" role="navigation">
+    <div class="container">
+        <a class="navbar-brand" href="/"><?= $config->site->name; ?><br>
+            <small><?= $config->site->location; ?></small>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav-dropdown"
+                aria-controls="navbar-nav-dropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-nav-dropdown">
+            <ul class="navbar-nav mx-auto">
+                <li class="<?= ($_SERVER['PHP_SELF'] === '/index.php' && empty($_GET)) ? 'nav-item active' : 'nav-item'; ?>">
+                    <a class="nav-link" href="/"><i class="fas fa-sun" aria-hidden="true"></i> Live</a>
+                </li>
+                <?php if ($config->archive->enabled === true) { ?>
+                    <li class="<?= ($_SERVER['PHP_SELF'] === '/archive.php') ? 'nav-item active' : 'nav-item'; ?>">
+                        <a class="nav-link" href="/archive"><i class="fas fa-archive" aria-hidden="true"></i>
+                            Archive</a>
                     </li>
-                    <?php if ($config->archive->enabled === true) { ?>
-                        <li <?php if ($_SERVER['PHP_SELF'] === '/archive.php') {
-                            echo 'class="active"';
-                        } ?>>
-                            <a href="/archive"><i class="fas fa-archive" aria-hidden="true"></i> Archive</a>
-                        </li>
 
-                    <?php }
+                <?php }
 
-                    // Weather Camera
-                    if ($config->camera->enabled === true) { ?>
-                        <li class="dropdown <?php if ($_SERVER['PHP_SELF'] === '/camera.php') {
-                            echo 'active';
-                        } ?>">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-camera"
-                                                                                         aria-hidden="true"></i>
-                                Camera
-                                <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (!isset($_GET['archive']))) {
-                                    echo 'class="active"';
-                                } ?>><a href="/camera"><i class="far fa-eye" aria-hidden="true"></i> Live View</a>
-                                </li>
-                                <li <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) {
-                                    echo 'class="active"';
-                                } ?>><a href="/camera?archive"><i class="far fa-images" aria-hidden="true"></i> Archive</a>
-                                </li>
-                            </ul>
-                        </li>
-                    <?php }
-                    // External Weather Sites
+                // Weather Camera
+                if ($config->camera->enabled === true) {
+                    $liveCamActive = (($_SERVER['PHP_SELF'] === '/camera.php') && (!isset($_GET['archive']))) ? true : false;
+                    $camArchiveActive = (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) ? true : false;
                     ?>
+                    <li class="<?= ($_SERVER['PHP_SELF'] === '/camera.php') ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false"><i class="fas fa-camera" aria-hidden="true"></i>
+                            Camera</a>
+                        <div class="dropdown-menu">
+                            <a class="<?= ($liveCamActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
+                               href="/camera"><i class="far fa-eye" aria-hidden="true"></i> Live View</a>
+                            <a class="<?= ($camArchiveActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
+                               href="/camera?archive"><i class="far fa-images" aria-hidden="true"></i> Archive</a>
+                        </div>
+                    </li>
+                <?php }
+                // External Weather Sites
+                ?>
 
-                    <?php if ($config->upload->wu->enabled === true || $config->upload->pws->enabled === true || $config->upload->cwop->enabled === true) { ?>
-                        <li class="dropdown">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown"><i
-                                        class="fas fa-external-link-square-alt" aria-hidden="true"></i>
-                                External
-                                <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <?php if ($config->upload->wu->enabled === true) { ?>
-                                    <li>
-                                        <a href="//www.wunderground.com/personal-weather-station/dashboard?ID=<?= $config->upload->wu->id; ?>"
-                                           target="_blank"><img src="/img/external/wu.ico" width="16" height="16"
-                                                                aria-hidden="true"> Weather Underground</a>
-                                    </li> <?php } ?>
-                                <?php if ($config->upload->pws->enabled === true) { ?>
-                                    <li>
-                                        <a href="//www.pwsweather.com/obs/<?= $config->upload->pws->id; ?>.html"
-                                           target="_blank"><img src="/img/external/pws.ico" width="16" height="16"
-                                                                aria-hidden="true"> PWS Weather</a>
-                                    </li> <?php } ?>
-                                <?php if ($config->upload->cwop->enabled === true) { ?>
-                                    <li>
-                                        <a href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
-                                           target="_blank"><img src="/img/external/findu.ico" width="16" height="16"
-                                                                aria-hidden="true"> CWOP via findU</a>
-                                    </li> <?php } ?>
-                            </ul>
-                        </li>
-                    <?php }
+                <?php if ($config->upload->wu->enabled === true || $config->upload->pws->enabled === true || $config->upload->cwop->enabled === true) { ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false"><i
+                                    class="fas fa-external-link-square-alt" aria-hidden="true"></i> External</a>
+                        <div class="dropdown-menu">
+                            <?php if ($config->upload->wu->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//www.wunderground.com/personal-weather-station/dashboard?ID=<?= $config->upload->wu->id; ?>"
+                                   target="_blank"><img src="/img/external/wu.ico" width="16" height="16"
+                                                        aria-hidden="true"> Weather Underground</a>
+                            <?php } ?>
+                            <?php if ($config->upload->wc->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//app.weathercloud.net/<?= $config->upload->wc->device; ?>"
+                                   target="_blank"><img src="/img/external/wc.ico" width="16" height="16"
+                                                        aria-hidden="true"> Weathercloud</a>
+                            <?php } ?>
+                            <?php if ($config->upload->pws->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//www.pwsweather.com/obs/<?= $config->upload->pws->id; ?>.html"
+                                   target="_blank"><img src="/img/external/pws.ico" width="16" height="16"
+                                                        aria-hidden="true"> PWS Weather</a>
+                            <?php } ?>
+                            <?php if ($config->upload->cwop->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
+                                   target="_blank"><img src="/img/external/findu.ico" width="16" height="16"
+                                                        aria-hidden="true"> CWOP via findU</a>
+                            <?php } ?>
+                        </div>
+                    </li>
+                <?php }
 
-                    // Contact
-                    if ($config->contact->enabled === true) {
-                        ?>
-
-                        <li <?php if ($_SERVER['PHP_SELF'] === '/contact.php') {
-                            echo 'class="active"';
-                        } ?>>
-                            <a href="/contact"><i class="fas fa-envelope" aria-hidden="true"></i> Contact</a>
-                        </li>
-
-                        <?php
-                    }
-
-                    // Member Account Functions
-                    if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true) {
-                        ?>
-                        <li class="dropdown <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php')) {
-                            echo 'active';
-                        } ?>">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown"><span class="loggedin-user"><i
-                                            class="fas fa-user-tie"
-                                            aria-hidden="true"></i> <?= $_SESSION['Username']; ?> </span><b
-                                        class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <?php if (isset($_SESSION['IsAdmin']) && $_SESSION['IsAdmin'] === true) { ?>
-                                    <li <?php if ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && $_GET['uid'] !== $_SESSION['UserID'])) || (isset($_GET['add_user'])) || (isset($_GET['view'])))) {
-                                        echo 'class="active"';
-                                    } ?>>
-                                        <a href="/admin"><i class="fas fa-cog" aria-hidden="true"></i> Admin</a>
-                                    </li>
-                                <?php } ?>
-                                <li <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && (!isset($_GET['uid']))) {
-                                    echo 'class="active"';
-                                } ?>>
-                                    <a href="/admin/account?edit"><i class="fas fa-user-edit" aria-hidden="true"></i>
-                                        Edit Account</a>
-                                </li>
-                                <li <?php if (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && (!isset($_GET['uid']))) {
-                                    echo 'class="active"';
-                                } ?>>
-                                    <a href="/admin/account?password"><i class="fas fa-user-secret"
-                                                                         aria-hidden="true"></i> Change Password</a>
-                                </li>
-                                <li>
-                                    <a href="/admin/account?logout"><i class="fas fa-sign-out-alt"
-                                                                       aria-hidden="true"></i>
-                                        Logout</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <?php
-                    }
-
-                    // If not already logged in, show the login button
-                    if (!isset($_SESSION['UserLoggedIn'])) {
-                        ?>
-                        <li <?php if ($_SERVER['PHP_SELF'] === '/account.php') {
-                            echo 'class="active"';
-                        } ?>>
-                            <a href="/admin/account"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</a>
-                        </li>
-                        <?php
-                    }
+                // Contact
+                if ($config->contact->enabled === true) {
                     ?>
+                    <li class="<?= ($_SERVER['PHP_SELF'] === '/contact.php') ? 'nav-item active' : 'nav-item'; ?>"><a
+                                class="nav-link" href="/contact"><i class="fas fa-envelope" aria-hidden="true"></i>
+                            Contact</a></li>
+                    <?php
+                }
+                ?>
+            </ul>
+            <div class="navbar-nav ml-auto">
+                <?php
+
+                // Member Account Functions
+                if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
+                    $userActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php')) ? true : false;
+                    ?>
+                    <li class="<?= ($userActive === true) ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false"><i
+                                    class="fas <?= ($_SESSION['admin'] === true) ? 'fa-user-tie admin-authenticated' : 'fa-user user-authenticated'; ?>"
+                                    aria-hidden="true"></i> <?= ($_SESSION['admin'] === true) ? '<span class="admin-authenticated">' . $_SESSION['username'] . '</span>' : '<span class="user-authenticated">' . $_SESSION['username'] . '</span>'; ?>
+                        </a>
+                        <div class="dropdown-menu">
+                            <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === true) {
+                                $adminActive = ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || (isset($_GET['add'])) || (isset($_GET['view'])))) ? true : false;
+                                ?>
+                                <a class="<?= ($adminActive === true) ? 'dropdown-item alert-danger active' : 'dropdown-item alert-danger'; ?>"
+                                   href="/admin"><i
+                                            class="<?= ($adminActive === true) ? 'fas fa-cog fa-spin' : 'fas fa-cog'; ?>"
+                                            aria-hidden="true"></i>
+                                    Admin</a>
+                                <?php
+                            }
+                            $userEditActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']))) ? true : false;
+                            $userPasswordActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']))) ? true : false;
+                            ?>
+                            <a class="<?= ($userEditActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
+                               href="/admin/account?edit"><i class="fas fa-user-edit" aria-hidden="true"></i>
+                                My Account</a>
+                            <a class="<?= ($userPasswordActive) ? 'dropdown-item active' : 'dropdown-item'; ?>"
+                               href="/admin/account?password"><i class="fas fa-user-secret"
+                                                                 aria-hidden="true"></i> Change Password</a>
+                            <a class="dropdown-item" href="/admin/account?deauth"><i class="fas fa-sign-out-alt"
+                                                                                     aria-hidden="true"></i>
+                                Sign Out</a>
+                        </div>
+                    </li>
+                    <?php
+                }
+
+                // Not authenticated, show sign in
+                if (!isset($_SESSION['authenticated'])) {
+                    ?>
+                    <li class="<?= ($_SERVER['PHP_SELF'] === '/admin/account.php') ? 'nav-item active' : 'nav-item'; ?>">
+                        <a class="nav-link" href="/admin/account"><i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                            Sign In</a>
+                    </li>
+                    <?php
+                }
+                ?>
                 </ul>
             </div>
         </div>
-    </nav>
-</header>
+</nav>

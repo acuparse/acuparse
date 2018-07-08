@@ -2,7 +2,7 @@
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
-Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1 weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1 weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
@@ -12,12 +12,12 @@ Users currently having trouble sending updates to Weather Underground should fin
 
 # Features:
 * **Your weather data belongs to you, stored on your OWN server.**
-* Showcase live camera images and send them to Weather Underground.
+* Display live camera images, send them to Weather Underground, and link from other sites.
 * Uploads weather data from your 5N1 or a Tower/5N1 to external providers.
 * Customize barometer readings.
 * Display data in both &#8457; and &#8451;. Selectable default.
 * Multiple tower sensors, public or private.
-* Multiple admin/regular user logins.
+* Multiple admin/regular user accounts.
     * Regular users can only view private sensor data. 
 * Archived data display.
 * Watch data flow using the syslog.
@@ -50,18 +50,23 @@ Acuparse can also, in theory, be run locally on a Raspberry Pi(Raspbian) or simi
 The Acurite Access sends data to MyAcuRite using an SSL connection. By Default Apache will use the snake oil cert to serve over HTTPS. For most users, this should be sufficient. If you use a hostname, you will need to install and configure an SSL certificate. The installer will ask and attempt to generate a Lets Encrypt cert for you.
 
 ## Quick Install:
-> **Info:** Installer currently supports Debian Stretch(9), Ubuntu 16.04 LTS, and Raspbian.
+> **Info:** Installer supports Debian Stretch(9), Ubuntu 18.04 LTS, and Raspbian Stretch(9).
 
 Install the base operating system and update. Then download and run the installer.
 
-``` wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh```
+`wget https://raw.githubusercontent.com/acuparse/installer/master/install.sh && sudo sh install.sh | tee ~/acuparse.log`
+
+### Troubleshooting:
+If you experience unexpected results during or after your install, remove the config file and try again.
+
+`sudo rm /opt/acuparse/src/usr/config.php`
 
 # Updating:
 Detailed upgrade instructions for significant releases will be published in the docs/updates folder if required.
 
 * Pull the changes from Git.
 
-    ``` cd /opt/acuparse && sudo git pull ```
+    `cd /opt/acuparse && sudo git pull`
 * Connect to your site to complete the update.
 
 # Donations:

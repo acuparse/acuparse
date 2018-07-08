@@ -31,9 +31,9 @@ function getCurrentHTML()
     require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
     // Load weather Data:
-    require('GetCurrentWeatherData.php');
-    $GetData = new GetCurrentWeatherData();
-    $wx = $GetData->getConditions();
+    require('getCurrentWeatherData.php');
+    $getData = new getCurrentWeatherData();
+    $wx = $getData->getConditions();
 
     // Get Moon Data:
     require(APP_BASE_PATH . '/pub/lib/mit/moon/moonphase.php');
@@ -69,47 +69,64 @@ function getCurrentHTML()
     $sunrise = date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
     $sunset = date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
 
+    // Warn if offline
+    $systemStatus = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
+    if ($systemStatus['status'] === '0') {
+        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `timestamp` FROM `last_update`"));
+        ?>
+        <!-- Offline -->
+        <section id="offline" class="row live-weather-offline">
+            <div class="col-md-8 col-12 mx-auto text-center">
+                <p class="alert alert-warning">Live data is temporarily unavailable!<br>Last
+                    update: <?= $lastUpdate['timestamp']; ?></p>
+            </div>
+        </section>
+        <?php
+    }
     ?>
-    <section id="weather_data">
-        <div class="row row_weather_data">
+    <!-- Live Weather Data -->
+    <section id="live-weather-data" class="row live-weather-data">
 
-            <!-- Left Column -->
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <!-- Left Column -->
+        <div class="col-md-4 col-sm-6 col-12">
 
-                <!-- Temperature Data -->
-                <div class="row row_temperature_data">
-                    <h2><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
-                    <h4><?php
+            <!-- Temperature Data -->
+            <div class="row">
+                <div class="col">
+                    <h1><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h1>
+                    <h2><?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457; ($wx->tempC&#8451;)" : "$wx->tempC&#8451; ($wx->tempF&#8457;)";
                         } else {
                             $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457;" : "$wx->tempC&#8451;";
                         }
-                        echo $temp . trendIcon($wx->tempF_trend) ?></h4>
-
-                    <!-- Feels Like -->
+                        echo $temp . trendIcon($wx->tempF_trend) ?></h2>
                     <ul class="list-unstyled">
+                        <!-- Feels Like -->
                         <?php if ($wx->feelsF != 0) {
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457; ($wx->feelsC&#8451;)" : "$wx->feelsC&#8451; ($wx->feelsF&#8457;)";
                             } else {
                                 $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457;" : "$wx->feelsC&#8451;";
                             }
-                            echo "<li><strong>Feels Like:</strong> " . $feels . "</li>";
+                            echo '<h3>Feels Like:</h3> ' . $feels . '<br>';
                         } ?>
 
                         <!-- Daily Low -->
-                        <li><strong>Low:</strong>
+                        <h3>Low:</h3>
+                        <p>
                             <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457; ($wx->tempC_low&#8451;)" : "$wx->tempC_low&#8451; ($wx->tempF_low&#8457;)";
                             } else {
                                 $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457;" : "$wx->tempC_low&#8451;";
                             }
-                            echo $temp_low . " @ $wx->low_temp_recorded"; ?></li>
+                            echo $temp_low . " @ $wx->low_temp_recorded"; ?></p>
 
                         <!-- Daily High -->
-                        <li><strong>High:</strong>
+                        <li><h3>High:</h3>
+                            <p>
                             <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457; ($wx->tempC_high&#8451;)" : "$wx->tempC_high&#8451; ($wx->tempF_high&#8457;)";
@@ -117,30 +134,40 @@ function getCurrentHTML()
                                 $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457;" : "$wx->tempC_high&#8451;";
                             }
                             echo $temp_high . " @ $wx->high_temp_recorded"; ?></li>
+                        </p>
 
                         <!-- Average -->
-                        <li><strong>Average:</strong> <?php
+                        <li><h3>Average:</h3>
+                            <p>
+                            <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457; ($wx->tempC_avg&#8451;)" : "$wx->tempC_avg&#8451; ($wx->tempF_avg&#8457;)";
                             } else {
                                 $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457;" : "$wx->tempC_avg&#8451;";
                             }
                             echo $temp_avg; ?></li>
+                        </p>
 
                         <!-- Dew Point -->
-                        <li><strong>Dew Point:</strong> <?php
+                        <li><h3>Dew Point:</h3>
+                            <p>
+                            <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
                             } else {
                                 $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457;" : "$wx->dewptC&#8451;";
                             }
                             echo $dewpt; ?></li>
+                        </p>
                     </ul>
                 </div>
+            </div>
+            <!-- END: Temperature Data -->
 
-                <!-- Wind Data -->
-                <div class="row row_wind_data">
-                    <h2><?php if ($wx->windSkmh >= 25) {
+            <!-- Wind Data -->
+            <div class="row">
+                <div class="col">
+                    <h1><?php if ($wx->windSkmh >= 25) {
                             echo ' <i class="wi wi-strong-wind" aria-hidden="true"></i>';
                         } elseif ($wx->windSkmh < 25) {
                             if ($wx->windSkmh >= 10) {
@@ -148,23 +175,23 @@ function getCurrentHTML()
                             }
                         }
                         echo '<i class="wi wi-wind wi-from-', strtolower($wx->windDIR), '" aria-hidden="true"></i>'; ?>
-                        Wind:</h2>
-                    <h4>from <?php
+                        Wind:</h1>
+                    <h2>from <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $wind = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSmph mph ($wx->windSkmh km/h)" : "$wx->windDIR @ $wx->windSkmh km/h ($wx->windSmph mph)";
                         } else {
                             $wind = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSmph mph" : "$wx->windDIR @ $wx->windSkmh km/h";
                         }
-                        echo $wind; ?></h4>
+                        echo $wind; ?></h2>
                     <ul class="list-unstyled">
-                        <li><strong>Average:</strong> from <?php
+                        <li><h3>Average:</h3> from <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $wind_avg = ($config->site->imperial === true) ? "$wx->windDIR_avg2 @ $wx->windSmph_avg2 mph ($wx->windSkmh_avg2 km/h)" : "$wx->windDIR_avg2 @ $wx->windSkmh_avg2 km/h ($wx->windSmph_avg2 mph)";
                             } else {
                                 $wind_avg = ($config->site->imperial === true) ? "$wx->windDIR_avg2 @ $wx->windSmph_avg2 mph" : "$wx->windDIR_avg2 @ $wx->windSkmh_avg2 km/h";
                             }
                             echo $wind_avg; ?></li>
-                        <li><strong>Peak:</strong>
+                        <li><h3>Peak:</h3>
                             <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $wind_peak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSmph_peak mph ($wx->windSkmh_peak km/h)" : "$wx->windDIR_peak @ $wx->windSkmh_peak km/h ($wx->windSmph_peak mph)";
@@ -174,41 +201,50 @@ function getCurrentHTML()
                             echo $wind_peak . ' @ ' . $wx->wind_recorded_peak; ?></li>
                     </ul>
                 </div>
-            </div> <!-- END Left Column -->
+            </div>
+        </div>
+        <!-- END: Wind Data -->
 
-            <!-- Middle Column -->
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <!-- END: Left Column -->
 
-                <!-- Humidity -->
-                <div class="row row_humidity_data">
-                    <h2><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h2>
-                    <h4><?= $wx->relH, '%', trendIcon($wx->relH_trend); ?></h4>
+        <!-- Middle Column -->
+        <div class="col-md-4 col-sm-6 col-12">
+
+            <!-- Humidity -->
+            <div class="row">
+                <div class="col">
+                    <h1><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h1>
+                    <h2><?= $wx->relH, '%', trendIcon($wx->relH_trend); ?></h2>
                 </div>
+            </div>
 
-                <!-- Pressure -->
-                <div class="row row_pressure_data">
-                    <h2><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h2>
-                    <h4><?php
+            <!-- Pressure -->
+            <div class="row">
+                <div class="col">
+                    <h1><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h1>
+                    <h2><?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg ($wx->pressure_kPa kPa)" : "$wx->pressure_kPa kPa ($wx->pressure_inHg inHg)";
                         } else {
                             $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg" : "$wx->pressure_kPa kPa";
                         }
-                        echo $pressure . trendIcon($wx->inHg_trend); ?></h4>
+                        echo $pressure . trendIcon($wx->inHg_trend); ?></h2>
                 </div>
+            </div>
 
-                <!-- Rain -->
-                <div class="row row_rain_data">
-                    <h2><i class="wi wi-raindrops" aria-hidden="true"></i> Rain:</h2>
+            <!-- Rain -->
+            <div class="row">
+                <div class="col">
+                    <h1><i class="wi wi-raindrops" aria-hidden="true"></i> Rain:</h1>
                     <ul class="list-unstyled">
-                        <li><strong>Fall Rate:</strong> <?php
+                        <li><h3>Fall Rate:</h3> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr ($wx->rainMM mm/hr)" : "$wx->rainMM mm/hr ($wx->rainIN in/hr)";
                             } else {
                                 $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr" : "$wx->rainMM mm/hr";
                             }
                             echo $rain; ?></li>
-                        <li><strong>Daily Total:</strong> <?php
+                        <li><h3>Daily Total:</h3> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                                 $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in ($wx->rainTotalMM_today mm)" : "$wx->rainTotalMM_today mm ($wx->rainTotalIN_today in)";
                             } else {
@@ -217,52 +253,59 @@ function getCurrentHTML()
                             echo $rain_today; ?></li>
                     </ul>
                 </div>
-            </div> <!-- END Middle Column -->
-            <?php
-            // Done with Weather data
+            </div>
+        </div>
+        <!-- END: Middle Column -->
 
-            // Show environment details
-            ?>
+        <!-- Right Column -->
+        <div class="col-md-4 col-sm-12">
 
-            <!-- Right Column -->
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-
-                <!-- Sun -->
-                <div class="row row_sun_data">
-                    <h2><i class="wi wi-day-sunny" aria-hidden="true"></i> Sun:</h2>
+            <!-- Sun -->
+            <div class="row">
+                <div class="col">
+                    <h1><i class="wi wi-day-sunny" aria-hidden="true"></i> Sun:</h1>
                     <ul class="list-unstyled">
                         <li><i class="wi wi-sunrise" aria-hidden="true"></i>
-                            <strong>Sunrise:</strong> <?= $sunrise; ?></li>
+                            <h3>Sunrise:</h3> <?= $sunrise; ?></li>
                         <li><i class="wi wi-sunset" aria-hidden="true"></i>
-                            <strong>Sunset:</strong> <?= $sunset; ?></li>
+                            <h3>Sunset:</h3> <?= $sunset; ?></li>
                     </ul>
-                </div> <!-- END Sun -->
+                </div>
+            </div>
+            <!-- END: Sun -->
 
-                <!-- Moon -->
-                <div class="row row_moon_data">
-                    <h2><i class="wi <?= moonIcon($moon_stage); ?>" aria-hidden="true"></i> Moon:</h2>
-                    <h4><?= "$moon_stage"; ?></h4>
+            <!-- Moon -->
+            <div class="row">
+                <div class="col">
+                    <h1><i class="wi <?= moonIcon($moon_stage); ?>" aria-hidden="true"></i> Moon:</h1>
+                    <h2><?= "$moon_stage"; ?></h2>
                     <p><?= "$moon_age days old, $moon_illumination visible"; ?></p>
                     <ul class="list-unstyled">
                         <?php if ($moon_time_enabled === true) { ?>
                             <li><i class="wi wi-moonrise" aria-hidden="true"></i>
-                                <strong>Moonrise:</strong> <?= $moon_rise; ?></li>
+                                <h3>Moonrise:</h3> <?= $moon_rise; ?></li>
                             <li><i class="wi wi-moonset" aria-hidden="true"></i>
-                                <strong>Moonset:</strong> <?= $moon_set; ?></li>
+                                <h3>Moonset:</h3> <?= $moon_set; ?></li>
                         <?php } ?>
-                        <li><i class="wi wi-moon-new" aria-hidden="true"></i> <strong>Latest
-                                New:</strong> <?= $last_new_moon; ?></li>
-                        <li><i class="wi wi-moon-full" aria-hidden="true"></i> <strong>Latest
-                                Full:</strong> <?= $last_full_moon; ?></li>
-                        <li><i class="wi wi-moon-new" aria-hidden="true"></i> <strong>Upcoming
-                                New:</strong> <?= $next_new_moon; ?></li>
-                        <li><i class="wi wi-moon-full" aria-hidden="true"></i> <strong>Upcoming
-                                Full:</strong> <?= $next_full_moon; ?></li>
+                        <li><i class="wi wi-moon-new" aria-hidden="true"></i>
+                            <h3>Latest
+                                New:</h3> <?= $last_new_moon; ?></li>
+                        <li><i class="wi wi-moon-full" aria-hidden="true"></i>
+                            <h3>Latest
+                                Full:</h3> <?= $last_full_moon; ?></li>
+                        <li><i class="wi wi-moon-new" aria-hidden="true"></i>
+                            <h3>Upcoming
+                                New:</h3> <?= $next_new_moon; ?></li>
+                        <li><i class="wi wi-moon-full" aria-hidden="true"></i>
+                            <h3>Upcoming
+                                Full:</h3> <?= $next_full_moon; ?></li>
                     </ul>
-                </div> <!-- END Moon -->
-            </div> <!-- END Right Column -->
+                </div>
+            </div>
         </div>
+        <!-- END: Right Column -->
     </section>
+    <!-- END: Live Weather Data -->
 
     <?php
 
@@ -270,7 +313,7 @@ function getCurrentHTML()
     if ($config->station->towers === true) {
 
         // Can we display private data?
-        if (isset($_SESSION['UserLoggedIn']) && $_SESSION['UserLoggedIn'] === true) {
+        if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
             $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange`");
         } else {
             $result = mysqli_query($conn, "SELECT * FROM `towers` WHERE `private` = 0 ORDER BY `arrange`");
@@ -278,53 +321,44 @@ function getCurrentHTML()
 
         // Is there data to show? If yes, show it.
         if (mysqli_num_rows($result) >= 1) { ?>
-            <hr class="hr-dashed">
-            <section id="tower_data">
-                <div class="row row_tower_data">
-                    <?php
-                    $counter = 0;
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $sensor = $row['sensor'];
-                        $result2 = mysqli_fetch_assoc(mysqli_query($conn,
-                            "SELECT * FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
-                        $tempF = round($result2['tempF'], 1);
-                        $tempC = round(($result2['tempF'] - 32) * 5 / 9, 1);
-                        $relH = $result2['relH'];
+            <hr class="hr-dotted">
 
-                        // Temp Trending
-                        $tempF_trend = trendIcon($GetData->calculateTrend('tempF', 'tower_data', $sensor));
+            <!-- Tower Sensors -->
+            <section id="live-tower-data" class="row live-tower-data">
+                <?php
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $sensor = $row['sensor'];
+                    $result2 = mysqli_fetch_assoc(mysqli_query($conn,
+                        "SELECT * FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+                    $tempF = round($result2['tempF'], 1);
+                    $tempC = round(($result2['tempF'] - 32) * 5 / 9, 1);
+                    $relH = $result2['relH'];
 
-                        // Humidity Trending
-                        $relH_trend = trendIcon($GetData->calculateTrend('relH', 'tower_data', $sensor));
+                    // Temp Trending
+                    $tempF_trend = trendIcon($getData->calculateTrend('tempF', 'tower_data', $sensor));
 
-                        ?>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"> <!-- 1/4th Column -->
-                            <h2 class="panel-heading"><?= $row['name']; ?>:</h2>
-                            <h3><i class="fas <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h3>
-                            <h4><?php
-                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                                    $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; ($tempC&#8451;) $tempF_trend" : "$tempC&#8451; ($tempF&#8457;) $tempF_trend";
-                                } else {
-                                    $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; $tempF_trend" : "$tempC&#8451; $tempF_trend";
-                                }
-                                echo $tower_temp ?></h4>
-                            <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
-                            <h4><?= "$relH% $relH_trend"; ?></h4>
-                        </div> <!-- END 1/4th Column -->
-                        <?php
+                    // Humidity Trending
+                    $relH_trend = trendIcon($getData->calculateTrend('relH', 'tower_data', $sensor));
 
-                        // Apply clearfixes to keep columns in place
-                        $counter++;
-                        if ($counter % 2 === 0) {
-                            echo '<div class="clearfix visible-sm-block"></div>';
-                        }
-                        if ($counter % 4 === 0) {
-                            echo '<div class="clearfix visible-md-block visible-lg-block"></div>';
-                        }
-                    }
                     ?>
-                </div>
+                    <div class="col">
+                        <h1><?= $row['name']; ?>:</h1>
+                        <h2><i class="fas <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature:</h2>
+                        <h3><?php
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; ($tempC&#8451;) $tempF_trend" : "$tempC&#8451; ($tempF&#8457;) $tempF_trend";
+                            } else {
+                                $tower_temp = ($config->site->imperial === true) ? "$tempF&#8457; $tempF_trend" : "$tempC&#8451; $tempF_trend";
+                            }
+                            echo $tower_temp ?></h3>
+                        <h2><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h2>
+                        <h3><?= "$relH% $relH_trend"; ?></h3>
+                    </div>
+                    <?php
+                }
+                ?>
             </section>
+            <!-- END: Tower Sensors -->
             <?php
         }
     }

@@ -22,54 +22,29 @@
  * File: src/pub/themes/clean.css
  * Clean CSS Theme
  */
-
-/* Load Fonts */
-/* open-sans-regular - latin */
-@font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local('Open Sans Regular'), local('OpenSans-Regular'),
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.woff') format('woff'), /* Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
-}
-/* open-sans-700 - latin */
-@font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 700;
-    src: url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.eot'); /* IE9 Compat Modes */
-    src: local('Open Sans Bold'), local('OpenSans-Bold'),
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.woff') format('woff'), /* Modern Browsers */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
-    url('../lib/google_fonts/open_sans/open-sans-v15-latin-700.svg#OpenSans') format('svg'); /* Legacy iOS */
-}
+/* Load External Fonts */
+/* Open Sans */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800');
+/* END: Load External Fonts */
+/* ---------------------------- */
 
 /* Global Styles */
-
 html,
 body {
     height: 100%;
     width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 body {
     font-family: 'Open Sans', sans-serif;
-    font-size: 1.5em;
-    overflow-x: hidden;
-    padding-top: 60px; /* Required padding for navbar */
+    padding-top: 85px; /* Required padding for navbar */
 }
 
 .row {
     margin: 0;
     padding: 0;
-    text-align: center;
 }
 
 form {
@@ -82,15 +57,8 @@ img {
     height: auto;
 }
 
-ul {
-    list-style-position: inside;
-}
-
-/* Footer */
-
-footer {
-    margin: 50px 0;
-}
+/* END - Global Styles */
+/* ---------------------------- */
 
 /* Headings */
 .panel-heading {
@@ -99,56 +67,244 @@ footer {
 
 .page-header {
     margin-top: 6px;
+    text-align: center !important;
 }
 
-/* Login */
-.form-signin {
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
-}
+/* END:Headings */
+/* ---------------------------- */
 
-.form-signin .form-control {
-    position: relative;
-    height: auto;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px;
-}
-
-.form-signin .form-control:focus {
-    z-index: 2;
-}
-
-.form-signin input[type="text"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-.form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-.form-cam-archive-date {
-    font-weight: bold;
-    font-size: 20px;
+/* System Messages */
+.system-messages {
     text-align: center;
-    margin-top: 15px;
 }
 
-.loggedin-user {
+/* END: System Messages */
+/* ---------------------------- */
+
+/* Navigation */
+.navbar-brand {
+    text-align: center;
+    font-size: .95em;
+    font-weight: 800;
+}
+
+.navbar-brand small {
+    text-align: center;
+    font-weight: 600;
+}
+
+/* END: Navigation */
+/* ---------------------------- */
+
+/* Local Time */
+.local-time p {
     font-weight: 700;
 }
 
-/* Navbar */
-.navbar-brand {
-    margin-top: -10px;
-    margin-bottom: 5px;
+/* END: Local Time */
+/* ---------------------------- */
+
+/* Live Weather Data */
+.live-weather-data {
+    text-align: center !important;
 }
+
+.live-weather-data ul {
+    list-style-position: inside;
+}
+
+.live-weather-data h1 {
+    font-size: 1.7em;
+}
+
+.live-weather-data h2 {
+    font-size: 1.25em;
+}
+
+.live-weather-data h3 {
+    font-size: 1em;
+    display: inline;
+    font-weight: 600;
+}
+
+.live-weather-data p {
+    font-size: .98em;
+    display: inline;
+}
+
+/* END: Live Weather Display */
+/* ---------------------------- */
+
+/* Archive Weather Data */
+.archive-weather-data {
+    text-align: center !important;
+}
+
+.archive-weather-data ul {
+    list-style-position: inside;
+}
+
+.archive-weather-data h1 {
+    font-size: 1.7em;
+    text-decoration: underline;
+}
+
+.archive-weather-data h2 {
+    font-size: 1.4em;
+}
+
+.archive-weather-data h3 {
+    font-size: 1.1em;
+    display: inline;
+    font-weight: 600;
+}
+
+.archive-weather-data p {
+    font-size: 1em;
+    display: inline;
+}
+
+/* END: Archive Weather Display */
+/* ---------------------------- */
+
+/* Live Tower Data */
+.live-tower-data {
+    text-align: center !important;
+}
+
+.live-tower-data h1 {
+    font-size: 1.75em;
+    text-decoration: underline;
+}
+
+.live-tower-data h2 {
+    font-size: 1.5em;
+}
+
+.live-tower-data h3 {
+    font-size: 1em;
+}
+
+/* END: Live Tower Data */
+/* ---------------------------- */
+
+/* Live Camera */
+.live-camera {
+    text-align: center !important;
+}
+
+.live-camera p {
+    font-weight: 600;
+}
+
+/* END: Live Camera */
+/* ---------------------------- */
+
+/* Camera Archive */
+.camera-archive {
+    text-align: center !important;
+}
+
+.camera-archive a,
+.camera-archive a:visited {
+    color: black;
+}
+
+.camera-archive a:hover {
+    color: grey;
+}
+
+.camera-archive-timelapse {
+    font-weight: 700;
+}
+
+/* END: Camera Archive */
+/* ---------------------------- */
+
+/* Admin Functions */
+.admin-functions {
+    text-align: center !important;
+}
+
+.view-users,
+.add-user,
+.edit-user,
+.change-password {
+    text-align: center !important;
+}
+
+.view-tower,
+.add-tower,
+.edit-tower {
+    text-align: center !important;
+}
+
+.modify-settings {
+    text-align: center !important;
+}
+
+.config-database {
+    text-align: center !important;
+}
+
+.update-message {
+    text-align: center !important;
+}
+
+.change-access-server {
+    text-align: center !important;
+}
+
+/* END: Admin Functions */
+/* ---------------------------- */
+
+/* Contact Form */
+.contact {
+    text-align: center;
+}
+
+.contact label {
+    font-weight: 600;
+}
+
+/* END: Contact Form */
+/* ---------------------------- */
+
+/* Users */
+
+.user-authenticated {
+    color: darkgreen;
+    font-weight: 600;
+}
+
+.admin-authenticated {
+    color: darkred;
+    font-weight: 700;
+}
+
+.change-password {
+    text-align: center !important;
+}
+
+.user-authentication {
+    text-align: center !important;
+}
+
+/* END: Users */
+/* ---------------------------- */
+
+/* Footer */
+footer {
+    margin: 0.5em 0;
+}
+
+.footer-appname {
+    font-size: smaller;
+    text-align: center;
+}
+
+/* END: Footer */
+/* ---------------------------- */
 
 /* Horizontal Rules */
 hr.hr-dashed {
@@ -159,9 +315,8 @@ hr.hr-dotted {
     border-top: thin dotted #b1b0b0;
 }
 
-.footer_appinfo {
-    font-size: smaller;
-}
+/* END: Horizontal Rules */
+/* ---------------------------- */
 
 /* Custom Margins */
 .margin-top-05 {
@@ -169,7 +324,7 @@ hr.hr-dotted {
 }
 
 .margin-top-10 {
-    margin-top: 1.0em;
+    margin-top: 1em;
 }
 
 .margin-top-15 {
@@ -179,3 +334,13 @@ hr.hr-dotted {
 .margin-bottom-05 {
     margin-bottom: 0.5em;
 }
+
+.margin-bottom-10 {
+    margin-bottom: 1em;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 1.5em;
+}
+
+/* END: Custom Margins */

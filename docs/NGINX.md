@@ -1,6 +1,3 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-
 # NGINX Proxy Config (optional):
 
 When using a domain, install NGINX to make redirects easier. It also keeps your custom domain configuration separate from the Acuparse config.

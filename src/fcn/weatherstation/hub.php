@@ -38,18 +38,18 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         }
 
         // Wind Speed
-        $windspeedmph = (int)mysqli_real_escape_string($conn,
+        $windSpeedMPH = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'windspeedmph', FILTER_SANITIZE_STRING));
 
         // Wind Direction
-        $wind_direction = (int)mysqli_real_escape_string($conn,
+        $windDirection = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
 
         // Rainfall
-        $rain_date = date('Y-m-d');
-        $rainin = (float)mysqli_real_escape_string($conn,
+        $rainDate = date('Y-m-d');
+        $rainIN = (float)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'rainin', FILTER_SANITIZE_STRING));
-        $dailyrainin = (float)mysqli_real_escape_string($conn,
+        $dailyRainIN = (float)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'dailyrainin', FILTER_SANITIZE_STRING));
 
         // Add readings to database
@@ -58,10 +58,10 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         if ($config->station->baro_source !== 2) { // Baro. readings not disabled.
             mysqli_multi_query($conn,
                 "INSERT INTO `pressure` (`inhg`) VALUES ('$baromin');
-                    INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windspeedmph');
-                    INSERT INTO `winddirection` (`degrees`) VALUES ('$wind_direction');
-                    UPDATE `rainfall` SET `rainin`='$rainin';
-                    INSERT INTO `dailyrain` (`dailyrainin`, `date`) VALUES ('$dailyrainin', '$rain_date') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyrainin'");
+                    INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windSpeedMPH');
+                    INSERT INTO `winddirection` (`degrees`) VALUES ('$windDirection');
+                    UPDATE `rainfall` SET `rainin`='$rainIN';
+                    INSERT INTO `dailyrain` (`dailyrainin`, `date`) VALUES ('$dailyRainIN', '$rainDate') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN'");
             while (mysqli_next_result($conn)) {
                 ;
             };
@@ -69,15 +69,15 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG,
-                    "(HUB)[5N1]: Wind = $wind_direction @ $windspeedmph | Rain = $rainin | DailyRain = $dailyrainin | Pressure = $baromin");
+                    "(HUB)[5N1]: Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure = $baromin");
             }
 
         } else { // Baro. readings disabled
             mysqli_multi_query($conn,
-                "INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windspeedmph');
-                    INSERT INTO `winddirection` (`degrees`) VALUES ('$wind_direction');
-                    UPDATE `rainfall` SET `rainin`='$rainin';
-                    INSERT INTO `dailyrain` (`dailyrainin`, `date`) VALUES ('$dailyrainin', '$rain_date') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyrainin'");
+                "INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windSpeedMPH');
+                    INSERT INTO `winddirection` (`degrees`) VALUES ('$windDirection');
+                    UPDATE `rainfall` SET `rainin`='$rainIN';
+                    INSERT INTO `dailyrain` (`dailyrainin`, `date`) VALUES ('$dailyRainIN', '$rainDate') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN'");
             while (mysqli_next_result($conn)) {
                 ;
             };
@@ -85,7 +85,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG,
-                    "(HUB)[5N1]: Wind = $wind_direction @ $windspeedmph | Rain = $rainin | DailyRain = $dailyrainin | Pressure (DISABLED) = $baromin");
+                    "(HUB)[5N1]: Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure (DISABLED) = $baromin");
             }
         }
     } // Process Wind Speed, Temperature, Humidity
@@ -102,7 +102,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         $tempF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'tempf', FILTER_SANITIZE_STRING));
 
         // Wind Speed
-        $windspeedmph = (int)mysqli_real_escape_string($conn,
+        $windSpeedMPH = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'windspeedmph', FILTER_SANITIZE_STRING));
 
         // Humidity
@@ -115,7 +115,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         if ($config->station->baro_source !== 2) { // Baro. readings not disabled.
             mysqli_multi_query($conn,
                 "INSERT INTO `pressure` (`inhg`) VALUES ('$baromin');
-                    INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windspeedmph');
+                    INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windSpeedMPH');
                     INSERT INTO `temperature` (`tempF`) VALUES ('$tempF');
                     INSERT INTO `humidity` (`relH`) VALUES ('$humidity')");
             while (mysqli_next_result($conn)) {
@@ -126,11 +126,11 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
             if ($config->debug->logging === true) {
                 // Log it
                 syslog(LOG_DEBUG,
-                    "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windspeedmph | Pressure = $baromin");
+                    "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Pressure = $baromin");
             }
         } else { // Baro. readings disabled
             mysqli_multi_query($conn,
-                "INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windspeedmph');
+                "INSERT INTO `windspeed` (`speedMPH`) VALUES ('$windSpeedMPH');
                     INSERT INTO `temperature` (`tempF`) VALUES ('$tempF');
                     INSERT INTO `humidity` (`relH`) VALUES ('$humidity')");
             while (mysqli_next_result($conn)) {
@@ -141,7 +141,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
             if ($config->debug->logging === true) {
                 // Log it
                 syslog(LOG_DEBUG,
-                    "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windspeedmph | Pressure (DISABLED) = $baromin");
+                    "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Pressure (DISABLED) = $baromin");
             }
         }
     }
@@ -149,14 +149,14 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
 elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn')) {
 
     // Tower ID
-    $tower_id = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
+    $towerID = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
 
     // Check if this tower exists
-    $sql = "SELECT * FROM `towers` WHERE `sensor` = '$tower_id'";
+    $sql = "SELECT * FROM `towers` WHERE `sensor` = '$towerID'";
     $count = mysqli_num_rows(mysqli_query($conn, $sql));
     if ($count === 1) {
         $result = mysqli_fetch_array(mysqli_query($conn, $sql));
-        $tower_name = $result['name'];
+        $towerName = $result['name'];
 
         // ProIn Specific Variables
         if ($_GET['mt'] === 'ProIn') {
@@ -175,37 +175,37 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
 
         // Insert into DB
         mysqli_query($conn,
-            "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`) VALUES ('$tempF', '$humidity', '$tower_id')");
+            "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`) VALUES ('$tempF', '$humidity', '$towerID')");
 
         // Log it
         if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "(HUB)[TOWER][$tower_name]: tempF = $tempF | relH = $humidity");
+            syslog(LOG_DEBUG, "(HUB)[TOWER][$towerName]: tempF = $tempF | relH = $humidity");
         }
     } // This tower has not been added
     else {
-        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Unknown ID $tower_id. Raw: $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Unknown ID $towerID. Raw: $myacuriteQuery");
         die();
     }
 } // This sensor is not added
 else {
     $sensor = $_GET['sensor'];
     if ($_GET['mt'] === 'tower') {
-        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Towers not enabled. Raw = $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Towers not enabled. Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === '5N1x31' || $_GET['mt'] === '5N1x38') {
-        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown ID $sensor. Raw = $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown ID $sensor. Raw = $myacuriteQuery");
     } else {
-        syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacurite_query");
+        syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacuriteQuery");
     }
     die();
 }
 
 // Update the time the data was received
-$last_update = date("Y-m-d H:i:s");
-mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$last_update'");
+$lastUpdate = date("Y-m-d H:i:s");
+mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate'");
 
 // Send data to debug server
 if ($config->debug->server->enabled === true) {
-    file_get_contents($config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacurite_query);
+    file_get_contents('http://' . $config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
 }
 
 // Forward the raw data to MyAcurite
@@ -213,18 +213,18 @@ if ($config->upload->myacurite->hub_enabled === true) {
 
     // Don't send updates after EoL
     if ((strtotime('2019-03-01') > strtotime(date('Y-m-d')))) {
-        $myacurite = file_get_contents($config->upload->myacurite->hub_url . '/weatherstation/updateweatherstation?' . $myacurite_query);
+        $myacurite = file_get_contents($config->upload->myacurite->hub_url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
 
         // Create the response to the HUB. Since Acurite is ending support, we don't want firmware updates
-        $hub_response = '{"localtime":"' . date('H:i:s') . '"}';
+        $hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
 
         // Log the raw data
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,
-                "(HUB)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite | Hub Response = $hub_response");
+                "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $myacurite | Hub Response = $hubResponse");
         }
         // Output the expected response to the smartHUB
-        echo $hub_response;
+        echo $hubResponse;
     } else {
         goto disabled;
     }
@@ -234,7 +234,7 @@ if ($config->upload->myacurite->hub_enabled === true) {
 
 // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacurite_query | Response = $myacurite");
+        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $myacurite");
     }
 
 // Output the expected response to the smartHUB

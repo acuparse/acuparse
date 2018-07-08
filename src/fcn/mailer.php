@@ -33,25 +33,25 @@ function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = fa
     $headers = 'MIME-Version: 1.0' . PHP_EOL;
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . PHP_EOL;
     $headers .= 'From: ' . $config->site->name . ' <' . $config->site->email . '>' . PHP_EOL;
-    $headers .= 'X-Mailer: ' . $app_info->name . ' ' . $app_info->version . PHP_EOL;
+    $headers .= 'X-Mailer: ' . $appInfo->name . ' ' . $appInfo->version . PHP_EOL;
     if ($replyTo !== false) {
         $headers .= 'Reply-to: ' . $replyToName . ' <' . $replyTo . '>' . PHP_EOL;
     }
 
-    $message_header = "<html><head><title>$subject</title></head><body>";
+    $messageHeader = "<html><head><title>$subject</title></head><body>";
 
-    $message_disclaimer = '<p>--<br>
+    $messageDisclaimer = '<p>--<br>
     This is an automated message sent by the ' . $config->site->name . '<br>
     You are receiving this message because your email address was used for an account at ' . $config->site->name . '.<br>
     If you believe this to be an error, please reply to this message.</p>
     <p>You can manage your account details by visiting <a href="http://' . $config->site->hostname . '">' . $config->site->hostname . '</a></p>';
 
-    $message_footer = '</body></html>';
+    $messageFooter = '</body></html>';
 
     if ($disclaimer === false) {
-        $message = $message_header . $message . $message_footer;
+        $message = $messageHeader . $message . $messageFooter;
     } else {
-        $message = $message_header . $message . $message_disclaimer . $message_footer;
+        $message = $messageHeader . $message . $messageDisclaimer . $messageFooter;
     }
 
     // Make it so

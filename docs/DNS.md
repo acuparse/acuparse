@@ -1,9 +1,5 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-
-> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
-
 You will need to redirect your DNS so that your Access/smartHub uploads your data to Acuparse and not MyAcuRite directly.
+> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS. <br> See [/admin/access_server](/admin/access_server) once logged into your site.
 
 # External Connection to Acuparse
 If your smartHUB/Access is connected to your local network and sending readings to MyAcurite directly, you will need to install a DNS server on your local network.
