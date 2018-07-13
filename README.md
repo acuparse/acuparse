@@ -1,4 +1,4 @@
-# [Acuparse](http://www.acuparse.com)
+# [Acuparse](https://www.acuparse.com)
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
@@ -39,7 +39,7 @@ Users currently having trouble sending updates to Weather Underground should fin
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
 > **Note:** If you are not using an Access, you will need to setup a DNS redirect using a DNS server on your local network. 
 
-See [docs/INSTALL.md](docs/INSTALL.md) for detailed installation instructions.
+See [docs/INSTALL.md](https://acuparse.github.io/acuparse/INSTALL) for detailed installation instructions.
 
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 

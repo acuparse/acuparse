@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Bootstrap to v4.1.2
+- Documentation links to GitHub pages
 
 ## [[2.5.0]](https://www.acuparse.com/releases/v2-5-0/) - 2018-07-07
 ### Changed

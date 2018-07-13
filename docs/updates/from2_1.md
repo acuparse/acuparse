@@ -1,6 +1,6 @@
 # Upgrading from 2.1.x
 Major changes include Access support and the activating of SSL. You will need to rebuild your Apache config and optionally install a Let's Encrypt certificate. 
-> **NGINX USERS**: If you are using NGINX as a proxy, please review [docs/NGINX.md](docs/NGINX.md) and update your configuration manually.
+> **NGINX USERS**: If you are using NGINX as a proxy, please review [docs/NGINX.md](https://acuparse.github.io/acuparse/NGINX) and update your configuration manually.
 
 # Update Core
 ``` cd /opt/acuparse && sudo git pull ```
