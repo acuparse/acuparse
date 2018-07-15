@@ -34,5 +34,4 @@ switch ($config->version->app) {
         $config->version->app = '2.4.0-release';
         $config->station->baro_source = 0;
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Added ability to select which barometer values are retained.</li>';
-
 }
