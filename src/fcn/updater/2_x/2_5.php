@@ -81,4 +81,9 @@ switch ($config->version->app) {
         setcookie('device', $deviceKey, time() + 60 * 60 * 24 * 30, '/');
         setcookie('token', $tokenHash, time() + 60 * 60 * 24 * 30, '/');
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Numerous changes and updates. See changelog.<br> <strong>NOTE:</strong> PHP 7.2 and Ubuntu 18.04 LTS are now supported! See <a href="https://acuparse.github.io/acuparse/updates/from2_4">docs/updates/from2_4.md</a></li>';
+
+    // Update from 2.5.0-release
+        case '2.5.0-release':
+        $config->version->app = '2.5.1-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Bootstrap to 4.1.2</li>';
 }
