@@ -80,9 +80,10 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             }
 
             gtag('js', new Date());
-
             gtag('config', '<?= $config->google->analytics->id; ?>');
         </script>
+
+    <?php } ?>
 
         <!-- Structured Data -->
         <script type="application/ld+json">
@@ -93,9 +94,7 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
           "description": "<?= $config->site->desc; ?>",
           "url": "https://<?= $config->site->hostname; ?>/"
         }
-
         </script>
-    <?php } ?>
 
 </head>
 <body>

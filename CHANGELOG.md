@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Dew point when uploading using tower data.
+- Structured data only displaying when Google Analytics enabled.
+
+### Added
+- Discuss timezone settings in install guide.
+
+## [[2.5.1]](https://www.acuparse.com/releases/v2-5-1/) - 2018-07-15
+### Changed
+- Bootstrap to v4.1.2
+- Documentation links to GitHub pages
 
 ## [[2.5.1]](https://www.acuparse.com/releases/v2-5-1/) - 2018-07-15
 ### Changed
