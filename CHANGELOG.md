@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Discuss timezone settings in install guide.
 
+### Changed
+- Font Awesome to 5.2.0.
+
 ## [[2.5.1]](https://www.acuparse.com/releases/v2-5-1/) - 2018-07-15
 ### Changed
 - Bootstrap to v4.1.2
