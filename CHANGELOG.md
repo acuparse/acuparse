@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.5.2]](https://www.acuparse.com/releases/v2-5-2/) - 2018-08-08
 ### Fixed
 - Dew point when uploading using tower data.
 - Structured data only displaying when Google Analytics enabled.
@@ -17,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Bootstrap to v4.1.3
-- Font Awesome to 5.2.0.
+- Font Awesome to 5.2
 
 ## [[2.5.1]](https://www.acuparse.com/releases/v2-5-1/) - 2018-07-15
 ### Changed
