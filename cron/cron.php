@@ -41,8 +41,8 @@ if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->ar
     $data->tempF = round($result['tempF'], 1);
     $data->tempC = round(($result['tempF'] - 32) * 5 / 9, 1);
     $data->relH = $result['relH'];
-    $dewptC = ((pow(($data->relH / 100), 0.125)) * (112 + 0.9 * $data->tempC) + (0.1 * $data->tempC) - 112);
-    $dewptF = ($dewptC * 9 / 5) + 32;
+    $data->dewptC = ((pow(($data->relH / 100), 0.125)) * (112 + 0.9 * $data->tempC) + (0.1 * $data->tempC) - 112);
+    $data->dewptF = ($data->dewptC * 9 / 5) + 32;
 }
 
 // Set the UTC date for the update
@@ -102,8 +102,8 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         $data->tempF = round($result['tempF'], 1);
         $data->tempC = round(($result['tempF'] - 32) * 5 / 9, 1);
         $data->relH = $result['relH'];
-        $dewptC = ((pow(($data->relH / 100), 0.125)) * (112 + 0.9 * $data->tempC) + (0.1 * $data->tempC) - 112);
-        $dewptF = ($dewptC * 9 / 5) + 32;
+        $data->dewptC = ((pow(($data->relH / 100), 0.125)) * (112 + 0.9 * $data->tempC) + (0.1 * $data->tempC) - 112);
+        $data->dewptF = ($data->dewptC * 9 / 5) + 32;
     }
 
     // Build PWS Update

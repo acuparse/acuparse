@@ -86,4 +86,9 @@ switch ($config->version->app) {
         case '2.5.0-release':
         $config->version->app = '2.5.1-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Bootstrap to 4.1.2</li>';
+
+    // Update from 2.5.0-release
+    case '2.5.1-release':
+        $config->version->app = '2.5.2-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Fixed dew point when uploading using tower data.<br>Bootstrap and Font Awesome updates.</li>';
 }

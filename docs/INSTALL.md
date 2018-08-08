@@ -36,6 +36,9 @@ See [docs/DNS.md](https://acuparse.github.io/acuparse/DNS)
 * Change to the root directory:
     * `cd ~`
 
+* Check and update your system timezone:
+    * `dpkg-reconfigure tzdata && systemctl restart rsyslog.service`
+
 * Install the required packages:
     * Debian Stretch(9) and Raspbian Stretch(9):
     
