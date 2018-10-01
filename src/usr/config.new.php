@@ -40,6 +40,8 @@ return (object)array(
     'station' => (object)array(
         'access_mac' => '', // Access MAC Address
         'hub_mac' => '', // smartHUB MAC Address
+        'primary_sensor' => null, // Primary Sensor
+        'sensor_atlas' => '', // Atlas Sensor ID (8 Digits including leading 0's)
         'sensor_5n1' => '', // 5n1 Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
@@ -177,7 +179,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.5.2-release',
+        'app' => '2.6.0-release',
         'schema' => '2.5',
     ),
 );
