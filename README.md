@@ -2,7 +2,7 @@
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
-Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1 weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
@@ -13,11 +13,11 @@ Users currently having trouble sending updates to Weather Underground should fin
 # Features:
 * **Your weather data belongs to you, stored on your OWN server.**
 * Display live camera images, send them to Weather Underground, and link from other sites.
-* Uploads weather data from your 5N1 or a Tower/5N1 to external providers.
+* Uploads weather data from your 5N1, Atlas, or Tower sensors to external providers.
 * Customize barometer readings.
 * Display data in both &#8457; and &#8451;. Selectable default.
-* Multiple tower sensors, public or private.
-* Multiple admin/regular user accounts.
+* Multiple tower sensors; public or private.
+* Multiple admin or regular user accounts.
     * Regular users can only view private sensor data. 
 * Archived data display.
 * Watch data flow using the syslog.
@@ -28,12 +28,14 @@ Users currently having trouble sending updates to Weather Underground should fin
 * Google Invisible reCAPTCHA and Analytics support.
 
 ## What's Missing:
+* **Not all Atlas data is currently logged!**
+    * Lightning, Light, and UV coming in Version 3.
 * Advanced Data Reporting.
     * Reports can be run against the database. Open issues for custom report requests and tag them with the reports tag. phpMyAdmin is an excellent tool for advanced manual reporting on your station.
 * Charts and Graphing.
     * Since this is available at most external weather sites.
-* Multiple Access/smartHUB/5n1 sensors
-    * The current framework is built around a single Access/smartHUB and 5n1 sensor. 
+* Multiple Access/smartHUB/5n1/Atlas sensors
+    * The current framework is built around a single Access/smartHUB and 5N1/Atlas sensor.
    
 # Installation:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**

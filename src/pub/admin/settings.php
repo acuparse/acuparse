@@ -67,7 +67,9 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Station
         $config->station->hub_mac = $_POST['station']['hub_mac'];
         $config->station->access_mac = $_POST['station']['access_mac'];
+        $config->station->primary_sensor = (int)$_POST['station']['primary_sensor'];
         $config->station->sensor_5n1 = sprintf('%08d', $_POST['station']['sensor_5n1']);
+        $config->station->sensor_atlas = sprintf('%08d', $_POST['station']['sensor_atlas']);
         $config->station->baro_offset = (float)$_POST['station']['baro_offset'];
         $config->station->baro_source = (int)$_POST['station']['baro_source'];
         $config->station->towers = (bool)$_POST['station']['towers'];
@@ -227,7 +229,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                 <input type="text" class="form-control" name="site[name]"
                                                        id="site-name" placeholder="Station Name" maxlength="32"
                                                        value="<?= $config->site->name; ?>" required>
-
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-form-label" for="site-desc">Description:</label>
@@ -429,6 +430,65 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                        maxlength="12"
                                                        value="<?= $config->station->hub_mac; ?>">
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-12 mx-auto alert alert-primary">
+                                            <div class="form-group">
+                                                <h3>Primary Data Source:</h3>
+                                                <p class="alert alert-info">You can use an Atlas or 5N1 sensor as your
+                                                    primary sensor. You must have an Access to receive Atlas data.</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="station[primary_sensor]"
+                                                           id="station-primary-sensor-0"
+                                                           onclick='document.getElementById("station-sensor-5n1").disabled=true;document.getElementById("station-sensor-atlas").disabled=false;'
+                                                           value="0"
+                                                        <?= ($config->station->primary_sensor === 0) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label"
+                                                           for="station-primary-sensor-0">Atlas</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="station[primary_sensor]"
+                                                           id="station-primary-sensor-1"
+                                                           onclick='document.getElementById("station-sensor-5n1").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;'
+                                                           value="1"
+                                                        <?= ($config->station->primary_sensor === 1) ? 'checked="checked"' : false; ?>>
+                                                    <label class="form-check-label"
+                                                           for="station-primary-sensor-1">5N1</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="station-sensor-atlas">Atlas Station
+                                                    ID:</label>
+                                                <input type="number" class="form-control"
+                                                       name="station[sensor_atlas]"
+                                                       id="station-sensor-atlas" placeholder="00000000"
+                                                       oninput="this.value=this.value.slice(0,this.maxLength)"
+                                                       maxlength="8"
+                                                    <?= $config->station->primary_sensor === 1 ? 'disabled="disabled"' : false; ?>
+                                                       value="<?= $config->station->sensor_atlas; ?>">
+                                                <small id="station-sensor-atlas-help" class="form-text text-muted">8
+                                                    Digits including leading 0's
+                                                </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-form-label" for="station-sensor-5n1">5N1 Station
+                                                    ID:</label>
+                                                <input type="number" class="form-control"
+                                                       name="station[sensor_5n1]"
+                                                       id="station-sensor-5n1" placeholder="00000000"
+                                                       oninput="this.value=this.value.slice(0,this.maxLength)"
+                                                       maxlength="8"
+                                                    <?= $config->station->primary_sensor === 0 ? 'disabled="disabled"' : false; ?>
+                                                       value="<?= $config->station->sensor_5n1; ?>">
+                                                <small id="station-sensor-5n1-help" class="form-text text-muted">8
+                                                    Digits including leading 0's
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-12 mx-auto">
                                             <div class="form-group">
                                                 <p>Barometer Source:</p>
                                                 <div class="form-check form-check-inline">
@@ -455,68 +515,45 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                     <label class="form-check-label alert-warning"
                                                            for="station-baro-source-2">Access</label>
                                                 </div>
-                                                <!--
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio"
-                                                           name="station[baro_source]" id="station-baro-source-3"
-                                                           value="3" disabled
-                                                        <?= ($config->station->baro_source === 3) ? 'checked="checked"' : false; ?>>
-                                                    <label class="form-check-label alert-warning"
-                                                           for="station-baro-source-3">Atlas</label>
-                                                </div>
-                                                -->
                                                 <small id="station-baro-source-help" class="form-text text-muted">Which
                                                     device will report barometer readings? Default will save readings
                                                     from all devices. Using multiple devices can result in skewed
                                                     readings!
                                                 </small>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-8 col-12 mx-auto">
-                                            <div class="form-group">
-                                                <label class="col-form-label" for="station-sensor-5n1">5N1 Weather
-                                                    Station
-                                                    ID:</label>
-                                                <input type="number" class="form-control" name="station[sensor_5n1]"
-                                                       id="station-sensor-5n1" placeholder="00000000"
-                                                       value="<?= $config->station->sensor_5n1; ?>">
-                                                <small id="station-sensor-5n1-help" class="form-text text-muted">8
-                                                    Digits including leading 0's
-                                                </small>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="col-form-label" for="station-baro-offset">Barometer
-                                                    Offset:</label>
-                                                <input type="number" class="form-control"
-                                                       name="station[baro_offset]"
-                                                       id="station-baro-offset" step=".01"
-                                                       placeholder="Barometer Offset"
-                                                       value="<?= $config->station->baro_offset; ?>">
-                                                <small id="station-sensor-baro-offset-help"
-                                                       class="form-text text-muted">
-                                                    inHg. Adjust this as required to match the offset for your
-                                                    elevation.
-                                                </small>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <p><strong>Tower Sensors?</strong></p>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="station[towers]"
-                                                           id="station-towers-0" value="1"
-                                                        <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
-                                                    <label class="form-check-label alert-success"
-                                                           for="station-towers-0">Enabled</label>
+                                            <div class="col-md-8 col-12 mx-auto">
+                                                <div class="form-group">
+                                                    <label class="col-form-label" for="station-baro-offset">Barometer
+                                                        Offset:</label>
+                                                    <input type="number" class="form-control"
+                                                           name="station[baro_offset]"
+                                                           id="station-baro-offset" step=".01"
+                                                           placeholder="Barometer Offset"
+                                                           value="<?= $config->station->baro_offset; ?>">
+                                                    <small id="station-sensor-baro-offset-help"
+                                                           class="form-text text-muted">
+                                                        inHg. Adjust this as required to match the offset for your
+                                                        elevation.
+                                                    </small>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="station[towers]"
-                                                           id="station-towers-1" value="0"
-                                                        <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
-                                                    <label class="form-check-label alert-danger"
-                                                           for="station-towers-1">Disabled</label>
+                                                <div class="form-group">
+                                                    <p><strong>Tower Sensors?</strong></p>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[towers]"
+                                                               id="station-towers-0" value="1"
+                                                            <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert-success"
+                                                               for="station-towers-0">Enabled</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[towers]"
+                                                               id="station-towers-1" value="0"
+                                                            <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert-danger"
+                                                               for="station-towers-1">Disabled</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -541,7 +578,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                             <h3>Camera:</h3>
                                             <div class="form-group">
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="camera[enabled]"
+                                                    <input class="form-check-input" type="radio"
+                                                           name="camera[enabled]"
                                                            id="camera-enabled-1" value="1"
                                                            onclick='document.getElementById("camera-text").disabled=false;'
                                                         <?= ($config->camera->enabled === true) ? 'checked="checked"' : false; ?>>
@@ -549,7 +587,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                            for="camera-enabled-1">Enabled</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="camera[enabled]"
+                                                    <input class="form-check-input" type="radio"
+                                                           name="camera[enabled]"
                                                            id="camera-enabled-0" value="0"
                                                            onclick='document.getElementById("camera-text").disabled=true;'
                                                         <?= ($config->camera->enabled === false) ? 'checked="checked"' : false; ?>>
@@ -565,7 +604,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                         <?= ($config->camera->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                            placeholder="Image updated every XX minutes."
                                                            value="<?= $config->camera->text; ?>">
-                                                    <small id="camera-text-help" class="form-text text-muted">Text under
+                                                    <small id="camera-text-help" class="form-text text-muted">Text
+                                                        under
                                                         live camera image.
                                                     </small>
                                                 </div>
@@ -577,14 +617,16 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                             <h3>Archive:</h3>
                                             <div class="form-group">
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="archive[enabled]"
+                                                    <input class="form-check-input" type="radio"
+                                                           name="archive[enabled]"
                                                            id="archive-enabled-1" value="1"
                                                         <?= ($config->archive->enabled === true) ? 'checked="checked"' : false; ?>>
                                                     <label class="form-check-label alert-success"
                                                            for="archive-enabled-1">Enabled</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="archive[enabled]"
+                                                    <input class="form-check-input" type="radio"
+                                                           name="archive[enabled]"
                                                            id="archive-enabled-0" value="0"
                                                         <?= ($config->archive->enabled === false) ? 'checked="checked"' : false; ?>>
                                                     <label class="form-check-label alert-danger"
@@ -598,14 +640,16 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                             <h3>Contact:</h3>
                                             <div class="form-group">
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="contact[enabled]"
+                                                    <input class="form-check-input" type="radio"
+                                                           name="contact[enabled]"
                                                            id="contact-enabled-1" value="1"
                                                         <?= ($config->archive->enabled === true) ? 'checked="checked"' : false; ?>>
                                                     <label class="form-check-label alert-success"
                                                            for="contact-enabled-1">Enabled</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="contact[enabled]"
+                                                    <input class="form-check-input" type="radio"
+                                                           name="contact[enabled]"
                                                            id="contact-enabled-0" value="0"
                                                         <?= ($config->contact->enabled === false) ? 'checked="checked"' : false; ?>>
                                                     <label class="form-check-label alert-danger"
@@ -723,14 +767,16 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                            placeholder="Secret Key"
                                                         <?= ($config->google->recaptcha->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                            value="<?= $config->google->recaptcha->secret; ?>">
-                                                    <small id="recaptcha-secret-help" class="form-text text-muted">Your
+                                                    <small id="recaptcha-secret-help" class="form-text text-muted">
+                                                        Your
                                                         <a href="https://www.google.com/recaptcha/admin">reCAPTCHA
                                                             API</a> Secret Key
                                                     </small>
                                                 </div>
                                             </div>
                                             <div class="form-row">
-                                                <label class="col-form-label" for="recaptcha-sitekey">Site Key:</label>
+                                                <label class="col-form-label" for="recaptcha-sitekey">Site
+                                                    Key:</label>
                                                 <div class="col form-group">
                                                     <input type="text" class="form-control"
                                                            name="google[recaptcha][sitekey]"
@@ -738,7 +784,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                            placeholder="Site Key"
                                                         <?= ($config->google->recaptcha->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                            value="<?= $config->google->recaptcha->sitekey; ?>">
-                                                    <small id="recaptcha-sitekey-help" class="form-text text-muted">Your
+                                                    <small id="recaptcha-sitekey-help" class="form-text text-muted">
+                                                        Your
                                                         <a href="https://www.google.com/recaptcha/admin">reCAPTCHA
                                                             API</a> Site Key
                                                     </small>
@@ -772,12 +819,14 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                             <div class="form-row">
                                                 <label class="col-form-label" for="analytics-id">ID:</label>
                                                 <div class="col form-group">
-                                                    <input type="text" class="form-control" name="google[analytics][id]"
+                                                    <input type="text" class="form-control"
+                                                           name="google[analytics][id]"
                                                            id="analytics-id"
                                                            placeholder="Analytics ID"
                                                         <?= ($config->google->analytics->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                            value="<?= $config->google->analytics->id ?>">
-                                                    <small id="recaptcha-secret-help" class="form-text text-muted">Your
+                                                    <small id="recaptcha-secret-help" class="form-text text-muted">
+                                                        Your
                                                         <a href="https://analytics.google.com/analytics/web/">Google
                                                             Analytics</a> tracking ID.
                                                     </small>
@@ -834,7 +883,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             </div>
                             <div class="row">
                                 <!-- Master Temp Sensor -->
-                                <div class="col-md-6 col-12 border">
+                                <div class="col-md-6 col-12 mx-auto alert alert-secondary">
                                     <h3 class="panel-heading">Master Temp/Humidity Sensor:</h3>
                                     <p>Choose the main sensor used when uploading Temp/Humidity data to
                                         3rd party sites. This does not affect the main dashboard.</p>
@@ -901,6 +950,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <hr class="hr">
+
+                            <div class="row">
                                 <!-- Weather Underground -->
                                 <div class="col-md-6 col-12 border">
                                     <h3 class="panel-heading">Weather Underground:</h3>
@@ -952,7 +1006,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                    maxlength="35"
                                                 <?= ($config->upload->wu->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                    value="<?= $config->upload->wu->password; ?>">
-                                            <small id="wu-updates-password-help" class="form-text text-muted">Your <a
+                                            <small id="wu-updates-password-help" class="form-text text-muted">Your
+                                                <a
                                                         href="https://www.wunderground.com/personal-weather-station/mypws">wunderground</a>
                                                 Password
                                             </small>
@@ -969,11 +1024,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <hr class="hr-dashed">
-
-                            <div class="row">
                                 <!-- PWS Weather -->
                                 <div class="col-md-6 col-12 border">
                                     <h3 class="panel-heading">PWS Weather:</h3>
@@ -1085,7 +1135,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     </div>
                                     <div class="form-row">
                                         <div class="col form-group">
-                                            <label class="col-form-label form-check-label" for="cwop-updates-interval">Interval:</label>
+                                            <label class="col-form-label form-check-label"
+                                                   for="cwop-updates-interval">Interval:</label>
                                             <select name="upload[cwop][interval]"
                                                     id="cwop-updates-interval"
                                                 <?= ($config->upload->cwop->enabled === false) ? 'disabled="disabled"' : false; ?>
@@ -1132,10 +1183,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <hr class="hr-dashed">
-
-                            <div class="row">
                                 <!-- Weathercloud -->
                                 <div class="col-md-6 col-12 border">
                                     <h3 class="panel-heading">Weather Cloud:</h3>
@@ -1222,7 +1269,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                 </div>
                             </div>
 
-                            <hr class="hr-dashed">
+                            <hr class="hr">
 
                             <div class="row">
                                 <!-- MyAcuRite -->
@@ -1275,8 +1322,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     <div class="row">
                                         <div class="col">
                                             <p class="alert-info">If installed on the same network as your device,
-                                                use secondary.<br>See
-                                                <code>docs/DNS.md</code></p>
+                                                use secondary.<br>See <code>docs/DNS.md</code></p>
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -1296,7 +1342,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     </div>
                                     <div class="form-row">
                                         <div class="col form-group">
-                                            <label class="col-form-label" for="myacurite-access-url">Access URL:</label>
+                                            <label class="col-form-label" for="myacurite-access-url">Access
+                                                URL:</label>
                                             <select name="upload[myacurite][access_url]"
                                                     id="myacurite-access-url"
                                                     class="form-control custom-select">
@@ -1344,7 +1391,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                    placeholder="www.example.com"
                                                 <?= ($config->debug->server->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                    value="<?= $config->debug->server->url; ?>">
-                                            <small id="debug-server-url-help" class="form-text text-muted">Hostname/IP
+                                            <small id="debug-server-url-help" class="form-text text-muted">
+                                                Hostname/IP
                                                 only. No HTTP/HTTPS!
                                             </small>
                                         </div>

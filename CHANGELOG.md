@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.6.0]](https://www.acuparse.com/releases/v2-6-0/) - 2018-10-05
+### Added
+- Basic support for new Atlas sensor.
+
+### Changed
+- Font Awesome to 5.3.1
+
 ## [[2.5.2]](https://www.acuparse.com/releases/v2-5-2/) - 2018-08-08
 ### Fixed
 - Dew point when uploading using tower data.
