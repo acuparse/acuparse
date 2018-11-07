@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Minor HTML formatting
+- Access upload destination
 
 ## [[2.6.0]](https://www.acuparse.com/releases/v2-6-0/) - 2018-10-05
 ### Added

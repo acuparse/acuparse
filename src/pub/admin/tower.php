@@ -162,7 +162,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                     <tr>
                         <th scope="col"><strong>ID</strong></th>
                         <th scope="col"><strong>Name</strong></th>
-                        <td scope="col"><strong>Private?</strong></td>
+                        <th scope="col"><strong>Private?</strong></th>
                     </tr>
                     </thead>
                     <tbody>
