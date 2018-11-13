@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Minor HTML formatting
 - Access upload destination
 
+### Changed
+- Font Awesome to 5.5.0
+
 ## [[2.6.0]](https://www.acuparse.com/releases/v2-6-0/) - 2018-10-05
 ### Added
 - Basic support for new Atlas sensor.
