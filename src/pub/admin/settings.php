@@ -1347,7 +1347,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                             <select name="upload[myacurite][access_url]"
                                                     id="myacurite-access-url"
                                                     class="form-control custom-select">
-                                                <option value="https://atlasapi.acuparse.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") ? 'selected="selected"' : false; ?>>
+                                                <option value="https://atlasapi.myacurite.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") ? 'selected="selected"' : false; ?>>
                                                     myacurite.com (official)
                                                 </option>
                                                 <option value="https://atlasapi.acuparse.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") ? 'selected="selected"' : false; ?>>

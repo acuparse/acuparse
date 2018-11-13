@@ -112,7 +112,7 @@
                 }
                 ?>
             </ul>
-            <div class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto">
                 <?php
 
                 // Member Account Functions
@@ -163,7 +163,7 @@
                     <?php
                 }
                 ?>
-                </ul>
-            </div>
+            </ul>
         </div>
+    </div>
 </nav>

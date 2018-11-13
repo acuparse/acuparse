@@ -541,7 +541,7 @@ if (isset($_SESSION['authenticated'])) {
                         <tr>
                             <th scope="col"><strong>Username</strong></th>
                             <th scope="col"><strong>Email</strong></th>
-                            <td scope="col"><strong>Admin Access</strong></td>
+                            <th scope="col"><strong>Admin Access</strong></th>
                         </tr>
                         </thead>
                         <tbody>
