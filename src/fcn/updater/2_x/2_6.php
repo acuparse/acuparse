@@ -32,4 +32,9 @@ switch ($config->version->app) {
         $config->station->sensor_atlas = '';
         $config->version->app = '2.6.0-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Implement basic Atlas Support.</li>';
+
+    // Update from 2.6.0-release
+    case '2.6.0-release':
+        $config->version->app = '2.6.1-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor bug fixes.</li>';
 }
