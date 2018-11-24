@@ -66,13 +66,13 @@ if (isset($_SESSION['authenticated'])) {
                 }
             }
 
-            $password = password_hash(filter_input(INPUT_POST, 'pass', FILTER_UNSAFE_RAW), PASSWORD_DEFAULT);
+            $password = password_hash(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW), PASSWORD_DEFAULT);
 
             // Check and see if the password actually changed
             if ($user === $_SESSION['uid']) {
                 $userRow = mysqli_fetch_assoc(mysqli_query($conn,
                     "SELECT * FROM `users` WHERE `uid` = '$user'"));
-                if (password_verify(filter_input(INPUT_POST, 'pass', FILTER_UNSAFE_RAW), $userRow['password'])) {
+                if (password_verify(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW), $userRow['password'])) {
                     // Log it
                     syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid failed");
                     $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password.</div>';
@@ -95,7 +95,7 @@ if (isset($_SESSION['authenticated'])) {
                 if ($_SESSION['admin'] === true) {
                     $uid = $_SESSION['uid'];
                     if ($user !== $uid) {
-                        $password = filter_input(INPUT_POST, 'pass', FILTER_UNSAFE_RAW);
+                        $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
                         $message = '<h2>Password Changed Successfully</h2><p>Your password was changed by an admin.</p><h3>Your new Password is: ' . $password . '</h3>';
                     } else {
                         $message = '<h2>Password Changed Successfully!</h2><p>You can now use it when logging in.</p>';
@@ -136,29 +136,32 @@ if (isset($_SESSION['authenticated'])) {
             $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `users` WHERE `uid` = '$user'"));
             $username = $result['username'];
             ?>
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-header">Change Password for <?= $username; ?></h1>
+            <section id="change-password" class="change-password">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="page-header">Change Password for <?= $username; ?></h1>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <section id="change-password" class="row change-password">
-                <div class="col-8 col-md-6 mx-auto">
-                    <form class="form" role="form" action="/admin/account?password&do" method="POST">
-                        <div class="form-group">
-                            <label for="pass">New Password:</label>
-                            <input type="password" class="form-control" name="pass" id="pass" maxlength="32"
-                                   placeholder="Password" required>
-                        </div>
-                        <input type="hidden" name="uid" id="uid" value="<?= $user; ?>">
-                        <button type="submit" id="submit" value="submit"
-                                class="btn btn-success margin-top-05">
-                            <i class="fas fa-save" aria-hidden="true"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-danger margin-top-05" onclick="location.href = '/admin'"><i
-                                    class="fas fa-ban" aria-hidden="true"></i> Cancel
-                        </button>
-                    </form>
+                <hr>
+                <div class="row">
+                    <div class="col-8 col-md-6 mx-auto">
+                        <form class="form" action="/admin/account?password&do" method="POST">
+                            <div class="form-group">
+                                <label for="password">New Password:</label>
+                                <input type="password" class="form-control" name="password" id="password" maxlength="32"
+                                       placeholder="Password" required>
+                            </div>
+                            <input type="hidden" name="uid" id="uid" value="<?= $user; ?>">
+                            <button type="submit" id="submit" value="submit"
+                                    class="btn btn-success margin-top-05">
+                                <i class="fas fa-save" aria-hidden="true"></i> Save
+                            </button>
+                            <button type="button" class="btn btn-danger margin-top-05"
+                                    onclick="location.href = '/admin'"><i
+                                        class="fas fa-ban" aria-hidden="true"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </section>
             <?php
@@ -469,54 +472,58 @@ if (isset($_SESSION['authenticated'])) {
                 $pageTitle = 'Add New User';
                 include(APP_BASE_PATH . '/inc/header.php');
                 ?>
-                <div class="row">
-                    <div class="col">
-                        <h1 class="page-header">Add New User</h1>
+                <section id="add-user" class="add-user">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="page-header">Add New User</h1>
+                        </div>
                     </div>
-                </div>
-                <hr>
-                <section id="add-user" class="row add-user">
-                    <div class="col-8 col-md-6 mx-auto">
-                        <form class="form" role="form" action="/admin/account?add&do" method="POST">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" name="username" id="username"
-                                       placeholder="Username" maxlength="32" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" class="form-control" name="email" id="email"
-                                       placeholder="username@example.com"
-                                       maxlength="255" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" name="password" id="pass"
-                                       placeholder="Password" maxlength="32" required>
-                            </div>
-                            <div class="form-group border">
-                                <strong>Admin Access?</strong><br>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="admin"
-                                           id="admin-access-0"
-                                           value="0" checked="checked">
-                                    <label class="form-check-label alert alert-success" for="admin-access-0">No</label>
+                    <hr>
+                    <div class="row">
+                        <div class="col-8 mx-auto">
+                            <form class="form" action="/admin/account?add&do" method="POST">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" name="username" id="username"
+                                           placeholder="Username" maxlength="32" required>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input <?= ($_SESSION['admin'] !== true) ? 'disabled="disabled"' : false; ?>
-                                            class="form-check-input" type="radio" name="admin"
-                                            id="admin-access-1"
-                                            value="1">
-                                    <label class="form-check-label alert alert-danger" for="admin-access-1">Yes</label>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                           placeholder="username@example.com"
+                                           maxlength="255" required>
                                 </div>
-                            </div>
-                            <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                        class="fas fa-save" aria-hidden="true"></i> Save
-                            </button>
-                            <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
-                                        class="fas fa-ban" aria-hidden="true"></i> Cancel
-                            </button>
-                        </form>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                           placeholder="Password" maxlength="32" required>
+                                </div>
+                                <div class="form-group border">
+                                    <strong>Admin Access?</strong><br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="admin"
+                                               id="admin-access-0"
+                                               value="0" checked="checked">
+                                        <label class="form-check-label alert alert-success"
+                                               for="admin-access-0">No</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input <?= ($_SESSION['admin'] !== true) ? 'disabled="disabled"' : false; ?>
+                                                class="form-check-input" type="radio" name="admin"
+                                                id="admin-access-1"
+                                                value="1">
+                                        <label class="form-check-label alert alert-danger"
+                                               for="admin-access-1">Yes</label>
+                                    </div>
+                                </div>
+                                <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                            class="fas fa-save" aria-hidden="true"></i> Save
+                                </button>
+                                <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
+                                            class="fas fa-ban" aria-hidden="true"></i> Cancel
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </section>
                 <?php
@@ -527,46 +534,48 @@ if (isset($_SESSION['authenticated'])) {
             $pageTitle = 'View User Accounts';
             include(APP_BASE_PATH . '/inc/header.php');
             ?>
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-header">View Users</h1>
+            <section id="view-users" class="view-users">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="page-header">View Users</h1>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <section id="view-users" class="row view-users">
+                <hr>
 
-                <div class="col-md-8 col-12 mx-auto">
-                    <table class="table table-light table-hover table-responsive-sm">
-                        <thead>
-                        <tr>
-                            <th scope="col"><strong>Username</strong></th>
-                            <th scope="col"><strong>Email</strong></th>
-                            <th scope="col"><strong>Admin Access</strong></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $result = mysqli_query($conn, "SELECT * FROM `users` ORDER BY `uid` DESC");
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            $admin = ($row['admin'] === '1') ? 'Yes' : 'No';
-
-                            ?>
+                <div class="row">
+                    <div class="col-md-8 col-12 mx-auto">
+                        <table class="table table-light table-hover table-responsive-sm">
+                            <thead>
                             <tr>
-                                <th scope="row">
-                                    <strong><a href="/admin/account?edit&uid=<?= $row['uid']; ?>"><?= $row['username']; ?>
-                                            <span class="ui-icon ui-icon-arrowthick-2-n-s"></span></a></strong>
-                                </th>
-                                <td>
-                                    <a href="/admin/account?edit&uid=<?= $row['uid']; ?>"><?= $row['email']; ?>
-                                </td>
-                                <td><?= $admin; ?></td>
+                                <th scope="col"><strong>Username</strong></th>
+                                <th scope="col"><strong>Email</strong></th>
+                                <th scope="col"><strong>Admin Access</strong></th>
                             </tr>
-                        <?php } ?>
-                        </tbody>
-                    </table>
-                    <button type="button" class="btn btn-success" onclick="location.href = '/admin'"><i
-                                class="fas fa-check-circle" aria-hidden="true"></i> Done
-                    </button>
+                            </thead>
+                            <tbody>
+                            <?php
+                            $result = mysqli_query($conn, "SELECT * FROM `users` ORDER BY `uid` DESC");
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $admin = ($row['admin'] === '1') ? 'Yes' : 'No';
+
+                                ?>
+                                <tr>
+                                    <th scope="row">
+                                        <strong><a href="/admin/account?edit&uid=<?= $row['uid']; ?>"><?= $row['username']; ?>
+                                                <span class="ui-icon ui-icon-arrowthick-2-n-s"></span></a></strong>
+                                    </th>
+                                    <td>
+                                        <a href="/admin/account?edit&uid=<?= $row['uid']; ?>"><?= $row['email']; ?></a>
+                                    </td>
+                                    <td><?= $admin; ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-success" onclick="location.href = '/admin'"><i
+                                    class="fas fa-check-circle" aria-hidden="true"></i> Done
+                        </button>
+                    </div>
                 </div>
             </section>
             <?php

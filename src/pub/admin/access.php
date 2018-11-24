@@ -75,7 +75,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                 </div>
                 <div class="row">
                     <div class="col-md-8 col-12 mx-auto">
-                        <form name="access-server" id="access-server" action="" method="GET">
+                        <form name="access-server" id="access-server" action="/admin/access" method="GET">
                             <div class="form-group">
                                 <label for="access-ip">Access IP:</label>
                                 <input type="text" class="form-control" name="ip" id="access-ip"

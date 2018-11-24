@@ -69,7 +69,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
             <?php } ?>
             <div class="col-md-4 col-12">
                 <h3>Configuration:</h3>
-                <button type="button" id="add-user" class="btn btn-outline-secondary btn-block"
+                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
                         onclick="location.href = '/admin/settings'"><i class="fas fa-cogs"
                                                                        aria-hidden="true"></i> System Settings
                 </button>

@@ -26,7 +26,7 @@
  */
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" role="navigation">
+<nav class="navbar navbar-expand-lg <?= ($config->site->theme === 'twilight') ? 'navbar-dark bg-dark' : 'navbar-light bg-light'; ?> fixed-top">
     <div class="container">
         <a class="navbar-brand" href="/"><?= $config->site->name; ?><br>
             <small><?= $config->site->location; ?></small>
@@ -78,25 +78,25 @@
                                 <a class="dropdown-item"
                                    href="//www.wunderground.com/personal-weather-station/dashboard?ID=<?= $config->upload->wu->id; ?>"
                                    target="_blank"><img src="/img/external/wu.ico" width="16" height="16"
-                                                        aria-hidden="true"> Weather Underground</a>
+                                                        aria-hidden="true" alt="Wunderground Icon"> Weather Underground</a>
                             <?php } ?>
                             <?php if ($config->upload->wc->enabled === true) { ?>
                                 <a class="dropdown-item"
                                    href="//app.weathercloud.net/<?= $config->upload->wc->device; ?>"
                                    target="_blank"><img src="/img/external/wc.ico" width="16" height="16"
-                                                        aria-hidden="true"> Weathercloud</a>
+                                                        aria-hidden="true" alt="WeatherCloud Icon"> Weathercloud</a>
                             <?php } ?>
                             <?php if ($config->upload->pws->enabled === true) { ?>
                                 <a class="dropdown-item"
                                    href="//www.pwsweather.com/obs/<?= $config->upload->pws->id; ?>.html"
                                    target="_blank"><img src="/img/external/pws.ico" width="16" height="16"
-                                                        aria-hidden="true"> PWS Weather</a>
+                                                        aria-hidden="true" alt="PWS Icon"> PWS Weather</a>
                             <?php } ?>
                             <?php if ($config->upload->cwop->enabled === true) { ?>
                                 <a class="dropdown-item"
                                    href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
                                    target="_blank"><img src="/img/external/findu.ico" width="16" height="16"
-                                                        aria-hidden="true"> CWOP via findU</a>
+                                                        aria-hidden="true" alt="CWOP Icon"> CWOP via findU</a>
                             <?php } ?>
                         </div>
                     </li>

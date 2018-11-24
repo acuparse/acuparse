@@ -1,0 +1,369 @@
+/*
+ * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2018 Maxwell Power
+ * @author Maxwell Power <max@acuparse.com>
+ * @link http://www.acuparse.com
+ * @license AGPL-3.0+
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this code. If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * File: src/pub/themes/base.css
+ * Base CSS
+ */
+/* Load External Fonts */
+/* Open Sans */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800');
+
+/* END: Load External Fonts */
+/* ---------------------------- */
+
+/* Global Styles */
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    padding-top: 65px; /* Required padding for navbar */
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* END - Global Styles */
+/* ---------------------------- */
+
+/* Headings */
+
+.panel-heading {
+    text-decoration: underline;
+}
+
+.page-header {
+    margin-top: 6px;
+    text-align: center !important;
+}
+
+/* END:Headings */
+/* ---------------------------- */
+
+/* System Messages */
+
+.system-messages {
+    text-align: center;
+}
+
+/* END: System Messages */
+/* ---------------------------- */
+
+/* Navigation */
+
+.navbar {
+    padding: unset;
+}
+
+.navbar-brand {
+    text-align: center;
+    font-size: 1em;
+    font-weight: 800;
+}
+
+.navbar-brand small {
+    text-align: center;
+    font-weight: 600;
+}
+
+/* END: Navigation */
+/* ---------------------------- */
+
+/* Local Time */
+
+.local-time p {
+    font-weight: 700;
+}
+
+/* END: Local Time */
+/* ---------------------------- */
+
+/* Live Weather Data */
+
+.live-weather-data {
+    text-align: center !important;
+}
+
+.live-weather-data ul {
+    list-style-position: inside;
+}
+
+.live-weather-data h1 {
+    font-size: 1.7em;
+}
+
+.live-weather-data h2 {
+    font-size: 1.25em;
+}
+
+.live-weather-data h3 {
+    font-size: 1em;
+    display: inline;
+    font-weight: 600;
+}
+
+.live-weather-data p {
+    display: inline;
+}
+
+/* END: Live Weather Display */
+/* ---------------------------- */
+
+/* Archive Weather Data */
+
+.archive-weather-data {
+    text-align: center !important;
+}
+
+.archive-weather-data ul {
+    list-style-position: inside;
+}
+
+.archive-weather-data h2 {
+    font-size: 1.7em;
+    text-decoration: underline;
+}
+
+.archive-weather-data h3 {
+    font-size: 1.4em;
+}
+
+.archive-weather-data h4 {
+    font-size: 1.1em;
+    display: inline;
+    font-weight: 600;
+}
+
+.archive-weather-data p {
+    font-size: 1em;
+    display: inline;
+}
+
+/* END: Archive Weather Display */
+/* ---------------------------- */
+
+/* Live Tower Data */
+
+.live-tower-data {
+    text-align: center !important;
+}
+
+.live-tower-data h1 {
+    font-size: 1.75em;
+    text-decoration: underline;
+}
+
+.live-tower-data h2 {
+    font-size: 1.5em;
+}
+
+.live-tower-data h3 {
+    font-size: 1em;
+}
+
+/* END: Live Tower Data */
+/* ---------------------------- */
+
+/* Live Camera */
+
+.live-camera {
+    text-align: center !important;
+}
+
+.live-camera p {
+    font-weight: 600;
+}
+
+/* END: Live Camera */
+/* ---------------------------- */
+
+/* Camera Archive */
+
+.camera-archive {
+    text-align: center !important;
+}
+
+.camera-archive-timelapse {
+    font-weight: 700;
+}
+
+/* END: Camera Archive */
+/* ---------------------------- */
+
+/* END: Camera Archive */
+/* ---------------------------- */
+
+/* Admin Functions */
+
+.admin-functions {
+    text-align: center !important;
+}
+
+.view-users,
+.add-user,
+.edit-user,
+.change-password {
+    text-align: center !important;
+}
+
+.view-tower,
+.add-tower,
+.edit-tower {
+    text-align: center !important;
+}
+
+.modify-settings {
+    text-align: center !important;
+}
+
+.config-database {
+    text-align: center !important;
+}
+
+.update-message {
+    text-align: center !important;
+}
+
+.change-access-server {
+    text-align: center !important;
+}
+
+.modify-settings .nav-item {
+    margin-bottom: unset;
+}
+
+.modify-settings .nav-link {
+    margin-left: 5px;
+}
+
+/* END: Admin Functions */
+/* ---------------------------- */
+
+/* Contact Form */
+
+.contact {
+    text-align: center;
+}
+
+.contact label {
+    font-weight: 600;
+}
+
+/* END: Contact Form */
+/* ---------------------------- */
+
+/* Users */
+
+.user-authenticated {
+    font-weight: 600;
+}
+
+.admin-authenticated {
+    font-weight: 700;
+}
+
+.change-password {
+    text-align: center !important;
+}
+
+.user-authentication {
+    text-align: center !important;
+}
+
+/* END: Users */
+/* ---------------------------- */
+
+/* Footer */
+
+footer {
+    margin: 0.5em 0;
+}
+
+.footer-appname {
+    font-size: smaller;
+    text-align: center;
+}
+
+/* END: Footer */
+/* ---------------------------- */
+
+/* Horizontal Rules */
+
+hr.hr-dashed {
+    border-top: thin dashed #b1b0b0;
+}
+
+hr.hr-dotted {
+    border-top: thin dotted #b1b0b0;
+}
+
+hr {
+    border-color: #b1b0b0;
+}
+
+/* END: Horizontal Rules */
+/* ---------------------------- */
+
+/* Custom Margins */
+
+.margin-top-05 {
+    margin-top: 0.5em;
+}
+
+.margin-top-10 {
+    margin-top: 1em;
+}
+
+.margin-top-15 {
+    margin-top: 1.5em;
+}
+
+.margin-bottom-05 {
+    margin-bottom: 0.5em;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 1em;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 1.5em;
+}
+
+/* END: Custom Margins */

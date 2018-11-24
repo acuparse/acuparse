@@ -30,8 +30,7 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="handheldfriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5">
     <meta name="description" content="<?= $config->site->desc; ?>">
@@ -64,8 +63,10 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
         <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
     <?php } ?>
 
+    <!-- Base CSS -->
+    <link href="/themes/base.min.css" rel="stylesheet">
     <!-- Site Theme -->
-    <link href="/themes/<?= $config->site->theme; ?>.css" rel="stylesheet">
+    <link href="/themes/<?= $config->site->theme; ?>.min.css" rel="stylesheet">
 
     <?php
     if ($config->google->analytics->enabled === true) { ?>
@@ -85,16 +86,16 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
 
     <?php } ?>
 
-        <!-- Structured Data -->
-        <script type="application/ld+json">
+    <!-- Structured Data -->
+    <script type="application/ld+json">
         {
-          "@context": "http://schema.org",
-          "@type": "WebSite",
-          "name": "<?= $config->site->name; ?>",
-          "description": "<?= $config->site->desc; ?>",
-          "url": "https://<?= $config->site->hostname; ?>/"
+            "@context": "http://schema.org",
+            "@type": "WebSite",
+            "name": "<?= $config->site->name; ?>",
+            "description": "<?= $config->site->desc; ?>",
+            "url": "https://<?= $config->site->hostname; ?>/"
         }
-        </script>
+    </script>
 
 </head>
 <body>
@@ -103,7 +104,9 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
 <div class="container">
 
     <!-- Navigation -->
-    <?php include 'nav.php'; ?>
+    <?php if ($_SERVER['PHP_SELF'] !== '/display.php') {
+        include 'nav.php';
+    } ?>
 
     <?php
     // Messages
@@ -148,10 +151,3 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             }
         }
     }
-    ?>
-    <!-- Time Section -->
-    <section id="local-time" class="row local-time">
-        <div class="col-auto mx-auto">
-            <div id="local-time-display"></div>
-        </div>
-    </section>

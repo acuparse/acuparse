@@ -76,46 +76,48 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                 $arrange = ++$arrange;
             }
             ?>
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-header">Add New Tower</h1>
+            <section id="add-tower" class="add-tower">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="page-header">Add New Tower</h1>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <section id="add-tower" class="row add-tower">
-                <div class="col-8 col-md-6 mx-auto">
-                    <form class="form" role="form" action="/admin/tower?add&do" method="POST">
-                        <div class="form-group">
-                            <label for="tower-id">Tower ID:</label>
-                            <input type="text" class="form-control" name="id" id="tower-id"
-                                   placeholder="00000000" maxlength="8" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tower-name">Display Name:</label>
-                            <input type="text" class="form-control" name="name" id="tower-name"
-                                   placeholder="Ground Level" maxlength="32" required>
-                        </div>
-                        <div class="form-group">
-                            <strong>Private Sensor?</strong><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="private" id="private-1"
-                                       value="1">
-                                <label class="form-check-label" for="private-1">Yes</label>
+                <hr>
+                <div class="row">
+                    <div class="col-8 col-md-6 mx-auto">
+                        <form class="form" action="/admin/tower?add&do" method="POST">
+                            <div class="form-group">
+                                <label for="tower-id">Tower ID:</label>
+                                <input type="text" class="form-control" name="id" id="tower-id"
+                                       placeholder="00000000" maxlength="8" required>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="private" id="private-0"
-                                       value="0" checked="checked">
-                                <label class="form-check-label" for="private-0">No</label>
+                            <div class="form-group">
+                                <label for="tower-name">Display Name:</label>
+                                <input type="text" class="form-control" name="name" id="tower-name"
+                                       placeholder="Ground Level" maxlength="32" required>
                             </div>
-                        </div>
-                        <input type="hidden" name="display" id="display" value="<?= $arrange; ?>">
-                        <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                    class="fas fa-save" aria-hidden="true"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
-                                    class="fas fa-ban" aria-hidden="true"></i> Cancel
-                        </button>
-                    </form>
+                            <div class="form-group">
+                                <strong>Private Sensor?</strong><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="private" id="private-1"
+                                           value="1">
+                                    <label class="form-check-label" for="private-1">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="private" id="private-0"
+                                           value="0" checked="checked">
+                                    <label class="form-check-label" for="private-0">No</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="display" id="display" value="<?= $arrange; ?>">
+                            <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                        class="fas fa-save" aria-hidden="true"></i> Save
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
+                                        class="fas fa-ban" aria-hidden="true"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </section>
             <?php
@@ -147,54 +149,55 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             }
             die;
         } ?>
-        <div class="row">
-            <div class="col">
-                <h1 class="page-header">View Tower Sensors</h1>
+        <section id="view-tower" class="view-tower">
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-header">View Tower Sensors</h1>
+                </div>
             </div>
-        </div>
-        <hr>
-        <section id="view-tower" class="row view-tower">
-
-            <div class="col-md-8 col-12 mx-auto">
-                <p>Drag to reorder, click to edit/delete</p>
-                <table class="table table-light table-hover table-responsive-sm" id="tower-table">
-                    <thead>
-                    <tr>
-                        <th scope="col"><strong>ID</strong></th>
-                        <th scope="col"><strong>Name</strong></th>
-                        <th scope="col"><strong>Private?</strong></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $private = 'No';
-                        if ($row['private'] === '1') {
-                            $private = 'Yes';
-                        }
-                        ?>
-                        <tr id="arrange_<?= $row['sensor']; ?>">
-                            <th scope="row"><a href="/admin/tower?edit&sensor_id=<?= ltrim($row['sensor'],
-                                    '0'); ?>"><?= ltrim($row['sensor'], '0'); ?></th>
-                            <td>
-                                <strong><a href="/admin/tower?edit&sensor_id=<?= $row['sensor']; ?>"><?= $row['name']; ?>
-                                        <span class="ui-icon ui-icon-arrowthick-2-n-s"></span></a></strong></td>
-                            <td><?= $private; ?></td>
+            <hr>
+            <div class="row">
+                <div class="col-md-8 col-12 mx-auto">
+                    <p>Drag to reorder, click to edit/delete</p>
+                    <table class="table table-light table-hover table-responsive-sm" id="tower-table">
+                        <thead>
+                        <tr>
+                            <th scope="col"><strong>ID</strong></th>
+                            <th scope="col"><strong>Name</strong></th>
+                            <th scope="col"><strong>Private?</strong></th>
                         </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
-                <button type="button" class="btn btn-success" onclick="location.href = '/admin'"><i
-                            class="fas fa-check-circle" aria-hidden="true"></i> Done
-                </button>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $private = 'No';
+                            if ($row['private'] === '1') {
+                                $private = 'Yes';
+                            }
+                            ?>
+                            <tr id="arrange_<?= $row['sensor']; ?>">
+                                <th scope="row"><a href="/admin/tower?edit&sensor_id=<?= ltrim($row['sensor'],
+                                        '0'); ?>"><?= ltrim($row['sensor'], '0'); ?></a></th>
+                                <td>
+                                    <strong><a href="/admin/tower?edit&sensor_id=<?= $row['sensor']; ?>"><?= $row['name']; ?>
+                                            <span class="ui-icon ui-icon-arrowthick-2-n-s"></span></a></strong></td>
+                                <td><?= $private; ?></td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-success" onclick="location.href = '/admin'"><i
+                                class="fas fa-check-circle" aria-hidden="true"></i> Done
+                    </button>
+                </div>
             </div>
         </section>
         <?php
         // Load jquery ui and touch punch to allow the dragging of towers.
-        $page_footer =
-            '<script type="text/javascript" src="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-            <script type="text/javascript" src="/lib/mit/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+        $page_footer = '
+            <script src="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+            <script src="/lib/mit/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
             <script>
                 $(document).ready(
                     function () {
@@ -247,16 +250,16 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             $row = mysqli_fetch_assoc(mysqli_query($conn,
                 "SELECT * FROM `towers` WHERE `sensor` = $towerSensorID"));
             ?>
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-header">Editing Tower Details</h1>
+            <section id="edit-tower" class="edit-tower">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="page-header">Editing Tower Details</h1>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <section id="add-tower" class="add-tower">
+                <hr>
                 <div class="row">
                     <div class="col-8 col-md-6 mx-auto">
-                        <form class="form" role="form" action="/admin/tower?edit&do" method="POST">
+                        <form class="form" action="/admin/tower?edit&do" method="POST">
                             <div class="form-group">
                                 <label for="tower-id">Tower ID:</label>
                                 <input type="text" class="form-control" name="id" id="tower-id"

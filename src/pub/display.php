@@ -21,56 +21,31 @@
  */
 
 /**
- * File: src/pub/index.php
- * Main Index
+ * File: src/pub/display.php
+ * Main Dashboard formatted for full screen display
  */
 
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
-
-// System Time
-if (isset($_GET['time'])) {
-    $date = date($config->site->display_date);
-    echo "<p>$date</p>";
-    die();
-}
-// End system time
-
-// Get Weather HTML
-if (isset($_GET['weather'])) {
-    require(APP_BASE_PATH . '/fcn/weather/getCurrentHTML.php');
-    getCurrentHTML();
-    die();
-}
-
-// Get Weather JSON
-if (isset($_GET['json'])) {
-    require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
-    $getData = new getCurrentWeatherData();
-    echo json_encode($getData->getConditions());
-    die();
-}
-
-// Get Camera Watermark
-if (isset($_GET['cam'])) {
-    require(APP_BASE_PATH . '/fcn/wmark.php');
-    camWmark();
-    die();
-}
 
 if ($installed === false) {
     header("Location: /admin/install");
     die();
 } else {
 
-    $pageTitle = 'Live Weather';
+    $pageTitle = 'Live Weather - Display Mode';
+
+    // Force light theme
+    if (isset($_GET['light'])) {
+        $config->site->theme = 'clean';
+    }
+    // Force dark theme
+    if (isset($_GET['dark'])) {
+        $config->site->theme = 'twilight';
+    }
+
     include(APP_BASE_PATH . '/inc/header.php');
 
-// PHP Info
-    if (isset($_GET['info']) && isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
-        phpinfo();
-        die();
-    }
 // Get Forcast Data
     ?>
 
@@ -80,6 +55,19 @@ if ($installed === false) {
             <div id="local-time-display"></div>
         </div>
     </div>
+
+    <!-- Modify CSS for Display Mode -->
+    <style>
+        body {
+            padding-top: unset;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+    </style>
 
     <!-- Live Weather Section -->
     <section id="live-weather">

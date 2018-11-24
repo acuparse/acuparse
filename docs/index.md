@@ -20,3 +20,6 @@
 [PWS Weather](external/PWS)
 
 [CWOP](external/CWOP)
+
+## Generic
+[WeatherPoly](external/generic/WeatherPoly)

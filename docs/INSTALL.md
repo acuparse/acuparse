@@ -109,14 +109,6 @@ View your syslog to see the data flowing through your system and to look for any
 
 * `tail -f /var/log/syslog`
 
-## Data Display:
-The primary user interface uses AJAX to pull the most recent HTML formatted data every minute.
-
-Aside from the primary interface, you can also pull the bootstrap formatted HTML data or a JSON array, for use in outside applications.
-
-* JSON: `http://<yourip/domain>/?json`
-* HTML: `http://<yourip/domain>/?weather`
-
 # Database Trimming:
 Readings get stored in multiple temporary database tables. This temporary data should be cleaned up regularly to avoid ballooning the database.
 When the external updater runs, it archives the most recent readings to the archive table for later use.
@@ -153,8 +145,8 @@ Detailed instructions for each available in docs/external.
 > **Notice:** Disable updating of Weather Underground from your Access/smartHUB/MyAcuRite. Watch your syslog for the response from MyAcuRite.
 
 ## Master Sensor:
-By default Acuparse will use the 5N1/Atlas sensor to upload data to external sites. To upload data from a tower, change the Master Temp/Humidity Sensor.
-Changing the sensor sends those readings externally instead of the 5N1/Atlas data. You can also choose to use the tower readings for the data archive or use the readings from the 5N1/Atlas.
+By default Acuparse will use the 5-in-1/Atlas sensor to upload data to external sites. To upload data from a tower, change the Master Temp/Humidity Sensor.
+Changing the sensor sends those readings externally instead of the 5-in-1/Atlas data. You can also choose to use the tower readings for the data archive or use the readings from the 5-in-1/Atlas.
 
 # MyAcuRite Responses:
 
@@ -241,3 +233,9 @@ Recaptcha loads on the authentication and contact forms, as well as, when reques
 * Sign up for a reCAPTCHA account at [google.com/recaptcha](https://www.google.com/recaptcha).
 * Select Invisible reCAPTCHA when registering your new site.
 * Enter your site key and secret in your site settings.
+
+# Debug Server
+You can send MyAcuRite readings to an external debug server. To enable, manually edit `src/usr/config.php`.
+* Find Debug, Server, Show and change it to true.
+ 
+ The debug tab will now appear in your system settings.
