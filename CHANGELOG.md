@@ -8,13 +8,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.7.0]](https://www.acuparse.com/releases/v2-7-0/) - 2018-12-01
 ### Added
 - Display Mode.
 - Twilight CSS Theme.
 - Upload WU data to a Generic Server and WeatherPoly Documentation
 
 ### Changed
-- Migrated core CSS into base.css, minor cleanup.
+- Migrated core CSS into base.css, minify, minor cleanup.
 - Documentation Updates.
 - Loading Icons.
 

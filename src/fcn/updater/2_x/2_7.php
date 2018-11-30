@@ -22,7 +22,7 @@
 
 /**
  * File: src/fcn/updater/2_7.php
- * 3.0 Update Tasks
+ * 2.7 Update Tasks
  */
 
 switch ($config->version->app) {
