@@ -26,8 +26,11 @@
  */
 
 ?>
+
 <!-- JS -->
 
+<script src="/lib/mit/jquery/js/jquery-3.3.1.min.js"></script>
+<script src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
 <?php
 if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
     ?>
@@ -37,25 +40,7 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
             document.getElementById("recaptcha-form").submit();
         }
     </script>
-    <?php } ?>
-
-<script type="text/javascript" src="/lib/mit/jquery/js/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
-<script>
-    $(document).ready(function () {
-        function update() {
-            $.ajax({
-                url: '/?time',
-                success: function (data) {
-                    $("#local-time-display").html(data);
-                    window.setTimeout(update, 1000);
-                }
-            });
-        }
-
-        update();
-    });
-</script>
+<?php } ?>
 
 <!-- Page Specific Scripts -->
 <?php
@@ -78,7 +63,7 @@ if (isset($page_footer)) {
     </div>
 </footer>
 </div>
-<!-- END Page Container -->
+<!-- END Site Container -->
 
 </body>
 </html>

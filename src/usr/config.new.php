@@ -68,7 +68,7 @@ return (object)array(
     // IP camera variables
     'camera' => (object)array(
         'enabled' => false, // Web Camera Enabled, True/False
-        'text' => 'Image updated every 15 minutes.', // Text displayed camera under image
+        'text' => 'Image updated every X minutes.', // Text displayed camera under image
     ),
 
     // Archive variables
@@ -141,6 +141,14 @@ return (object)array(
             'url' => 'http://api.weathercloud.net/v01/set', // Weathercloud API path
         ),
 
+        // Generic Settings
+        'generic' => (object)array(
+            'enabled' => false, // true or false
+            'id' => '', // Station ID
+            'password' => '', // Password
+            'url' => '', // Server URL
+        ),
+
         // MyAcurite
         'myacurite' => (object)array(
             'hub_enabled' => true, // true or false
@@ -161,6 +169,7 @@ return (object)array(
     'debug' => (object)array(
         'logging' => true, // Debug logging to Syslog. True/False
         'server' => (object)array(
+            'show' => false, // Show the debug server tab
             'enabled' => false, //true or false
             'url' => 'http://', // The url for your development system. eg. http://127.0.0.1
         ),
@@ -179,7 +188,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.6.1-release',
+        'app' => '2.7.0-release',
         'schema' => '2.5',
     ),
 );

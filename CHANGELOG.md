@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.7.0]](https://www.acuparse.com/releases/v2-7-0/) - 2018-12-01
+### Added
+- Display Mode.
+- Twilight CSS Theme.
+- Upload WU data to a Generic Server and WeatherPoly Documentation
+
+### Changed
+- Migrated core CSS into base.css, minify, minor cleanup.
+- Documentation Updates.
+- Loading Icons.
+
+### Fixed
+- W3 HTML Formatting.
+
 ## [[2.6.1]](https://www.acuparse.com/releases/v2-6-1/) - 2018-11-13
 ### Fixed
 - Minor HTML formatting

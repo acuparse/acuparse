@@ -2,7 +2,7 @@
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
-Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5n1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
@@ -13,8 +13,9 @@ Users currently having trouble sending updates to Weather Underground should fin
 # Features:
 * **Your weather data belongs to you, stored on your OWN server.**
 * Display live camera images, send them to Weather Underground, and link from other sites.
-* Uploads weather data from your 5N1, Atlas, or Tower sensors to external providers.
+* Uploads weather data from your 5-in-1/Atlas and Tower sensors to external providers.
 * Customize barometer readings.
+* Light and Dark Themes.
 * Display data in both &#8457; and &#8451;. Selectable default.
 * Multiple tower sensors; public or private.
 * Multiple admin or regular user accounts.
@@ -34,8 +35,23 @@ Users currently having trouble sending updates to Weather Underground should fin
     * Reports can be run against the database. Open issues for custom report requests and tag them with the reports tag. phpMyAdmin is an excellent tool for advanced manual reporting on your station.
 * Charts and Graphing.
     * Since this is available at most external weather sites.
-* Multiple Access/smartHUB/5n1/Atlas sensors
-    * The current framework is built around a single Access/smartHUB and 5N1/Atlas sensor.
+* Multiple Access/smartHUB/5-in-1/Atlas sensors
+    * The current framework is built around a single Access/smartHUB and 5-in-1/Atlas sensor.
+
+# Additional Outputs:
+The primary user interface uses AJAX to pull the most recent HTML formatted data every minute.
+
+Acuparse includes a Display mode for better viewing while in full-screen.
+* Display Mode: `http(s)://<yourip/domain>/display`
+    * Force light theme: `http(s)://<yourip/domain>/display?light`
+    * Force dark theme: `http(s)://<yourip/domain>/display?dark`
+
+Additionally, you can request Bootstrap 4 formatted HTML, a JSON array, or plain text formatted for watermarking.
+
+* HTML: `http(s)://<yourip/domain>/?weather`
+* Archive HTML: `http(s)://<yourip/domain>/archive?html`
+* JSON: `http(s)://<yourip/domain>/?json`
+* Plain Text: `http(s)://<yourip/domain>/?cam`
    
 # Installation:
 **Requires LAMP stack. Some PHP, Apache, and GNU/Linux experience recommended.**
@@ -45,7 +61,7 @@ See [docs/INSTALL.md](https://acuparse.github.io/acuparse/INSTALL) for detailed 
 
 Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
 
-Acuparse can also, in theory, be run locally on a Raspberry Pi(Raspbian) or similar configuration. Some installer modifications might be required if not using a supported OS.
+Acuparse can, **in theory**, be run locally on a Raspberry Pi(Raspbian). Some installer modifications might be required, if not using a supported OS.
 
 **Access Users**
 
@@ -72,7 +88,7 @@ Detailed upgrade instructions for significant releases will be published in the 
 * Connect to your site to complete the update.
 
 # Donations:
-If you like Acuparse, you can support my work and the project by buying me a coffee!
+If you like Acuparse, please support the project by buying me a coffee!
 
 <a href="https://www.buymeacoffee.com/maxp" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
@@ -83,15 +99,12 @@ Acuparse is open-source software. Released with an AGPL-3.0+ license. It also us
 
 See [LICENSE](LICENSE) for more details.
 
-## Commercial Licence:
-A commercial licence without any AGPL restrictions is also available. Visit [acuparse.com/commercial](https://www.acuparse.com/commercial) for details.
-
 # Support and Discussion:
-Support for the core application/bugs handled using [GitHub Issues](https://github.com/acuparse/acuparse/issues).
+Support for the core application/bugs is handled via [GitHub Issues](https://github.com/acuparse/acuparse/issues).
 
 For everything else, join the [Users Mailing List](https://lists.acuparse.com/listinfo/users).
 
-If you require advanced assistance, consider a commercial licence/support. 
+If you require advanced assistance, consider [commercial licencing and support](https://www.acuparse.com/commercial). 
 
 # Release Notes:
 

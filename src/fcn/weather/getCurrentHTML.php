@@ -102,63 +102,61 @@ function getCurrentHTML()
                             $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457;" : "$wx->tempC&#8451;";
                         }
                         echo $temp . trendIcon($wx->tempF_trend) ?></h2>
-                    <ul class="list-unstyled">
-                        <!-- Feels Like -->
-                        <?php if ($wx->feelsF != 0) {
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                                $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457; ($wx->feelsC&#8451;)" : "$wx->feelsC&#8451; ($wx->feelsF&#8457;)";
-                            } else {
-                                $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457;" : "$wx->feelsC&#8451;";
-                            }
-                            echo '<h3>Feels Like:</h3> ' . $feels . '<br>';
-                        } ?>
+                    <!-- Feels Like -->
+                    <?php if ($wx->feelsF != 0) {
+                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                            $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457; ($wx->feelsC&#8451;)" : "$wx->feelsC&#8451; ($wx->feelsF&#8457;)";
+                        } else {
+                            $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457;" : "$wx->feelsC&#8451;";
+                        }
+                        echo '<h3>Feels Like:</h3> ' . $feels . '<br>';
+                    } ?>
 
-                        <!-- Daily Low -->
-                        <h3>Low:</h3>
-                        <p>
-                            <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                                $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457; ($wx->tempC_low&#8451;)" : "$wx->tempC_low&#8451; ($wx->tempF_low&#8457;)";
-                            } else {
-                                $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457;" : "$wx->tempC_low&#8451;";
-                            }
-                            echo $temp_low . " @ $wx->low_temp_recorded"; ?></p>
+                    <!-- Daily Low -->
+                    <h3>Low:</h3>
+                    <p>
+                        <?php
+                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                            $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457; ($wx->tempC_low&#8451;)" : "$wx->tempC_low&#8451; ($wx->tempF_low&#8457;)";
+                        } else {
+                            $temp_low = ($config->site->imperial === true) ? "$wx->tempF_low&#8457;" : "$wx->tempC_low&#8451;";
+                        }
+                        echo $temp_low . " @ $wx->low_temp_recorded"; ?></p>
+
+                    <ul class="list-unstyled">
 
                         <!-- Daily High -->
                         <li><h3>High:</h3>
                             <p>
-                            <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                                $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457; ($wx->tempC_high&#8451;)" : "$wx->tempC_high&#8451; ($wx->tempF_high&#8457;)";
-                            } else {
-                                $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457;" : "$wx->tempC_high&#8451;";
-                            }
-                            echo $temp_high . " @ $wx->high_temp_recorded"; ?></li>
-                        </p>
+                                <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                    $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457; ($wx->tempC_high&#8451;)" : "$wx->tempC_high&#8451; ($wx->tempF_high&#8457;)";
+                                } else {
+                                    $temp_high = ($config->site->imperial === true) ? "$wx->tempF_high&#8457;" : "$wx->tempC_high&#8451;";
+                                }
+                                echo $temp_high . " @ $wx->high_temp_recorded"; ?></p></li>
 
                         <!-- Average -->
                         <li><h3>Average:</h3>
                             <p>
-                            <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                                $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457; ($wx->tempC_avg&#8451;)" : "$wx->tempC_avg&#8451; ($wx->tempF_avg&#8457;)";
-                            } else {
-                                $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457;" : "$wx->tempC_avg&#8451;";
-                            }
-                            echo $temp_avg; ?></li>
-                        </p>
+                                <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                    $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457; ($wx->tempC_avg&#8451;)" : "$wx->tempC_avg&#8451; ($wx->tempF_avg&#8457;)";
+                                } else {
+                                    $temp_avg = ($config->site->imperial === true) ? "$wx->tempF_avg&#8457;" : "$wx->tempC_avg&#8451;";
+                                }
+                                echo $temp_avg; ?></p></li>
 
                         <!-- Dew Point -->
                         <li><h3>Dew Point:</h3>
                             <p>
-                            <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                                $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
-                            } else {
-                                $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457;" : "$wx->dewptC&#8451;";
-                            }
-                            echo $dewpt; ?></li>
-                        </p>
+                                <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                    $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457; ($wx->dewptC&#8451;)" : "$wx->dewptC&#8451; ($wx->dewptF&#8457;)";
+                                } else {
+                                    $dewpt = ($config->site->imperial === true) ? "$wx->dewptF&#8457;" : "$wx->dewptC&#8451;";
+                                }
+                                echo $dewpt; ?></p></li>
                     </ul>
                 </div>
             </div>

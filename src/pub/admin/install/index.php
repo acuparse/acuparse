@@ -200,34 +200,36 @@ elseif (isset($_GET['account']) && $installed === true) {
             $pageTitle = 'Create First User';
             include(APP_BASE_PATH . '/inc/header.php');
             ?>
-            <div class="row">
-                <div class="col">
-                    <h2 class="page-header">Add Administrator Account</h2>
+            <section id="add-user" class="add-user">
+                <div class="row">
+                    <div class="col">
+                        <h2 class="page-header">Add Administrator Account</h2>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <section id="add-user" class="row add-user">
-                <div class="col-md-8 col-12 mx-auto">
-                    <form class="form" role="form" action="?account&do" method="POST">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" class="form-control" name="username" id="username"
-                                   placeholder="Username" maxlength="32" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Email"
-                                   maxlength="255" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" name="password" id="pass"
-                                   placeholder="Password" maxlength="32" required>
-                        </div>
-                        <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                    class="fas fa-save" aria-hidden="true"></i> Save
-                        </button>
-                    </form>
+                <hr>
+                <div class="row">
+                    <div class="col-md-8 col-12 mx-auto">
+                        <form class="form" role="form" action="?account&do" method="POST">
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <input type="text" class="form-control" name="username" id="username"
+                                       placeholder="Username" maxlength="32" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Email"
+                                       maxlength="255" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" name="password" id="pass"
+                                       placeholder="Password" maxlength="32" required>
+                            </div>
+                            <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                        class="fas fa-save" aria-hidden="true"></i> Save
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </section>
             <?php
@@ -305,87 +307,86 @@ elseif ($installed === false) {
     $pageTitle = 'Acuparse Setup';
     include(APP_BASE_PATH . '/inc/header.php');
     ?>
-
-    <div class="row">
-        <div class="col">
-            <h2 class="page-header">Initial Database Settings:</h2>
+    <section id="config-database" class="config-database">
+        <div class="row">
+            <div class="col">
+                <h2 class="page-header">Initial Database Settings</h2>
+            </div>
         </div>
-    </div>
-    <hr>
-    <section id="config-database" class="row config-database">
-        <div class="col-md-8 col-12 mx-auto">
-
-            <form class="form" role="form" action="?database" method="POST">
-
-                <div class="form-row">
-                    <label class="col-form-label" for="mysql-host">Hostname:</label>
-                    <div class="col form-group">
-                        <input type="text" class="form-control"
-                               name="mysql[host]"
-                               id="mysql-host"
-                               value="localhost"
-                               maxlength="35">
+        <hr>
+        <div class="row">
+            <div class="col-md-8 col-12 mx-auto">
+                <form class="form" role="form" action="?database" method="POST">
+                    <div class="form-row">
+                        <label class="col-form-label" for="mysql-host">Hostname:</label>
+                        <div class="col form-group">
+                            <input type="text" class="form-control"
+                                   name="mysql[host]"
+                                   id="mysql-host"
+                                   value="localhost"
+                                   maxlength="35">
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <label class="col-form-label" for="mysql-database">Database:</label>
-                    <div class="col form-group">
-                        <input type="text" class="form-control"
-                               name="mysql[database]"
-                               id="mysql-database"
-                               value="acuparse"
-                               maxlength="35">
+                    <div class="form-row">
+                        <label class="col-form-label" for="mysql-database">Database:</label>
+                        <div class="col form-group">
+                            <input type="text" class="form-control"
+                                   name="mysql[database]"
+                                   id="mysql-database"
+                                   value="acuparse"
+                                   maxlength="35">
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <label class="col-form-label" for="mysql-username">Username:</label>
-                    <div class="col form-group">
-                        <input type="text" class="form-control"
-                               name="mysql[username]"
-                               id="mysql-username"
-                               value="acuparse"
-                               maxlength="35">
+                    <div class="form-row">
+                        <label class="col-form-label" for="mysql-username">Username:</label>
+                        <div class="col form-group">
+                            <input type="text" class="form-control"
+                                   name="mysql[username]"
+                                   id="mysql-username"
+                                   value="acuparse"
+                                   maxlength="35">
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <label class="col-form-label" for="mysql-password">Password:</label>
-                    <div class="col form-group">
-                        <input type="text" class="form-control"
-                               name="mysql[password]"
-                               id="mysql-password"
-                               placeholder="Password"
-                               maxlength="32">
+                    <div class="form-row">
+                        <label class="col-form-label" for="mysql-password">Password:</label>
+                        <div class="col form-group">
+                            <input type="text" class="form-control"
+                                   name="mysql[password]"
+                                   id="mysql-password"
+                                   placeholder="Password"
+                                   maxlength="32">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <p><strong>Database Trimming?</strong></p>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio"
-                               name="mysql[trim]"
-                               id="mysql-trim-enabled-0" value="0">
-                        <label class="form-check-label alert-danger"
-                               for="mysql-trim-enabled-0">Disabled</label>
+                    <div class="form-group">
+                        <p><strong>Database Trimming?</strong></p>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   name="mysql[trim]"
+                                   id="mysql-trim-enabled-0" value="0">
+                            <label class="form-check-label alert-danger"
+                                   for="mysql-trim-enabled-0">Disabled</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   name="mysql[trim]"
+                                   id="mysql-trim-enabled-1" value="1" checked="checked">
+                            <label class="form-check-label alert-success"
+                                   for="mysql-trim-enabled-1">Enabled</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   name="mysql[trim]"
+                                   id="mysql-trim-enabled-2" value="2">
+                            <label class="form-check-label alert-warning"
+                                   for="mysql-trim-enabled-2">Enabled, <strong>EXCEPT</strong>
+                                Towers</label>
+                        </div>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio"
-                               name="mysql[trim]"
-                               id="mysql-trim-enabled-1" value="1" checked="checked">
-                        <label class="form-check-label alert-success"
-                               for="mysql-trim-enabled-1">Enabled</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio"
-                               name="mysql[trim]"
-                               id="mysql-trim-enabled-2" value="2">
-                        <label class="form-check-label alert-warning"
-                               for="mysql-trim-enabled-2">Enabled, <strong>EXCEPT</strong>
-                            Towers</label>
-                    </div>
-                </div>
-                <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                            class="fas fa-save" aria-hidden="true"></i> Save Settings
-                </button>
-            </form>
+                    <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                class="fas fa-save" aria-hidden="true"></i> Save Settings
+                    </button>
+                </form>
+            </div>
         </div>
     </section>
     <?php

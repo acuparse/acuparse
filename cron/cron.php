@@ -94,7 +94,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         }
     }
 
-    // Using tower data
+    // Using Tower Data
     if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === false) {
         $sensor = $config->upload->sensor->id;
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -204,6 +204,21 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
                 // Log it
                 syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Update not sent. Not enough time has passed");
             }
+        }
+    }
+
+    // Build Generic WU Based Update
+    if ($config->upload->generic->enabled === true) {
+        $genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;
+        $genericQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&winddir_avg2m=' . $data->windDEG_avg2 . '&windspeedmph=' . $data->windSmph . '&windspdmph_avg2m=' . $data->windSmph_avg2 . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
+        $genericQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
+        $genericQueryResult = file_get_contents(htmlspecialchars($genericQueryUrl . $genericQuery . $genericQueryStatic));
+        // Save to DB
+        mysqli_query($conn,
+            "INSERT INTO `generic_updates` (`query`,`result`) VALUES ('$genericQuery', '$genericQueryResult')");
+        if ($config->debug->logging === true) {
+            // Log it
+            syslog(LOG_DEBUG, "(EXTERNAL)[GENERIC]: Query = $genericQuery | Result = $genericQueryResult");
         }
     }
 } // Nothing has changed

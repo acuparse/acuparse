@@ -20,19 +20,60 @@
  */
 
 /**
- * File: src/pub/themes/clean.css
- * Clean CSS Theme
+ * File: src/pub/themes/twilight.css
+ * Twilight CSS Theme
  */
 
 /* Global Styles */
 
 body {
-    color: rgba(0, 0, 0, .9);
-    background-color: rgba(255, 255, 255, .9);
+    color: rgba(255, 255, 255, .7);
+    background-color: rgba(0, 0, 0, .9);
 }
 
-.bg-dark {
+a {
+    color: #eae733;
+}
+
+a:hover {
+    color: #fffc33;
+}
+
+/* Tables */
+.table thead th {
+    background-color: rgba(43, 43, 43, 0.9);
+}
+
+.table td, .table th {
+    background-color: rgba(72, 72, 72, 0.88);
+}
+
+/* END - Tables */
+/* ---------------------------- */
+
+/* Forms */
+.form-control {
+    color: rgb(255, 255, 255);
+    background-color: rgb(50, 50, 50);
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: rgb(66, 39, 39);
+}
+
+/* END - Forms */
+/* ---------------------------- */
+
+.alert-primary {
     color: rgba(255, 255, 255, .7);
+    background-color: #152a40;
+    border-color: #b8daff;
+}
+
+.alert-secondary {
+    color: rgba(255, 255, 255, .7);
+    background-color: #2b2b2b;
+    border-color: #d6d8db;
 }
 
 /* END - Global Styles */
@@ -42,16 +83,16 @@ body {
 
 .camera-archive a,
 .camera-archive a:visited {
-    color: black;
+    color: rgba(255, 255, 255, .6);
 }
 
 .camera-archive a:hover {
-    color: grey;
+    color: rgba(255, 255, 255, .9);
 }
 
 .camera-archive .img-thumbnail, .live-camera .img-thumbnail {
-    background: rgba(0, 0, 0, .1);
-    border: 1px solid rgba(0, 0, 0, .2);
+    background: rgba(200, 200, 200, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 /* END: Camera Archive */
@@ -60,20 +101,19 @@ body {
 /* Users */
 
 .user-authenticated {
-    color: darkgreen;
+    color: lightgreen;
 }
 
 .admin-authenticated {
-    color: darkred;
+    color: indianred;
 }
 
 /* END: Users */
 /* ---------------------------- */
 
 /* Footer */
-
 footer a {
-    color: rgba(0, 0, 0, .9);
+    color: rgba(255, 255, 255, .9);
 }
 
 /* END: Footer */
@@ -82,13 +122,13 @@ footer a {
 /* Admin Functions */
 
 .modify-settings .nav-link {
-    color: rgba(0, 0, 0, .8);
-    background-color: rgba(0, 0, 0, .1);
+    color: rgba(255, 255, 255, .7);
+    background-color: rgba(0, 0, 0, .5);
 }
 
 .modify-settings .nav-link:hover {
     color: rgba(0, 0, 0, .9);
-    background-color: rgba(0, 0, 0, .2);
+    background-color: rgb(150, 150, 150);
 }
 
 .modify-settings .nav-link.active {

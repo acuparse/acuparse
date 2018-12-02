@@ -188,8 +188,9 @@ if ($config->camera->enabled === true) {
             if (file_exists('img/cam/latest.jpg')) {
                 ?>
                 <div class="col">
-                    <img src="/img/cam/latest.jpg?<?= time(); ?>">
-                    <p class="margin-top-10"><?= $config->camera->text; ?></p>
+                    <img class="img-fluid img-thumbnail" src="/img/cam/latest.jpg?<?= time(); ?>"
+                         alt="Live Camera Image">
+                    <h4 class="margin-top-10 margin-bottom-10"><?= $config->camera->text; ?></h4>
                     <button type="button" id="archive" class="btn btn-outline-secondary center-block"
                             onclick="location.href = '/camera?archive'"><i class="far fa-images" aria-hidden="true"></i>
                         View Camera Archive

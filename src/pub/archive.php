@@ -28,6 +28,13 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
+// Get Archive Weather HTML
+if (isset($_GET['html'])) {
+    require(APP_BASE_PATH . '/fcn/weather/getArchiveHTML.php');
+    getArchiveHTML();
+    die();
+}
+
 if ($config->archive->enabled === true) {
     $pageTitle = 'Weather Archive';
     include(APP_BASE_PATH . '/inc/header.php');
@@ -44,20 +51,22 @@ if ($config->archive->enabled === true) {
     <section id="weather-archive">
         <div class="row">
             <div class="col mx-auto text-center">
-                <img src="/img/archive.gif">
+                <img src="/img/loading/<?= ($config->site->theme === 'twilight') ? 'archive-dark' : 'archive'; ?>.gif"
+                     alt="Loading Data">
                 <h3>Going back through time ...</h3>
+                <p>This can take a while</p>
             </div>
         </div>
     </section>
 
     <?php
 // Set the footer to include scripts required for this page
-    $page_footer =
-        '<script>
+    $page_footer = '
+    <script>
         $(document).ready(function () {
             function update() {
                 $.ajax({
-                    url: \'/?archive\',
+                    url: \'/archive?html\',
                     success: function (data) {
                         $("#weather-archive").html(data);
                     }

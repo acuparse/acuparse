@@ -33,7 +33,7 @@ $timestamp = strtotime($timestamp . ' UTC');
 $timestamp = date("Y-m-d H:i:s", $timestamp);
 
 
-// Process 5N1 Update
+// Process 5-in-1 Update
 if ($_GET['mt'] === '5N1') {
     if ($_GET['sensor'] === $config->station->sensor_5n1 && $config->station->primary_sensor === 1) {
 
