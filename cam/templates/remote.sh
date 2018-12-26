@@ -40,7 +40,7 @@ APACHE_GROUP='www-data'
 
 echo "Starting remote processing"
 
-cd $BASEDIR
+cd ${BASEDIR}
 
 echo "Applying Weather Info Watermark"
 convert image.jpg \
@@ -52,21 +52,21 @@ convert image.jpg \
 
 echo "Sending image to Weather Underground"
 ftp -n webcam.wunderground.com <<EOF > /opt/acuparse/logs/wu_upload.log 2>&1
-quote USER $WU_CAM_USER
-quote PASS $WU_CAM_PASS
+quote USER ${WU_CAM_USER}
+quote PASS ${WU_CAM_PASS}
 binary
 put image.jpg
 quit
 EOF
 
 echo "Moving image to webserver"
-cp image.jpg $WEBDIR/latest.jpg
-mkdir -p $WEBDIR/$ARCHIVE_DATE
-cp image.jpg $WEBDIR/$ARCHIVE_DATE/$ARCHIVE_TIME.jpg
-chown -R $APACHE_USER:$APACHE_GROUP $WEBDIR
+cp image.jpg ${WEBDIR}/latest.jpg
+mkdir -p ${WEBDIR}/${ARCHIVE_DATE}
+cp image.jpg ${WEBDIR}/${ARCHIVE_DATE}/${ARCHIVE_TIME}.jpg
+chown -R ${APACHE_USER}:${APACHE_GROUP} ${WEBDIR}
 
 echo "Updating Animation"
-convert -delay 25 -loop 0 $WEBDIR/$ARCHIVE_DATE/*.jpg $WEBDIR/$ARCHIVE_DATE/daily.gif
+convert -delay 25 -loop 0 ${WEBDIR}/${ARCHIVE_DATE}/*.jpg ${WEBDIR}/${ARCHIVE_DATE}/daily.gif
 
 echo "Removing processed image"
 rm image.jpg*

@@ -40,11 +40,11 @@ REMOTE_SCRIPT='/opt/acuparse/cam/remote.sh'
 TIMESTAMP=$(date +"%A, %d %B %Y %H:%M %Z")
 
 echo "Getting camera image"
-wget $CAMERA_HOST/$CAMERA_FILENAME
+wget ${CAMERA_HOST}/${CAMERA_FILENAME}
 
 echo "Applying Timestamp and Copyright"
-convert $CAMERA_FILENAME \
-    -resize $RESIZE \
+convert ${CAMERA_FILENAME} \
+    -resize ${RESIZE} \
     -font DejaVu-Sans-Bold -pointsize 20 \
     -draw "gravity south \
         fill black  text 0,36 '$TIMESTAMP' \
@@ -56,24 +56,24 @@ convert $CAMERA_FILENAME \
     image.jpg
 
 echo "Sending image to remote server for processing"
-scp image.jpg $REMOTE_USER@$REMOTE_HOST:$REMOTE_TMP
+scp image.jpg ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TMP}
 
 echo "Running remote commands"
-ssh $REMOTE_USER@$REMOTE_HOST 'sh ' $REMOTE_SCRIPT
+ssh ${REMOTE_USER}@${REMOTE_HOST} 'sh ' ${REMOTE_SCRIPT}
 
 # Local Archiving
 # ARCHIVE=$(date +"%F_%H%M")
 # echo "Archiving"
-# convert $CAMERA_FILENAME \
+# convert ${CAMERA_FILENAME} \
 #     -font DejaVu-Sans-Bold -pointsize 16 \
 #     -draw "gravity south \
 #     fill black  text 0,0 '$TIMESTAMP' \
 #     fill OrangeRed2  text 1,1 '$TIMESTAMP' " \
 #     archive.jpg
-# mv archive.jpg archive/$ARCHIVE.jpg
+# mv archive.jpg archive/${ARCHIVE}.jpg
 
 echo "Cleaning up files"
 rm image.jpg*
-rm $CAMERA_FILENAME*
+rm ${CAMERA_FILENAME}*
 
 echo "Done Processing"

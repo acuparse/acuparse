@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Bootstrap to V4.2.1.
+- Cleanup variables in camera upload scripts.
 
 ### Fixed
 - Header display on tiny screens.
