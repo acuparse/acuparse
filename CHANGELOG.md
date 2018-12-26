@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Bootstrap to V4.2.1.
+
+### Fixed
+- Header display on tiny screens.
 
 ## [[2.7.0]](https://www.acuparse.com/releases/v2-7-0/) - 2018-12-01
 ### Added
