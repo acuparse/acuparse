@@ -95,11 +95,20 @@ img {
     text-align: center;
     font-size: 1em;
     font-weight: 800;
+    margin-left: .5em;
 }
 
 .navbar-brand small {
     text-align: center;
     font-weight: 600;
+}
+
+.navbar-toggler {
+    margin-right: .5em;
+}
+
+.navbar-nav .nav-link {
+    padding-left: .5em;
 }
 
 /* END: Navigation */
