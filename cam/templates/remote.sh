@@ -1,7 +1,7 @@
 #!/bin/sh
 ##
 # Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2018 Maxwell Power
+# @copyright Copyright (C) 2015-2019 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+

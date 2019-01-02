@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bootstrap to V4.2.1.
 - Font Awesome to V5.6.3.
 - Cleanup variables in camera upload scripts.
+- Update Copyright.
 
 ### Fixed
 - Header display on tiny screens.
