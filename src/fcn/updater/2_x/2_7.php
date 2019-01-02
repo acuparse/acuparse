@@ -35,4 +35,9 @@ switch ($config->version->app) {
         $config->upload->generic->url = '';
         $config->version->app = '2.7.0-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Numerous changes, see CHANGELOG.md for details.</li>';
+
+    // Update from 2.7.0-release
+    case '2.7.0-release':
+        $config->version->app = '2.7.1-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Script Updates and Bug Fixes.</li>';
 }
