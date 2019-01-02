@@ -230,13 +230,13 @@ if ($config->upload->myacurite->hub_enabled === true) {
     }
 } else {
     disabled:
-    $myacurite = '{"localtime":"' . date('H:i:s') . '"}';
+    $hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
 
 // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $myacurite");
+        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $hubResponse");
     }
 
 // Output the expected response to the smartHUB
-    echo $myacurite;
+    echo $hubResponse;
 }
