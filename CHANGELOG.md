@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.7.1]](https://www.acuparse.com/releases/v2-7-1/) - 2019-01-02
+### Changed
+- Bootstrap to V4.2.1.
+- Font Awesome to V5.6.3.
+- Cleanup variables in camera upload scripts.
+- Update Copyright.
+
+### Fixed
+- Header display on tiny screens.
+
 ## [[2.7.0]](https://www.acuparse.com/releases/v2-7-0/) - 2018-12-01
 ### Added
 - Display Mode.

@@ -1,7 +1,7 @@
 #!/bin/sh
 ##
 # Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2018 Maxwell Power
+# @copyright Copyright (C) 2015-2019 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -42,44 +42,44 @@ STATION_INFO=$(wget 'http://127.0.0.1/?cam' -q -O -)
 TIMESTAMP=$(date +"%A, %d %B %Y %H:%M %Z")
 
 echo "Getting camera image"
-wget $CAMERA_HOST/$CAMERA_FILENAME
+wget ${CAMERA_HOST}/${CAMERA_FILENAME}
 
 echo "Applying Timestamp and Copyright"
-convert $CAMERA_FILENAME \
-    -resize $RESIZE \
+convert ${CAMERA_FILENAME} \
+    -resize ${RESIZE} \
     -font DejaVu-Sans-Bold -pointsize 20 \
     -draw "gravity south \
-        fill black  text 0,36 '$TIMESTAMP' \
-        fill OrangeRed2  text 1,37 '$TIMESTAMP' " \
+        fill black  text 0,36 '${TIMESTAMP}' \
+        fill OrangeRed2  text 1,37 '${TIMESTAMP}' " \
     -font DejaVu-Sans-Bold -pointsize 12 \
     -draw "gravity south \
-        fill black  text 0,18 '$STATION_INFO' \
-        fill OrangeRed2  text 1,19 '$STATION_INFO' " \
+        fill black  text 0,18 '${STATION_INFO}' \
+        fill OrangeRed2  text 1,19 '${STATION_INFO}' " \
     -draw "gravity south \
-        fill black  text 0,0 '$WATERMARK' \
-        fill OrangeRed2  text 1,1 '$WATERMARK' " \
+        fill black  text 0,0 '${WATERMARK}' \
+        fill OrangeRed2  text 1,1 '${WATERMARK}' " \
     image.jpg
 
 echo "Sending image to Weather Underground"
 ftp -n webcam.wunderground.com <<END_SCRIPT > /opt/acuparse/logs/wu_upload.log 2>&1
-quote USER $WU_CAM_USER
-quote PASS $WU_CAM_PASS
+quote USER ${WU_CAM_USER}
+quote PASS ${WU_CAM_PASS}
 binary
 put image.jpg
 quit
 END_SCRIPT
 
 echo "Moving image to webserver"
-cp image.jpg $WEBDIR/latest.jpg
-mkdir -p $WEBDIR/$ARCHIVE_DATE
-cp image.jpg $WEBDIR/$ARCHIVE_DATE/$ARCHIVE_TIME.jpg
-chown -R www-data:www-data $WEBDIR
+cp image.jpg ${WEBDIR}/latest.jpg
+mkdir -p ${WEBDIR}/${ARCHIVE_DATE}
+cp image.jpg ${WEBDIR}/${ARCHIVE_DATE}/${ARCHIVE_TIME}.jpg
+chown -R www-data:www-data ${WEBDIR}
 echo "Updating Animation"
-convert -delay 25 -loop 0 $WEBDIR/$ARCHIVE_DATE/*.jpg $WEBDIR/$ARCHIVE_DATE/daily.gif
+convert -delay 25 -loop 0 ${WEBDIR}/${ARCHIVE_DATE}/*.jpg ${WEBDIR}/${ARCHIVE_DATE}/daily.gif
 
 echo "Cleaning up files"
 
 rm image.jpg*
-rm $CAMERA_FILENAME*
+rm ${CAMERA_FILENAME}*
 
 echo "Done Processing"

@@ -1,6 +1,6 @@
 /**
  * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2018 Maxwell Power
+ * @copyright Copyright (C) 2015-2019 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -294,10 +294,13 @@ ALTER TABLE `password_recover`
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
-INSERT INTO `rainfall` (`rainin`, `last_update`) VALUES ('0.00', '2018-01-01 00:00:00');
+INSERT INTO `rainfall` (`rainin`, `last_update`)
+VALUES ('0.00', '2019-01-01 00:00:00');
 
-INSERT INTO `outage_alert` (`last_sent`, `status`) VALUES ('2018-01-01 00:00:00', '0');
+INSERT INTO `outage_alert` (`last_sent`, `status`)
+VALUES ('2019-01-01 00:00:00', '0');
 
-INSERT INTO `last_update` (`timestamp`) VALUES ('2018-01-01 00:00:00');
+INSERT INTO `last_update` (`timestamp`)
+VALUES ('2019-01-01 00:00:00');
 
 INSERT INTO `system` (`name`, `value`) VALUES ('schema', '2.5');

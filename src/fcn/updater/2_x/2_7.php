@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2018 Maxwell Power
+ * @copyright Copyright (C) 2015-2019 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -35,4 +35,9 @@ switch ($config->version->app) {
         $config->upload->generic->url = '';
         $config->version->app = '2.7.0-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Numerous changes, see CHANGELOG.md for details.</li>';
+
+    // Update from 2.7.0-release
+    case '2.7.0-release':
+        $config->version->app = '2.7.1-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Script Updates and Bug Fixes.</li>';
 }

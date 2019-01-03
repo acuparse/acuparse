@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2018 Maxwell Power
+ * @copyright Copyright (C) 2015-2019 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -230,13 +230,13 @@ if ($config->upload->myacurite->hub_enabled === true) {
     }
 } else {
     disabled:
-    $myacurite = '{"localtime":"' . date('H:i:s') . '"}';
+    $hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
 
 // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $myacurite");
+        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $hubResponse");
     }
 
 // Output the expected response to the smartHUB
-    echo $myacurite;
+    echo $hubResponse;
 }
