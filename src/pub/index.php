@@ -51,6 +51,14 @@ if (isset($_GET['json'])) {
     die();
 }
 
+// Get Tower JSON
+if (isset($_GET['json_tower'])) {
+    require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerData.php');
+    $getData = new getCurrentTowerData($_GET['json_tower']);
+    echo json_encode($getData->getConditions());
+    die();
+}
+
 // Get Camera Watermark
 if (isset($_GET['cam'])) {
     require(APP_BASE_PATH . '/fcn/wmark.php');
