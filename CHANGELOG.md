@@ -8,8 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-# Fixed
+### Fixed
 - Temperature Icon Display
+
+### Added
+- Prefetch using instant.page V1.1.0
 
 ## [[2.7.1]](https://www.acuparse.com/releases/v2-7-1/) - 2019-01-02
 ### Changed
