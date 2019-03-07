@@ -151,8 +151,6 @@ return (object)array(
 
         // MyAcurite
         'myacurite' => (object)array(
-            'hub_enabled' => true, // true or false
-            'hub_url' => 'http://hubapi.myacurite.com',
             'access_enabled' => true, // true or false
             'access_url' => 'https://atlasapi.myacurite.com',
         ),

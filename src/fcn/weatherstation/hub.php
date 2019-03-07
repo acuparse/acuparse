@@ -208,35 +208,12 @@ if ($config->debug->server->enabled === true) {
     file_get_contents('http://' . $config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
 }
 
-// Forward the raw data to MyAcurite
-if ($config->upload->myacurite->hub_enabled === true) {
-
-    // Don't send updates after EoL
-    if ((strtotime('2019-03-01') > strtotime(date('Y-m-d')))) {
-        $myacurite = file_get_contents($config->upload->myacurite->hub_url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
-
-        // Create the response to the HUB. Since Acurite is ending support, we don't want firmware updates
-        $hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
-
-        // Log the raw data
-        if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG,
-                "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $myacurite | Hub Response = $hubResponse");
-        }
-        // Output the expected response to the smartHUB
-        echo $hubResponse;
-    } else {
-        goto disabled;
-    }
-} else {
-    disabled:
-    $hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
+$hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
 
 // Log the raw data
-    if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $hubResponse");
-    }
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $hubResponse");
+}
 
 // Output the expected response to the smartHUB
-    echo $hubResponse;
-}
+echo $hubResponse;
