@@ -20,8 +20,8 @@
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * File: src/fcn/weather/getCurrentWeatherData.php
- * Gets the current weather data from the database
+ * File: src/fcn/weather/getCurrentTowerData.php
+ * Gets the requested tower data from the database
  */
 class getCurrentTowerData
 {
