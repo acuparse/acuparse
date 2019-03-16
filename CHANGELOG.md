@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Removed legacy MyAcurite SmartHub uploading and always generate a system response.
 - Removed DateTimePicker as is currently unused.
+- FontAwesome to v5.7.2.
 
 ### Fixed
 - Temperature Icon Display
