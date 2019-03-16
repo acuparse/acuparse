@@ -1311,7 +1311,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                    name="upload[myacurite][access_enabled]"
                                                    id="myacurite-access-enabled-1" value="1"
                                                    onclick='document.getElementById("myacurite-access-url").disabled=false;'
-                                                <?= ($config->upload->myacurite->hub_enabled === true) ? 'checked="checked"' : false; ?>>
+                                                <?= ($config->upload->myacurite->access_enabled === true) ? 'checked="checked"' : false; ?>>
                                             <label class="form-check-label alert alert-success"
                                                    for="myacurite-access-enabled-1">Enabled</label>
                                         </div>
@@ -1320,7 +1320,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                    name="upload[myacurite][access_enabled]"
                                                    id="myacurite-access-enabled-0" value="0"
                                                    onclick='document.getElementById("myacurite-access-url").disabled=true;'
-                                                <?= ($config->upload->myacurite->hub_enabled === false) ? 'checked="checked"' : false; ?>>
+                                                <?= ($config->upload->myacurite->access_enabled === false) ? 'checked="checked"' : false; ?>>
                                             <label class="form-check-label alert alert-danger"
                                                    for="myacurite-access-enabled-0">Disabled</label>
                                         </div>
