@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Temperature Icon Display
 
 ### Added
-- Prefetch using instant.page V1.2.1
+- Prefetch using instant.page V1.2.2
 
 ## [[2.7.1]](https://www.acuparse.com/releases/v2-7-1/) - 2019-01-02
 ### Changed

@@ -1,4 +1,4 @@
-/*! instant.page v1.2.1 - (C) 2019 Alexandre Dieulot - https://instant.page/license */
+/*! instant.page v1.2.2 - (C) 2019 Alexandre Dieulot - https://instant.page/license */
 
 let urlToPreload
 let mouseoverTimer
@@ -6,10 +6,11 @@ let lastTouchTimestamp
 
 const prefetcher = document.createElement('link')
 const isSupported = prefetcher.relList && prefetcher.relList.supports && prefetcher.relList.supports('prefetch')
+const isDataSaverEnabled = navigator.connection && navigator.connection.saveData
 const allowQueryString = 'instantAllowQueryString' in document.body.dataset
 const allowExternalLinks = 'instantAllowExternalLinks' in document.body.dataset
 
-if (isSupported) {
+if (isSupported && !isDataSaverEnabled) {
     prefetcher.rel = 'prefetch'
     document.head.appendChild(prefetcher)
 
@@ -123,7 +124,5 @@ function preload(url) {
 }
 
 function stopPreloading() {
-    /* The spec says an empty string should abort the prefetching
-    * but Firefox 64 interprets it as a relative URL to prefetch. */
     prefetcher.removeAttribute('href')
 }
