@@ -157,8 +157,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->generic->url = (isset($_POST['upload']['generic']['url'])) ? $_POST['upload']['generic']['url'] : null;
 
         // MyAcurite
-        $config->upload->myacurite->hub_enabled = (bool)$_POST['upload']['myacurite']['hub_enabled'];
-        $config->upload->myacurite->hub_url = $_POST['upload']['myacurite']['hub_url'];
         $config->upload->myacurite->access_enabled = (bool)$_POST['upload']['myacurite']['access_enabled'];
         $config->upload->myacurite->access_url = $_POST['upload']['myacurite']['access_url'];
 
@@ -1307,27 +1305,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                 <div class="col-md-6 col-12 border">
                                     <h3 class="panel-heading">MyAcuRite</h3>
                                     <div class="form-group">
-                                        <h4>smartHub Upload:</h4>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   name="upload[myacurite][hub_enabled]"
-                                                   id="myacurite-hub-enabled-1" value="1"
-                                                   onclick='document.getElementById("myacurite-hub-url").disabled=false;'
-                                                <?= ($config->upload->myacurite->hub_enabled === true) ? 'checked="checked"' : false; ?>>
-                                            <label class="form-check-label alert alert-success"
-                                                   for="myacurite-hub-enabled-1">Enabled</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   name="upload[myacurite][hub_enabled]"
-                                                   id="myacurite-hub-enabled-0" value="0"
-                                                   onclick='document.getElementById("myacurite-hub-url").disabled=true;'
-                                                <?= ($config->upload->myacurite->hub_enabled === false) ? 'checked="checked"' : false; ?>>
-                                            <label class="form-check-label alert alert-danger"
-                                                   for="myacurite-hub-enabled-0">Disabled</label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <h4>Access Upload:</h4>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio"
@@ -1349,7 +1326,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                         </div>
                                     </div>
                                     <hr class="hr-dashed">
-                                    <h4>Upload URL's:</h4>
+                                    <h4>Upload URL:</h4>
                                     <div class="row">
                                         <div class="col">
                                             <p class="alert-info">If installed on the same network as your device,
@@ -1358,23 +1335,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     </div>
                                     <div class="form-row">
                                         <div class="col form-group">
-                                            <label class="col-form-label" for="myacurite-hub-url">Hub URL:</label>
-                                            <select name="upload[myacurite][hub_url]"
-                                                    id="myacurite-hub-url"
-                                                    class="form-control">
-                                                <option value="http://hubapi.myacurite.com" <?= ($config->upload->myacurite->hub_url === "http://hubapi.myacurite.com") ? 'selected="selected"' : false; ?>>
-                                                    myacurite.com (official)
-                                                </option>
-                                                <option value="http://hubapi.acuparse.com" <?= ($config->upload->myacurite->hub_url === "http://hubapi.acuparse.com") ? 'selected="selected"' : false; ?>>
-                                                    acuparse.com (secondary)
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="col form-group">
-                                            <label class="col-form-label" for="myacurite-access-url">Access
-                                                URL:</label>
                                             <select name="upload[myacurite][access_url]"
                                                     id="myacurite-access-url"
                                                     class="form-control">
