@@ -151,8 +151,6 @@ return (object)array(
 
         // MyAcurite
         'myacurite' => (object)array(
-            'hub_enabled' => true, // true or false
-            'hub_url' => 'http://hubapi.myacurite.com',
             'access_enabled' => true, // true or false
             'access_url' => 'https://atlasapi.myacurite.com',
         ),
@@ -188,7 +186,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.7.1-release',
+        'app' => '2.8.0-release',
         'schema' => '2.5',
     ),
 );

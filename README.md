@@ -51,6 +51,7 @@ Additionally, you can request Bootstrap 4 formatted HTML, a JSON array, or plain
 * HTML: `http(s)://<yourip/domain>/?weather`
 * Archive HTML: `http(s)://<yourip/domain>/archive?html`
 * JSON: `http(s)://<yourip/domain>/?json`
+* Tower JSON: `http(s)://<yourip/domain>/?json_tower&sensor=<SENSOR ID>`
 * Plain Text: `http(s)://<yourip/domain>/?cam`
    
 # Installation:

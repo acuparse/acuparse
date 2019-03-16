@@ -57,25 +57,21 @@ function moonIcon($moonStage)
     return $moonIcon;
 }
 
-// Find the right temp icon to show:
+// Show the right icon based on current temp
 function tempIcon($tempC)
 {
-    switch ($tempC) {
-        case ($tempC < -10):
-            $tempIcon = 'fa-thermometer-empty';
-            break;
-        case ($tempC >= -10 && $tempC <= 0):
-            $tempIcon = 'fa-thermometer-quarter';
-            break;
-        case ($tempC > 0 && $tempC < 15):
-            $tempIcon = 'fa-thermometer-half';
-            break;
-        case ($tempC >= 15 && $tempC <= 30):
-            $tempIcon = 'fa-thermometer-three-quarters';
-            break;
-        case ($tempC > 30):
-            $tempIcon = 'fa-thermometer-full';
-            break;
+    if ($tempC < -30) {
+        $tempIcon = 'fa-thermometer-empty';
+    } else if ($tempC >= -30 && $tempC < 0) {
+        $tempIcon = 'fa-thermometer-quarter';
+    } else if ($tempC >= 0 && $tempC < 15) {
+        $tempIcon = 'fa-thermometer-half';
+    } else if ($tempC >= 15 && $tempC <= 30) {
+        $tempIcon = 'fa-thermometer-three-quarters';
+    } else if ($tempC > 30) {
+        $tempIcon = 'fa-thermometer-full';
+    } else {
+        $tempIcon = 'fa-thermometer';
     }
     return $tempIcon;
 }

@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.8.0]](https://www.acuparse.com/releases/v2-8-0/) - 2019-03-16
+### Changed
+- Removed legacy MyAcurite SmartHub uploading and always generate a system response.
+- Removed DateTimePicker as is currently unused.
+- FontAwesome to v5.7.2.
+- Bootstrap to 4.3.1.
+
+### Fixed
+- Temperature Icon Display
+
+### Added
+- Prefetch using instant.page V1.2.2
+
 ## [[2.7.1]](https://www.acuparse.com/releases/v2-7-1/) - 2019-01-02
 ### Changed
 - Bootstrap to V4.2.1.

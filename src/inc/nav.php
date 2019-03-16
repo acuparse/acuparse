@@ -61,7 +61,7 @@
                             <a class="<?= ($liveCamActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
                                href="/camera"><i class="far fa-eye" aria-hidden="true"></i> Live View</a>
                             <a class="<?= ($camArchiveActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
-                               href="/camera?archive"><i class="far fa-images" aria-hidden="true"></i> Archive</a>
+                               href="/camera?archive" data-instant><i class="far fa-images" aria-hidden="true"></i> Archive</a>
                         </div>
                     </li>
                 <?php }
@@ -140,14 +140,14 @@
                             $userPasswordActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']))) ? true : false;
                             ?>
                             <a class="<?= ($userEditActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
-                               href="/admin/account?edit"><i class="fas fa-user-edit" aria-hidden="true"></i>
-                                My Account</a>
+                               href="/admin/account?edit" data-instant><i class="fas fa-user-edit"
+                                                                          aria-hidden="true"></i> My Account</a>
                             <a class="<?= ($userPasswordActive) ? 'dropdown-item active' : 'dropdown-item'; ?>"
-                               href="/admin/account?password"><i class="fas fa-user-secret"
-                                                                 aria-hidden="true"></i> Change Password</a>
-                            <a class="dropdown-item" href="/admin/account?deauth"><i class="fas fa-sign-out-alt"
-                                                                                     aria-hidden="true"></i>
-                                Sign Out</a>
+                               href="/admin/account?password" data-instant><i class="fas fa-user-secret"
+                                                                              aria-hidden="true"></i> Change
+                                Password</a>
+                            <a class="dropdown-item" href="/admin/account?deauth" data-no-instant><i
+                                        class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign Out</a>
                         </div>
                     </li>
                     <?php

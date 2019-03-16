@@ -46,11 +46,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
             <div class="col-md-4 col-12">
                 <h3>Users:</h3>
                 <button type="button" id="add-user" class="btn btn-outline-secondary btn-block"
-                        onclick="location.href = '/admin/account?add'"><i class="fas fa-user-plus"
+                        onclick="location.href = '/admin/account?add'" data-instant><i class="fas fa-user-plus"
                                                                           aria-hidden="true"></i> Add New User
                 </button>
                 <button type="button" id="view-users" class="btn btn-outline-secondary btn-block margin-top-10"
-                        onclick="location.href = '/admin/account?view'"><i class="far fa-list-alt"
+                        onclick="location.href = '/admin/account?view'" data-instant><i class="far fa-list-alt"
                                                                            aria-hidden="true"></i> View/Edit Users
                 </button>
             </div>
@@ -58,11 +58,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                 <div class="col-md-4 col-12">
                     <h3>Tower Sensors:</h3>
                     <button type="button" id="add-tower" class="btn btn-outline-secondary btn-block"
-                            onclick="location.href = '/admin/tower?add'"><i class="far fa-plus-square"
+                            onclick="location.href = '/admin/tower?add'" data-instant><i class="far fa-plus-square"
                                                                             aria-hidden="true"></i> Add New Tower
                     </button>
                     <button type="button" id="view-towers" class="btn btn-outline-secondary btn-block margin-top-10"
-                            onclick="location.href = '/admin/tower?view'"><i class="far fa-list-alt"
+                            onclick="location.href = '/admin/tower?view'" data-instant><i class="far fa-list-alt"
                                                                              aria-hidden="true"></i> View/Edit Towers
                     </button>
                 </div>
