@@ -28,8 +28,8 @@
 switch ($config->version->app) {
 
     // Update from 2.7.1
-    case '2.7.1':
-        $config->version->app = '2.8.0';
+    case '2.7.1-release':
+        $config->version->app = '2.8.0-release';
         unset($config->upload->myacurite->hub_enabled);
         unset($config->upload->myacurite->hub_url);
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Cleanup SmartHub stuff and minor feature changes.';

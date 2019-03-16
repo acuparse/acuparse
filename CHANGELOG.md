@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [[2.8.0]](https://www.acuparse.com/releases/v2-8-0/) - 2019-03-16
 ### Changed
 - Removed legacy MyAcurite SmartHub uploading and always generate a system response.
 - Removed DateTimePicker as is currently unused.
