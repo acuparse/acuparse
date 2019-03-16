@@ -55,7 +55,6 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
     <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
     <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
     <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) { ?>
-        <link href="/lib/mit/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet">
         <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
     <?php }
     if (($_SERVER['PHP_SELF'] === '/admin/tower.php') && (isset($_GET['view']))) { ?>

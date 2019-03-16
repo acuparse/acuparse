@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Removed legacy MyAcurite SmartHub uploading and always generate a system response.
+- Removed DateTimePicker as is currently unused.
 
 ### Fixed
 - Temperature Icon Display
