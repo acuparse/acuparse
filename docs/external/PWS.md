@@ -1,9 +1,9 @@
-### PWS Weather Updater
+# PWS Weather Updater
 
-# Registration:
-* Register for a new account: http://www.pwsweather.com/register.php
-* Add a station: http://www.pwsweather.com/station.php
+## Registration:
+1. Register for a new account: http://www.pwsweather.com/register.php
+2. Add a station: http://www.pwsweather.com/station.php
 
-# Configuration:
-* Change enabled to true
-* Input your station id and PWS password
+## Configuration:
+1. Change enabled to true
+2. Input your station id and PWS password

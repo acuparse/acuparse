@@ -17,10 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bootstrap to 4.3.1.
 
 ### Fixed
-- Temperature Icon Display
+- Temperature Icon Display.
 
 ### Added
-- Prefetch using instant.page V1.2.2
+- Prefetch using instant.page V1.2.2.
+- Get Tower data in JSON Format (see README.md).
 
 ## [[2.7.1]](https://www.acuparse.com/releases/v2-7-1/) - 2019-01-02
 ### Changed
