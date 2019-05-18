@@ -2,7 +2,7 @@
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
-Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+Acuparse is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite®‎ 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to Weather Underground, Weathercloud, PWS Weather, Windy, and CWOP. It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
@@ -12,7 +12,7 @@ Users currently having trouble sending updates to Weather Underground should fin
 
 # Features:
 * **Your weather data belongs to you, stored on your OWN server.**
-* Display live camera images, send them to Weather Underground, and link from other sites.
+* Display live camera images, send them to Weather Underground, and link from other sites like Weathercloud.
 * Uploads weather data from your 5-in-1/Atlas and Tower sensors to external providers.
 * Customize barometer readings.
 * Light and Dark Themes.
@@ -60,9 +60,9 @@ Additionally, you can request Bootstrap 4 formatted HTML, a JSON array, or plain
 
 See [docs/INSTALL.md](https://acuparse.github.io/acuparse/INSTALL) for detailed installation instructions.
 
-Installing on a fresh instance of a Debian based OS is the only officially supported and tested install method.
+Installing on a fresh instance of a Debian/Ubuntu OS is the only officially supported and tested install method.
 
-Acuparse can, **in theory**, be run locally on a Raspberry Pi(Raspbian). Some installer modifications might be required, if not using a supported OS.
+Acuparse can, **in theory**, be run locally on a Raspberry Pi(Raspbian). It is not officially supported by the installer! Some modifications/manual configuration might be required on ARM platforms.
 
 **Access Users**
 
@@ -79,6 +79,10 @@ Install the base operating system and update. Then download and run the installe
 If you experience unexpected results during or after your install, remove the config file and try again.
 
 `sudo rm /opt/acuparse/src/usr/config.php`
+
+If you receive a '1' after your install. Check to ensure the database was installed correctly.
+
+* See "Setup Database" in [docs/INSTALL.md](https://acuparse.github.io/acuparse/INSTALL)
 
 # Updating:
 Detailed upgrade instructions for significant releases will be published in the docs/updates folder if required.

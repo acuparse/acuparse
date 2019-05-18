@@ -61,7 +61,8 @@
                             <a class="<?= ($liveCamActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
                                href="/camera"><i class="far fa-eye" aria-hidden="true"></i> Live View</a>
                             <a class="<?= ($camArchiveActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
-                               href="/camera?archive" data-instant><i class="far fa-images" aria-hidden="true"></i> Archive</a>
+                               href="/camera?archive" data-instant><i class="far fa-images" aria-hidden="true"></i>
+                                Archive</a>
                         </div>
                     </li>
                 <?php }
@@ -91,6 +92,12 @@
                                    href="//www.pwsweather.com/obs/<?= $config->upload->pws->id; ?>.html"
                                    target="_blank"><img src="/img/external/pws.ico" width="16" height="16"
                                                         aria-hidden="true" alt="PWS Icon"> PWS Weather</a>
+                            <?php } ?>
+                            <?php if ($config->upload->windy->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//www.windy.com/station/pws-<?= $config->upload->windy->id; ?>"
+                                   target="_blank"><img src="/img/external/windy.ico" width="16" height="16"
+                                                        aria-hidden="true" alt="Windy Icon"> Windy</a>
                             <?php } ?>
                             <?php if ($config->upload->cwop->enabled === true) { ?>
                                 <a class="dropdown-item"

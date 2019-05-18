@@ -150,6 +150,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->wc->device = (isset($_POST['upload']['wc']['device'])) ? $_POST['upload']['wc']['device'] : null;
         $config->upload->wc->url = (isset($_POST['upload']['wc']['url'])) ? $_POST['upload']['wc']['url'] : null;
 
+        // Windy
+        $config->upload->windy->enabled = (bool)$_POST['upload']['windy']['enabled'];
+        $config->upload->windy->id = (isset($_POST['upload']['windy']['id'])) ? $_POST['upload']['windy']['id'] : null;
+        $config->upload->windy->key = (isset($_POST['upload']['windy']['key'])) ? $_POST['upload']['windy']['key'] : null;
+
         // Generic
         $config->upload->generic->enabled = (bool)$_POST['upload']['generic']['enabled'];
         $config->upload->generic->id = (isset($_POST['upload']['generic']['id'])) ? $_POST['upload']['generic']['id'] : null;
@@ -908,7 +913,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             </div>
                             <div class="row">
                                 <!-- Master Temp Sensor -->
-                                <div class="col-md-6 col-12 mx-auto alert alert-secondary">
+                                <div class="col-md-6 col-12 border alert alert-secondary">
                                     <h3 class="panel-heading">Master Temp/Humidity Sensor</h3>
                                     <p>Choose the main sensor used when uploading Temp/Humidity data to
                                         3rd party sites. This does not affect the main dashboard.</p>
@@ -972,6 +977,53 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                 <label class="form-check-label alert alert-success"
                                                        for="station-updates-sensor-archive-1">Enabled</label>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- MyAcuRite -->
+                                <div class="col-md-6 col-12 border alert">
+                                    <h3 class="panel-heading">MyAcuRite</h3>
+                                    <div class="form-group">
+                                        <h4>Access Upload:</h4>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][access_enabled]"
+                                                   id="myacurite-access-enabled-1" value="1"
+                                                   onclick='document.getElementById("myacurite-access-url").disabled=false;'
+                                                <?= ($config->upload->myacurite->access_enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert alert-success"
+                                                   for="myacurite-access-enabled-1">Enabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][access_enabled]"
+                                                   id="myacurite-access-enabled-0" value="0"
+                                                   onclick='document.getElementById("myacurite-access-url").disabled=true;'
+                                                <?= ($config->upload->myacurite->access_enabled === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert alert-danger"
+                                                   for="myacurite-access-enabled-0">Disabled</label>
+                                        </div>
+                                    </div>
+                                    <hr class="hr-dashed">
+                                    <h4>Upload URL:</h4>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="alert-info">If installed on the same network as your device,
+                                                use secondary.<br>See <code>docs/DNS.md</code></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col form-group">
+                                            <select name="upload[myacurite][access_url]"
+                                                    id="myacurite-access-url"
+                                                    class="form-control">
+                                                <option value="https://atlasapi.myacurite.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") ? 'selected="selected"' : false; ?>>
+                                                    myacurite.com (official)
+                                                </option>
+                                                <option value="https://atlasapi.acuparse.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") ? 'selected="selected"' : false; ?>>
+                                                    acuparse.com (secondary)
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -1301,53 +1353,63 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             <hr class="hr">
 
                             <div class="row">
-                                <!-- MyAcuRite -->
+                                <!-- Windy Upload -->
                                 <div class="col-md-6 col-12 border">
-                                    <h3 class="panel-heading">MyAcuRite</h3>
+                                    <h3 class="panel-heading">Windy</h3>
                                     <div class="form-group">
-                                        <h4>Access Upload:</h4>
+                                        <h4>Status:</h4>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio"
-                                                   name="upload[myacurite][access_enabled]"
-                                                   id="myacurite-access-enabled-1" value="1"
-                                                   onclick='document.getElementById("myacurite-access-url").disabled=false;'
-                                                <?= ($config->upload->myacurite->access_enabled === true) ? 'checked="checked"' : false; ?>>
-                                            <label class="form-check-label alert alert-success"
-                                                   for="myacurite-access-enabled-1">Enabled</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   name="upload[myacurite][access_enabled]"
-                                                   id="myacurite-access-enabled-0" value="0"
-                                                   onclick='document.getElementById("myacurite-access-url").disabled=true;'
-                                                <?= ($config->upload->myacurite->access_enabled === false) ? 'checked="checked"' : false; ?>>
+                                                   name="upload[windy][enabled]"
+                                                   id="windy-updates-enabled-0" value="0"
+                                                   onclick='document.getElementById("windy-updates-id").disabled=true;document.getElementById("windy-updates-key").disabled=true;'
+                                                <?= ($config->upload->windy->enabled === false) ? 'checked="checked"' : false; ?>>
                                             <label class="form-check-label alert alert-danger"
-                                                   for="myacurite-access-enabled-0">Disabled</label>
+                                                   for="windy-updates-enabled-0">Disabled</label>
                                         </div>
-                                    </div>
-                                    <hr class="hr-dashed">
-                                    <h4>Upload URL:</h4>
-                                    <div class="row">
-                                        <div class="col">
-                                            <p class="alert-info">If installed on the same network as your device,
-                                                use secondary.<br>See <code>docs/DNS.md</code></p>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[windy][enabled]"
+                                                   id="windy-updates-enabled-1" value="1"
+                                                   onclick='document.getElementById("windy-updates-id").disabled=false;document.getElementById("windy-updates-key").disabled=false;'
+                                                <?= ($config->upload->windy->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert alert-success"
+                                                   for="windy-updates-enabled-1">Enabled</label>
                                         </div>
                                     </div>
                                     <div class="form-row">
+                                        <label class="col-form-label" for="windy-updates-id">ID:</label>
                                         <div class="col form-group">
-                                            <select name="upload[myacurite][access_url]"
-                                                    id="myacurite-access-url"
-                                                    class="form-control">
-                                                <option value="https://atlasapi.myacurite.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.myacurite.com") ? 'selected="selected"' : false; ?>>
-                                                    myacurite.com (official)
-                                                </option>
-                                                <option value="https://atlasapi.acuparse.com" <?= ($config->upload->myacurite->access_url === "https://atlasapi.acuparse.com") ? 'selected="selected"' : false; ?>>
-                                                    acuparse.com (secondary)
-                                                </option>
-                                            </select>
+                                            <input type="text" class="form-control"
+                                                   name="upload[windy][id]"
+                                                   id="windy-updates-id"
+                                                   maxlength="35"
+                                                   placeholder="ID"
+                                                <?= ($config->upload->windy->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->windy->id; ?>">
+                                            <small id="wc-updates-id-help" class="form-text text-muted">Your <a
+                                                        href="https://stations.windy.com/stations">Windy</a>
+                                                Station ID
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label class="col-form-label" for="windy-updates-key">API Key:</label>
+                                        <div class="col form-group">
+                                            <input type="text" class="form-control"
+                                                   name="upload[windy][key]"
+                                                   id="windy-updates-key"
+                                                   maxlength="150"
+                                                   placeholder="XXX-API-KEY-XXX"
+                                                <?= ($config->upload->windy->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                                   value="<?= $config->upload->windy->key; ?>">
+                                            <small id="windy-updates-key-help" class="form-text text-muted">Your
+                                                Windy API Key.
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Generic Upload -->
                                 <div class="col-md-6 col-12 border">
                                     <h3 class="panel-heading">Generic Update Server</h3>
