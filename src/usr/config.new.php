@@ -141,6 +141,14 @@ return (object)array(
             'url' => 'http://api.weathercloud.net/v01/set', // Weathercloud API path
         ),
 
+        // Windy Settings
+        'windy' => (object)array(
+            'enabled' => false, // true or false
+            'id' => '', // ID
+            'key' => '', // Station API Key
+            'url' => 'http://stations.windy.com/pws/update', // Windy API path
+        ),
+
         // Generic Settings
         'generic' => (object)array(
             'enabled' => false, // true or false
@@ -186,7 +194,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.8.0-release',
-        'schema' => '2.5',
+        'app' => '2.9.0-release',
+        'schema' => '2.9',
     ),
 );

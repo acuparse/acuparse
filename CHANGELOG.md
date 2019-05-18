@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.9.0]](https://www.acuparse.com/releases/v2-9-0/) - 2019-05-18
+### Changed
+- FontAwesome to v5.8.2.
+- JQuery to v3.4.1.
+- Lightbox to V2.11.0.
+- Updated README.md
+- Modified External Updater Docs
+
+### Added
+- Support for Windy.com
+
 ## [[2.8.0]](https://www.acuparse.com/releases/v2-8-0/) - 2019-03-16
 ### Changed
 - Removed legacy MyAcurite SmartHub uploading and always generate a system response.
