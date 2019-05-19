@@ -33,5 +33,4 @@ switch ($config->version->app) {
         unset($config->upload->myacurite->hub_enabled);
         unset($config->upload->myacurite->hub_url);
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Cleanup SmartHub stuff and minor feature changes.';
-
 }

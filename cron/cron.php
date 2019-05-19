@@ -207,6 +207,20 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         }
     }
 
+    // Build Windy Update
+    if ($config->upload->windy->enabled === true) {
+        $windyQueryUrl = $config->upload->windy->url . '/' . $config->upload->windy->key;
+        $windyQuery = '?tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSmph . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN;
+        $windyQueryResult = file_get_contents($windyQueryUrl . $windyQuery);
+        // Save to DB
+        mysqli_query($conn,
+            "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
+        if ($config->debug->logging === true) {
+            // Log it
+            syslog(LOG_DEBUG, "(EXTERNAL)[Windy]: Query = $windyQuery | Result = $windyQueryResult");
+        }
+    }
+
     // Build Generic WU Based Update
     if ($config->upload->generic->enabled === true) {
         $genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;

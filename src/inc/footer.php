@@ -29,7 +29,7 @@
 
 <!-- JS -->
 
-<script src="/lib/mit/jquery/js/jquery-3.3.1.min.js"></script>
+<script src="/lib/mit/jquery/js/jquery.min.js"></script>
 <script src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
 <?php
 if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
