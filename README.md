@@ -1,4 +1,7 @@
 # [Acuparse](https://www.acuparse.com)
+
+[![Join the chat at https://gitter.im/acuparse/acuparse](https://badges.gitter.im/acuparse/acuparse.svg)](https://gitter.im/acuparse/acuparse?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 ### See it in action @ [ghwx.ca](https://www.ghwx.ca)
 
