@@ -4,11 +4,13 @@ https://github.com/bpaauwe/WeatherPoly
 
 Using the generic uploader, readings can be sent to WeatherPoly.
 
-## Configuration:
+## Configuration
+
 1. Change enabled to true
 2. Configure the URL with your Polyglot's IP/Host and the port number.
 
-## Mappings:
+## Mappings
+
 * temperature-main = tempf
 * temperature-dewpoint = dewptf
 * humidiy-main = humidity

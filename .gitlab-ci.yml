@@ -1,0 +1,149 @@
+stages:
+  - lint
+  - test
+  - docs
+  - quality
+
+.php_template: &php_template
+  image: php:7.3
+  stage: lint
+  script:
+    - find . -name \*.php -exec php -l "{}" \;
+
+.md_template: &md_template
+  stage: lint
+  image: pipelinecomponents/markdownlint:latest
+  script:
+    - mdl -g -i -r ~MD013 --warnings .
+
+.bash_template: &bash_template
+  image: koalaman/shellcheck-alpine
+  stage: lint
+  script:
+    - shellcheck cam/templates/*
+
+.docs_template: &docs_template
+  stage: docs
+  image: python:alpine
+  before_script:
+    - pip install mkdocs
+    - pip install mkdocs-cinder
+    - pip install mkdocs-minify-plugin
+
+.buster_template: &buster_template
+  image: debian:buster
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+    EMAIL: "ci@dev.acuparse.com"
+    TEST_USERNAME: "ci"
+    TEST_PASSWORD: ":}P@sssW0rd:)"
+  before_script:
+    - apt-get update
+    - apt-get dist-upgrade -y
+    - apt-get install curl wget -y
+    - wget https://gitlab.com/acuparse/installer/raw/"$INSTALLER_BRANCH"/install
+    - mkdir tests/
+  script:
+    - bash install -s -d
+    - export $(cat ~/.acuparse_db)
+    - curl -d 'mysql[hostname]=localhost&mysql[database]=acuparse&mysql[username]=acuparse&mysql[password]='"$ACUPARSE_DATABASE_PASSWORD"'&mysql[trim]=1' -X POST 'http://localhost/admin/install/?database'
+    - curl -d 'username='"$TEST_USERNAME"'&email='"$EMAIL"'&password='"$TEST_PASSWORD" -X POST 'http://127.0.0.1/admin/install/?account&do'
+    - curl -o tests/index.html http://127.0.0.1
+    - curl -k -o tests/index_ssl.html https://127.0.0.1
+    - curl -o tests/output.json http://127.0.0.1/?json
+    - curl -o tests/weather.html http://127.0.0.1/?weather
+    - curl -o tests/archive.html http://127.0.0.1/archive?html
+  artifacts:
+    paths:
+      - tests/
+
+check_php:
+  <<: *php_template
+  only:
+    - master
+
+DEV_check_php:
+  <<: *php_template
+  except:
+    - master
+  allow_failure: true
+
+markdown:
+  <<: *md_template
+  only:
+    - master
+
+DEV_markdown:
+  <<: *md_template
+  except:
+    - master
+  allow_failure: true
+
+bash_scripts:
+  <<: *bash_template
+  before_script:
+    - export SHELLCHECK_OPTS="-e SC2034 -e SC2059 -e SC2086"
+  only:
+    - master
+
+DEV_bash_scripts:
+  <<: *bash_template
+  except:
+    - master
+  allow_failure: true
+
+debian_buster:
+  <<: *buster_template
+  variables:
+    INSTALLER_BRANCH: master
+  only:
+    - master
+
+DEV_debian_buster:
+  <<: *buster_template
+  variables:
+    INSTALLER_BRANCH: dev
+  allow_failure: true
+  except:
+    - master
+
+pages:
+  <<: *docs_template
+  script:
+    - mkdocs build
+  only:
+    - master
+  artifacts:
+    paths:
+      - public
+
+DEV_pages:
+  <<: *docs_template
+  script:
+    - mkdocs build --site-dir test
+  except:
+    - master
+  allow_failure: true
+  artifacts:
+    paths:
+      - test
+
+code_quality:
+  image: docker:stable
+  stage: quality
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+      --env SOURCE_CODE="$PWD"
+      --volume "$PWD":/code
+      --volume /var/run/docker.sock:/var/run/docker.sock
+      "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json

@@ -11,3 +11,4 @@ src/pub/img/cam/*
 !src/pub/img/cam/.gitkeep
 logs/*
 !logs/.gitkeep
+site/

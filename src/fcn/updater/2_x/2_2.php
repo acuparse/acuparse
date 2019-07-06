@@ -43,7 +43,7 @@ switch ($config->version->app) {
         unset($config->upload->myacurite->enabled);
         unset($config->upload->myacurite->url);
 
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://acuparse.github.io/acuparse/updates/from2_1">docs/updates/from2_1.md</a></li>';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support for the Acurite Access.<br> NOTICE: Apache rebuild required. See <a href="https://docs.acuparse.com/updates/from2_1">docs/updates/from2_1.md</a></li>';
 
     // Update from 2.2.0
     case '2.2.0':

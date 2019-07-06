@@ -1477,7 +1477,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     </div>
                                     <p><strong>Supported Servers:</strong></p>
                                     <ul>
-                                        <li><a href="https://acuparse.github.io/acuparse/external/generic/WeatherPoly">WeatherPoly</a>:
+                                        <li><a href="https://docs.acuparse.com/external/generic/WeatherPoly">WeatherPoly</a>:
                                             http(s)://{IP/HOSTNAME}:8080/acuparse
                                         </li>
                                     </ul>

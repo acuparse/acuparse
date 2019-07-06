@@ -1,16 +1,16 @@
-# Acuparse
-## AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+# Contributing
 
-# Contributing:
 If you're interested in contributing to Acuparse, the first step is joining the development mailing list.
 
 Join the [mailing lists](https://lists.acuparse.com).
 
-## Branches:
+## Branches
+
 * `master`: Holds the most recent stable release.
 * `dev`: Development happens in this branch. Releases are eventually merged into `master`.
 
-## Versioning:
+## Versioning
+
 Acuparse will follow the Semantic Versioning guidelines as much as possible. Releases will be numbered with the following format:
 
 ``` <major>.<minor>.<patch> ```
