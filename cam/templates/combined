@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 ##
 # Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 # @copyright Copyright (C) 2015-2019 Maxwell Power
@@ -21,7 +22,7 @@
 ##
 
 ##
-# File: cam/templates/combined.sh
+# File: cam/templates/combined
 # Combined IP camera shell script
 ##
 
@@ -34,7 +35,6 @@ CAMERA_FILENAME='snapshot.jpg' # Camera image name
 RESIZE='50%'
 ### END USER VALUES ###
 
-BASEDIR='/opt/acuparse/cam/tmp'
 WEBDIR='/opt/acuparse/src/pub/img/cam'
 ARCHIVE_DATE=$(date +"%Y-%m-%d")
 ARCHIVE_TIME=$(date +"%H%M")

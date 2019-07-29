@@ -1,0 +1,43 @@
+site_name: Acuparse Docs
+site_url: https://docs.acuparse.com/
+repo_url: https://gitlab.com/acuparse/acuparse/
+theme:
+  name: cinder
+site_dir: public
+google_analytics:
+  - 'UA-93235303-2'
+  - 'auto'
+nav:
+  - Home: 'index.md'
+  - Install:
+    - Install Guide: 'INSTALL.md'
+    - DNS Redirect: 'DNS.md'
+    - NGINX Proxy: 'NGINX.md'
+    - Windows: 'WINDOWS.md'
+    - Updates:
+        - From 2.1: 'updates/from2_1.md'
+        - From 2.4: 'updates/from2_4.md'
+  - External:
+    - WeatherPoly: 'external/generic/WeatherPoly.md'
+    - CWOP: 'external/CWOP.md'
+    - PWS: 'external/PWS.md'
+    - WeatherCloud: 'external/WC.md'
+    - Windy: 'external/WINDY.md'
+    - WeatherUnderground: 'external/WU.md'
+copyright: "Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3"
+extra:
+  social:
+    - type: 'gitlab'
+      link: 'https://gitlab.com/acuparse'
+    - type: 'github'
+      link: 'https://github.com/acuparse'
+  manifest: 'manifest.webmanifest'
+  search:
+    language: 'en'
+markdown_extensions:
+  - toc:
+      permalink: true
+plugins:
+  - search
+  - minify:
+      minify_html: true

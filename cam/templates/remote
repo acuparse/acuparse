@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 ##
 # Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 # @copyright Copyright (C) 2015-2019 Maxwell Power
@@ -21,7 +22,7 @@
 ##
 
 ##
-# File: cam/templates/remote.sh
+# File: cam/templates/remote
 # Remote IP camera upload shell script
 ##
 
@@ -40,7 +41,7 @@ APACHE_GROUP='www-data'
 
 echo "Starting remote processing"
 
-cd ${BASEDIR}
+cd ${BASEDIR} || exit 1
 
 echo "Applying Weather Info Watermark"
 convert image.jpg \

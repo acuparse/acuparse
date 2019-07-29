@@ -6,10 +6,12 @@ After you have sent data packets to CWOP, check that your data is successfully r
 
 If your plotted location on the findU map is correct, send an e-mail to cwop-support@noaa.gov giving your CW/DW designator and ask to be registered. Your data can then flow to NOAA.
 
-## Registration:
+## Registration
+
 http://www.findu.com/citizenweather/cw_form.html
 
-## Configuration:
+## Configuration
+
 1. Change enabled to true
 2. Input your station id
 3. Enter your station coordinates in `ddmm.hhN/dddmm.hhW` format. Where d is degrees, m is minutes and h is hundredths of minutes. The hemispheres are represented by capital letters; N, E, S, W

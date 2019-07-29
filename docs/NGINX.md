@@ -1,4 +1,4 @@
-# NGINX Proxy Config (optional):
+# NGINX Proxy Config
 
 When using a domain, install NGINX to make redirects easier. It also keeps your custom domain configuration separate from the Acuparse config.
 
