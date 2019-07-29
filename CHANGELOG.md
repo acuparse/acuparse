@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.9.1]](https://www.acuparse.com/releases/v2-9-1/) - 2019-06-28
+
+### Changed
+
+- Update Docs and Support for Debian Buster
+- Move repo to GitLab
+
+### Added
+- Implement CI
+- Build docs using mkdocs
+
 ## [[2.9.0]](https://www.acuparse.com/releases/v2-9-0/) - 2019-05-18
 
 ### Changed

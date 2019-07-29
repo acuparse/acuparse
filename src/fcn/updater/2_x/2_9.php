@@ -76,4 +76,9 @@ switch ($config->version->app) {
             }
         }
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Adding Windy Support, Doc. Updates';
+
+    // Update from 2.9.0
+    case '2.9.0-release':
+        $config->version->app = '2.9.1-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Buster Support, Doc. Updates';
 }
