@@ -125,7 +125,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         $wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
         $wuQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&winddir_avg2m=' . $data->windDEG_avg2 . '&windspeedmph=' . $data->windSmph . '&windspdmph_avg2m=' . $data->windSmph_avg2 . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
         $wuQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
-        $wuQueryResult = file_get_contents(htmlspecialchars($wuQueryUrl . $wuQuery . $wuQueryStatic));
+        $wuQueryResult = file_get_contents(htmlentities($wuQueryUrl . $wuQuery . $wuQueryStatic));
         // Save to DB
         mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wuQuery', '$wuQueryResult')");
         if ($config->debug->logging === true) {
@@ -226,7 +226,7 @@ if (($result['tempF'] != $data->tempF) || ($result['windSmph'] != $data->windSmp
         $genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;
         $genericQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&winddir_avg2m=' . $data->windDEG_avg2 . '&windspeedmph=' . $data->windSmph . '&windspdmph_avg2m=' . $data->windSmph_avg2 . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
         $genericQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
-        $genericQueryResult = file_get_contents(htmlspecialchars($genericQueryUrl . $genericQuery . $genericQueryStatic));
+        $genericQueryResult = file_get_contents(htmlentities($genericQueryUrl . $genericQuery . $genericQueryStatic));
         // Save to DB
         mysqli_query($conn,
             "INSERT INTO `generic_updates` (`query`,`result`) VALUES ('$genericQuery', '$genericQueryResult')");

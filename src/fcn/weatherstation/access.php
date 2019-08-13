@@ -101,7 +101,7 @@ if ($_GET['mt'] === '5N1') {
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG,
-                    "(ACCESS)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure (DISABLED) = $baromin");
+                    "(ACCESS)[5N1]: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure (DISABLED) = $baromin");
             }
         }
     }
@@ -156,7 +156,7 @@ elseif ($_GET['mt'] === 'Atlas') {
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG,
-                    "(ACCESS)[ATLAS]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure = $baromin");
+                    "(ACCESS)[ATLAS]: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure = $baromin");
             }
         } else { // Baro. readings disabled
             mysqli_multi_query($conn,

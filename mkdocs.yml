@@ -2,7 +2,7 @@ site_name: Acuparse Docs
 site_url: https://docs.acuparse.com/
 repo_url: https://gitlab.com/acuparse/acuparse/
 theme:
-  name: cinder
+  name: material
 site_dir: public
 google_analytics:
   - 'UA-93235303-2'
