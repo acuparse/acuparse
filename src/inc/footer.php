@@ -66,7 +66,7 @@ if (isset($page_footer)) {
 <!-- END Site Container -->
 
 <!-- instant.page prefetch -->
-<script src="/lib/mit/instant.page/1.2.2.js" type="module"></script>
+<script src="/lib/mit/instant.page/2.0.0.js" type="module"></script>
 
 </body>
 </html>
