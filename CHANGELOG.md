@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.9.2]](https://www.acuparse.com/releases/v2-9-2/) - 2019-08-17
+
+### Changed
+
+- Fix Wind Direction
+- Switch to htmlentities for Wunderground Upload
+- FontAwesome to v5.10.1
+- Lightbox to v2.11.1
+- InstantPage to v2.0.0
+- Mailing list to Google Apps
+
+### Added
+
+- Gitter Badge
+
 ## [[2.9.1]](https://www.acuparse.com/releases/v2-9-1/) - 2019-06-28
 
 ### Changed

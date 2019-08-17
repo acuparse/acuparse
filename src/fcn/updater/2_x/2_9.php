@@ -81,4 +81,9 @@ switch ($config->version->app) {
     case '2.9.0-release':
         $config->version->app = '2.9.1-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Buster Support, Doc. Updates';
+
+    // Update from 2.9.1
+    case '2.9.1-release':
+        $config->version->app = '2.9.2-release';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Fixes Wind Direction';
 }
