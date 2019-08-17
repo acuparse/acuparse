@@ -90,24 +90,17 @@ class getCurrentWeatherData
             "SELECT AVG(degrees) AS `avg_degrees` FROM `winddirection` WHERE `timestamp` <= DATE_SUB(NOW(), INTERVAL 10 MINUTE)"));
         $this->windDEG_avg10 = (int)round($result['avg_degrees']); // Degrees
 
-        // Today's Peak Windspeed:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-        $this->wind_recorded_peak = date('H:i', strtotime($result['reported'])); // Recorded at
-        $this->windSmph_peak = (int)round($result['windSmph']); // Miles per hour
-        $this->windSkmh_peak = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
-
-        // Process Peak Wind Direction:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `degrees` FROM `winddirection` WHERE `timestamp` = (SELECT `timestamp` FROM `windspeed` WHERE (SELECT MAX(speedMPH) FROM `windspeed` WHERE DATE(`timestamp`) = CURDATE()
-              AND DATE(`timestamp`) = CURDATE() ORDER BY `timestamp` DESC LIMIT 1) ORDER BY `timestamp` DESC LIMIT 1) ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->windDEG_peak = (int)$result['degrees']; // Degrees
-
         // 2 Min Average Windspeed:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT AVG(speedMPH) AS `avg_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)"));
         $this->windSmph_avg2 = (int)round($result['avg_speedMPH']); // Miles per hour
         $this->windSkmh_avg2 = (int)round($result['avg_speedMPH'] * 1.60934); // Convert to Kilometers per hour
+
+        // Process Average Wind Speed over the last 5 minutes
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT MAX(speedMPH) AS `max_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)"));
+        $this->windSmph_max5 = (int)round($result['max_speedMPH']); // Miles per hour
+        $this->windSkmh_max5 = (int)round($result['max_speedMPH'] * 1.60934); // Convert to Kilometers per hour
 
         // 10 Min Average Windspeed:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -115,11 +108,13 @@ class getCurrentWeatherData
         $this->windSmph_avg10 = (int)round($result['avg_speedMPH']); // Miles per hour
         $this->windSkmh_avg10 = (int)round($result['avg_speedMPH'] * 1.60934); // Convert to Kilometers per hour
 
-        // Process Average Wind Speed over the last 5 minutes
+        // Today's Peak Windspeed:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT MAX(speedMPH) AS `max_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)"));
-        $this->windSmph_max5 = (int)round($result['max_speedMPH']); // Miles per hour
-        $this->windSkmh_max5 = (int)round($result['max_speedMPH'] * 1.60934); // Convert to Kilometers per hour
+            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+        $this->wind_recorded_peak = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->windSmph_peak = (int)round($result['windSmph']); // Miles per hour
+        $this->windSkmh_peak = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windDEG_peak = (int)$result['windDEG']; // Degrees
 
         // Process Pressure:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -174,127 +169,67 @@ class getCurrentWeatherData
 
     //Private Functions
 
-    // Calculate human readable wind direction:
+    // Calculate human readable wind direction from a range of values:
     private function windDirection($windDEG)
     {
         switch ($windDEG) {
-            case '0':
-                $windDIR = 'N';
-                break;
-            case '23':
-                $windDIR = 'NNE';
-                break;
-            case '45':
-                $windDIR = 'NE';
-                break;
-            case '68':
-                $windDIR = 'ENE';
-                break;
-            case '90':
-                $windDIR = 'E';
-                break;
-            case '113':
-                $windDIR = 'ESE';
-                break;
-            case '135':
-                $windDIR = 'SE';
-                break;
-            case '158':
-                $windDIR = 'SSE';
-                break;
-            case '180':
-                $windDIR = 'S';
-                break;
-            case '203':
-                $windDIR = 'SSW';
-                break;
-            case '225':
-                $windDIR = 'SW';
-                break;
-            case '248':
-                $windDIR = 'WSW';
-                break;
-            case '270':
-                $windDIR = 'W';
-                break;
-            case '293':
-                $windDIR = 'WNW';
-                break;
-            case '315':
-                $windDIR = 'NW';
-                break;
-            case '338':
-                $windDIR = 'NNW';
-                break;
-        }
-        if (isset($windDIR)) {
-            return (string)$windDIR;
-        } else {
-            return null;
-        }
-    }
-
-    // Calculate human readable wind direction from a range of values:
-    private function windDirection_range($windDEG)
-    {
-        switch ($windDEG) {
             case ($windDEG === false):
-                $windDIR = 'N';
+                $windDIR = '<span style="color: orange;">NULL</span>';
                 break;
-            case ($windDEG >= '1' && $windDEG < '23'):
-                $windDIR = 'N';
-                break;
-            case ($windDEG >= '23' && $windDEG < '45'):
+            case ($windDEG >= 11.25 && $windDEG < 33.75):
                 $windDIR = 'NNE';
                 break;
-            case ($windDEG >= '45' && $windDEG < '68'):
+            case ($windDEG >= 33.75 && $windDEG < 56.25):
                 $windDIR = 'NE';
                 break;
-            case ($windDEG >= '68' && $windDEG < '90'):
+            case ($windDEG >= 56.25 && $windDEG < 78.75):
                 $windDIR = 'ENE';
                 break;
-            case ($windDEG >= '90' && $windDEG < '113'):
+            case ($windDEG >= 78.75 && $windDEG < 101.25):
                 $windDIR = 'E';
                 break;
-            case ($windDEG >= '113' && $windDEG < '135'):
+            case ($windDEG >= 101.25 && $windDEG < 123.75):
                 $windDIR = 'ESE';
                 break;
-            case ($windDEG >= '135' && $windDEG < '158'):
+            case ($windDEG >= 123.75 && $windDEG < 146.25):
                 $windDIR = 'SE';
                 break;
-            case ($windDEG >= '158' && $windDEG < '180'):
+            case ($windDEG >= 146.25 && $windDEG < 168.75):
                 $windDIR = 'SSE';
                 break;
-            case ($windDEG >= '180' && $windDEG < '203'):
+            case ($windDEG >= 168.75 && $windDEG < 191.25):
                 $windDIR = 'S';
                 break;
-            case ($windDEG >= '203' && $windDEG < '225'):
+            case ($windDEG >= 191.25 && $windDEG < 213.75):
                 $windDIR = 'SSW';
                 break;
-            case ($windDEG >= '225' && $windDEG < '248'):
+            case ($windDEG >= 213.75 && $windDEG < 236.25):
                 $windDIR = 'SW';
                 break;
-            case ($windDEG >= '248' && $windDEG < '270'):
+            case ($windDEG >= 236.25 && $windDEG < 258.75):
                 $windDIR = 'WSW';
                 break;
-            case ($windDEG >= '270' && $windDEG < '293'):
+            case ($windDEG >= 258.75 && $windDEG < 281.25):
                 $windDIR = 'W';
                 break;
-            case ($windDEG >= '293' && $windDEG < '315'):
+            case ($windDEG >= 281.25 && $windDEG < 303.75):
                 $windDIR = 'WNW';
                 break;
-            case ($windDEG >= '315' && $windDEG < '338'):
+            case ($windDEG >= 303.75 && $windDEG < 326.25):
                 $windDIR = 'NW';
                 break;
-            case ($windDEG >= '338'):
+            case ($windDEG >= 326.25 && $windDEG < 348.75):
                 $windDIR = 'NNW';
+                break;
+            default:
+                $windDIR = 'N';
                 break;
         }
 
         if (isset($windDIR)) {
             return (string)$windDIR;
         } else {
-            return null;
+            return '<span style="color: red;">ERROR</span>';
         }
     }
 
@@ -394,9 +329,9 @@ class getCurrentWeatherData
             'windDIR' => $this->windDirection($this->windDEG),
             'windDEG_avg2' => $this->windDEG_avg2,
             'windDEG_avg10' => $this->windDEG_avg10,
-            'windDIR_avg2' => $this->windDirection_range($this->windDEG_avg2),
+            'windDIR_avg2' => $this->windDirection($this->windDEG_avg2),
             'windDEG_peak' => $this->windDEG_peak,
-            'windDIR_peak' => $this->windDirection_range($this->windDEG_peak),
+            'windDIR_peak' => $this->windDirection($this->windDEG_peak),
             'wind_recorded_peak' => $this->wind_recorded_peak,
             'windSmph_peak' => $this->windSmph_peak,
             'windSkmh_peak' => $this->windSkmh_peak,

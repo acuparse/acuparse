@@ -525,62 +525,69 @@ class getArchiveWeatherData
 
     //Private Functions
 
-    // Calculate human readable wind direction:
+    // Calculate human readable wind direction from a range of values:
     private function windDirection($windDEG)
     {
         switch ($windDEG) {
-            case '0':
-                $windDIR = 'N';
+            case ($windDEG === false):
+                $windDIR = '<span style="color: orange;">NULL</span>';
                 break;
-            case '23':
+            case ($windDEG >= 11.25 && $windDEG < 33.75):
                 $windDIR = 'NNE';
                 break;
-            case '45':
+            case ($windDEG >= 33.75 && $windDEG < 56.25):
                 $windDIR = 'NE';
                 break;
-            case '68':
+            case ($windDEG >= 56.25 && $windDEG < 78.75):
                 $windDIR = 'ENE';
                 break;
-            case '90':
+            case ($windDEG >= 78.75 && $windDEG < 101.25):
                 $windDIR = 'E';
                 break;
-            case '113':
+            case ($windDEG >= 101.25 && $windDEG < 123.75):
                 $windDIR = 'ESE';
                 break;
-            case '135':
+            case ($windDEG >= 123.75 && $windDEG < 146.25):
                 $windDIR = 'SE';
                 break;
-            case '158':
+            case ($windDEG >= 146.25 && $windDEG < 168.75):
                 $windDIR = 'SSE';
                 break;
-            case '180':
+            case ($windDEG >= 168.75 && $windDEG < 191.25):
                 $windDIR = 'S';
                 break;
-            case '203':
+            case ($windDEG >= 191.25 && $windDEG < 213.75):
                 $windDIR = 'SSW';
                 break;
-            case '225':
+            case ($windDEG >= 213.75 && $windDEG < 236.25):
                 $windDIR = 'SW';
                 break;
-            case '248':
+            case ($windDEG >= 236.25 && $windDEG < 258.75):
                 $windDIR = 'WSW';
                 break;
-            case '270':
+            case ($windDEG >= 258.75 && $windDEG < 281.25):
                 $windDIR = 'W';
                 break;
-            case '293':
+            case ($windDEG >= 281.25 && $windDEG < 303.75):
                 $windDIR = 'WNW';
                 break;
-            case '315':
+            case ($windDEG >= 303.75 && $windDEG < 326.25):
                 $windDIR = 'NW';
                 break;
-            case '338':
+            case ($windDEG >= 326.25 && $windDEG < 348.75):
                 $windDIR = 'NNW';
                 break;
+            default:
+                $windDIR = 'N';
+                break;
         }
-        return $windDIR;
-    }
 
+        if (isset($windDIR)) {
+            return (string)$windDIR;
+        } else {
+            return '<span style="color: red;">ERROR</span>';
+        }
+    }
     // Public Functions
 
     // Yesterdays Archive Data

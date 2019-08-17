@@ -1,1 +1,172 @@
-body.lb-disable-scrolling{overflow:hidden}.lightboxOverlay{position:absolute;top:0;left:0;z-index:9999;background-color:#000;opacity:.8;display:none}.lightbox{position:absolute;left:0;width:100%;z-index:10000;text-align:center;line-height:0;font-weight:400}.lightbox .lb-image{display:block;height:auto;max-width:inherit;max-height:none;border-radius:3px;border:4px solid #fff}.lightbox a img{border:none}.lb-outerContainer{position:relative;width:250px;height:250px;margin:0 auto;border-radius:4px;background-color:#fff}.lb-outerContainer:after{content:"";display:table;clear:both}.lb-loader{position:absolute;top:43%;left:0;height:25%;width:100%;text-align:center;line-height:0}.lb-cancel{display:block;width:32px;height:32px;margin:0 auto;background:url(../images/loading.gif) no-repeat}.lb-nav{position:absolute;top:0;left:0;height:100%;width:100%;z-index:10}.lb-container>.nav{left:0}.lb-nav a{outline:0;background-image:url(data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==)}.lb-next,.lb-prev{height:100%;cursor:pointer;display:block}.lb-nav a.lb-prev{width:34%;left:0;float:left;background:url(../images/prev.png) left 48% no-repeat;opacity:0;-webkit-transition:opacity .6s;-moz-transition:opacity .6s;-o-transition:opacity .6s;transition:opacity .6s}.lb-nav a.lb-prev:hover{opacity:1}.lb-nav a.lb-next{width:64%;right:0;float:right;background:url(../images/next.png) right 48% no-repeat;opacity:0;-webkit-transition:opacity .6s;-moz-transition:opacity .6s;-o-transition:opacity .6s;transition:opacity .6s}.lb-nav a.lb-next:hover{opacity:1}.lb-dataContainer{margin:0 auto;padding-top:5px;width:100%;border-bottom-left-radius:4px;border-bottom-right-radius:4px}.lb-dataContainer:after{content:"";display:table;clear:both}.lb-data{padding:0 4px;color:#ccc}.lb-data .lb-details{width:85%;float:left;text-align:left;line-height:1.1em}.lb-data .lb-caption{font-size:13px;font-weight:700;line-height:1em}.lb-data .lb-caption a{color:#4ae}.lb-data .lb-number{display:block;clear:left;padding-bottom:1em;font-size:12px;color:#999}.lb-data .lb-close{display:block;float:right;width:30px;height:30px;background:url(../images/close.png) top right no-repeat;text-align:right;outline:0;opacity:.7;-webkit-transition:opacity .2s;-moz-transition:opacity .2s;-o-transition:opacity .2s;transition:opacity .2s}.lb-data .lb-close:hover{cursor:pointer;opacity:1}
+/*! instant.page v2.0.0 - (C) 2019 Alexandre Dieulot - https://instant.page/license */
+
+let urlToPreload
+let mouseoverTimer
+let lastTouchTimestamp
+
+const prefetcher = document.createElement('link')
+const isSupported = prefetcher.relList && prefetcher.relList.supports && prefetcher.relList.supports('prefetch')
+const isDataSaverEnabled = navigator.connection && navigator.connection.saveData
+                                                   const allowQueryString = 'instantAllowQueryString' in document.body.dataset
+                                                                                                      const allowExternalLinks = 'instantAllowExternalLinks' in document.body.dataset
+                                                                                                                                                             const useWhitelist = 'instantWhitelist' in document.body.dataset
+
+                                                                                                                                                                                                     let delayOnHover = 65
+let useMousedown = false
+                   let useMousedownOnly = false
+                                          if ('instantIntensity' in document.body.dataset) {
+if (document.body.dataset.instantIntensity.substr(0, 'mousedown'.length) == 'mousedown') {
+useMousedown = true
+               if (document.body.dataset.instantIntensity == 'mousedown-only') {
+    useMousedownOnly = true
+}
+}
+else {
+const milliseconds = parseInt(document.body.dataset.instantIntensity)
+if (milliseconds != NaN) {
+    delayOnHover = milliseconds
+}
+}
+}
+
+if (isSupported && !isDataSaverEnabled) {
+prefetcher.rel = 'prefetch'
+document.head.appendChild(prefetcher)
+
+const eventListenersOptions = {
+    capture: true,
+    passive: true,
+}
+
+if (!useMousedownOnly) {
+    document.addEventListener('touchstart', touchstartListener, eventListenersOptions)
+}
+
+if (!useMousedown) {
+    document.addEventListener('mouseover', mouseoverListener, eventListenersOptions)
+}
+else {
+    document.addEventListener('mousedown', mousedownListener, eventListenersOptions)
+}
+}
+
+function touchstartListener(event) {
+/* Chrome on Android calls mouseover before touchcancel so `lastTouchTimestamp`
+ * must be assigned on touchstart to be measured on mouseover. */
+lastTouchTimestamp = performance.now()
+
+const linkElement = event.target.closest('a')
+
+if (!isPreloadable(linkElement)) {
+    return
+}
+
+linkElement.addEventListener('touchcancel', touchendAndTouchcancelListener, {passive: true})
+linkElement.addEventListener('touchend', touchendAndTouchcancelListener, {passive: true})
+
+urlToPreload = linkElement.href
+preload(linkElement.href)
+}
+
+function touchendAndTouchcancelListener() {
+    urlToPreload = undefined
+    stopPreloading()
+}
+
+function mouseoverListener(event) {
+if (performance.now() - lastTouchTimestamp < 1100) {
+    return
+}
+
+const linkElement = event.target.closest('a')
+
+if (!isPreloadable(linkElement)) {
+    return
+}
+
+linkElement.addEventListener('mouseout', mouseoutListener, {passive: true})
+
+urlToPreload = linkElement.href
+
+               mouseoverTimer = setTimeout(() => {
+                                               preload(linkElement.href)
+                                               mouseoverTimer = undefined
+                                               }, delayOnHover)
+}
+
+function mousedownListener(event) {
+const linkElement = event.target.closest('a')
+
+if (!isPreloadable(linkElement)) {
+    return
+}
+
+linkElement.addEventListener('mouseout', mouseoutListener, {passive: true})
+
+urlToPreload = linkElement.href
+
+preload(linkElement.href)
+}
+
+function mouseoutListener(event) {
+if (event.relatedTarget && event.target.closest('a') == event.relatedTarget.closest('a')) {
+    return
+}
+
+if (mouseoverTimer) {
+clearTimeout(mouseoverTimer)
+mouseoverTimer = undefined
+}
+
+urlToPreload = undefined
+
+stopPreloading()
+}
+
+function isPreloadable(linkElement) {
+if (!linkElement || !linkElement.href) {
+    return
+}
+
+if (urlToPreload == linkElement.href) {
+    return
+}
+
+if (useWhitelist && !('instant' in linkElement.dataset)) {
+    return
+}
+
+if (!allowExternalLinks && linkElement.origin != location.origin && !('instant' in linkElement.dataset)) {
+    return
+}
+
+if (!['http:', 'https:'].includes(linkElement.protocol)) {
+    return
+}
+
+if (linkElement.protocol == 'http:' && location.protocol == 'https:') {
+    return
+}
+
+if (!allowQueryString && linkElement.search && !('instant' in linkElement.dataset)) {
+    return
+}
+
+if (linkElement.hash && linkElement.pathname + linkElement.search == location.pathname + location.search) {
+    return
+}
+
+if ('noInstant' in linkElement.dataset) {
+    return
+}
+
+return true
+}
+
+function preload(url) {
+    prefetcher.href = url
+}
+
+function stopPreloading() {
+    prefetcher.removeAttribute('href')
+}

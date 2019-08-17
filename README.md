@@ -10,7 +10,7 @@ AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
-> **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite®‎. This software requires a working AcuRite®‎ Access/smartHUB. Weather data gets redirected from your Access/smartHUB to your Acuparse server. It is captured, stored, and passed along to MyAcuRite.
+> **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite. This software requires a working AcuRite Access/smartHUB. Weather data gets redirected from your Access/smartHUB to your Acuparse server. It is captured, stored, and passed along to MyAcuRite.
 > The response from MyAcuRite gets sent back to the Access/smartHUB. Although the syslog may assist with diagnosing issues; if you cannot send data to MyAcuRite, you may experience trouble with Acuparse.
 > Users currently having trouble sending updates to Weather Underground should find Acuparse much more stable.
 
@@ -78,7 +78,7 @@ Additionally, you can request Bootstrap 4 formatted HTML, a JSON array, or plain
     * Reports can be run against the database. Open issues for custom report requests and tag them with the reports tag. phpMyAdmin is an excellent tool for advanced manual reporting on your station.
 * Charts and Graphing.
     * Since this is available at most external weather sites.
-* Multiple Access/smartHUB/5-in-1/Atlas sensors
+* Multiple Access/smartHUB/5-in-1/Atlas sensors.
     * The current framework is built around a single Access/smartHUB and 5-in-1/Atlas sensor.
 
 ## Donations
@@ -97,11 +97,13 @@ See [LICENSE](LICENSE) for more details.
 
 ## Support and Discussion
 
-Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
+[![Join the chat at https://gitter.im/acuparse/acuparse](https://badges.gitter.im/acuparse/acuparse.svg)](https://gitter.im/acuparse/acuparse?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-For everything else, join the [Users Mailing List](https://lists.acuparse.com/listinfo/users).
+- Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
+  - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com).
+- Community support is also provided via the [Users Mailing List](https://groups.google.com/a/lists.acuparse.com/forum/#!forum/users).
 
-If you require advanced assistance, consider [commercial licencing and support](https://www.acuparse.com/commercial). 
+If you require advanced or commercial support, send mail to [hello@acuparse.com](mailto:hello@acuparse.com).
 
 ## Release Notes
 

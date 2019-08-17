@@ -27,7 +27,7 @@ stages:
   image: python:alpine
   before_script:
     - pip install mkdocs
-    - pip install mkdocs-cinder
+    - pip install mkdocs-material
     - pip install mkdocs-minify-plugin
 
 .buster_template: &buster_template
@@ -130,20 +130,32 @@ DEV_pages:
       - test
 
 code_quality:
-  image: docker:stable
   stage: quality
-  variables:
-    DOCKER_DRIVER: overlay2
+  image: docker:stable
   allow_failure: true
   services:
     - docker:stable-dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
     - docker run
       --env SOURCE_CODE="$PWD"
       --volume "$PWD":/code
       --volume /var/run/docker.sock:/var/run/docker.sock
-      "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+      "registry.gitlab.com/gitlab-org/security-products/codequality:12-0-stable" /code
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
+  only:
+    - branches
+    - tags
+  except:
+    variables:
+      - $CODE_QUALITY_DISABLED

@@ -177,7 +177,7 @@ return (object)array(
         'server' => (object)array(
             'show' => false, // Show the debug server tab
             'enabled' => false, //true or false
-            'url' => 'http://', // The url for your development system. eg. http://127.0.0.1
+            'url' => NULL, // The IP for your development system. eg. 127.0.0.1
         ),
     ),
 
@@ -194,7 +194,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.9.1-release',
+        'app' => '2.9.2-release',
         'schema' => '2.9',
     ),
 );
