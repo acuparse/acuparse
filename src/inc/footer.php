@@ -42,13 +42,6 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
     </script>
 <?php } ?>
 
-<!-- Page Specific Scripts -->
-<?php
-if (isset($page_footer)) {
-    echo $page_footer;
-}
-?>
-
 <!-- Page Footer -->
 <hr>
 
@@ -66,7 +59,14 @@ if (isset($page_footer)) {
 <!-- END Site Container -->
 
 <!-- instant.page prefetch -->
-<script src="/lib/mit/instant.page/2.0.0.js" type="module"></script>
+<script src="/lib/mit/instantpage/instantpage.js" type="module"></script>
+
+<!-- Page Specific Scripts -->
+<?php
+if (isset($page_footer)) {
+    echo $page_footer;
+}
+?>
 
 </body>
 </html>
