@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.9.4]](https://www.acuparse.com/releases/v2-9-4/) - 2019-08-18
+
+### Fixed
+- Regression in Wind Direction. Removing Null.
+
 ## [[2.9.3]](https://www.acuparse.com/releases/v2-9-3/) - 2019-08-17
 
 ### Fixed
