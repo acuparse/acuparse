@@ -1,172 +1,204 @@
-/*! instant.page v2.0.0 - (C) 2019 Alexandre Dieulot - https://instant.page/license */
-
-let urlToPreload
-let mouseoverTimer
-let lastTouchTimestamp
-
-const prefetcher = document.createElement('link')
-const isSupported = prefetcher.relList && prefetcher.relList.supports && prefetcher.relList.supports('prefetch')
-const isDataSaverEnabled = navigator.connection && navigator.connection.saveData
-                                                   const allowQueryString = 'instantAllowQueryString' in document.body.dataset
-                                                                                                      const allowExternalLinks = 'instantAllowExternalLinks' in document.body.dataset
-                                                                                                                                                             const useWhitelist = 'instantWhitelist' in document.body.dataset
-
-                                                                                                                                                                                                     let delayOnHover = 65
-let useMousedown = false
-                   let useMousedownOnly = false
-                                          if ('instantIntensity' in document.body.dataset) {
-if (document.body.dataset.instantIntensity.substr(0, 'mousedown'.length) == 'mousedown') {
-useMousedown = true
-               if (document.body.dataset.instantIntensity == 'mousedown-only') {
-    useMousedownOnly = true
-}
-}
-else {
-const milliseconds = parseInt(document.body.dataset.instantIntensity)
-if (milliseconds != NaN) {
-    delayOnHover = milliseconds
-}
-}
+body.lb-disable-scrolling {
+    overflow: hidden;
 }
 
-if (isSupported && !isDataSaverEnabled) {
-prefetcher.rel = 'prefetch'
-document.head.appendChild(prefetcher)
-
-const eventListenersOptions = {
-    capture: true,
-    passive: true,
+.lightboxOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: black;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+    opacity: 0.8;
+    display: none;
 }
 
-if (!useMousedownOnly) {
-    document.addEventListener('touchstart', touchstartListener, eventListenersOptions)
+.lightbox {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 10000;
+    text-align: center;
+    line-height: 0;
+    font-weight: normal;
+    outline: none;
 }
 
-if (!useMousedown) {
-    document.addEventListener('mouseover', mouseoverListener, eventListenersOptions)
-}
-else {
-    document.addEventListener('mousedown', mousedownListener, eventListenersOptions)
-}
-}
+.lightbox .lb-image {
+    display: block;
+    height: auto;
+    max-width: inherit;
+    max-height: none;
+    border-radius: 3px;
 
-function touchstartListener(event) {
-/* Chrome on Android calls mouseover before touchcancel so `lastTouchTimestamp`
- * must be assigned on touchstart to be measured on mouseover. */
-lastTouchTimestamp = performance.now()
-
-const linkElement = event.target.closest('a')
-
-if (!isPreloadable(linkElement)) {
-    return
+    /* Image border */
+    border: 4px solid white;
 }
 
-linkElement.addEventListener('touchcancel', touchendAndTouchcancelListener, {passive: true})
-linkElement.addEventListener('touchend', touchendAndTouchcancelListener, {passive: true})
-
-urlToPreload = linkElement.href
-preload(linkElement.href)
+.lightbox a img {
+    border: none;
 }
 
-function touchendAndTouchcancelListener() {
-    urlToPreload = undefined
-    stopPreloading()
+.lb-outerContainer {
+    position: relative;
+    *zoom: 1;
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    border-radius: 4px;
+
+    /* Background color behind image.
+       This is visible during transitions. */
+    background-color: white;
 }
 
-function mouseoverListener(event) {
-if (performance.now() - lastTouchTimestamp < 1100) {
-    return
+.lb-outerContainer:after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
-const linkElement = event.target.closest('a')
-
-if (!isPreloadable(linkElement)) {
-    return
+.lb-loader {
+    position: absolute;
+    top: 43%;
+    left: 0;
+    height: 25%;
+    width: 100%;
+    text-align: center;
+    line-height: 0;
 }
 
-linkElement.addEventListener('mouseout', mouseoutListener, {passive: true})
-
-urlToPreload = linkElement.href
-
-               mouseoverTimer = setTimeout(() => {
-                                               preload(linkElement.href)
-                                               mouseoverTimer = undefined
-                                               }, delayOnHover)
+.lb-cancel {
+    display: block;
+    width: 32px;
+    height: 32px;
+    margin: 0 auto;
+    background: url(../images/loading.gif) no-repeat;
 }
 
-function mousedownListener(event) {
-const linkElement = event.target.closest('a')
-
-if (!isPreloadable(linkElement)) {
-    return
+.lb-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
 }
 
-linkElement.addEventListener('mouseout', mouseoutListener, {passive: true})
-
-urlToPreload = linkElement.href
-
-preload(linkElement.href)
+.lb-container > .nav {
+    left: 0;
 }
 
-function mouseoutListener(event) {
-if (event.relatedTarget && event.target.closest('a') == event.relatedTarget.closest('a')) {
-    return
+.lb-nav a {
+    outline: none;
+    background-image: url('data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
 }
 
-if (mouseoverTimer) {
-clearTimeout(mouseoverTimer)
-mouseoverTimer = undefined
+.lb-prev, .lb-next {
+    height: 100%;
+    cursor: pointer;
+    display: block;
 }
 
-urlToPreload = undefined
-
-stopPreloading()
+.lb-nav a.lb-prev {
+    width: 34%;
+    left: 0;
+    float: left;
+    background: url(../images/prev.png) left 48% no-repeat;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+    opacity: 0;
+    -webkit-transition: opacity 0.6s;
+    -moz-transition: opacity 0.6s;
+    -o-transition: opacity 0.6s;
+    transition: opacity 0.6s;
 }
 
-function isPreloadable(linkElement) {
-if (!linkElement || !linkElement.href) {
-    return
+.lb-nav a.lb-prev:hover {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
 }
 
-if (urlToPreload == linkElement.href) {
-    return
+.lb-nav a.lb-next {
+    width: 64%;
+    right: 0;
+    float: right;
+    background: url(../images/next.png) right 48% no-repeat;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+    opacity: 0;
+    -webkit-transition: opacity 0.6s;
+    -moz-transition: opacity 0.6s;
+    -o-transition: opacity 0.6s;
+    transition: opacity 0.6s;
 }
 
-if (useWhitelist && !('instant' in linkElement.dataset)) {
-    return
+.lb-nav a.lb-next:hover {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
 }
 
-if (!allowExternalLinks && linkElement.origin != location.origin && !('instant' in linkElement.dataset)) {
-    return
+.lb-dataContainer {
+    margin: 0 auto;
+    padding-top: 5px;
+    *zoom: 1;
+    width: 100%;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
-if (!['http:', 'https:'].includes(linkElement.protocol)) {
-    return
+.lb-dataContainer:after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
-if (linkElement.protocol == 'http:' && location.protocol == 'https:') {
-    return
+.lb-data {
+    padding: 0 4px;
+    color: #ccc;
 }
 
-if (!allowQueryString && linkElement.search && !('instant' in linkElement.dataset)) {
-    return
+.lb-data .lb-details {
+    width: 85%;
+    float: left;
+    text-align: left;
+    line-height: 1.1em;
 }
 
-if (linkElement.hash && linkElement.pathname + linkElement.search == location.pathname + location.search) {
-    return
+.lb-data .lb-caption {
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1em;
 }
 
-if ('noInstant' in linkElement.dataset) {
-    return
+.lb-data .lb-caption a {
+    color: #4ae;
 }
 
-return true
+.lb-data .lb-number {
+    display: block;
+    clear: left;
+    padding-bottom: 1em;
+    font-size: 12px;
+    color: #999999;
 }
 
-function preload(url) {
-    prefetcher.href = url
+.lb-data .lb-close {
+    display: block;
+    float: right;
+    width: 30px;
+    height: 30px;
+    background: url(../images/close.png) top right no-repeat;
+    text-align: right;
+    outline: none;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+    opacity: 0.7;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    -o-transition: opacity 0.2s;
+    transition: opacity 0.2s;
 }
 
-function stopPreloading() {
-    prefetcher.removeAttribute('href')
+.lb-data .lb-close:hover {
+    cursor: pointer;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
 }
