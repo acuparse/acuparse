@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.9.3]](https://www.acuparse.com/releases/v2-9-3/) - 2019-08-17
+
+### Fixed
+- Lightbox not loading
+
 ## [[2.9.2]](https://www.acuparse.com/releases/v2-9-2/) - 2019-08-17
+
+### Fixed
+- Wind Direction Calculation
 
 ### Changed
 
-- Fix Wind Direction
 - Switch to htmlentities for Wunderground Upload
 - FontAwesome to v5.10.1
 - Lightbox to v2.11.1
