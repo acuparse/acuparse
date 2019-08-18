@@ -529,9 +529,6 @@ class getArchiveWeatherData
     private function windDirection($windDEG)
     {
         switch ($windDEG) {
-            case ($windDEG === false):
-                $windDIR = '<span style="color: orange;">NULL</span>';
-                break;
             case ($windDEG >= 11.25 && $windDEG < 33.75):
                 $windDIR = 'NNE';
                 break;
@@ -585,7 +582,7 @@ class getArchiveWeatherData
         if (isset($windDIR)) {
             return (string)$windDIR;
         } else {
-            return '<span style="color: red;">ERROR</span>';
+            return 'ERROR';
         }
     }
     // Public Functions
