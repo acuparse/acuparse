@@ -4,17 +4,16 @@ AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 
 ***See it in action @ [ghwx.ca](https://www.ghwx.ca)***
 
----
+> **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite. 
 
+---
+## How it Works
 [Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to [Weather Underground](https://https://www.wunderground.com), [Weathercloud](https://weathercloud.net), [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), and [CWOP](http://www.wxqa.com). It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
 
-> **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite. This software requires a working AcuRite Access/smartHUB. Weather data gets redirected from your Access/smartHUB to your Acuparse server. It is captured, stored, and passed along to MyAcuRite.
-> The response from MyAcuRite gets sent back to the Access/smartHUB. Although the syslog may assist with diagnosing issues; if you cannot send data to MyAcuRite, you may experience trouble with Acuparse.
-> Users currently having trouble sending updates to Weather Underground should find Acuparse much more stable.
-
----
+Acuparse requires a working AcuRite Access/smartHUB. You redirect weather data from your Access/smartHUB to your Acuparse server. It is captured, stored, and then passed along to MyAcuRite untouched.
+The response received from MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or when using a SmartHUB, Acuparse creates the response.
 
 ## Features
 
@@ -69,6 +68,11 @@ Additionally, you can request Bootstrap 4 formatted HTML, a JSON array, or plain
 * JSON: `http(s)://<yourip/domain>/?json`
 * Tower JSON: `http(s)://<yourip/domain>/?json_tower&sensor=<SENSOR ID>`
 * Plain Text: `http(s)://<yourip/domain>/?cam`
+
+## Troubleshooting
+
+The best way to troubleshoot your install is to view the syslog. All output is logged there.
+`tail -f /var/log/syslog`
 
 ## What's Missing
 
