@@ -231,7 +231,7 @@ If there is no new data due to updates not being received in the configured peri
 ## Tower Sensors
 
 Acuparse allows for the addition of as many Tower sensors as the Access/smartHUB will pass along. You can choose which sensors are shown publicly or only to logged in users. Towers are configured and arranged using the admin settings.
-* Acuparse also supports Indoor/Outdoor Temp and Humidity monitors but will not save or display any additional data.          
+* Acuparse also supports Indoor/Outdoor Temp and Humidity monitors, as well as lightning towers, but will not save or display any additional data.          
 
 ## Additional Outputs
 

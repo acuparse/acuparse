@@ -160,7 +160,8 @@ return (object)array(
         // MyAcurite
         'myacurite' => (object)array(
             'access_enabled' => true, // true or false
-            'access_url' => 'https://atlasapi.myacurite.com',
+            'access_url' => 'https://atlasapi.myacurite.com', //MyAcurite API
+            'pass_unknown' => false, // Pass unadded sensors to MyAcurite?
         ),
     ),
 

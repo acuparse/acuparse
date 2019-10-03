@@ -164,6 +164,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // MyAcurite
         $config->upload->myacurite->access_enabled = (bool)$_POST['upload']['myacurite']['access_enabled'];
         $config->upload->myacurite->access_url = $_POST['upload']['myacurite']['access_url'];
+        $config->upload->myacurite->pass_unknown = (bool)$_POST['upload']['myacurite']['pass_unknown'];
 
         // Debug
         $config->debug->logging = (bool)$_POST['debug']['logging'];
@@ -1004,12 +1005,36 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                    for="myacurite-access-enabled-0">Disabled</label>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <h4>Unknown Sensors:</h4>
+                                        <p>Send unknown sensor data?<br>
+                                            <span class="small text-danger">Can include neighbours/noise and is generally not recommend.</span>
+                                        </p>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][pass_unknown]"
+                                                   id="myacurite-pass-unknown-0" value="0"
+                                                   onclick='document.getElementById("myacurite-pass-unknown").disabled=true;'
+                                                <?= ($config->upload->myacurite->pass_unknown === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert alert-success"
+                                                   for="myacurite-pass-unknown-0">Disabled</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="upload[myacurite][pass_unknown]"
+                                                   id="myacurite-pass-unknown-1" value="1"
+                                                   onclick='document.getElementById("myacurite-pass-unknown").disabled=false;'
+                                                <?= ($config->upload->myacurite->pass_unknown === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label alert alert-danger"
+                                                   for="myacurite-pass-unknown-1">Enabled</label>
+                                        </div>
+                                    </div>
                                     <hr class="hr-dashed">
                                     <h4>Upload URL:</h4>
                                     <div class="row">
                                         <div class="col">
                                             <p class="alert-info">If installed on the same network as your device,
-                                                use secondary.<br>See <code>docs/DNS.md</code></p>
+                                                use secondary. See <code>docs/DNS.md</code></p>
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -1477,7 +1502,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                     </div>
                                     <p><strong>Supported Servers:</strong></p>
                                     <ul>
-                                        <li><a href="https://docs.acuparse.com/external/generic/WeatherPoly">WeatherPoly</a>:
+                                        <li>
+                                            <a href="https://docs.acuparse.com/external/generic/WeatherPoly">WeatherPoly</a>:
                                             http(s)://{IP/HOSTNAME}:8080/acuparse
                                         </li>
                                     </ul>
