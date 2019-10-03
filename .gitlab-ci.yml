@@ -12,9 +12,11 @@ stages:
 
 .md_template: &md_template
   stage: lint
-  image: pipelinecomponents/markdownlint:latest
+  image: node:latest
+  before_script:
+    - npm install -g markdownlint-cli
   script:
-    - mdl -g -i -r ~MD013 --warnings .
+    - markdownlint .
 
 .bash_template: &bash_template
   image: koalaman/shellcheck-alpine

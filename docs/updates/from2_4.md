@@ -5,14 +5,18 @@ Users running Debian can update directly. Ubuntu users should upgrade to 18.04 L
 
 Upgrading your OS/PHP version is recommended but not required.
 
-***NOTICE:*** Highly recommended to make a full system backup before upgrading PHP. 
+***NOTICE:*** Highly recommended to make a full system backup before upgrading PHP.
 
 ## Update Core
 
-``` cd /opt/acuparse && sudo git pull ```
+```bash
+cd /opt/acuparse && sudo git pull
+```
 
 ## PHP 7.3 Support
 
 Acuparse now supports PHP 7.3. You can upgrade your PHP environment with the following script.
 
-``` cd ~ && wget https://gitlab.com/acuparse/installer/raw/master/resources/php7_3 && sudo bash php7.3 && rm php7_3 | tee ~/php7_3.log```
+```bash
+cd ~ && wget https://gitlab.com/acuparse/installer/raw/master/resources/php7_3 && sudo bash php7.3 && rm php7_3 | tee ~/php7_3.log
+```
