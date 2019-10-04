@@ -40,6 +40,7 @@ when using a SmartHUB, Acuparse creates the response.
 
 - [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
 - [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
+- [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)
 
 ## Main Installation Guide
 
