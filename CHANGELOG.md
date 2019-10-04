@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-### Changed
-
-- FontAwesome to 5.11.2.
+## [[2.10.0]](https://www.acuparse.com/releases/v2-10-0/) - 2019-10-06
 
 ### Added
 
 - Support for Lightning Tower.
 - Support sending unknown sensors to MyAcuRite.
+
+### Changed
+
+- FontAwesome to 5.11.2.
 
 ## [[2.9.4]](https://www.acuparse.com/releases/v2-9-4/) - 2019-08-18
 
