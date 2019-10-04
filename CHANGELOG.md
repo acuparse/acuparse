@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- FontAwesome to 5.11.2.
+
 ### Added
 
 - Support for Lightning Tower.
