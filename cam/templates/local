@@ -44,16 +44,16 @@ wget ${CAMERA_HOST}/${CAMERA_FILENAME}
 
 echo "Applying Timestamp and Copyright"
 convert ${CAMERA_FILENAME} \
-    -resize ${RESIZE} \
-    -font DejaVu-Sans-Bold -pointsize 20 \
-    -draw "gravity south \
+-resize ${RESIZE} \
+-font DejaVu-Sans-Bold -pointsize 20 \
+-draw "gravity south \
         fill black  text 0,36 '$TIMESTAMP' \
         fill OrangeRed2  text 1,37 '$TIMESTAMP' " \
-    -font DejaVu-Sans-Bold -pointsize 12 \
-    -draw "gravity south \
+-font DejaVu-Sans-Bold -pointsize 12 \
+-draw "gravity south \
         fill black  text 0,0 '$WATERMARK' \
         fill OrangeRed2  text 1,1 '$WATERMARK' " \
-    image.jpg
+image.jpg
 
 echo "Sending image to remote server for processing"
 scp image.jpg ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TMP}
