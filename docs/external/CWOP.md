@@ -10,7 +10,7 @@ and ask to be registered. Your data can then flow to NOAA.
 
 ## Registration
 
-[http://www.findu.com/citizenweather/cw_form.html]([http://www.findu.com/citizenweather/cw_form.html)
+[http://www.findu.com/citizenweather/cw_form.html](http://www.findu.com/citizenweather/cw_form.html)
 
 ## Configuration
 

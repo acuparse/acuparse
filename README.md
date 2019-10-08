@@ -113,7 +113,7 @@ See [LICENSE](LICENSE) for more details.
 
 ## Support and Discussion
 
-[![Join the chat at https://gitter.im/acuparse/acuparse](https://badges.gitter.im/acuparse/acuparse.svg)](https://gitter.im/acuparse/acuparse?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[Join the chat on keybase](https://keybase.io/team/acuparse)
 
 - Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
     - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com).

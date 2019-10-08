@@ -1,6 +1,6 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
  * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
@@ -29,7 +29,6 @@ class getCurrentTowerData
     private $tempF;
     private $tempC;
     private $relH;
-
 
     function __construct($sensor)
     {

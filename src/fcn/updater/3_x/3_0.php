@@ -21,23 +21,19 @@
  */
 
 /**
- * File: src/fcn/updater/2_7.php
- * 2.7 Update Tasks
+ * File: src/fcn/updater/3_x/3_0.php
+ * 3.0 Site Update Tasks
  */
 
 switch ($config->version->app) {
-// Update from 2.6.1-release
-    case '2.6.1-release':
-        $config->debug->server->show = false;
-        $config->upload->generic->enabled = false;
-        $config->upload->generic->id = '';
-        $config->upload->generic->password = '';
-        $config->upload->generic->url = '';
-        $config->version->app = '2.7.0-release';
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Numerous changes, see CHANGELOG.md for details.</li>';
 
-    // Update from 2.7.0-release
-    case '2.7.0-release':
-        $config->version->app = '2.7.1-release';
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Script Updates and Bug Fixes.</li>';
+    // Update from 2.10.0
+    case '2.10.0-release':
+        $config->station->lightning = 0;
+        $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/updates/v3.sql';
+        $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
+        $schema = shell_exec($schema);
+        syslog(LOG_INFO, "(SYSTEM)[INFO]: Database schema upgraded to 3.0");
+        $config->version->app = '3.0.0-beta';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Major update. Support all Atlas sensors. Framework updates. See release notes!';
 }

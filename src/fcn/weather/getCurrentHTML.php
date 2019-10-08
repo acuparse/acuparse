@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -34,6 +34,21 @@ function getCurrentHTML()
     require('getCurrentWeatherData.php');
     $getData = new getCurrentWeatherData();
     $wx = $getData->getConditions();
+
+    // Load Lightning Data:
+    if ($config->station->lightning_source === 1 || $config->station->lightning_source === 2) {
+        require('getCurrentLightningData.php');
+        $getLightningData = new getCurrentLightningData();
+        $lightning = $getLightningData->getData();
+    }
+
+    // Load Atlas Data:
+    if ($config->station->primary_sensor === 0) {
+        // Load weather Data:
+        require('getCurrentAtlasData.php');
+        $getAtlasData = new getCurrentAtlasData();
+        $atlas = $getAtlasData->getData();
+    }
 
     // Get Moon Data:
     require(APP_BASE_PATH . '/pub/lib/mit/moon/moonphase.php');
@@ -94,7 +109,7 @@ function getCurrentHTML()
             <!-- Temperature Data -->
             <div class="row">
                 <div class="col">
-                    <h1><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature:</h1>
+                    <h1><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature</h1>
                     <h2><?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $temp = ($config->site->imperial === true) ? "$wx->tempF&#8457; ($wx->tempC&#8451;)" : "$wx->tempC&#8451; ($wx->tempF&#8457;)";
@@ -173,7 +188,7 @@ function getCurrentHTML()
                             }
                         }
                         echo '<i class="wi wi-wind wi-from-', strtolower($wx->windDIR), '" aria-hidden="true"></i>'; ?>
-                        Wind:</h1>
+                        Wind</h1>
                     <h2>from <?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $wind = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSmph mph ($wx->windSkmh km/h)" : "$wx->windDIR @ $wx->windSkmh km/h ($wx->windSmph mph)";
@@ -211,7 +226,7 @@ function getCurrentHTML()
             <!-- Humidity -->
             <div class="row">
                 <div class="col">
-                    <h1><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h1>
+                    <h1><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h1>
                     <h2><?= $wx->relH, '%', trendIcon($wx->relH_trend); ?></h2>
                 </div>
             </div>
@@ -219,7 +234,7 @@ function getCurrentHTML()
             <!-- Pressure -->
             <div class="row">
                 <div class="col">
-                    <h1><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h1>
+                    <h1><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h1>
                     <h2><?php
                         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                             $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg ($wx->pressure_kPa kPa)" : "$wx->pressure_kPa kPa ($wx->pressure_inHg inHg)";
@@ -233,7 +248,7 @@ function getCurrentHTML()
             <!-- Rain -->
             <div class="row">
                 <div class="col">
-                    <h1><i class="wi wi-raindrops" aria-hidden="true"></i> Rain:</h1>
+                    <h1><i class="wi wi-raindrops" aria-hidden="true"></i> Rain</h1>
                     <ul class="list-unstyled">
                         <li><h3>Fall Rate:</h3> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
@@ -252,6 +267,23 @@ function getCurrentHTML()
                     </ul>
                 </div>
             </div>
+            <?php
+            if ($config->station->primary_sensor === 0) {
+                ?>
+                <!-- Atlas Data -->
+                <div class="row">
+                    <div class="col">
+                        <h1><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h1>
+                        <ul class="list-unstyled">
+                            <li><h2><?= $atlas->lightintensity_text; ?></h2></li>
+                            <li><h3>Illuminance:</h3> <?= $atlas->lightintensity; ?> lux</li>
+                            <li><h3>Measured Light:</h3> <?= $atlas->measured_light_hours; ?> hours</li>
+                        </ul>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
         </div>
         <!-- END: Middle Column -->
 
@@ -261,12 +293,20 @@ function getCurrentHTML()
             <!-- Sun -->
             <div class="row">
                 <div class="col">
-                    <h1><i class="wi wi-day-sunny" aria-hidden="true"></i> Sun:</h1>
+                    <h1><i class="wi wi-day-sunny" aria-hidden="true"></i> Sun</h1>
                     <ul class="list-unstyled">
                         <li><i class="wi wi-sunrise" aria-hidden="true"></i>
                             <h3>Sunrise:</h3> <?= $sunrise; ?></li>
                         <li><i class="wi wi-sunset" aria-hidden="true"></i>
                             <h3>Sunset:</h3> <?= $sunset; ?></li>
+                        <?php
+                        if ($config->station->primary_sensor === 0) {
+                            ?>
+                            <li><i class="wi wi-hot" aria-hidden="true"></i>
+                                <h3>UV Index:</h3> <?= $atlas->uvindex; ?> - <?= $atlas->uvindex_text; ?></li>
+                            <?php
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -275,7 +315,7 @@ function getCurrentHTML()
             <!-- Moon -->
             <div class="row">
                 <div class="col">
-                    <h1><i class="wi <?= moonIcon($moon_stage); ?>" aria-hidden="true"></i> Moon:</h1>
+                    <h1><i class="wi <?= moonIcon($moon_stage); ?>" aria-hidden="true"></i> Moon</h1>
                     <h2><?= "$moon_stage"; ?></h2>
                     <p><?= "$moon_age days old, $moon_illumination visible"; ?></p>
                     <ul class="list-unstyled">
@@ -304,9 +344,40 @@ function getCurrentHTML()
         <!-- END: Right Column -->
     </section>
     <!-- END: Live Weather Data -->
-
     <?php
-
+    if ($config->station->lightning_source === 1 || $config->station->lightning_source === 2) {
+        ?>
+        <!-- Lightning Data -->
+        <section id="live-lightning-data" class="row live-weather-data">
+            <div class="col-12">
+                <h1><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h1>
+                <ul class="list-unstyled">
+                    <?php
+                    if ($lightning->strikecount != 0) {
+                        ?>
+                        <li><h3>Interference:</h3> <?= $lightning->interference ?> |
+                            <h3>Strikes:</h3> <?= $lightning->strikecount; ?> |
+                            <h3>Last:</h3> <?= $lightning->last_strike_ts; ?> |
+                            <h3>Distance:</h3> <?php
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                                $last_strike_distance = ($config->site->imperial === true) ? "$lightning->last_strike_distance_M Miles ($lightning->last_strike_distance_KM KM)" : "$lightning->last_strike_distance_KM KM ($lightning->last_strike_distance_M Miles)";
+                            } else {
+                                $last_strike_distance = ($config->site->imperial === true) ? "$lightning->last_strike_distance_M Miles" : "$lightning->last_strike_distance_KM KM";
+                            }
+                            echo $last_strike_distance; ?></li>
+                        <?php
+                    }
+                    else {
+                        ?>
+                        <li><h3>Interference:</h3> <?= $lightning->interference ?> | No Lightning Detected</li>
+                        <?php
+                    }
+                        ?>
+                </ul>
+            </div>
+        </section>
+        <?php
+    }
     // If tower sensors are active show the tower data
     if ($config->station->towers === true) {
 
