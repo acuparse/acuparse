@@ -7,19 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[2.10.0]](https://www.acuparse.com/releases/v2-10-0/) - 2019-10-06
+
+### Added
+
+- Support for Lightning Tower.
+- Support sending unknown sensors to MyAcuRite.
+
+### Changed
+
+- FontAwesome to 5.11.2.
+
 ## [[2.9.4]](https://www.acuparse.com/releases/v2-9-4/) - 2019-08-18
 
 ### Fixed
+
 - Regression in Wind Direction. Removing Null.
 
 ## [[2.9.3]](https://www.acuparse.com/releases/v2-9-3/) - 2019-08-17
 
 ### Fixed
+
 - Lightbox not loading
 
 ## [[2.9.2]](https://www.acuparse.com/releases/v2-9-2/) - 2019-08-17
 
 ### Fixed
+
 - Wind Direction Calculation
 
 ### Changed
@@ -42,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Move repo to GitLab
 
 ### Added
+
 - Implement CI
 - Build docs using mkdocs
 
@@ -292,7 +307,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Default font to Open Sans for better visibility in the clean css template. Moved unneeded styles to a new template file.
+- Default font to Open Sans for better visibility in the clean css template.
+    - Moved unneeded styles to a new template file.
 - Reformatted Archive display.
 
 ### Removed
@@ -350,7 +366,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the roadmap.)
 - Google Captcha added to contact form.
-- MyAcurite is terrible keeping time. They send the hour for the min and sec in their response. Modify the response to the HUB and send server time instead.
+- MyAcurite is terrible keeping time. They send the hour for the min and sec in their response.
+    - Modify the response to the HUB and send server time instead.
 
 ## [[2.1.0]](https://www.acuparse.com/releases/v2-1-0/) - 2017-03-14
 

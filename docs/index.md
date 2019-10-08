@@ -1,24 +1,46 @@
 # [Acuparse Documentation](https://docs.acuparse.com)
 
 ## Project Pipeline Status
+
 | Acuparse Main | Installer | Website |
 | ---- | ---- | --- |
-| [![Acuparse Status](https://gitlab.com/acuparse/acuparse/badges/master/pipeline.svg "Acuparse Status")](https://gitlab.com/acuparse/acuparse/pipelines) | [![Installer Status](https://gitlab.com/acuparse/installer/badges/master/pipeline.svg "Installer Status")](https://gitlab.com/acuparse/installer/pipelines) | [![Website Status](https://gitlab.com/acuparse/website/badges/master/pipeline.svg "Website Status")](https://gitlab.com/acuparse/acuparse/pipelines) | 
+| [![Acuparse Status](https://gitlab.com/acuparse/acuparse/badges/master/pipeline.svg "Acuparse Status")](https://gitlab.com/acuparse/acuparse/pipelines) | [![Installer Status](https://gitlab.com/acuparse/installer/badges/master/pipeline.svg "Installer Status")](https://gitlab.com/acuparse/installer/pipelines) | [![Website Status](https://gitlab.com/acuparse/website/badges/master/pipeline.svg "Website Status")](https://gitlab.com/acuparse/acuparse/pipelines) |
 
-Welcome to the [Acuparse](https://www.acuparse.com) Documentation. Use the resources below to assist in your installation and configuration of Acuparse.
+Welcome to the [Acuparse](https://www.acuparse.com) Documentation.
+Use the resources below to assist in your installation and configuration of Acuparse.
 
-[Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to [Weather Underground](https://https://www.wunderground.com), [Weathercloud](https://weathercloud.net), [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), and [CWOP](http://www.wxqa.com). It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+[Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an
+AcuRite 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
+[Weather Underground](https://https://www.wunderground.com), [Weathercloud](https://weathercloud.net),
+[PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), and [CWOP](http://www.wxqa.com).
+It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
-Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools. 
+Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
+not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
 
-> **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite®‎. This software requires a working AcuRite®‎ Access/smartHUB. Weather data gets redirected from your Access/smartHUB to your Acuparse server. It is captured, stored, and passed along to MyAcuRite.
-> The response from MyAcuRite gets sent back to the Access/smartHUB. Although the syslog may assist with diagnosing issues; if you cannot send data to MyAcuRite, you may experience trouble with Acuparse.
-> Users currently having trouble sending updates to Weather Underground should find Acuparse much more stable.
+> **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite.
 
-***Git Repositories***
+## How it Works
+
+[Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite
+5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
+[Weather Underground](https://https://www.wunderground.com), [Weathercloud](https://weathercloud.net),
+[PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), and [CWOP](http://www.wxqa.com).
+It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+
+Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
+not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
+
+Acuparse requires a working AcuRite Access/smartHUB. You redirect weather data from your Access/smartHUB to your Acuparse
+server. It is captured, stored, and then passed along to MyAcuRite untouched.
+The response received from MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or
+when using a SmartHUB, Acuparse creates the response.
+
+### Git Repositories
 
 - [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
 - [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
+- [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)
 
 ## Main Installation Guide
 

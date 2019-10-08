@@ -146,7 +146,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         }
     }
 } // Process Tower Sensors
-elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn')) {
+elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light')) {
 
     // Tower ID
     $towerID = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
@@ -189,10 +189,11 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
 } // This sensor is not added
 else {
     $sensor = $_GET['sensor'];
-    if ($_GET['mt'] === 'tower') {
-        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Towers not enabled. Raw = $myacuriteQuery");
-    } elseif ($_GET['mt'] === '5N1x31' || $_GET['mt'] === '5N1x38') {
-        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown ID $sensor. Raw = $myacuriteQuery");
+    if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
+        syslog(LOG_ERR,
+            "(HUB)[TOWER][ERROR]: Towers not enabled - Tower ID $sensor. Raw = $myacuriteQuery");
+    } elseif ($_GET['mt'] === '5N1') {
+        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
     } else {
         syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacuriteQuery");
     }
@@ -212,7 +213,7 @@ $hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
 
 // Log the raw data
 if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(HUB)[MyAcuRite]: Query = $myacuriteQuery | Response = $hubResponse");
+    syslog(LOG_DEBUG, "(HUB)[Update]: Query = $myacuriteQuery | Response = $hubResponse");
 }
 
 // Output the expected response to the smartHUB

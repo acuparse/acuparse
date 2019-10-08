@@ -32,6 +32,22 @@ $timestamp = str_replace('T', ' ', $timestamp);
 $timestamp = strtotime($timestamp . ' UTC');
 $timestamp = date("Y-m-d H:i:s", $timestamp);
 
+// Build update data
+$postData = http_build_query($_POST);
+$opts = array(
+    'http' =>
+        array(
+            'method' => 'POST',
+            'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT'],
+            'content' => $postData
+        ),
+    'ssl' =>
+        array(
+            "verify_peer" => false,
+            "verify_peer_name" => false,
+        )
+);
+$context = stream_context_create($opts);
 
 // Process 5-in-1 Update
 if ($_GET['mt'] === '5N1') {
@@ -180,7 +196,7 @@ elseif ($_GET['mt'] === 'Atlas') {
     }
 } // Process Tower Sensors
 elseif ($config->station->towers === true) {
-    if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn') {
+    if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
 
         // Tower ID
         $towerID = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
@@ -218,15 +234,15 @@ elseif ($config->station->towers === true) {
         } // This tower has not been added
         else {
             syslog(LOG_ERR, "(ACCESS)[TOWER][ERROR]: Unknown ID: $towerID. Raw = $myacuriteQuery");
-            die();
+            goto upload_unknown;
         }
     }
 } // This sensor is not added
 else {
     $sensor = $_GET['sensor'];
-    if ($_GET['mt'] === 'tower') {
+    if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
         syslog(LOG_ERR,
-            "(ACCESS)[TOWER] ERROR: Towers not enabled or Unknown Tower ID $sensor. Raw = $myacuriteQuery");
+            "(ACCESS)[TOWER][ERROR]: Towers not enabled - Tower ID $sensor. Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === '5N1') {
         syslog(LOG_ERR, "(ACCESS)[5N1][ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === 'Atlas') {
@@ -234,29 +250,19 @@ else {
     } else {
         syslog(LOG_ERR, "(ACCESS)[ERROR]: Unknown Sensor $sensor. Raw = $myacuriteQuery");
     }
-    die();
+
+    upload_unknown:
+    // Upload unknown sensor
+    if ($config->upload->myacurite->pass_unknown === true) {
+        goto myacurite_upload;
+    } else {
+        die();
+    }
 }
 
 // Update the time the data was received
 $lastUpdate = date("Y-m-d H:i:s");
 mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate'");
-
-// Build update data
-$postData = http_build_query($_POST);
-$opts = array(
-    'http' =>
-        array(
-            'method' => 'POST',
-            'header' => 'User-Agent:' . $_SERVER['HTTP_USER_AGENT'],
-            'content' => $postData
-        ),
-    'ssl' =>
-        array(
-            "verify_peer" => false,
-            "verify_peer_name" => false,
-        )
-);
-$context = stream_context_create($opts);
 
 // Send data to debug server
 if ($config->debug->server->enabled === true) {
@@ -264,6 +270,7 @@ if ($config->debug->server->enabled === true) {
         false, $context);
 }
 
+myacurite_upload:
 // Forward the raw data to MyAcurite
 if ($config->upload->myacurite->access_enabled === true) {
     $myacurite = file_get_contents($config->upload->myacurite->access_url . '/weatherstation/updateweatherstation?&' . $myacuriteQuery,
