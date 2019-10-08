@@ -125,13 +125,13 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
                 $repo = "$appInfo->repo";
                 $headers = get_headers($repo);
 
-                if (($schema > $appInfo->schema) || ($appInfo->version > $config->version->app)) {
+                if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
                     header("Location: /admin/install/?update");
                     die();
                 } elseif (strpos($headers[0], "200")) {
                     $gitVersion = json_decode(file_get_contents($repo));
                     if ($gitVersion !== null) {
-                        if ($appInfo->version < $gitVersion->version) {
+                        if (version_compare($appInfo->version, $gitVersion->version, '<')) {
                             ?>
                             <section id="update-message" class="row update-message"><br>
                                 <div class="col-md-8 col-12 mx-auto">
