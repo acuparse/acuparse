@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- MySQL error handling.
+
+### Changed
+
+- Bootstrap to v4.4.1.
+- FontAwesome to v5.12.0.
+- Update Copyright.
+
 ## [[2.10.0]](https://www.acuparse.com/releases/v2-10-0/) - 2019-10-06
 
 ### Added

@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -62,7 +62,53 @@ if (!isset($conn)) {
         $conn = mysqli_connect($config->mysql->host, $config->mysql->username, $config->mysql->password,
             $config->mysql->database);
         if (!$conn) {
-            die(syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error()));
+            header($_SERVER["SERVER_PROTOCOL"] . " 503 Service Unavailable");
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <title>Error 503: MySQL Connection Failed</title>
+                <style>
+                    body {
+                        text-align: center;
+                        padding: 150px;
+                    }
+
+                    h1 {
+                        font-size: 50px;
+                    }
+
+                    body {
+                        font: 20px Helvetica, sans-serif;
+                        color: #333;
+                    }
+
+                    article {
+                        display: block;
+                        text-align: left;
+                        width: auto;
+                        margin: 0 auto;
+                    }
+                </style>
+            </head>
+            <body>
+            <article>
+                <h1>503 - MySQL Connection Failed!</h1>
+                <p><strong>MySQL Error</strong>:
+                <pre><?= mysqli_connect_error() ?></pre>
+                </p>
+                <div>
+                    <p><Strong>Error Details:</Strong></p>
+                    <p>Unable to connect to your MySQL server. Either your MySQL server is not started or your
+                        credentials are incorrect.</p>
+                    <p>Check your configuration and that the MySQL service is started, then try again.</p>
+                </div>
+            </article>
+            </body>
+            </html>
+            <?php
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error());
+            die();
         }
     }
 }
