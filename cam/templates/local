@@ -56,10 +56,10 @@ convert ${CAMERA_FILENAME} \
 image.jpg
 
 echo "Sending image to remote server for processing"
-scp image.jpg ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TMP}
+scp image.jpg ${REMOTE_USER}@"${REMOTE_HOST}":${REMOTE_TMP}
 
 echo "Running remote commands"
-ssh ${REMOTE_USER}@${REMOTE_HOST} 'sh ' ${REMOTE_SCRIPT}
+ssh ${REMOTE_USER}@"${REMOTE_HOST}" 'sh ' ${REMOTE_SCRIPT}
 
 # Local Archiving
 # ARCHIVE=$(date +"%F_%H%M")
