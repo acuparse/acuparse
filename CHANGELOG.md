@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Bootstrap to v4.4.1.
 - FontAwesome to v5.12.1.
+- instant.page to v3.0.0.
 - Update Copyright.
 
 ## [[2.10.0]](https://www.acuparse.com/releases/v2-10-0/) - 2019-10-06
