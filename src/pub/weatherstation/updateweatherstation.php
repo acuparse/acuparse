@@ -10,23 +10,29 @@
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  * File: src/pub/weatherstation/updateweatherstation.php
- * Hijacks data from the Access/smartHUB
+ * Commandeers data from the Access/smartHUB
  */
 
 // Get the loader
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+
+function last_updated_at() {
+    global $conn;
+    $lastUpdate = date("Y-m-d H:i:s");
+    mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate';");
+}
 
 // Process Access Update
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && $_GET['id'] === $config->station->access_mac) {

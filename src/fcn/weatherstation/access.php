@@ -25,6 +25,9 @@
  * Processes an update from an Access
  */
 
+// Set the device ID
+$device = 'A';
+
 // Process UTC timestamp
 $timestamp = (string)mysqli_real_escape_string($conn,
     filter_input(INPUT_GET, 'dateutc', FILTER_SANITIZE_STRING));
@@ -51,6 +54,10 @@ $context = stream_context_create($opts);
 
 // Process 5-in-1 Update
 if ($_GET['mt'] === '5N1') {
+
+    // Set the source
+    $source = '5';
+
     if ($_GET['sensor'] === $config->station->sensor_5n1 && $config->station->primary_sensor === 1) {
 
         //Barometer
@@ -62,10 +69,16 @@ if ($_GET['mt'] === '5N1') {
         // Wind Speed
         $windSpeedMPH = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'windspeedmph', FILTER_SANITIZE_STRING));
+        $windGustMPH = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windgustmph', FILTER_SANITIZE_STRING));
+        $windSpeedAvgMPH = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windspeedavgmph', FILTER_SANITIZE_STRING));
 
         // Wind Direction
         $windDirection = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
+        $windGustDirection = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING));
 
         // Rainfall
         $rainDate = date('Y-m-d');
@@ -76,53 +89,71 @@ if ($_GET['mt'] === '5N1') {
 
         // Temperature
         $tempF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'tempf', FILTER_SANITIZE_STRING));
+        $heatIndex = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'heatindex', FILTER_SANITIZE_STRING));
+        $feelsLike = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'feelslike', FILTER_SANITIZE_STRING));
+        $windChill = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windchill', FILTER_SANITIZE_STRING));
+        $dewptF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'dewptf', FILTER_SANITIZE_STRING));
 
         // Humidity
         $humidity = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'humidity', FILTER_SANITIZE_STRING));
 
+        $dewptF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'dewptf', FILTER_SANITIZE_STRING));
+
+        //Other
+        $battery = (string)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'sensorbattery', FILTER_SANITIZE_STRING));
+        $rssi = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
+        $batteryAccess = (string)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'hubbattery', FILTER_SANITIZE_STRING));
+
         // Check if Baro. readings are enabled or not
         if ($config->station->baro_source !== 1) { // Baro. readings not disabled.
-            mysqli_multi_query($conn,
-                "INSERT INTO `pressure` (`inhg`, `timestamp`) VALUES ('$baromin', '$timestamp');
-                    INSERT INTO `windspeed` (`speedMPH`, `timestamp`) VALUES ('$windSpeedMPH' , '$timestamp');
-                    INSERT INTO `temperature` (`tempF`, `timestamp`) VALUES ('$tempF', '$timestamp');
-                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$windDirection', '$timestamp');
-                    INSERT INTO `humidity` (`relH`, `timestamp`) VALUES ('$humidity', '$timestamp');
-                    UPDATE `rainfall` SET `rainin`='$rainIN', `last_update`='$timestamp';
-                    INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`) VALUES ('$dailyRainIN', '$rainDate', '$timestamp') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp'");
 
-            while (mysqli_next_result($conn)) {
-                ;
-            };
+            $sql = "INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');";
+            $result = mysqli_query($conn, $sql);
 
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG,
-                    "(ACCESS)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure = $baromin");
-            }
-        } else { // Baro. readings disabled
-            mysqli_multi_query($conn,
-                "INSERT INTO `windspeed` (`speedMPH`, `timestamp`) VALUES ('$windSpeedMPH' , '$timestamp');
-                    INSERT INTO `temperature` (`tempF`, `timestamp`) VALUES ('$tempF', '$timestamp');
-                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$windDirection', '$timestamp');
-                    INSERT INTO `humidity` (`relH`, `timestamp`) VALUES ('$humidity', '$timestamp');
-                    UPDATE `rainfall` SET `rainin`='$rainIN', `last_update`='$timestamp';
-                    INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`) VALUES ('$dailyRainIN', '$rainDate', '$timestamp') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp'");
-
-            while (mysqli_next_result($conn)) {
-                ;
-            };
-
-            // Log it
-            if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG,
-                    "(ACCESS)[5N1]: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure (DISABLED) = $baromin");
+                    "(ACCESS)[5N1]: Pressure = $baromin");
             }
         }
+
+        // Insert 5N1 Readings into DB
+        $sql = "INSERT INTO `windspeed` (`speedMPH`, `gustMPH`, `averageMPH`, `timestamp`, `device`, `source`) VALUES ('$windSpeedMPH', '$windGustMPH', '$windSpeedAvgMPH', '$timestamp', '$device', '$source');
+            INSERT INTO `temperature` (`tempF`, `heatindex`, `feelslike`, `windchill`, `dewptf`, `timestamp`, `device`, `source`) VALUES ('$tempF', '$heatIndex', '$feelsLike', '$windChill', '$dewptF', '$timestamp', '$device', '$source');
+            INSERT INTO `winddirection` (`degrees`, `gust`, `timestamp`, `device`, `source`) VALUES ('$windDirection', '$windGustDirection', '$timestamp', '$device', '$source');
+            INSERT INTO `humidity` (`relH`, `timestamp`, `device`, `source`) VALUES ('$humidity', '$timestamp', '$device', '$source');
+            UPDATE `rainfall` SET `rainin`='$rainIN', `last_update`='$timestamp', `device`='$device', `source`='$source';
+            INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`, `device`, `source`) VALUES ('$dailyRainIN', '$rainDate', '$timestamp', '$device', '$source') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp', `device`='$device', `source`='$source';
+            UPDATE `access_status` SET `battery`='$batteryAccess',`last_update`='$timestamp';
+            UPDATE `5n1_status` SET `battery`='$battery', `rssi`='$rssi', `last_update`='$timestamp' WHERE `device`='access';";
+        $result = mysqli_multi_query($conn, $sql);
+        while (mysqli_next_result($conn)) {
+            null;
+        }
+
+        // Log it
+        if ($config->debug->logging === true) {
+            syslog(LOG_DEBUG,
+                "(ACCESS)[5N1]: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
+            syslog(LOG_DEBUG, "(Access)[5N1]: Battery = $battery | Signal = $rssi");
+            syslog(LOG_DEBUG, "(Access)[SYS]: Battery = $batteryAccess");
+        }
+
+        // Update the time the data was received
+        last_updated_at();
     }
-} // Process Atlas Update
+} //Done 5N1
+
+// Process Atlas Update
 elseif ($_GET['mt'] === 'Atlas') {
+    $source = 'A';
 
     if ($_GET['sensor'] === $config->station->sensor_atlas && $config->station->primary_sensor === 0) {
 
@@ -135,10 +166,16 @@ elseif ($_GET['mt'] === 'Atlas') {
         // Wind Speed
         $windSpeedMPH = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'windspeedmph', FILTER_SANITIZE_STRING));
+        $windSpeedAvgMPH = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windspeedavgmph', FILTER_SANITIZE_STRING));
+        $windGustMPH = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windgustmph', FILTER_SANITIZE_STRING));
 
         // Wind Direction
         $windDirection = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
+        $windGustDirection = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING));
 
         // Rainfall
         $rainDate = date('Y-m-d');
@@ -154,47 +191,99 @@ elseif ($_GET['mt'] === 'Atlas') {
         $humidity = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'humidity', FILTER_SANITIZE_STRING));
 
+        // Indexes
+        $heatIndex = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'heatindex', FILTER_SANITIZE_STRING));
+        $feelsLike = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'feelslike', FILTER_SANITIZE_STRING));
+        $windChill = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'windchill', FILTER_SANITIZE_STRING));
+        $dewptF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'dewptf', FILTER_SANITIZE_STRING));
+
+        // Atlas Specific Sensors
+        $uvindex = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'uvindex', FILTER_SANITIZE_STRING));
+        $lightintensity = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'lightintensity', FILTER_SANITIZE_STRING));
+        $measured_light_seconds = (float)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'measured_light_seconds', FILTER_SANITIZE_STRING));
+
+        // Lightning
+        if ($config->station->lightning_source === 1) {
+            $strikecount = (float)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'strikecount', FILTER_SANITIZE_STRING));
+            $interference = (bool)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
+            $last_strike_ts = (float)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
+            $last_strike_ts = date('Y-m-d H:i:s', strtotime($last_strike_ts));
+            $last_strike_distance = (float)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
+        }
+
+        //Other
+        $battery = (string)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'sensorbattery', FILTER_SANITIZE_STRING));
+        $rssi = (int)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
+        $batteryAccess = (string)mysqli_real_escape_string($conn,
+            filter_input(INPUT_GET, 'hubbattery', FILTER_SANITIZE_STRING));
+
         // Check if Baro. readings are enabled or not
         if ($config->station->baro_source !== 1) { // Baro. readings not disabled.
-            mysqli_multi_query($conn,
-                "INSERT INTO `pressure` (`inhg`, `timestamp`) VALUES ('$baromin', '$timestamp');
-                    INSERT INTO `windspeed` (`speedMPH`, `timestamp`) VALUES ('$windSpeedMPH' , '$timestamp');
-                    INSERT INTO `temperature` (`tempF`, `timestamp`) VALUES ('$tempF', '$timestamp');
-                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$windDirection', '$timestamp');
-                    INSERT INTO `humidity` (`relH`, `timestamp`) VALUES ('$humidity', '$timestamp');
-                    UPDATE `rainfall` SET `rainin`='$rainIN', `last_update`='$timestamp';
-                    INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`) VALUES ('$dailyRainIN', '$rainDate', '$timestamp') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp'");
 
-            while (mysqli_next_result($conn)) {
-                ;
-            };
+            // Insert into DB
+            $sql = "INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');";
+            $result = mysqli_query($conn, $sql);
 
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG,
-                    "(ACCESS)[ATLAS]: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure = $baromin");
-            }
-        } else { // Baro. readings disabled
-            mysqli_multi_query($conn,
-                "INSERT INTO `windspeed` (`speedMPH`, `timestamp`) VALUES ('$windSpeedMPH' , '$timestamp');
-                    INSERT INTO `temperature` (`tempF`, `timestamp`) VALUES ('$tempF', '$timestamp');
-                    INSERT INTO `winddirection` (`degrees`, `timestamp`) VALUES ('$windDirection', '$timestamp');
-                    INSERT INTO `humidity` (`relH`, `timestamp`) VALUES ('$humidity', '$timestamp');
-                    UPDATE `rainfall` SET `rainin`='$rainIN', `last_update`='$timestamp';
-                    INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`) VALUES ('$dailyRainIN', '$rainDate', '$timestamp') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp'");
-
-            while (mysqli_next_result($conn)) {
-                ;
-            };
-
-            // Log it
-            if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG,
-                    "(ACCESS)[ATLAS]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | Pressure (DISABLED) = $baromin");
+                    "(ACCESS)[SYS]: Pressure = $baromin");
             }
         }
+
+        // Insert Atlas readings into DB
+        $sql = "INSERT INTO `windspeed` (`speedMPH`, `gustMPH`, `averageMPH`, `timestamp`, `device`, `source`) VALUES ('$windSpeedMPH', '$windGustMPH', '$windSpeedAvgMPH', '$timestamp', '$device', '$source');
+            INSERT INTO `temperature` (`tempF`, `heatindex`, `feelslike`, `windchill`, `dewptf`, `timestamp`, `device`, `source`) VALUES ('$tempF', '$heatIndex', '$feelsLike', '$windChill', '$dewptF', '$timestamp', '$device', '$source');
+            INSERT INTO `winddirection` (`degrees`, `gust`, `timestamp`, `device`, `source`) VALUES ('$windDirection', '$windGustDirection', '$timestamp', '$device', '$source');
+            INSERT INTO `humidity` (`relH`, `timestamp`, `device`, `source`) VALUES ('$humidity', '$timestamp', '$device', '$source');
+            UPDATE `rainfall` SET `rainin`='$rainIN', `last_update`='$timestamp', `device`='$device', `source`='$source';
+            INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`, `device`, `source`) VALUES ('$dailyRainIN', '$rainDate', '$timestamp', '$device', '$source') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp', `device`='$device', `source`='$source';
+            INSERT INTO `uvindex` (`uvindex`, `timestamp`) VALUES('$uvindex', '$timestamp');
+            INSERT INTO `light` (`lightintensity`, `measured_light_seconds`, `timestamp`) VALUES('$lightintensity', '$measured_light_seconds', '$timestamp');
+            UPDATE `access_status` SET `battery`='$batteryAccess',`last_update`='$timestamp';
+            UPDATE `atlas_status` SET `battery`='$battery', `rssi`='$rssi', `last_update`='$timestamp';";
+        $result = mysqli_multi_query($conn, $sql);
+        while (mysqli_next_result($conn)) {
+            null;
+        }
+
+        // Lightning
+        if ($config->station->lightning_source === 1) {
+            $sql = "INSERT INTO `lightning` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `timestamp`) VALUES('$strikecount', '$interference' '$last_strike_ts', '$last_strike_distance', '$timestamp');";
+            $result = mysqli_query($conn, $sql);
+
+            // Log it
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG,
+                    "(ACCESS)[ATLAS]{LIGHTNING}: Count = $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+            }
+        }
+
+        // Log it
+        if ($config->debug->logging === true) {
+            syslog(LOG_DEBUG,
+                "(ACCESS)[ATLAS]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | UV = $uvindex | Light = $lightintensity / $measured_light_seconds");
+            syslog(LOG_DEBUG, "(Access)[ATLAS]: Battery = $battery | Signal = $rssi");
+            syslog(LOG_DEBUG, "(Access)[SYS]: Battery = $batteryAccess");
+        }
+
+        // Update the time the data was received
+        last_updated_at();
     }
-} // Process Tower Sensors
+} // Done Atlas
+
+// Process Tower Sensors
 elseif ($config->station->towers === true) {
     if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
 
@@ -202,7 +291,7 @@ elseif ($config->station->towers === true) {
         $towerID = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
 
         // Check if this tower exists
-        $sql = "SELECT * FROM `towers` WHERE `sensor` = '$towerID'";
+        $sql = "SELECT * FROM `towers` WHERE `sensor` = '$towerID';";
         $count = mysqli_num_rows(mysqli_query($conn, $sql));
         if ($count === 1) {
             $result = mysqli_fetch_array(mysqli_query($conn, $sql));
@@ -224,31 +313,87 @@ elseif ($config->station->towers === true) {
                     filter_input(INPUT_GET, 'humidity', FILTER_SANITIZE_STRING));
             }
 
+            // Lightning
+            if ($_GET['mt'] === 'light' && $config->station->lightning_source === 2) {
+                $strikecount = (float)mysqli_real_escape_string($conn,
+                    filter_input(INPUT_GET, 'strikecount', FILTER_SANITIZE_STRING));
+                $interference = (float)mysqli_real_escape_string($conn,
+                    filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
+                $last_strike_ts = (float)mysqli_real_escape_string($conn,
+                    filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
+                $last_strike_ts = date('Y-m-d H:i:s', strtotime($last_strike_ts));
+                $last_strike_distance = (float)mysqli_real_escape_string($conn,
+                    filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
+            }
+
+            //Other
+            $battery = (string)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'sensorbattery', FILTER_SANITIZE_STRING));
+            $rssi = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
+
             // Insert into DB
-            mysqli_query($conn,
-                "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`, `timestamp`) VALUES ('$tempF', '$humidity', '$towerID', '$timestamp')");
+            $sql = "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`, `battery`, `rssi`, `timestamp`, `device`) VALUES ('$tempF', '$humidity', '$towerID', '$battery', '$rssi', '$timestamp', '$device');";
+            $result = mysqli_query($conn, $sql);
+
+            if ($config->station->baro_source !== 2) {
+                // Check if this is the upload tower and save the baro. reading
+                if ($config->upload->sensor->id === $towerID) {
+                    //Barometer
+                    $baromin = (float)mysqli_real_escape_string($conn,
+                        filter_input(INPUT_GET, 'baromin', FILTER_SANITIZE_STRING));
+                    if ($config->station->baro_offset !== 0) {
+                        $source = 'T';
+                        $baromin = $baromin + $config->station->baro_offset;
+                    }
+
+                    // Insert into DB
+                    $sql = "INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');";
+                    $result = mysqli_query($conn, $sql);
+
+                    // Log it
+                    if ($config->debug->logging === true) {
+                        syslog(LOG_DEBUG,
+                            "(ACCESS)[SYS]: Pressure = $baromin");
+                    }
+                }
+            }
+
+            // Lightning
+            if ($_GET['mt'] === 'light' && $config->station->lightning_source === 2) {
+                $sql = "INSERT INTO `lightning` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `timestamp`) VALUES('$strikecount', '$interference' '$last_strike_ts', '$last_strike_distance', '$timestamp');";
+                $result = mysqli_query($conn, $sql);
+                if ($config->debug->logging === true) {
+                    syslog(LOG_DEBUG,
+                        "(ACCESS)[TOWER]{LIGHTNING}: Count = $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+                }
+            }
+
+            // Log it
             if ($config->debug->logging === true) {
-                // Log it
                 syslog(LOG_DEBUG, "(ACCESS)[TOWER][$towerName]: tempF = $tempF | relH = $humidity");
+                syslog(LOG_DEBUG, "(Access)[TOWER][$towerName]: Battery = $battery | Signal = $rssi");
             }
         } // This tower has not been added
         else {
-            syslog(LOG_ERR, "(ACCESS)[TOWER][ERROR]: Unknown ID: $towerID. Raw = $myacuriteQuery");
+            syslog(LOG_ERR, "(ACCESS)[TOWER][ERROR]: Unknown ID: $towerID . Raw = $myacuriteQuery");
             goto upload_unknown;
         }
     }
-} // This sensor is not added
+} // Done Towers
+
+// This sensor is not added
 else {
     $sensor = $_GET['sensor'];
     if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
         syslog(LOG_ERR,
-            "(ACCESS)[TOWER][ERROR]: Towers not enabled - Tower ID $sensor. Raw = $myacuriteQuery");
+            "(ACCESS)[TOWER][ERROR]: Towers not enabled - Tower ID $sensor . Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === '5N1') {
-        syslog(LOG_ERR, "(ACCESS)[5N1][ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
+        syslog(LOG_ERR, "(ACCESS)[5N1][ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === 'Atlas') {
-        syslog(LOG_ERR, "(ACCESS)[ATLAS][ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
+        syslog(LOG_ERR, "(ACCESS)[ATLAS][ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
     } else {
-        syslog(LOG_ERR, "(ACCESS)[ERROR]: Unknown Sensor $sensor. Raw = $myacuriteQuery");
+        syslog(LOG_ERR, "(ACCESS)[ERROR]: Unknown Sensor $sensor . Raw = $myacuriteQuery");
     }
 
     upload_unknown:
@@ -260,9 +405,7 @@ else {
     }
 }
 
-// Update the time the data was received
-$lastUpdate = date("Y-m-d H:i:s");
-mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate'");
+// Finish Update
 
 // Send data to debug server
 if ($config->debug->server->enabled === true) {

@@ -33,6 +33,7 @@ if (isset($_GET['update']) && $installed === true) {
 
         // Logged in, process update
         if (isset($_GET['do'])) {
+            set_time_limit(0);
             $notes = '';
             $updatePattern = dirname(dirname(dirname(__DIR__))) . '/fcn/updater/*/*.php';
             foreach (glob($updatePattern) as $filename) {
@@ -105,9 +106,8 @@ if (isset($_GET['update']) && $installed === true) {
         // Bailout
         header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
         header("Location: /");
-        die();
     }
-
+    die();
 } // Create initial administrator account
 elseif (isset($_GET['account']) && $installed === true) {
     // Process the new account

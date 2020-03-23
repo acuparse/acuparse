@@ -75,6 +75,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->station->baro_offset = (isset($_POST['station']['baro_offset'])) ? (float)$_POST['station']['baro_offset'] : 0;
         $config->station->baro_source = (int)$_POST['station']['baro_source'];
         $config->station->towers = (bool)$_POST['station']['towers'];
+        $config->station->lightning_source = (int)$_POST['station']['lightning_source'];
 
         // Site
         $config->site->name = $_POST['site']['name'];
@@ -519,42 +520,45 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                             </div>
                                         </div>
                                         <div class="col-md-8 col-12 mx-auto">
-                                            <div class="form-group">
-                                                <p>Barometer Source:</p>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio"
-                                                           name="station[baro_source]" id="station-baro-source-0"
-                                                           value="0"
-                                                        <?= ($config->station->baro_source === 0) ? 'checked="checked"' : false; ?>>
-                                                    <label class="form-check-label alert alert-success"
-                                                           for="station-baro-source-0">Default</label>
+                                            <hr>
+                                            <div class="col-md-8 col-12 mx-auto">
+                                                <div class="form-group">
+                                                    <p><strong>Barometer Source</strong></p>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[baro_source]" id="station-baro-source-0"
+                                                               value="0"
+                                                            <?= ($config->station->baro_source === 0) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert alert-success"
+                                                               for="station-baro-source-0">Default</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[baro_source]" id="station-baro-source-1"
+                                                               value="1"
+                                                            <?= ($config->station->baro_source === 1) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert alert-warning"
+                                                               for="station-baro-source-1">Hub</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[baro_source]" id="station-baro-source-2"
+                                                               value="2"
+                                                            <?= ($config->station->baro_source === 2) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert alert-warning"
+                                                               for="station-baro-source-2">Access</label>
+                                                    </div>
+                                                    <small id="station-baro-source-help" class="form-text text-muted">Which
+                                                        device will report barometer readings? Default will save
+                                                        readings
+                                                        from all devices. Using multiple devices can result in skewed
+                                                        readings!
+                                                    </small>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio"
-                                                           name="station[baro_source]" id="station-baro-source-1"
-                                                           value="1"
-                                                        <?= ($config->station->baro_source === 1) ? 'checked="checked"' : false; ?>>
-                                                    <label class="form-check-label alert alert-warning"
-                                                           for="station-baro-source-1">Hub</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio"
-                                                           name="station[baro_source]" id="station-baro-source-2"
-                                                           value="2"
-                                                        <?= ($config->station->baro_source === 2) ? 'checked="checked"' : false; ?>>
-                                                    <label class="form-check-label alert alert-warning"
-                                                           for="station-baro-source-2">Access</label>
-                                                </div>
-                                                <small id="station-baro-source-help" class="form-text text-muted">Which
-                                                    device will report barometer readings? Default will save readings
-                                                    from all devices. Using multiple devices can result in skewed
-                                                    readings!
-                                                </small>
                                             </div>
                                             <div class="col-md-8 col-12 mx-auto">
                                                 <div class="form-group">
-                                                    <label class="col-form-label" for="station-baro-offset">Barometer
-                                                        Offset:</label>
+                                                    <p><strong>Barometer Offset</strong></p>
                                                     <input type="number" class="form-control"
                                                            name="station[baro_offset]"
                                                            id="station-baro-offset" step=".01"
@@ -566,8 +570,13 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                         elevation.
                                                     </small>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-12 mx-auto">
+                                            <hr>
+                                            <div class="col-md-8 col-12 mx-auto">
                                                 <div class="form-group">
-                                                    <p><strong>Tower Sensors?</strong></p>
+                                                    <p><strong>Tower Sensors</strong></p>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
                                                                name="station[towers]"
@@ -584,6 +593,48 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                                         <label class="form-check-label alert alert-danger"
                                                                for="station-towers-1">Disabled</label>
                                                     </div>
+                                                    <small id="station-towers-help"
+                                                           class="form-text text-muted">Enable Tower Sensors?
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-12 mx-auto">
+                                            <hr>
+                                            <div class="col-md-8 col-12 mx-auto">
+                                                <div class="form-group">
+                                                    <p><strong>Lightning Source</strong></p>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[lightning_source]"
+                                                               id="station-lightning-source-0"
+                                                               value="0"
+                                                            <?= ($config->station->lightning_source === 0) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert alert-success"
+                                                               for="station-lightning-source-0">None</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[lightning_source]"
+                                                               id="station-lightning-source-1"
+                                                               value="1"
+                                                            <?= ($config->station->lightning_source === 1) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert alert-warning"
+                                                               for="station-lightning-source-1">Atlas</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="station[lightning_source]"
+                                                               id="station-lightning-source-2"
+                                                               value="2"
+                                                            <?= ($config->station->lightning_source === 2) ? 'checked="checked"' : false; ?>>
+                                                        <label class="form-check-label alert alert-warning"
+                                                               for="station-lightning-source-2">Tower</label>
+                                                    </div>
+                                                    <small id="station-lightning-source-help"
+                                                           class="form-text text-muted">Which
+                                                        device will report lightning readings?
+                                                    </small>
                                                 </div>
                                             </div>
                                         </div>

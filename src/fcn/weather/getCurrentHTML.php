@@ -35,6 +35,21 @@ function getCurrentHTML()
     $getData = new getCurrentWeatherData();
     $wx = $getData->getConditions();
 
+    // Load Lightning Data:
+    if ($config->station->lightning_source === 1 || $config->station->lightning_source === 2) {
+        require('getCurrentLightningData.php');
+        $getLightningData = new getCurrentLightningData();
+        $lightning = $getLightningData->getData();
+    }
+
+    // Load Atlas Data:
+    if ($config->station->primary_sensor === 0) {
+        // Load weather Data:
+        require('getCurrentAtlasData.php');
+        $getAtlasData = new getCurrentAtlasData();
+        $atlas = $getAtlasData->getData();
+    }
+
     // Get Moon Data:
     require(APP_BASE_PATH . '/pub/lib/mit/moon/moonphase.php');
     $moon = new MoonPhase();
@@ -252,6 +267,24 @@ function getCurrentHTML()
                     </ul>
                 </div>
             </div>
+            <?php
+            if ($config->station->primary_sensor === 0) {
+                ?>
+                <!-- Atlas Data -->
+                <div class="row">
+                    <div class="col">
+                        <h1><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h1>
+                        <ul class="list-unstyled">
+                            <li><h3>Intensity:</h3> <?php
+                                echo $atlas->lightintensity_text; ?></li>
+                            <li><h3>Measured:</h3> <?php
+                                echo $atlas->measured_light_seconds; ?> Seconds</li>
+                        </ul>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
         </div>
         <!-- END: Middle Column -->
 
@@ -267,6 +300,14 @@ function getCurrentHTML()
                             <h3>Sunrise:</h3> <?= $sunrise; ?></li>
                         <li><i class="wi wi-sunset" aria-hidden="true"></i>
                             <h3>Sunset:</h3> <?= $sunset; ?></li>
+                        <?php
+                        if ($config->station->primary_sensor === 0) {
+                            ?>
+                            <li><i class="wi wi-hot" aria-hidden="true"></i>
+                                <h3>UV Index:</h3> <?= $atlas->uvindex_text; ?></li>
+                            <?php
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -304,9 +345,30 @@ function getCurrentHTML()
         <!-- END: Right Column -->
     </section>
     <!-- END: Live Weather Data -->
-
     <?php
-
+    if ($config->station->lightning_source === 1 || $config->station->lightning_source === 2) {
+        $interference = ($lightning->interference === true) ? "Yes" : "No";
+        ?>
+        <!-- Lightning Data -->
+        <section id="live-lightning-data" class="row live-weather-data">
+            <div class="col-12">
+                <h1><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h1>
+                <ul class="list-unstyled">
+                    <li><h3>Interference:</h3> <?= $interference ?> |
+                        <h3>Strikes:</h3> <?= $lightning->strikecount; ?> |
+                        <h3>Last:</h3> <?= $lightning->last_strike_ts; ?> |
+                        <h3>Distance:</h3><?php
+                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                            $last_strike_distance = ($config->site->imperial === true) ? "$lightning->last_strike_ts_M Miles ($lightning->last_strike_ts_KM KM)" : "$lightning->last_strike_ts_KM KM ($lightning->last_strike_ts_M Miles)";
+                        } else {
+                            $last_strike_distance = ($config->site->imperial === true) ? "$lightning->last_strike_ts_M Miles" : "$lightning->last_strike_ts_KM KM";
+                        }
+                        echo $last_strike_distance; ?></li>
+                </ul>
+            </div>
+        </section>
+        <?php
+    }
     // If tower sensors are active show the tower data
     if ($config->station->towers === true) {
 

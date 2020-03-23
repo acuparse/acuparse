@@ -45,7 +45,8 @@ return (object)array(
         'sensor_5n1' => '', // 5n1 Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
-        'baro_source' => 0, // Use baro reading from which device? 0-default/1-hub/2-access
+        'baro_source' => 0, // Use baro reading from which device? (0-default/1-hub/2-access)
+        'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower)
     ),
 
     // Site specific config variables
@@ -195,7 +196,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '2.10.0-release',
-        'schema' => '2.9',
+        'app' => '3.0.0-beta',
+        'schema' => '3.0',
     ),
 );

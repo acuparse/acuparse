@@ -523,7 +523,7 @@ class getArchiveWeatherData
         $this->rainfall_MM_most_ever = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
     }
 
-    //Private Functions
+    // Private Functions
 
     // Calculate human readable wind direction from a range of values:
     private function windDirection($windDEG)

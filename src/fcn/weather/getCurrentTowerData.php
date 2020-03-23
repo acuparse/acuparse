@@ -30,7 +30,6 @@ class getCurrentTowerData
     private $tempC;
     private $relH;
 
-
     function __construct($sensor)
     {
         // Get the loader

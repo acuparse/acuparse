@@ -77,6 +77,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                         onclick="location.href = '/admin/settings'"><i class="fas fa-cogs"
                                                                        aria-hidden="true"></i> System Settings
                 </button>
+                <h4 class="margin-top-05">Sensors:</h4>
+                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
+                        onclick="location.href = '/admin/status'"><i class="fas fa-question-circle"
+                                                                       aria-hidden="true"></i> Sensor Status
+                </button>
                 <h4 class="margin-top-05">Access Tools:</h4>
                 <button type="button" id="access-server" class="btn btn-outline-secondary btn-block margin-top-10"
                         onclick="location.href = '/admin/access'"><i class="fas fa-server"
