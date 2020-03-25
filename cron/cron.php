@@ -35,8 +35,7 @@ $data = $get_data->getConditions();
 
 // Load Atlas Data:
 if ($config->station->primary_sensor === 0) {
-    // Load weather Data:
-    require('getCurrentAtlasData.php');
+    require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
     $getAtlasData = new getCurrentAtlasData();
     $atlas = $getAtlasData->getData();
 }

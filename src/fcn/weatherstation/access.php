@@ -211,13 +211,16 @@ elseif ($_GET['mt'] === 'Atlas') {
         if ($config->station->lightning_source === 1) {
             $strikecount = (float)mysqli_real_escape_string($conn,
                 filter_input(INPUT_GET, 'strikecount', FILTER_SANITIZE_STRING));
-            $interference = (bool)mysqli_real_escape_string($conn,
+            $interference = (int)mysqli_real_escape_string($conn,
                 filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
-            $last_strike_ts = (float)mysqli_real_escape_string($conn,
-                filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
-            $last_strike_ts = date('Y-m-d H:i:s', strtotime($last_strike_ts));
             $last_strike_distance = (float)mysqli_real_escape_string($conn,
                 filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
+            // Process Last Strike timestamp
+            $last_strike_ts = (string)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
+            $last_strike_ts = str_replace('T', ' ', $last_strike_ts);
+            $last_strike_ts = strtotime($last_strike_ts . ' UTC');
+            $last_strike_ts = date("Y-m-d H:i:s", $last_strike_ts);
         }
 
         //Other
@@ -260,7 +263,7 @@ elseif ($_GET['mt'] === 'Atlas') {
 
         // Lightning
         if ($config->station->lightning_source === 1) {
-            $sql = "INSERT INTO `lightning` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `timestamp`) VALUES('$strikecount', '$interference' '$last_strike_ts', '$last_strike_distance', '$timestamp');";
+            $sql = "INSERT INTO `lightning` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `timestamp`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$timestamp');";
             $result = mysqli_query($conn, $sql);
 
             // Log it
@@ -317,13 +320,16 @@ elseif ($config->station->towers === true) {
             if ($_GET['mt'] === 'light' && $config->station->lightning_source === 2) {
                 $strikecount = (float)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'strikecount', FILTER_SANITIZE_STRING));
-                $interference = (float)mysqli_real_escape_string($conn,
+                $interference = (int)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
-                $last_strike_ts = (float)mysqli_real_escape_string($conn,
-                    filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
-                $last_strike_ts = date('Y-m-d H:i:s', strtotime($last_strike_ts));
                 $last_strike_distance = (float)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
+                // Process Last Strike timestamp
+                $last_strike_ts = (string)mysqli_real_escape_string($conn,
+                    filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
+                $last_strike_ts = str_replace('T', ' ', $last_strike_ts);
+                $last_strike_ts = strtotime($last_strike_ts . ' UTC');
+                $last_strike_ts = date("Y-m-d H:i:s", $last_strike_ts);
             }
 
             //Other
@@ -361,7 +367,7 @@ elseif ($config->station->towers === true) {
 
             // Lightning
             if ($_GET['mt'] === 'light' && $config->station->lightning_source === 2) {
-                $sql = "INSERT INTO `lightning` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `timestamp`) VALUES('$strikecount', '$interference' '$last_strike_ts', '$last_strike_distance', '$timestamp');";
+                $sql = "INSERT INTO `lightning` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `timestamp`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$timestamp');";
                 $result = mysqli_query($conn, $sql);
                 if ($config->debug->logging === true) {
                     syslog(LOG_DEBUG,

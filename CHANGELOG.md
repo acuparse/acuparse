@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.0.0]](https://www.acuparse.com/releases/v3-0-0/) - BETA
+
+### Added
+
+- Support all Atlas readings (UV, Lightning, Light).
+
 ### Fixed
 
 - MySQL error handling.
@@ -22,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Support for Lightning Tower.
+- Basic support for Lightning Tower.
 - Support sending unknown sensors to MyAcuRite.
 
 ### Changed
@@ -54,10 +60,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Lightbox to v2.11.1
 - InstantPage to v2.0.0
 - Mailing list to Google Apps
-
-### Added
-
-- Gitter Badge
 
 ## [[2.9.1]](https://www.acuparse.com/releases/v2-9-1/) - 2019-06-28
 

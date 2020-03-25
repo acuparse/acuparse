@@ -40,18 +40,25 @@ class getCurrentLightningData
         //Process Strike Count
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `strikecount`, `interference`, `last_strike_ts`, `last_strike_distance` FROM `lightning` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->strikecount = $result['strikecount'];
-        $this->interference = $result['interference'];
+        $this->strikecount = (int)$result['strikecount'];
+        $this->interference = (bool)$result['interference'];
         $this->last_strike_ts = $result['last_strike_ts'];
-        $this->last_strike_distance_KM = round($result['last_strike_distance'],1);
-        $this->last_strike_distance_M = round($result['last_strike_distance'] / 1.609,1);
+        $this->last_strike_distance_KM = (float)round($result['last_strike_distance'],1);
+        $this->last_strike_distance_M = (float)round($result['last_strike_distance'] / 1.609,1);
     }
+
+    // Calculate Light Hours
+    private function interferenceText($interference)
+    {
+        return ($interference === true) ? "Yes" : "No";
+    }
+
     // Get Data
     public function getData()
     {
         return (object)array(
             'strikecount' => $this->strikecount,
-            'interference' => $this->interference,
+            'interference' => $this->interferenceText($this->interference),
             'last_strike_ts' => $this->last_strike_ts,
             'last_strike_distance_KM' => $this->last_strike_distance_KM,
             'last_strike_distance_M' => $this->last_strike_distance_M

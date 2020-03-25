@@ -39,11 +39,11 @@ class getCurrentAtlasData
         //Process Strike Count
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `uvindex` FROM `uvindex` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->uvindex = $result['uvindex'];
+        $this->uvindex = (int)$result['uvindex'];
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `lightintensity`, `measured_light_seconds` FROM `light` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->lightintensity = $result['lightintensity'];
-        $this->measured_light_seconds = $result['measured_light_seconds'];
+        $this->lightintensity = (int)$result['lightintensity'];
+        $this->measured_light_seconds = (int)$result['measured_light_seconds'];
 
     }
 
@@ -68,7 +68,7 @@ class getCurrentAtlasData
     }
 
     // Calculate the Light Intensity Text
-    private function calculateLight($index)
+    private function lightText($index)
     {
         if (($index >= 0) && ($index <= 500)) {
             $result = 'Dark/Night';
@@ -87,6 +87,12 @@ class getCurrentAtlasData
         return $result;
     }
 
+    // Calculate Light Hours
+    private function calculateLightHours($seconds)
+    {
+        return round($seconds / 3600,2);
+    }
+
     // Get Data
     public function getData()
     {
@@ -94,8 +100,9 @@ class getCurrentAtlasData
             'uvindex' => $this->uvindex,
             'uvindex_text' => $this->calculateUV($this->uvindex),
             'lightintensity' => $this->lightintensity,
-            'lightintensity_text' => $this->calculateLight($this->lightintensity),
-            'measured_light_seconds' => $this->measured_light_seconds
+            'lightintensity_text' => $this->lightText($this->lightintensity),
+            'measured_light_seconds' => $this->measured_light_seconds,
+            'measured_light_hours' => $this->calculateLightHours($this->measured_light_seconds)
         );
     }
 }
