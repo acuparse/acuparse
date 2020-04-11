@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - Bootstrap to v4.4.1.
-- FontAwesome to v5.12.1.
+- FontAwesome to v5.13.0.
 - instant.page to v3.0.0.
 - Update Copyright.
 
