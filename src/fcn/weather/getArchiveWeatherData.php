@@ -192,118 +192,147 @@ class getArchiveWeatherData
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        /** @var mysqli $conn Global MYSQL Connection */
+        /**
+         * @return array
+         * @var object $config Global Config
+         */
+        // Check for recent readings
+        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
+        if (!isset($lastUpdate)) {
+            exit();
+        }
 
         // Process Wind Speed:
+
         // Yesterday
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
+            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
         $this->windS_mph_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
         $this->windDIR_yesterday = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_yesterday = (int)round($result['windSmph']); // Miles per hour
-        $this->windS_kmh_high_yesterday = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windS_mph_high_yesterday = (int)round($result['windSpeedMPH']); // Miles per hour
+        $this->windS_kmh_high_yesterday = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+
         // This Week
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->windS_mph_high_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
+        $this->windS_mph_high_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->windDIR_week = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_week = (int)round($result['windSmph']); // Miles per hour
-        $this->windS_kmh_high_week = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windS_mph_high_week = (int)round($result['windSpeedMPH']); // Miles per hour
+        $this->windS_kmh_high_week = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+
         // This Month
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->windS_mph_high_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
+        $this->windS_mph_high_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->windDIR_month = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_month = (int)round($result['windSmph']); // Miles per hour
-        $this->windS_kmh_high_month = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windS_mph_high_month = (int)round($result['windSpeedMPH']); // Miles per hour
+        $this->windS_kmh_high_month = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+
         // Last Month
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->windS_mph_high_recorded_last_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
+        $this->windS_mph_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->windDIR_last_month = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_last_month = (int)round($result['windSmph']); // Miles per hour
-        $this->windS_kmh_high_last_month = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windS_mph_high_last_month = (int)round($result['windSpeedMPH']); // Miles per hour
+        $this->windS_kmh_high_last_month = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+
         // This Year
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->windS_mph_high_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
+        $this->windS_mph_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->windDIR_year = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_year = (int)round($result['windSmph']); // Miles per hour
-        $this->windS_kmh_high_year = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windS_mph_high_year = (int)round($result['windSpeedMPH']); // Miles per hour
+        $this->windS_kmh_high_year = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+
         // All Time
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSmph`, `windDEG` FROM `archive` WHERE `windSmph` = (SELECT MAX(`windSmph`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
+            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->windS_mph_high_recorded_ever = date('j M Y @ H:i', strtotime($result['reported'])); // Recorded at
         $this->windDIR_ever = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_ever = (int)round($result['windSmph']); // Miles per hour
-        $this->windS_kmh_high_ever = (int)round($result['windSmph'] * 1.60934); // Convert to Kilometers per hour
+        $this->windS_mph_high_ever = (int)round($result['windSpeedMPH']); // Miles per hour
+        $this->windS_kmh_high_ever = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
 
         // Process Temp:
+
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
         $this->tempF_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
         $this->tempF_high_yesterday = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_yesterday = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // This Week High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_high_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_high_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_high_week = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_week = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // This Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_high_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_high_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_high_month = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // Last Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_high_recorded_last_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_high_last_month = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_last_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // This Year High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_high_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_high_year = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_year = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // All Time High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->tempF_high_recorded_ever = date('j M Y @ H:i', strtotime($result['reported'])); // Recorded at
         $this->tempF_high_ever = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_ever = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // Yesterday Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
         $this->tempF_low_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
         $this->tempF_low_yesterday = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low_yesterday = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // This Week Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_low_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_low_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_low_week = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low_week = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // This Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_low_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_low_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_low_month = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // Last Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_low_recorded_last_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_low_last_month = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low_last_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // This Year Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_low_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_low_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->tempF_low_year = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low_year = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         // All Time Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
@@ -312,6 +341,7 @@ class getArchiveWeatherData
         $this->tempC_low_ever = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
         // Process Pressure:
+
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
@@ -319,35 +349,40 @@ class getArchiveWeatherData
         $this->pressure_inHg_high_yesterday = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_yesterday = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // This Week High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_high_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_high_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_high_week = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_week = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // This Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_high_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_high_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_high_month = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_month = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // Last Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_high_recorded_last_month = date('j M @ H:i',
+        $this->pressure_inHg_high_recorded_last_month = date($config->site->dashboard_display_date,
             strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_high_last_month = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_last_month = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // This Year High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_high_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_high_year = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_year = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // All Time High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
@@ -355,6 +390,7 @@ class getArchiveWeatherData
         $this->pressure_inHg_high_ever = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_ever = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // Yesterday Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
@@ -362,34 +398,39 @@ class getArchiveWeatherData
         $this->pressure_inHg_low_yesterday = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_low_yesterday = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // This Week Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_low_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_low_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_low_week = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_low_week = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // This Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_low_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_low_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_low_month = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_low_month = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // Last Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_low_recorded_last_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_low_last_month = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_low_last_month = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // This Year Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_low_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_low_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_low_year = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_low_year = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
+
         // All Time Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
@@ -399,61 +440,73 @@ class getArchiveWeatherData
             2); // Convert to Kilopascals
 
         // Process Humidity:
+
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
         $this->relH_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
         $this->relH_high_yesterday = (int)$result['relH']; // Percent
+
         // This Week High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_high_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_high_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_high_week = (int)$result['relH']; // Percent
+
         // This Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_high_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_high_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_high_month = (int)$result['relH']; // Percent
+
         // Last Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_high_recorded_last_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_high_last_month = (int)$result['relH']; // Percent
+
         // This Year High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_high_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_high_year = (int)$result['relH']; // Percent
+
         // All Time High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->relH_high_recorded_ever = date('j M Y @ H:i', strtotime($result['reported'])); // Recorded at
         $this->relH_high_ever = (int)$result['relH']; // Percent
+
         // Yesterday Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
         $this->relH_low_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
         $this->relH_low_yesterday = (int)$result['relH']; // Percent
+
         // This Week Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE YEARWEEK(`reported`) = YEARWEEK(CURDATE())) AND YEARWEEK(`reported`) = YEARWEEK(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_low_recorded_week = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_low_recorded_week = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_low_week = (int)$result['relH']; // Percent
+
         // This Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_low_recorded_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_low_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_low_month = (int)$result['relH']; // Percent
+
         // Last Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_low_recorded_last_month = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_low_last_month = (int)$result['relH']; // Percent
+
         // This Year Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_low_recorded_year = date('j M @ H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_low_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->relH_low_year = (int)$result['relH']; // Percent
+
         // All Time Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
@@ -461,11 +514,13 @@ class getArchiveWeatherData
         $this->relH_low_ever = (int)$result['relH']; // Percent
 
         // Process Rainfall:
+
         // Yesterday Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_yesterday_total` FROM `dailyrain` WHERE DATE(`date`) = SUBDATE(CURDATE(),1)"));
         $this->rainfall_IN_total_yesterday = (float)$result['rainfall_yesterday_total']; // Inches
         $this->rainfall_MM_total_yesterday = (float)round($result['rainfall_yesterday_total'] * 25.4, 2); // Millimeters
+
         // Weekly Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_week_total` FROM `dailyrain` WHERE YEARWEEK(`date`) = YEARWEEK(NOW())"));
@@ -473,9 +528,10 @@ class getArchiveWeatherData
         $this->rainfall_MM_total_week = (float)round($result['rainfall_week_total'] * 25.4, 2); // Millimeters
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_update`, `dailyrainin` FROM `dailyrain` WHERE `dailyrainin` = (SELECT MAX(`dailyrainin`) FROM `dailyrain` WHERE YEARWEEK(`date`) = YEARWEEK(NOW())) AND YEARWEEK(`date`) = YEARWEEK(NOW()) ORDER BY `date` DESC LIMIT 1"));
-        $this->rainfall_IN_most_recorded_week = date('j M @ H:i', strtotime($result['last_update'])); // Recorded at
+        $this->rainfall_IN_most_recorded_week = date($config->site->dashboard_display_date, strtotime($result['last_update'])); // Recorded at
         $this->rainfall_IN_most_week = (float)$result['dailyrainin']; // Inches
         $this->rainfall_MM_most_week = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
+
         // Monthly Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_month_total` FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE()) AND MONTH(`date`) = MONTH(CURDATE())"));
@@ -483,9 +539,10 @@ class getArchiveWeatherData
         $this->rainfall_MM_total_month = (float)round($result['rainfall_month_total'] * 25.4, 2); // Millimeters
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_update`, `dailyrainin` FROM `dailyrain` WHERE `dailyrainin` = (SELECT MAX(`dailyrainin`) FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE()) AND MONTH(`date`) = MONTH(CURDATE())) AND YEAR(`date`) = YEAR(CURDATE()) AND MONTH(`date`) = MONTH(CURDATE()) ORDER BY `date` DESC LIMIT 1"));
-        $this->rainfall_IN_most_recorded_month = date('j M @ H:i', strtotime($result['last_update'])); // Recorded at
+        $this->rainfall_IN_most_recorded_month = date($config->site->dashboard_display_date, strtotime($result['last_update'])); // Recorded at
         $this->rainfall_IN_most_month = (float)$result['dailyrainin']; // Inches
         $this->rainfall_MM_most_month = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
+
         // Last Month Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_last_month_total` FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`date`) = MONTH(CURDATE() - INTERVAL 1 MONTH)"));
@@ -494,10 +551,11 @@ class getArchiveWeatherData
             2); // Millimeters
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_update`, `dailyrainin` FROM `dailyrain` WHERE `dailyrainin` = (SELECT MAX(`dailyrainin`) FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`date`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`date`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`date`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `date` DESC LIMIT 1"));
-        $this->rainfall_IN_most_recorded_last_month = date('j M @ H:i',
+        $this->rainfall_IN_most_recorded_last_month = date($config->site->dashboard_display_date,
             strtotime($result['last_update'])); // Recorded at
         $this->rainfall_IN_most_last_month = (float)$result['dailyrainin']; // Inches
         $this->rainfall_MM_most_last_month = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
+
         // Yearly Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_year_total` FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE())"));
@@ -505,9 +563,10 @@ class getArchiveWeatherData
         $this->rainfall_MM_total_year = (float)round($result['rainfall_year_total'] * 25.4, 2); // Millimeters
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_update`, `dailyrainin` FROM `dailyrain` WHERE `dailyrainin` = (SELECT MAX(`dailyrainin`) FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE())) AND YEAR(`date`) = YEAR(CURDATE()) ORDER BY `date` DESC LIMIT 1"));
-        $this->rainfall_IN_most_recorded_year = date('j M @ H:i', strtotime($result['last_update'])); // Recorded at
+        $this->rainfall_IN_most_recorded_year = date($config->site->dashboard_display_date, strtotime($result['last_update'])); // Recorded at
         $this->rainfall_IN_most_year = (float)$result['dailyrainin']; // Inches
         $this->rainfall_MM_most_year = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
+
         // All Time Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_all_time_total` FROM `dailyrain`"));

@@ -22,7 +22,17 @@
 
 /**
  * File: src/fcn/mailer.php
- * Function to send mail
+ * Function to send system mail
+ */
+
+/**
+ * @param $sendTo
+ * @param $subject
+ * @param $message
+ * @param bool $replyTo
+ * @param bool $replyToName
+ * @param bool $disclaimer
+ * @return bool|mixed
  */
 
 function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = false, $disclaimer = true)
@@ -30,30 +40,71 @@ function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = fa
     // Get the loader
     require(dirname(__DIR__) . '/inc/loader.php');
 
-    $headers = 'MIME-Version: 1.0' . PHP_EOL;
-    $headers .= 'Content-type: text/html; charset=iso-8859-1' . PHP_EOL;
-    $headers .= 'From: ' . $config->site->name . ' <' . $config->site->email . '>' . PHP_EOL;
-    $headers .= 'X-Mailer: ' . $appInfo->name . ' ' . $appInfo->version . PHP_EOL;
-    if ($replyTo !== false) {
-        $headers .= 'Reply-to: ' . $replyToName . ' <' . $replyTo . '>' . PHP_EOL;
+    /**
+     * @return array
+     * @var object $config Global Config
+     * @return array
+     * @var object $appInfo Global Application Info
+     */
+
+    /**
+     * @param $sendTo
+     * @param $subject
+     * @param $message
+     * @param $siteName
+     * @param $siteEmail
+     * @param $mgDomain
+     * @param $mgSecret
+     * @return array
+     */
+
+    function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgDomain, $mgSecret)
+    {
+        $array_data = array(
+            'from' => $siteName . ' <' . $siteEmail . '>',
+            'to' => '<' . $sendTo . '>',
+            'subject' => $subject,
+            'html' => $message
+        );
+
+        $session = curl_init('https://api.mailgun.net/v3/' . $mgDomain . '/messages');
+        curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($session, CURLOPT_USERPWD, 'api:' . $mgSecret);
+        curl_setopt($session, CURLOPT_POST, true);
+        curl_setopt($session, CURLOPT_POSTFIELDS, $array_data);
+        curl_setopt($session, CURLOPT_HEADER, false);
+        curl_setopt($session, CURLOPT_ENCODING, 'UTF-8');
+        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($session);
+        curl_close($session);
+
+        return json_decode($response, true);
     }
 
-    $messageHeader = "<html><head><title>$subject</title></head><body>";
+    if ($config->mailgun->enabled === false) {
+        $headers = 'MIME-Version: 1.0' . PHP_EOL;
+        $headers .= 'Content-type: text/html; charset=iso-8859-1' . PHP_EOL;
+        $headers .= 'From: ' . $config->site->name . ' <' . $config->site->email . '>' . PHP_EOL;
+        $headers .= 'X-Mailer: ' . $appInfo->name . ' ' . $appInfo->version . PHP_EOL;
+        if ($replyTo !== false) {
+            $headers .= 'Reply-to: ' . $replyToName . ' <' . $replyTo . '>' . PHP_EOL;
+        }
+    }
 
-    $messageDisclaimer = '<p>--<br>
-    This is an automated message sent by the ' . $config->site->name . '<br>
-    You are receiving this message because your email address was used for an account at ' . $config->site->name . '.<br>
-    If you believe this to be an error, please reply to this message.</p>
-    <p>You can manage your account details by visiting <a href="http://' . $config->site->hostname . '">' . $config->site->hostname . '</a></p>';
-
+    $messageHeader = '<html lang="en"><head><title>$subject</title></head><body>';
     $messageFooter = '</body></html>';
+    $messageDisclaimer = '<p>--<br>This is an automated message sent from ' . $config->site->name . '.</p><p>You can manage your account details by visiting <a href="https://' . $config->site->hostname . '">' . $config->site->hostname . '</a>.</p>';
 
-    if ($disclaimer === false) {
-        $message = $messageHeader . $message . $messageFooter;
-    } else {
-        $message = $messageHeader . $message . $messageDisclaimer . $messageFooter;
-    }
+    $message = ($disclaimer === false) ?
+        $messageHeader . $message . $messageFooter
+        :
+        $messageHeader . $message . $messageDisclaimer . $messageFooter;
 
-    // Make it so
-    mail($sendTo, $subject, $message, $headers, '-f' . $config->site->email);
+    // Send
+    return ($config->mailgun->enabled === true) ?
+        sendViaMailgun($sendTo, $subject, $message, $config->site->name, $config->site->email, $config->mailgun->domain,
+            $config->mailgun->secret)
+        :
+        mail($sendTo, $subject, $message, $headers, '-f' . $config->site->email);
 }

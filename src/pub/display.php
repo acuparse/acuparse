@@ -28,9 +28,15 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
-if ($installed === false) {
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+/** @var string $installed */
+
+if ($installed == false) {
     header("Location: /admin/install");
-    die();
+    exit();
 } else {
 
     $pageTitle = 'Live Weather - Display Mode';

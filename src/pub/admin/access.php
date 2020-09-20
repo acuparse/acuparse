@@ -27,6 +27,11 @@
 
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
 // Logged in admin
 if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 

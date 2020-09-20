@@ -38,14 +38,15 @@ return (object)array(
 
     // Sensor specific config variables
     'station' => (object)array(
-        'access_mac' => '', // Access MAC Address
-        'hub_mac' => '', // smartHUB MAC Address
+        'device' => null, // Device to get readings from
+        'access_mac' => null, // Access MAC Address
+        'hub_mac' => null, // smartHUB MAC Address
         'primary_sensor' => null, // Primary Sensor
-        'sensor_atlas' => '', // Atlas Sensor ID (8 Digits including leading 0's)
-        'sensor_5n1' => '', // 5n1 Sensor ID (8 Digits including leading 0's)
+        'sensor_atlas' => null, // Atlas Sensor ID (8 Digits including leading 0's)
+        'sensor_5n1' => null, // 5n1 Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
+        'towers_additional' => false, // Show additional High/Low values
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
-        'baro_source' => 0, // Use baro reading from which device? (0-default/1-hub/2-access)
         'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower)
     ),
 
@@ -56,8 +57,9 @@ return (object)array(
         'location' => 'Somewhere, Earth', // Station Location
         'hostname' => 'localhost', // Station Domain or IP Address
         'email' => 'noreply@localhost', // System email address.
-        'timezone' => 'UTC', // Station Timezone - http://php.net/manual/en/timezones.php
+        'timezone' => 'Etc/UCT', // Station Timezone - http://php.net/manual/en/timezones.php
         'display_date' => 'l, j F Y G:i:s T', // Header Date Format
+        'dashboard_display_date' => 'j M @ H:i', // Dashboard Date Format
         'lat' => 0, // Station Latitude - Decimal Format
         'long' => 0, // Station Longitude - Decimal Format
         'imperial' => false, // Use imperial measurements by default? True/False
@@ -70,6 +72,10 @@ return (object)array(
     'camera' => (object)array(
         'enabled' => false, // Web Camera Enabled, True/False
         'text' => 'Image updated every X minutes.', // Text displayed camera under image
+        'sort' => (object)array(
+            'today' => 'ascending', // Today's Sort Order
+            'archive' => 'ascending', // Archive Sort Order
+        ),
     ),
 
     // Archive variables
@@ -97,6 +103,13 @@ return (object)array(
             'enabled' => false, //true or false
             'id' => '', // Google Analytics ID
         ),
+    ),
+
+    // Mailgun
+    'mailgun' => (object)array(
+        'enabled' => false, // Use Mailgun? True/False
+        'secret' => '', // Mailgun Secret
+        'domain' => '', // Mailgun Sitekey
     ),
 
     // External Updater Settings
@@ -150,6 +163,15 @@ return (object)array(
             'url' => 'http://stations.windy.com/pws/update', // Windy API path
         ),
 
+        // Windguru Settings
+        'windguru' => (object)array(
+            'enabled' => false, // true or false
+            'uid' => '', // User ID
+            'id' => '', // Station ID
+            'password' => '', // Password
+            'url' => 'http://www.windguru.cz/upload/api.php', // Server URL
+        ),
+
         // Generic Settings
         'generic' => (object)array(
             'enabled' => false, // true or false
@@ -179,7 +201,7 @@ return (object)array(
         'server' => (object)array(
             'show' => false, // Show the debug server tab
             'enabled' => false, //true or false
-            'url' => NULL, // The IP for your development system. eg. 127.0.0.1
+            'url' => null, // The IP for your development system. eg. 127.0.0.1
         ),
     ),
 
@@ -196,7 +218,8 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.0.0-beta',
+        'app' => '3.0.0',
         'schema' => '3.0',
+        'installHash' => null,
     ),
 );

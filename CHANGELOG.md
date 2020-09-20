@@ -7,22 +7,50 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [[3.0.0]](https://www.acuparse.com/releases/v3-0-0/) - BETA
+## [[3.0.0]](https://www.acuparse.com/releases/v3-0-0/) - 2020-10-14
+
+See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instructions.
 
 ### Added
 
-- Support all Atlas readings (UV, Lightning, Light).
+- Support all Atlas readings (UV, Lightning, Light, Wind).
+- Lightning Tower support.
+- Windguru Support.
+- Option to sort camera images ascending/descending.
+- Option to display High/Low tower temp.
+- Docker support and image.
+    - See [docs/DOCKER.md](docs/DOCKER.md) for more details.
+- RTSP added to webcam scripts.
+- Button to send a test email.
+- Mailgun support.
+- Password entry verification when adding/editing a user.
 
 ### Fixed
 
-- MySQL error handling.
+- Basic MySQL error handling.
+- Refined install/testing.
+- Database optimizations.
 
 ### Changed
 
-- Bootstrap to v4.4.1.
-- FontAwesome to v5.12.1.
-- instant.page to v3.0.0.
+- JSON/HTML output moved to API.
+    - See [docs/API.md](docs/API.md) for more details.
+- Primary dependency's moved to composer.
+    - Bootstrap to v4.5.3.
+    - FontAwesome to v5.15.1.
+    - instant.page to v5.1.0.
+    - jQuery to v3.5.1.
+    - Lightbox to v2.11.3.
+- Update moonPhase script.
+- Update jQuery UI Touch Punch from an updated fork.
 - Update Copyright.
+- Documentation updates.
+- Chat moving from Keybase/Gitter to Slack.
+    - [Get Slack Invite](https://communityinviter.com/apps/acuparse/acuparse).
+- Major Code refactoring.
+- Update checking moved to cron.
+    - Now sends some basic telemetry data.
+        - See [docs/TELEMETRY.md](docs/TELEMETRY.md) for more details.
 
 ## [[2.10.0]](https://www.acuparse.com/releases/v2-10-0/) - 2019-10-06
 
@@ -45,33 +73,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-- Lightbox not loading
+- Lightbox not loading.
 
 ## [[2.9.2]](https://www.acuparse.com/releases/v2-9-2/) - 2019-08-17
 
 ### Fixed
 
-- Wind Direction Calculation
+- Wind Direction Calculation.
 
 ### Changed
 
-- Switch to htmlentities for Wunderground Upload
-- FontAwesome to v5.10.1
-- Lightbox to v2.11.1
-- InstantPage to v2.0.0
-- Mailing list to Google Apps
+- Switch to htmlentities for Wunderground Upload.
+- FontAwesome to v5.10.1.
+- Lightbox to v2.11.1.
+- InstantPage to v2.0.0.
+- Mailing list to Google Apps.
 
 ## [[2.9.1]](https://www.acuparse.com/releases/v2-9-1/) - 2019-06-28
 
 ### Changed
 
-- Update Docs and Support for Debian Buster
-- Move repo to GitLab
+- Update Docs and Support for Debian Buster.
+- Move repo to GitLab.
 
 ### Added
 
-- Implement CI
-- Build docs using mkdocs
+- Implement CI.
+- Build docs using mkdocs.
 
 ## [[2.9.0]](https://www.acuparse.com/releases/v2-9-0/) - 2019-05-18
 
@@ -80,12 +108,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - FontAwesome to v5.8.2.
 - JQuery to v3.4.1.
 - Lightbox to V2.11.0.
-- Updated README.md
-- Modified External Updater Docs
+- Updated README.md.
+- Modified External Updater Docs.
 
 ### Added
 
-- Support for Windy.com
+- Support for Windy.com.
 
 ## [[2.8.0]](https://www.acuparse.com/releases/v2-8-0/) - 2019-03-16
 
@@ -124,7 +152,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Display Mode.
 - Twilight CSS Theme.
-- Upload WU data to a Generic Server and WeatherPoly Documentation
+- Upload WU data to a Generic Server and WeatherPoly Documentation.
 
 ### Changed
 
@@ -140,12 +168,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-- Minor HTML formatting
-- Access upload destination
+- Minor HTML formatting.
+- Access upload destination.
 
 ### Changed
 
-- Font Awesome to 5.5.0
+- Font Awesome to 5.5.0.
 
 ## [[2.6.0]](https://www.acuparse.com/releases/v2-6-0/) - 2018-10-05
 
@@ -155,7 +183,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Font Awesome to 5.3.1
+- Font Awesome to 5.3.1.
 
 ## [[2.5.2]](https://www.acuparse.com/releases/v2-5-2/) - 2018-08-08
 
@@ -170,21 +198,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Bootstrap to v4.1.3
-- Font Awesome to 5.2
+- Bootstrap to v4.1.3.
+- Font Awesome to 5.2.
 
 ## [[2.5.1]](https://www.acuparse.com/releases/v2-5-1/) - 2018-07-15
 
 ### Changed
 
-- Bootstrap to v4.1.2
-- Documentation links to GitHub pages
+- Bootstrap to v4.1.2.
+- Documentation links to GitHub pages.
 
 ## [[2.5.0]](https://www.acuparse.com/releases/v2-5-0/) - 2018-07-07
 
 ### Changed
 
-- Bootstrap to v4.1.1
+- Bootstrap to v4.1.1.
     - Major changes to HTML/CSS.
 - PHP/HTML/CSS variable changes and restructuring.
 - Encode special characters in WU upload string.
@@ -284,7 +312,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Support for the new Access as it replaces the smartHUB.
-- SSL Support
+- SSL Support.
 
 ### Changed
 
@@ -354,7 +382,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- jQuery to 3.2.1
+- jQuery to 3.2.1.
 - Modified localtime response again. This time with the correct regex. Rain data clears properly now.
 
 ## [[2.1.2]](https://www.acuparse.com/releases/v2-1-2/) - 2017-06-16
@@ -367,7 +395,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Updated wrong installer path in docs/INSTALL.md
+- Updated wrong installer path in docs/INSTALL.md.
 - Minor updates to outage notifications. They should now send as expected.
 - Minor changes to update checking.
 

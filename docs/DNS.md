@@ -1,4 +1,4 @@
-# SmartHub DNS Redirect
+# Acuparse DNS Redirect Guide
 
 You will need to redirect your DNS so that your Access/smartHub uploads your data to Acuparse and not MyAcuRite directly.
 > **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS.
@@ -33,4 +33,4 @@ Redirecting the DNS locally will cause issues with uploads to MyAcurite. The red
 to its self. In this case, you should select the secondary urls in the MyAcuRite config settings. Acuparse will then upload
 readings to MyAcuRite as expected.
 
-- Secondary DNS entries point to the Acuparse domain hosted on Cloudflare.
+- Secondary DNS entries point to the Acuparse domain hosted on Cloudflare. Records are synced with Acurite on a regular basis.

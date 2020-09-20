@@ -25,6 +25,11 @@
  * Builds the right moon icon for display
  */
 
+/**
+ * @param $moonStage
+ * @return string
+ */
+
 // Find the right moon icon to show:
 function moonIcon($moonStage)
 {
@@ -53,6 +58,8 @@ function moonIcon($moonStage)
         case 'Waning Crescent':
             $moonIcon = 'wi-moon-waning-crescent-1';
             break;
+        default:
+            $moonIcon = 'Error';
     }
     return $moonIcon;
 }
@@ -89,6 +96,8 @@ function trendIcon($trend)
         case 'Steady':
             $trendIcon = ' <i class="fas fa-long-arrow-alt-right"></i>';
             break;
+        default:
+            $trendIcon = 'Error';
     }
     return $trendIcon;
 }

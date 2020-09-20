@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+
+##
+# Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @author Maxwell Power <max@acuparse.com>
+# @link http://www.acuparse.com
+# @license AGPL-3.0+
+#
+# This code is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this code. If not, see <http://www.gnu.org/licenses/>.
+##
+
+##
+# File: .docker/docker-entrypoint
+# Start the Docker container
+##
+
+if [ "$1" = 'acuparse' ]; then
+  function check_ssl_cert() {
+    if [[ ("$LE_SECURE_WWW" == "yes") ]]; then
+      LE_SECURE_DOMAINS=(-d "$LE_FQDN" -d www."$LE_FQDN")
+      sed -i "s/#ServerName/ServerName ${LE_FQDN}\n    ServerAlias www.${LE_FQDN}/g" /etc/apache2/sites-available/acuparse-ssl.conf
+    else
+      LE_SECURE_DOMAINS=(-d "$LE_FQDN")
+      sed -i "s/#ServerName/ServerName ${LE_FQDN}/g" /etc/apache2/sites-available/acuparse-ssl.conf
+    fi
+
+    if [[ ("$LE_REDIRECT_ENABLED" == "yes") ]]; then
+      LE_REDIRECT="redirect"
+    else
+      LE_REDIRECT="no-redirect"
+    fi
+
+    echo "Requesting CERTIFICATE"
+    if [[ ("$LE_STAGING" == "yes") ]]; then
+      certbot -n --staging --authenticator standalone --installer apache --agree-tos --"${LE_REDIRECT}" --email "${LE_EMAIL}" "${LE_SECURE_DOMAINS[@]}"
+    else
+      certbot -n --authenticator standalone --installer apache --agree-tos --"${LE_REDIRECT}" --email "${LE_EMAIL}" "${LE_SECURE_DOMAINS[@]}"
+    fi
+
+    service apache2 stop
+  }
+
+  function setup_timezone() {
+    rm /etc/localtime
+    rm /etc/timezone
+    ln -s ../usr/share/zoneinfo/"${TZ}" /etc/localtime
+    echo "${TZ}" >/etc/timezone
+  }
+
+  function setup_crontab() {
+    ACUPARSE_MAIN_CRON='* * * * * /usr/local/bin/php /opt/acuparse/cron/cron.php > /opt/acuparse/logs/cron.log 2>&1'
+    ACUPARSE_BACKUP_CRON='* 0 * * * /bin/bash /opt/acuparse/cron/backup > /opt/acuparse/logs/cron.log 2>&1'
+    printf "%s\n%s\n" "$ACUPARSE_MAIN_CRON" "$ACUPARSE_BACKUP_CRON" | crontab -
+  }
+
+  function start_services() {
+    echo "Starting syslog ..."
+    service rsyslog start
+    sleep 1
+
+    echo "Starting cron ..."
+    service cron start
+    sleep 1
+
+    echo "Starting apache2 ..."
+    apache2ctl start
+    sleep 1
+
+    echo "Checking Services after startup ..."
+
+    echo "Checking syslog ..."
+    service rsyslog status || exit 1
+
+    echo "Checking cron ..."
+    service cron status || exit 1
+
+    echo "Checking Apache2 ..."
+    service apache2 status || exit 1
+  }
+
+  function check_default_config() {
+    if [ -z "$(ls -A '/opt/acuparse/src/usr/')" ]; then
+      echo "Empty config dir found, copying config template"
+      cp /var/opt/acuparse/config/config.new.php /opt/acuparse/src/usr/config.new.php
+      chown -R www-data:www-data /opt/acuparse/src/usr
+    fi
+  }
+
+  function enable_debugging() {
+    echo "NOTICE: DEBUG MODE ENABLED"
+    apt-get install nano inetutils-tools net-tools iproute2 -yqq
+    mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+    ln -sf /proc/1/fd/1 /var/log/apache2/error.log
+    ln -sf /proc/1/fd/1 /opt/acuparse/logs/cron.log
+  }
+
+  function check_sql_permissions() {
+    if [ -z "$(mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "use mysql; SELECT super_priv FROM user where user='acuparse' AND super_priv='Y';")" ]; then
+      echo "Updating DB User Permissions"
+      mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'; GRANT SUPER, EVENT ON *.* TO '${MYSQL_USER}'; FLUSH PRIVILEGES;" || exit 1
+    fi
+  }
+
+  echo "Starting Acuparse Container"
+
+  echo "Setting up TIMEZONE"
+  if [ -n "${TZ}" ]; then
+    setup_timezone
+  elif [ "$2" = 'manual' ]; then
+    echo "Manual Startup Requested"
+  else
+    echo "ERROR: Missing Timezone Environment Variables"
+    exit 1
+  fi
+  echo "DONE: TIMEZONE"
+
+  echo "Adding Acuparse to CRONTAB"
+  setup_crontab
+  echo "DONE: CRONTAB"
+
+  echo "Checking default CONFIG ..."
+  check_default_config
+  echo "DONE: CONFIG"
+
+  if [[ ("$DEBUG_ENABLED" == "yes") ]]; then
+    enable_debugging
+  fi
+
+  echo "Check SQL Database"
+  if [ -n "${MYSQL_HOSTNAME}" ] && [ -n "${MYSQL_PASSWORD}" ]; then
+    echo "Waiting for database to initialize ..."
+    while ! mysqladmin ping -h"${MYSQL_HOSTNAME}" -p"${MYSQL_PASSWORD}" --silent; do
+      sleep 1
+    done
+    echo "Checking SQL PERMISSIONS"
+    check_sql_permissions
+    echo "DONE: SQL PERMISSIONS"
+  elif [ "$2" = 'manual' ]; then
+    echo "Manual Startup Requested"
+  else
+    echo "ERROR: Missing SQL Environment Variables"
+    exit 1
+  fi
+
+  echo "Check SSL Certificate"
+  if [[ ("$LE_ENABLED" == "yes") ]]; then
+    check_ssl_cert
+  else
+    echo "Certificate Disabled"
+  fi
+  echo "DONE: CERTIFICATE"
+
+  echo "Starting System SERVICES ..."
+  start_services
+  echo "DONE: SERVICES"
+
+  echo "Acuparse Startup Successful"
+  echo "Passing control to HEALTHCHECK"
+  exec docker-healthcheck
+else
+  exec "$@"
+fi

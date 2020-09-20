@@ -1,4 +1,4 @@
-# Citizen Weather Observer Program Updater
+# Acuparse Citizen Weather Observer Program Updater Guide
 
 CWOP has a more complicated format and initialization process. Review the following site for [more details](http://www.wxqa.com/faq.html).
 

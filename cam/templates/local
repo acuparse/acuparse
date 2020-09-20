@@ -40,7 +40,11 @@ REMOTE_SCRIPT='/opt/acuparse/cam/remote'
 TIMESTAMP=$(date +"%A, %d %B %Y %H:%M %Z")
 
 echo "Getting camera image"
+# HTTP Snapshot
 wget ${CAMERA_HOST}/${CAMERA_FILENAME}
+
+# RTSP Snapshot
+# ffmpeg -rtsp_transport tcp -loglevel fatal -i $CAMERA_HOST -vframes 1 -r 1 $CAMERA_FILENAME
 
 echo "Applying Timestamp and Copyright"
 convert ${CAMERA_FILENAME} \

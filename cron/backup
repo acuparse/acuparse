@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+##
+# Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @author Maxwell Power <max@acuparse.com>
+# @link http://www.acuparse.com
+# @license AGPL-3.0+
+#
+# This code is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this code. If not, see <http://www.gnu.org/licenses/>.
+##
+
+##
+# File: cron/backup
+# Acuparse Backup Script
+##
+
+### USER VARIABLES ###
+
+#MYSQL_USER=acuparse
+#MYSQL_PASSWORD=STRONG_PASSWORD
+#MYSQL_HOSTNAME=localhost
+KEEP_BACKUPS_FOR=7 # Days
+BACKUP_CAM_IMAGES=1 # Set to 0 to skip backing up images. Can slow down and increase backup size substantially.
+
+### Other Variables ###
+BACKUP_TMP_DIR=/var/opt/acuparse/backups/tmp
+BACKUP_DIR=/var/opt/acuparse/backups
+ACUPARSE_DIR=/opt/acuparse
+
+### END: Variables ###
+
+function backup() {
+  # Grab the date
+  DATE=$(date -I)
+
+  # Remove Old Backups (7 days)
+  echo "Removing backup files older than "$KEEP_BACKUPS_FOR" days"
+  find "$BACKUP_DIR" -type f -mtime +"$KEEP_BACKUPS_FOR" -exec rm -f {} \;
+
+  # Create TMP Folder
+  mkdir -p "$BACKUP_TMP_DIR"
+
+  # Backup All MySQL Databases
+  echo "Dumping MySQL Databases"
+  mysqldump -h"$MYSQL_HOSTNAME" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" acuparse >"$BACKUP_TMP_DIR"/mysql.sql
+
+  # Backup Acuparse Config
+  echo "Dumping Acuparse Config"
+  cp "$ACUPARSE_DIR"/src/usr/config.php "$BACKUP_TMP_DIR"/config.php >/dev/null 2>&1
+
+  # Combine Backup Files to Daily Package
+  echo "Packaging and Compressing Archive"
+  tar -cvzf "$BACKUP_DIR"/"$DATE".tar.gz -C "$BACKUP_TMP_DIR" $(find "$BACKUP_TMP_DIR" -maxdepth 1 -type f -printf '%P\n')
+  if [ "$BACKUP_CAM_IMAGES" == 1 ]; then
+    echo "Backing up Webcam Images"
+    tar -uvf "$BACKUP_DIR"/webcam.tar -C "$ACUPARSE_DIR"/src/pub/img/cam .
+  fi
+  echo "DONE: Packaging and Compressing Archive"
+
+  # Remove Temp Files
+  echo "Cleaning up TMP files"
+  rm -rf "$BACKUP_TMP_DIR"
+}
+
+function restore() {
+  TAR_FILE=$(find . -maxdepth 1 -name '*.tar.gz' -type f -printf '%P\n' | sort -r | head -n 1 | cut -d' ' -f2)
+  mkdir -p "$BACKUP_TMP_DIR"
+  tar -zxf "$BACKUP_DIR"/"$TAR_FILE" --directory "$BACKUP_TMP_DIR" >/dev/null 2>&1
+  echo "Restoring SQL data"
+  mysql -h"$MYSQL_HOSTNAME" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" acuparse <"$BACKUP_TMP_DIR"/mysql.sql >/dev/null 2>&1
+  echo "Restoring Acuparse data"
+  cp "$BACKUP_TMP_DIR"/config.php "$ACUPARSE_DIR"/src/usr/config.php >/dev/null 2>&1
+  rm -rf "$BACKUP_TMP_DIR"
+}
+
+if [ "$1" == 'restore' ]; then
+  echo "Restoring Backup"
+  restore
+  echo "Done: Restoring Backup"
+else
+  # Let's Go!
+  echo "Beginning Backup ... this might take a while!"
+  backup
+  # All Done
+  echo "Backup Complete!"
+fi

@@ -1,60 +1,76 @@
-# Installation Guide
+# Acuparse Installation Guide
 
 This guide is designed to walk through the steps required to install Acuparse on a freshly installed Debian based server.
 
-> **NOTICE:** Installation is only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/19.04.
+!!! note
+    Installation is only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
 
 ## Automated Acuparse Installation
 
 - Install your base operating system and update.
 - Then run the installer.
 
-  ```bash
-    wget https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
-    ```
+```bash
+curl -O https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
+```
+
+### Docker Compose
+
+```bash
+curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
+```
+
+- See the [Docker Install Guide](https://docs.acuparse.com/DOCKER) for more details
 
 ### Raspberry Pi
 
-- For a detailed installation guide on Raspbian, view the [Wiki Doc](https://gitlab.com/acuparse/acuparse/wikis/Installation-on-Raspberry-Pi)
+- For a detailed manual installation guide for Raspbian, view the [Wiki Doc](https://gitlab.com/acuparse/acuparse/wikis/Installation-on-Raspberry-Pi)
 
 ## Manual Acuparse Installation
 
 - Switch to the root account to install:
   
-  ```bash
+    ```bash
     sudo su
     ```
   
 - Change to the root directory:
   
-  ```bash
+    ```bash
     cd ~
     ```
   
 - Check and update your system timezone:
   
-  ```bash
+    ```bash
     dpkg-reconfigure tzdata && systemctl restart rsyslog.service
     ```
   
 - Install the required packages:
-    - Debian/Rasbian Buster(10) and Ubuntu 19.04:
+
+    - Debian/Rasbian Buster(10):
 
       ```bash
-      apt-get install git ntp imagemagick exim4 apache2 default-mysql-server php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-gd php7.3-curl php7.3-json php7.3-cli php7.3-common -y
+      apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-gd php7.3-curl php7.3-json php7.3-cli php7.3-common -y
+      ```
+
+    - Ubuntu 20.04 LTS:
+
+      ```bash
+      apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.4 libapache2-mod-php7.4 php7.4-mysql php7.4-gd php7.4-curl php7.4-json php7.4-cli php7.4-common -y
       ```
 
     - Ubuntu 18.04 LTS:
 
       ```bash
-        apt-get install git ntp imagemagick exim4 apache2 default-mysql-server php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-gd php7.2-curl php7.2-json php7.2-cli php7.2-common -y
-        ```
+      apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-gd php7.2-curl php7.2-json php7.2-cli php7.2-common -y
+      ```
 
 - Secure your MySQL install:
   
   ```bash
-    mysql_secure_installation
-    ```
+  mysql_secure_installation
+  ```
 
 ### Email Server Config
 
@@ -66,56 +82,56 @@ Run `dpkg-reconfigure exim4-config` and choose the correct values for your syste
 - Get the Acuparse source:
   
   ```bash
-    git init /opt/acuparse && cd /opt/acuparse && git remote add -t master -f origin https://gitlab.com/acuparse/acuparse.git && git checkout master
-    ```
+  git init /opt/acuparse && cd /opt/acuparse && git remote add -t master -f origin https://gitlab.com/acuparse/acuparse.git && git checkout master
+  ```
   
 - Set the owner on the web root:
   
   ```bash
-    chown -R www-data:www-data src
-    ```
+  chown -R www-data:www-data src
+  ```
   
 - Disable the default Apache config:
   
   ```bash
-    a2dissite 000-default.conf
-    ```
+  a2dissite 000-default.conf
+  ```
   
 - Remove unneeded config files:
   
   ```bash
-    rm /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
-    ```
+  rm /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
+  ```
   
 - Enable the Acuparse virtual host config:
   
   ```bash
-    cp /opt/acuparse/config/acuparse.conf /etc/apache2/sites-available/
-    ```
+  cp /opt/acuparse/config/acuparse.conf /etc/apache2/sites-available/
+  ```
   
 - Enable the Acuparse SSL virtual host config:
   
   ```bash
-    cp /opt/acuparse/config/acuparse-ssl.conf /etc/apache2/sites-available/
-    ```
+  cp /opt/acuparse/config/acuparse-ssl.conf /etc/apache2/sites-available/
+  ```
   
 - Ensure mod-rewrite is enabled:
   
   ```bash
-    a2enmod rewrite
-    ```
+  a2enmod rewrite
+  ```
   
 - Ensure SSL is enabled:
   
   ```bash
-    a2enmod ssl
-    ```
+  a2enmod ssl
+  ```
   
 - Restart Apache:
   
   ```bash
-    service apache2 restart
-    ```
+  service apache2 restart
+  ```
 
 ### SSL Certificate Installation
 
@@ -130,8 +146,14 @@ wget https://gitlab.com/acuparse/installer/raw/master/resources/le && sudo bash 
 - Create a new MySQL database for Acuparse:
   
 ```bash
-mysql -u root -p {MYSQL_ROOT_PASSWORD}-e "DELETE FROM mysql.user WHERE User=''; DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1'); DROP DATABASE IF EXISTS test; DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'; FLUSH PRIVILEGES;"
-mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS acuparse; GRANT ALL PRIVILEGES ON acuparse.* TO 'acuparse' IDENTIFIED BY '$ACUPARSE_DATABASE_PASSWORD'; GRANT SUPER, EVENT ON *.* TO 'acuparse'; FLUSH PRIVILEGES;"
+mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "DELETE FROM mysql.user WHERE User=''; DELETE FROM mysql.user WHERE
+User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1'); DROP DATABASE IF EXISTS test; DELETE FROM mysql.db WHERE
+Db='test' OR Db='test\\_%'; FLUSH PRIVILEGES;"
+```
+
+```bash
+mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS acuparse; GRANT ALL PRIVILEGES ON acuparse.*
+TO 'acuparse' IDENTIFIED BY '$ACUPARSE_DATABASE_PASSWORD'; GRANT SUPER, EVENT ON *.* TO 'acuparse'; FLUSH PRIVILEGES;"
 ```
 
 ### Finish Up
@@ -149,7 +171,7 @@ crontab -e`, `* * * * * php /opt/acuparse/cron/cron.php > /dev/null 2>&1
 - Install phpMyAdmin for database administration
 
 ```bash
-apt-get install phpmyadmin
+apt install phpmyadmin
 ```
 
 ## Check Installation
@@ -169,7 +191,22 @@ tail -f /var/log/syslog
 > See [/admin/access](/admin/access) once logged into your site.
 
 If you are connecting your Access/SmartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally.
-Otherwise, you will need a DNS server installed on your network. See ***[docs/DNS.md](https://docs.acuparse.com/DNS)*** for more details.
+Otherwise, you will need a DNS server installed on your network. See the ***[DNS Redirect Guide](https://docs.acuparse.com/DNS)***
+for more details.
+
+### Manually Update Access
+
+Change to Acuparse:
+
+```bash
+curl -d 'ser=<ACUPARSE IP/FQDN>' http://<ACCESS IP>/config.cgi
+```
+
+Reset to default:
+
+```bash
+curl -d 'ser=atlasapi.myacurite.com' http://<ACCESS IP>/config.cgi
+```
 
 ### smartHUB
 
@@ -178,18 +215,6 @@ Otherwise, you will need a DNS server installed on your network. See ***[docs/DN
 ### Access
 
 - Setup a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
-
-## Troubleshooting
-
-If you experience unexpected results during or after your install, remove the config file and try again.
-
-```bash
-sudo rm /opt/acuparse/src/usr/config.php
-```
-
-If you receive a '1' after your install. Check to ensure the database was installed correctly.
-
-- See "Setup Database" above.
 
 ## Updating
 
@@ -271,7 +296,9 @@ readings for the data archive or use the readings from the 5-in-1/Atlas.
 
 When MyAcuRite receives your readings, it responds with a JSON response in the following format:
 
-- `{"sensor1":"","PASSWORD1":"","timezone":"","elevation":"","ID1":""}`
+```json
+{"sensor1":"","PASSWORD1":"","timezone":"","elevation":"","ID1":""}
+```
 
 Variable | Description
 --- | ---
@@ -281,7 +308,11 @@ PASSWORD1 | Weather Underground Station Password.
 sensor1 | Sensor used to send data to Weather Underground.
 elevation | Elevation of the Access in feet.
 
-- A typical response: `{"timezone":"00:00""}`
+- A typical response:
+
+    ```bash
+    {"timezone":"00:00""}
+    ```
 
 ### SmartHUB
 
@@ -292,7 +323,9 @@ elevation | Elevation of the Access in feet.
 
 When MyAcuRite receives your readings, it responds with a JSON response in the following format:
 
-- `{"localtime":"00:00:00","checkversion":"","ID1":"","PASSWORD1":"","sensor1":"","elevation":""}`
+```json
+{"localtime":"00:00:00","checkversion":"","ID1":"","PASSWORD1":"","sensor1":"","elevation":""}
+```
 
 Variable | Description
 --- | ---
@@ -303,8 +336,23 @@ PASSWORD1 | Weather Underground Station Password.
 sensor1 | Sensor used to send data to Weather Underground.
 elevation | Elevation of the smartHUB in feet.
 
-Acuparse will now always respond with: `{"localtime":"00:00:00","checkversion":"224"}`. Setting localtime to the local
-time of your Acuparse install.
+Acuparse will now always respond with:
+
+```json
+{"localtime":"00:00:00","checkversion":"224"}
+```
+
+Setting localtime to the local time of your Acuparse install.
+
+## Email and Mailgun Settings
+
+Acuparse will attempt to use a locally installed email server. You can enable Mailgun instead in your Admin Settings.
+
+### Mailgun
+
+You will need your Mailgun API key and domain to configure.
+
+See [How Do I Add or Delete a Domain?](https://help.mailgun.com/hc/en-us/articles/203637190-How-Do-I-Add-or-Delete-a-Domain-)
 
 ## Email Outage Notifications
 
@@ -321,30 +369,31 @@ Acuparse allows for the addition of as many Tower sensors as the Access/smartHUB
 You can choose which sensors are shown publicly or only to logged in users. Towers are configured and arranged using the
 admin settings.
 
-- Acuparse also supports Indoor/Outdoor Temp and Humidity monitors, as well as lightning towers, but will not save or
-display any additional data.
+- Acuparse also supports Indoor/Outdoor Temp and Humidity monitors, as well as lightning towers.
+
+## Lightning Sensors
+
+You can have a main Lightning sensor on your Atlas, as well as one Tower sensor.
+Configure the Lightning sensor settings in your admin site settings inorder to display those readings.
 
 ## Additional Outputs
 
-The primary user interface uses AJAX to pull the most recent HTML formatted data every minute.
+The primary user interface uses AJAX to pull the most recent HTML formatted data from the API automatically.
 
-Acuparse includes a Display mode for better viewing while in full-screen.
+Acuparse includes a special display mode for better viewing while in full-screen.
 
 - Display Mode: `http(s)://<yourip/domain>/display`
     - Force light theme: `http(s)://<yourip/domain>/display?light`
     - Force dark theme: `http(s)://<yourip/domain>/display?dark`
 
-Additionally, you can request Bootstrap 4 formatted HTML, a JSON array, or plain text formatted for watermarking.
+Additionally, you can request Bootstrap 4 formatted HTML, JSON array(s), or plain text formatted for watermarking.
 
-- HTML: `http(s)://<yourip/domain>/?weather`
-- Archive HTML: `http(s)://<yourip/domain>/archive?html`
-- JSON: `http(s)://<yourip/domain>/?json`
-- Tower JSON: `http(s)://<yourip/domain>/?json_tower&sensor=<SENSOR ID>`
-- Plain Text: `http(s)://<yourip/domain>/?cam`
+- See the [API Guide](https://docs.acuparse.com/API) for details.
 
 ## Web Cam Installation (optional)
 
 Three scripts are included in the `cam/templates` directory. They are used to get and process images from an IP camera.
+You will need to be able to get a snapshot from the camera, or an RTSP stream.
 
 Images get stored in `src/pub/img/cam`. They should be backed up regularly to avoid loss.
 
@@ -354,39 +403,44 @@ local | Runs on a host local to the camera (such as an NVR) and sends the image 
 remote | Processes an image on the Acuparse server.
 combined | Processes an image when the camera and Acuparse are both installed locally.
 
+### Cam Archive Sort Order
+
+The timestamp sort order can be changed in your admin features settings. You can sort today and archive by either `descending`
+or `ascending`. Default is `ascending`.
+
 ### Local/Remote Setup
 
 - On the system local to the camera:
     - Copy the cam directory to the acuparse directory and go there:
 
       ```bash
-        cp cam/ /opt/acuparse/ && cd /opt/acuparse
-        ```
+      cp cam/ /opt/acuparse/ && cd /opt/acuparse
+      ```
 
     - Copy `local` from `cam/templates` to the cam folder and modify the values:
 
       ```bash
-        cp cam/templates/local cam/
-        ```
+      cp cam/templates/local cam/
+      ```
 
     - Setup a cron job to process the image:
 
       ```bash
-        crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/local > /dev/null 2>&1
-        ```
+      crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/local > /dev/null 2>&1
+      ```
 
     - Setup SSH keys so you can log in to your remote host from the local host without a password:
 
       ```bash
-        ssh-copy-id -i ~/.ssh/{YOUR_KEY} {USERNAME}@{HOSTNAME}
-        ```
+      ssh-copy-id -i ~/.ssh/{YOUR_KEY} {USERNAME}@{HOSTNAME}
+      ```
 
 - On the Acuparse server:
     - Copy `remote` from `cam/templates` to the cam folder and modify the values:
 
       ```bash
-        cp cam/templates/remote cam/
-        ```
+      cp cam/templates/remote cam/
+      ```
 
 ### Combined Setup
 
@@ -402,7 +456,8 @@ cp cam/templates/combined cam/
 crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/combined > /dev/null 2>&1
 ```
 
-> **Info:** Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
+!!! info
+    Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
 
 ## Invisible reCAPTCHA
 
@@ -416,6 +471,13 @@ Recaptcha loads on the authentication and contact forms, as well as, when reques
 
 You can send MyAcuRite readings to an external debug server. To enable, manually edit `src/usr/config.php`.
 
-- Find Debug, Server, Show and change it to true.
+- Find `debug->server->show` and change it to true.
 
- The debug tab will now appear in your system settings.
+The debug tab will now appear in your system settings.
+
+## Backup/Restore
+
+A script is included in `cron` to run daily backups. It will run automatically on Docker installs, but local installs
+will need to enable this manually.
+
+- See the [Backup Guide](https://docs.acuparse.com/BACKUPS) for details.

@@ -1,4 +1,4 @@
-# PWS Weather Updater
+# Acuparse PWS Weather Updater Guide
 
 ## Registration
 

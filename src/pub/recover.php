@@ -28,6 +28,12 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
 if (!isset($_SESSION['authenticated'])) {
 
     require(APP_BASE_PATH . '/fcn/mailer.php');
@@ -63,7 +69,7 @@ if (!isset($_SESSION['authenticated'])) {
             } // If there is a member with that email
             else {
                 // Get uid
-                $uid = mysqli_fetch_array($result);
+                $uid = mysqli_fetch_assoc($result);
                 $uid = $uid['uid'];
 
                 // Check if a request was already submitted
@@ -71,7 +77,7 @@ if (!isset($_SESSION['authenticated'])) {
 
                 // If a request was already made
                 if (mysqli_num_rows($result) === 1) {
-                    $hash = mysqli_fetch_array($result);
+                    $hash = mysqli_fetch_assoc($result);
                     $hash = $hash['hash'];
                     $subject = 'Password Change Request';
                     $message = '<h2>Reset Account Password</h2><p>You or someone pretending to be you requested to reset your password for ' . $config->site->name .
@@ -150,7 +156,7 @@ if (!isset($_SESSION['authenticated'])) {
             syslog(LOG_ERR, "(SYSTEM)[ERROR]:Invalid hash received. $hash");
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Your request cannot be processed. Try submitting your password reset request again.</div>';
             header("Location: /");
-            die();
+            exit();
         }
 // Done with resetting password
     } // Process Password Change
@@ -159,11 +165,11 @@ if (!isset($_SESSION['authenticated'])) {
         $hash = mysqli_real_escape_string($conn, filter_input(INPUT_POST, 'hash', FILTER_SANITIZE_STRING));
 
         // Get user id
-        $uid = mysqli_fetch_array(mysqli_query($conn, "SELECT `uid` FROM `password_recover` WHERE `hash`='$hash'"));
+        $uid = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `uid` FROM `password_recover` WHERE `hash`='$hash'"));
         $uid = $uid['uid'];
 
         // Get user details
-        $userRow = mysqli_fetch_array(mysqli_query($conn,
+        $userRow = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `username`, `email`, `password` FROM `users` WHERE `uid`='$uid'"));
         $email = $userRow['email'];
         $username = $userRow['username'];
@@ -180,7 +186,7 @@ if (!isset($_SESSION['authenticated'])) {
             syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid failed");
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password. Try logging in with that password.</div>';
             header("Location: /admin/account");
-            die();
+            exit();
 
         } else {
             mysqli_query($conn, "UPDATE `users` SET `password`='$password' WHERE `uid`='$uid'");
@@ -201,14 +207,14 @@ if (!isset($_SESSION['authenticated'])) {
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
                 header("Location: /admin/account");
-                die();
+                exit();
 
             } else {
                 // Log it
                 syslog(LOG_ERR, "(SYSTEM)[ERROR]: Password change request for UID $uid failed");
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Something went wrong while completing your request. Please try again.</div>';
                 header("Location: /recover&do?hash=$hash");
-                die();
+                exit();
             }
 
         }

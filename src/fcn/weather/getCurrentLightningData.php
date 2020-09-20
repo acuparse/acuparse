@@ -19,47 +19,97 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  * File: src/fcn/weather/getCurrentLightningData.php
  * Gets the requested lightning data from the database
  */
+
+namespace atlas;
+
 class getCurrentLightningData
 {
     // Set variables
-    private $strikecount;
+    private $dailystrikes;
+    private $currentstrikes;
     private $interference;
     private $last_strike_ts;
+    private $last_strike_display;
     private $last_strike_distance_KM;
     private $last_strike_distance_M;
+    private $source;
 
-    function __construct()
+    function __construct($source = null)
     {
+        $todaysDate = date('Y-m-d');
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        /** @var mysqli $conn Global MYSQL Connection */
+        /**
+         * @return array
+         * @var object $config Global Config
+         */
+        // Check for recent readings
+        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `last_update` FROM `atlasLightning`"));
+        if (!isset($lastUpdate)) {
+            exit();
+        }
 
+        $this->source = $source;
         //Process Strike Count
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `strikecount`, `interference`, `last_strike_ts`, `last_strike_distance` FROM `lightning` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->strikecount = (int)$result['strikecount'];
-        $this->interference = (bool)$result['interference'];
-        $this->last_strike_ts = $result['last_strike_ts'];
-        $this->last_strike_distance_KM = (float)round($result['last_strike_distance'],1);
-        $this->last_strike_distance_M = (float)round($result['last_strike_distance'] / 1.609,1);
+        $currentData = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `dailystrikes`, `currentstrikes` FROM `atlasLightning` WHERE `date`='$todaysDate'"));
+        $atlasData = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `last_strike_ts`, `interference`, `last_strike_distance` FROM `lightningData` WHERE `source` = 'A'"));
+        $this->dailystrikes = (float)$currentData['dailystrikes'];
+        $this->currentstrikes = (float)$currentData['currentstrikes'];
+        $this->interference = (float)$atlasData['interference'];
+        $this->last_strike_ts = $atlasData['last_strike_ts'];
+        $this->last_strike_display = date($config->site->dashboard_display_date, strtotime($this->last_strike_ts));
+        $this->last_strike_distance_KM = (float)round($atlasData['last_strike_distance'] * 1.609, 1);
+        $this->last_strike_distance_M = (float)round($atlasData['last_strike_distance'], 1);
     }
 
-    // Calculate Light Hours
+    // Calculate Interference
     private function interferenceText($interference)
     {
         return ($interference === true) ? "Yes" : "No";
+    }
+
+    // Calculate Last Update
+    private function lastUpdate($last_strike_ts, $last_strike_display, $source)
+    {
+
+        function between($number, $from, $to)
+        {
+            return $number > $from && $number < $to;
+        }
+
+        if ($source === 'json') {
+            $output = $last_strike_display;
+        } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 1800,
+            strtotime(date('Y-m-d H:i:s')) + 1800)) {
+            $output = '<i title="Reported within last 30 Minutes" class="fas fa-exclamation-triangle lightningDanger"></i><strong> ' . $last_strike_display . '</strong>';
+        } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 7200,
+            strtotime(date('Y-m-d H:i:s')) + 7200)) {
+            $output = '<i title="Reported within last 2 Hours" class="fas fa-exclamation-circle lightningWarning"></i> ' . $last_strike_display;
+        } else {
+            $output = $last_strike_display;
+        }
+
+        return $output;
     }
 
     // Get Data
     public function getData()
     {
         return (object)array(
-            'strikecount' => $this->strikecount,
+            'dailystrikes' => $this->dailystrikes,
+            'currentstrikes' => $this->currentstrikes,
             'interference' => $this->interferenceText($this->interference),
             'last_strike_ts' => $this->last_strike_ts,
+            'last_update' => $this->lastUpdate($this->last_strike_ts, $this->last_strike_display, $this->source),
             'last_strike_distance_KM' => $this->last_strike_distance_KM,
             'last_strike_distance_M' => $this->last_strike_distance_M
         );

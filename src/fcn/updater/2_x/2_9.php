@@ -25,6 +25,13 @@
  * 2.9 Site Update Tasks
  */
 
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+/** @var string $notes */
+
 switch ($config->version->app) {
 
     // Update from 2.8.0
@@ -60,21 +67,6 @@ switch ($config->version->app) {
                       COLLATE = utf8_bin;");
         mysqli_query($conn,
             "ALTER TABLE `generic_updates` ADD PRIMARY KEY (`timestamp`);"); // Add primary key
-        // Rebuild the event scheduler
-        if ($config->mysql->trim !== 0) {
-            if ($config->mysql->trim === 1) {
-                $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/trim/enable.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset for 2.9");
-            } elseif ($config->mysql->trim === 2) {
-                // Load the database with the trim schema
-                $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/trim/enable_xtower.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset for 2.9");
-            }
-        }
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Adding Windy Support, Doc. Updates';
 
     // Update from 2.9.0

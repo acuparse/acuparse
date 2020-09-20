@@ -28,6 +28,17 @@
 // Get the loader
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
+if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
+    $mac = $_GET['id'];
+    exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured."));
+}
+
 function last_updated_at() {
     global $conn;
     $lastUpdate = date("Y-m-d H:i:s");
@@ -46,5 +57,5 @@ elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->stati
 else {
     $mac = $_GET['id'];
     // Log it
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured.");
+    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Ignored update from $mac.");
 }

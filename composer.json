@@ -1,0 +1,168 @@
+{
+  "name": "acuparse/acuparse",
+  "description": "AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.",
+  "license": "AGPL-3.0-or-later",
+  "type": "project",
+  "keywords": ["smarthub", "weather", "weather-station", "weather-data", "weather-underground", "acurite-smarthub", "acurite", "pws", "pws-weather", "cwop", "wunderground", "acurite-access", "capture", "weathercloud", "acurite-atlas", "acurite-5n1", "acurite-tower", "windy", "atlas", "atlas-weather-station"],
+  "homepage": "https://www.acuparse.com",
+  "readme": "README.md",
+  "authors": [
+    {
+      "name": "Maxwell Power",
+      "email": "max@acuparse.com",
+      "homepage": "https://www.acuparse.com",
+      "role": "Owner"
+    }
+  ],
+  "support": {
+    "email": "support@acuparse.com",
+    "source": "https://github.com/acuparse/acuparse",
+    "docs": "https://docs.acuparse.com",
+    "issues": "https://gitlab.com/acuparse/acuparse/-/issues"
+  },
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/maxtpower"
+    },
+    {
+      "type": "other",
+      "url": "https://www.buymeacoffee.com/maxp"
+    },
+    {
+      "type": "other",
+      "url": "https://www.paypal.me/maxtpower"
+    },
+    {
+      "type": "other",
+      "url": "https://www.venmo.com/maxtpower"
+    }
+  ],
+  "require": {
+    "php": "~7.3",
+    "twbs/bootstrap": "~4",
+    "fortawesome/font-awesome": "~5",
+    "components/jquery": "~3",
+    "lokesh/lightbox2": "~2",
+    "erikflowers/weather-icons": "~2",
+    "instantpage/instant.page": "~5",
+    "ext-mysqli": "*",
+    "ext-json": "*",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+    "dprevite/lint": "~1"
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "rm -rf ./src/pub/lib/mit/bootstrap/css/*",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.css ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.css.map ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.min.css ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.min.css.map ./src/pub/lib/mit/bootstrap/css",
+      "rm -rf ./src/pub/lib/mit/bootstrap/js/*",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.js ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.js.map ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.min.js ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.min.js.map ./src/pub/lib/mit/bootstrap/js",
+      "rm -rf ./src/pub/lib/mit/fontawesome/js/*",
+      "cp ./vendor/fortawesome/font-awesome/js/all.js ./src/pub/lib/mit/fontawesome/js",
+      "cp ./vendor/fortawesome/font-awesome/js/all.min.js ./src/pub/lib/mit/fontawesome/js",
+      "rm -rf ./src/pub/lib/mit/jquery/js/*",
+      "cp ./vendor/components/jquery/jquery.js ./src/pub/lib/mit/jquery/js",
+      "cp ./vendor/components/jquery/jquery.min.js ./src/pub/lib/mit/jquery/js",
+      "cp ./vendor/components/jquery/jquery.min.map ./src/pub/lib/mit/jquery/js",
+      "rm -rf ./src/pub/lib/mit/lightbox/css/*",
+      "cp -R ./vendor/lokesh/lightbox2/dist/css ./src/pub/lib/mit/lightbox/",
+      "rm -rf ./src/pub/lib/mit/lightbox/images/*",
+      "cp -R ./vendor/lokesh/lightbox2/dist/images ./src/pub/lib/mit/lightbox/",
+      "rm -rf ./src/pub/lib/mit/lightbox/js/*",
+      "cp ./vendor/lokesh/lightbox2/dist/js/lightbox.js ./src/pub/lib/mit/lightbox/js",
+      "cp ./vendor/lokesh/lightbox2/dist/js/lightbox.min.js ./src/pub/lib/mit/lightbox/js",
+      "cp ./vendor/lokesh/lightbox2/dist/js/lightbox.min.map ./src/pub/lib/mit/lightbox/js",
+      "cp -R ./vendor/lokesh/lightbox2/dist/images ./src/pub/lib/mit/lightbox/",
+      "rm -rf ./src/pub/lib/mit/weather_icons/*",
+      "cp -R ./vendor/erikflowers/weather-icons/css ./src/pub/lib/mit/weather_icons",
+      "cp -R ./vendor/erikflowers/weather-icons/font ./src/pub/lib/mit/weather_icons",
+      "rm -rf ./src/pub/lib/mit/instantpage/*",
+      "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/"
+    ],
+    "post-install-cmd": [
+      "rm -rf ./src/pub/lib/mit/bootstrap/css",
+      "mkdir -p ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.css ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.css.map ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.min.css ./src/pub/lib/mit/bootstrap/css",
+      "cp ./vendor/twbs/bootstrap/dist/css/bootstrap.min.css.map ./src/pub/lib/mit/bootstrap/css",
+      "rm -rf ./src/pub/lib/mit/bootstrap/js",
+      "mkdir -p ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.js ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.js.map ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.min.js ./src/pub/lib/mit/bootstrap/js",
+      "cp ./vendor/twbs/bootstrap/dist/js/bootstrap.min.js.map ./src/pub/lib/mit/bootstrap/js",
+      "rm -rf ./src/pub/lib/mit/fontawesome/js",
+      "mkdir -p ./src/pub/lib/mit/fontawesome/js",
+      "cp ./vendor/fortawesome/font-awesome/js/all.js ./src/pub/lib/mit/fontawesome/js",
+      "cp ./vendor/fortawesome/font-awesome/js/all.min.js ./src/pub/lib/mit/fontawesome/js",
+      "rm -rf ./src/pub/lib/mit/jquery/js",
+      "mkdir -p ./src/pub/lib/mit/jquery/js",
+      "cp ./vendor/components/jquery/jquery.js ./src/pub/lib/mit/jquery/js",
+      "cp ./vendor/components/jquery/jquery.min.js ./src/pub/lib/mit/jquery/js",
+      "cp ./vendor/components/jquery/jquery.min.map ./src/pub/lib/mit/jquery/js",
+      "rm -rf ./src/pub/lib/mit/lightbox/css",
+      "cp -R ./vendor/lokesh/lightbox2/dist/css ./src/pub/lib/mit/lightbox/",
+      "rm -rf ./src/pub/lib/mit/lightbox/images",
+      "cp -R ./vendor/lokesh/lightbox2/dist/images ./src/pub/lib/mit/lightbox/",
+      "rm -rf ./src/pub/lib/mit/lightbox/js",
+      "mkdir -p ./src/pub/lib/mit/lightbox/js",
+      "cp ./vendor/lokesh/lightbox2/dist/js/lightbox.js ./src/pub/lib/mit/lightbox/js",
+      "cp ./vendor/lokesh/lightbox2/dist/js/lightbox.min.js ./src/pub/lib/mit/lightbox/js",
+      "cp ./vendor/lokesh/lightbox2/dist/js/lightbox.min.map ./src/pub/lib/mit/lightbox/js",
+      "rm -rf ./src/pub/lib/mit/weather_icons",
+      "mkdir -p ./src/pub/lib/mit/weather_icons",
+      "cp -R ./vendor/erikflowers/weather-icons/css ./src/pub/lib/mit/weather_icons",
+      "cp -R ./vendor/erikflowers/weather-icons/font ./src/pub/lib/mit/weather_icons",
+      "rm -rf ./src/pub/lib/mit/instantpage",
+      "mkdir -p ./src/pub/lib/mit/instantpage",
+      "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/"
+    ],
+    "repositories": [
+      {
+        "type": "package",
+        "package": {
+          "name": "lokesh/lightbox2",
+          "version": "2.11.3",
+          "dist": {
+            "url": "https://github.com/lokesh/lightbox2/archive/v2.11.3.zip",
+            "type": "zip"
+          }
+        }
+      },
+      {
+        "type": "package",
+        "package": {
+          "name": "erikflowers/weather-icons",
+          "version": "2.0.10",
+          "dist": {
+            "url": "https://github.com/erikflowers/weather-icons/archive/2.0.10.zip",
+            "type": "zip"
+          }
+        }
+      },
+      {
+        "type": "package",
+        "package": {
+          "name": "instantpage/instant.page",
+          "version": "5.1.0",
+          "dist": {
+            "url": "https://github.com/instantpage/instant.page/archive/v5.1.0.zip",
+            "type": "zip"
+          }
+        }
+      }
+    ],
+    "test": [
+      "php ./vendor/bin/lint ./src"
+    ]
+  }
+}

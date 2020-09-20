@@ -25,6 +25,13 @@
  * 2.3 Site Update Tasks
  */
 
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+/** @var string $notes */
+
 switch ($config->version->app) {
 
     // Update from 2.2.3

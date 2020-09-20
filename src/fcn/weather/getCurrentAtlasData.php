@@ -27,24 +27,76 @@
 class getCurrentAtlasData
 {
     // Set variables
-    private $uvindex;
-    private $lightintensity;
-    private $measured_light_seconds;
+    private $uvIndex;
+    private $lightIntensity;
+    private $lightSeconds;
+    private $windGustMPH;
+    private $windGustKMH;
+    private $windGustDEG;
+    private $windSpeedMPH_avg;
+    private $windSpeedKMH_avg;
+    private $windGust_peak_recorded;
+    private $windGustMPH_peak;
+    private $windGustKMH_peak;
+    private $windGustDEG_peak;
+    private $battery;
+    private $rssi;
+    private $lastUpdate;
 
     function __construct()
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        /** @var mysqli $conn Global MYSQL Connection */
 
-        //Process Strike Count
+        // Check for recent readings
+        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `last_update` FROM `atlas_status`"));
+        if (!isset($lastUpdate)) {
+            exit();
+        }
+
+        // Get UV Index
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `uvindex` FROM `uvindex` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->uvindex = (int)$result['uvindex'];
+        $this->uvIndex = (int)$result['uvindex'];
+
+        // Get Light Data
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `lightintensity`, `measured_light_seconds` FROM `light` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->lightintensity = (int)$result['lightintensity'];
-        $this->measured_light_seconds = (int)$result['measured_light_seconds'];
+        $this->lightIntensity = (int)$result['lightintensity'];
+        $this->lightSeconds = (int)$result['measured_light_seconds'];
 
+        // Get Wind Data
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `gust` FROM `winddirection` ORDER BY `timestamp` DESC LIMIT 1"));
+        $this->windGustDEG = (int)$result['gust'];
+
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `gustMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
+        $this->windGustMPH = (int)$result['gustMPH'];
+        $this->windGustKMH = (int)round($result['gustMPH'] * 1.60934);
+
+        // 2 Min Average Windspeed:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `averageMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
+        $this->windSpeedMPH_avg = (int)$result['averageMPH']; // Miles per hour
+        $this->windSpeedKMH_avg = (int)round($result['averageMPH'] * 1.60934); // Convert to Kilometers per hour
+
+        // Today's Peak Gust:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+        $this->windGust_peak_recorded = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
+        $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
+        $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
+
+        // Get Status
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT * FROM `atlas_status` LIMIT 1"));
+        $this->battery = $result['battery'];
+        $this->rssi = $result['rssi'];
+        $this->lastUpdate = $result['last_update'];
     }
 
     // Calculate the UV Index Text
@@ -90,19 +142,89 @@ class getCurrentAtlasData
     // Calculate Light Hours
     private function calculateLightHours($seconds)
     {
-        return round($seconds / 3600,2);
+        return round($seconds / 3600, 2);
+    }
+
+    // Calculate human readable wind direction from a range of values:
+    private function windGustDirection($windDEG)
+    {
+        switch ($windDEG) {
+            case ($windDEG >= 11.25 && $windDEG < 33.75):
+                $windDIR = 'NNE';
+                break;
+            case ($windDEG >= 33.75 && $windDEG < 56.25):
+                $windDIR = 'NE';
+                break;
+            case ($windDEG >= 56.25 && $windDEG < 78.75):
+                $windDIR = 'ENE';
+                break;
+            case ($windDEG >= 78.75 && $windDEG < 101.25):
+                $windDIR = 'E';
+                break;
+            case ($windDEG >= 101.25 && $windDEG < 123.75):
+                $windDIR = 'ESE';
+                break;
+            case ($windDEG >= 123.75 && $windDEG < 146.25):
+                $windDIR = 'SE';
+                break;
+            case ($windDEG >= 146.25 && $windDEG < 168.75):
+                $windDIR = 'SSE';
+                break;
+            case ($windDEG >= 168.75 && $windDEG < 191.25):
+                $windDIR = 'S';
+                break;
+            case ($windDEG >= 191.25 && $windDEG < 213.75):
+                $windDIR = 'SSW';
+                break;
+            case ($windDEG >= 213.75 && $windDEG < 236.25):
+                $windDIR = 'SW';
+                break;
+            case ($windDEG >= 236.25 && $windDEG < 258.75):
+                $windDIR = 'WSW';
+                break;
+            case ($windDEG >= 258.75 && $windDEG < 281.25):
+                $windDIR = 'W';
+                break;
+            case ($windDEG >= 281.25 && $windDEG < 303.75):
+                $windDIR = 'WNW';
+                break;
+            case ($windDEG >= 303.75 && $windDEG < 326.25):
+                $windDIR = 'NW';
+                break;
+            case ($windDEG >= 326.25 && $windDEG < 348.75):
+                $windDIR = 'NNW';
+                break;
+            default:
+                $windDIR = 'N';
+                break;
+        }
+        return (string)$windDIR;
     }
 
     // Get Data
     public function getData()
     {
         return (object)array(
-            'uvindex' => $this->uvindex,
-            'uvindex_text' => $this->calculateUV($this->uvindex),
-            'lightintensity' => $this->lightintensity,
-            'lightintensity_text' => $this->lightText($this->lightintensity),
-            'measured_light_seconds' => $this->measured_light_seconds,
-            'measured_light_hours' => $this->calculateLightHours($this->measured_light_seconds)
+            'lightIntensity' => $this->lightIntensity,
+            'lightIntensity_text' => $this->lightText($this->lightIntensity),
+            'lightSeconds' => $this->lightSeconds,
+            'lightHours' => $this->calculateLightHours($this->lightSeconds),
+            'uvIndex' => $this->uvIndex,
+            'uvIndex_text' => $this->calculateUV($this->uvIndex),
+            'windGustDEG' => $this->windGustDEG,
+            'windGustDIR' => $this->windGustDirection($this->windGustDEG),
+            'windGustMPH' => $this->windGustMPH,
+            'windGustKMH' => $this->windGustKMH,
+            'windGustPeakMPH' => $this->windGustMPH_peak,
+            'windGustPeakKMH' => $this->windGustKMH_peak,
+            'windGustDEGPeak' => $this->windGustDEG_peak,
+            'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
+            'windGustPeakRecorded' => $this->windGust_peak_recorded,
+            'windAvgMPH' => $this->windSpeedMPH_avg,
+            'windAvgKMH' => $this->windSpeedKMH_avg,
+            'battery' => $this->battery,
+            'signal' => $this->rssi,
+            'lastUpdate' => $this->lastUpdate,
         );
     }
 }

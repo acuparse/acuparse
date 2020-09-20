@@ -42,13 +42,8 @@ if (!isset($config)) {
 
 if (!isset($appInfo)) {
     $appInfo = json_decode(file_get_contents(dirname(dirname(__DIR__)) . '/.version'), true);
-    $appInfo = (object)array(
-        'name' => $appInfo['name'], // Application Name
-        'version' => $appInfo['version'], // Application version
-        'schema' => $appInfo['schema'], // Database Schema Version
-        'repo' => $appInfo['repo'], // Git Repository
-        'homepage' => $appInfo['homepage'] // Project Homepage
-    );
+    $appInfo = array_change_key_case($appInfo, CASE_LOWER);
+    $appInfo = (object)$appInfo;
 }
 
 // Set timezone
@@ -58,58 +53,18 @@ if (date_default_timezone_get() != $config->site->timezone) {
 
 // Open Database Connection
 if (!isset($conn)) {
+    /** @var string $installed */
     if ($installed === true) {
         $conn = mysqli_connect($config->mysql->host, $config->mysql->username, $config->mysql->password,
             $config->mysql->database);
         if (!$conn) {
             header($_SERVER["SERVER_PROTOCOL"] . " 503 Service Unavailable");
-            ?>
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <title>Error 503: MySQL Connection Failed</title>
-                <style>
-                    body {
-                        text-align: center;
-                        padding: 150px;
-                    }
-
-                    h1 {
-                        font-size: 50px;
-                    }
-
-                    body {
-                        font: 20px Helvetica, sans-serif;
-                        color: #333;
-                    }
-
-                    article {
-                        display: block;
-                        text-align: left;
-                        width: auto;
-                        margin: 0 auto;
-                    }
-                </style>
-            </head>
-            <body>
-            <article>
-                <h1>503 - MySQL Connection Failed!</h1>
-                <p><strong>MySQL Error</strong>:
-                <pre><?= mysqli_connect_error() ?></pre>
-                </p>
-                <div>
-                    <p><Strong>Error Details:</Strong></p>
-                    <p>Unable to connect to your MySQL server. Either your MySQL server is not started or your
-                        credentials are incorrect.</p>
-                    <p>Check your configuration and that the MySQL service is started, then try again.</p>
-                </div>
-            </article>
-            </body>
-            </html>
-            <?php
+            require_once('templates/dbConnectFailed.php');
             syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error());
-            die();
+            exit();
         }
+        ini_set('mysqlnd_qc.enable_qc', 1);
+        ini_set('mysqlnd_qc.cache_by_default', 1);
     }
 }
 

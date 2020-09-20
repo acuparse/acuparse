@@ -28,6 +28,11 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
 // Check that camera is enabled
 if ($config->camera->enabled === true) {
 
@@ -49,7 +54,9 @@ if ($config->camera->enabled === true) {
         include(APP_BASE_PATH . '/inc/header.php');
 
         // Check the cam directory for images
+
         $cam_dir = scandir('img/cam/');
+
         $last_dir = current(array_slice($cam_dir,
             -2)); // Latest directory should be the 2nd last value. Since latest.jpg should be the last.
         $cam_dir = $cam_dir[3]; // Oldest images should be the 3rd value. Since .=0 ..=1 and .gitignore=2 are first.
@@ -75,7 +82,7 @@ if ($config->camera->enabled === true) {
             <div class="row">
                 <div class="col-3 text-left">
                     <?php if (($backward_date < $cam_dir) || $cam_dir_has_images === false) {
-                        // Don't display backward button
+                        false; // Don't display backward button
                     } elseif ($backward_date > $today) {
                         ?>
                         <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fas fa-backward"
@@ -100,7 +107,7 @@ if ($config->camera->enabled === true) {
                 </div>
                 <div class="col-3 text-right">
                     <?php if (($forward_date > $today) || $cam_dir_has_images === false) {
-                        // Don't display forward button
+                        false; // Don't display forward button
                     } else {
                         if ($forward_date < $cam_dir) {
                             ?>
@@ -120,8 +127,16 @@ if ($config->camera->enabled === true) {
             </div>
             <?php
             $dirname = "img/cam/$date/";
-            $images = scandir($dirname);
-            $ignore = Array(".", "..", "daily.gif");
+
+            if ($today === $date && $config->camera->sort->today === 'descending') {
+                $images = scandir($dirname, SCANDIR_SORT_DESCENDING);
+            } else if ($today !== $date && $config->camera->sort->archive === 'descending') {
+                $images = scandir($dirname, SCANDIR_SORT_DESCENDING);
+            } else {
+                $images = scandir($dirname);
+            }
+
+            $ignore = array(".", "..", "daily.gif");
 
             if ($images == 0) { ?>
                 <div class="row margin-top-10">
@@ -146,7 +161,6 @@ if ($config->camera->enabled === true) {
                             $image_time = str_replace('.jpg', '', $curimg);
                             $image_time = str_split($image_time, 2);
                             $image_time = implode(':', $image_time);
-
                             ?>
                             <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                                 <a href="<?= $dirname . $curimg; ?>"
@@ -168,9 +182,9 @@ if ($config->camera->enabled === true) {
         $page_footer =
             '<script src="/lib/mit/lightbox/js/lightbox.min.js"></script>';
     }
-    // End archive
+// End archive
 
-    // Display camera
+// Display camera
     else {
         $pageTitle = 'Live Weather Camera';
         include(APP_BASE_PATH . '/inc/header.php');
@@ -192,7 +206,8 @@ if ($config->camera->enabled === true) {
                          alt="Live Camera Image">
                     <h4 class="margin-top-10 margin-bottom-10"><?= $config->camera->text; ?></h4>
                     <button type="button" id="archive" class="btn btn-outline-secondary center-block"
-                            onclick="location.href = '/camera?archive'"><i class="far fa-images" aria-hidden="true"></i>
+                            onclick="location.href = '/camera?archive'"><i class="far fa-images"
+                                                                           aria-hidden="true"></i>
                         View Camera Archive
                     </button>
                 </div>

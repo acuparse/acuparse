@@ -1,163 +1,283 @@
 stages:
   - lint
+  - build
   - test
-  - docs
+  - deploy
   - quality
+  - release
 
-.php_template: &php_template
-  image: php:7.3
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+    - if: $CI_MERGE_REQUEST_IID
+
+#### Templates ####
+.TEMPLATE:PHP:CLI:
+  image: php:7.4-cli
   stage: lint
   script:
     - find . -name \*.php -exec php -l "{}" \;
+  dependencies: [ ]
 
-.md_template: &md_template
+.TEMPLATE:PHP:phpstan:
+  image:
+    name: phpstan/phpstan
+    entrypoint: [ "" ]
+  stage: lint
+  script:
+    - phpstan analyse src/ | tee phpstan.txt
+  dependencies: [ ]
+
+.TEMPLATE:MD:markdownlint:
   stage: lint
   image: node:latest
   before_script:
     - npm install -g markdownlint-cli
   script:
     - markdownlint .
+  dependencies: [ ]
 
-.bash_template: &bash_template
+.TEMPLATE:BASH:shellcheck:
   image: koalaman/shellcheck-alpine
   stage: lint
   script:
     - shellcheck cam/templates/*
+  dependencies: [ ]
 
-.docs_template: &docs_template
-  stage: docs
-  image: python:alpine
+.TEMPLATE:PHP:noverify:
+  image: golang:alpine
+  stage: lint
   before_script:
-    - pip install mkdocs
+    - apk add --no-cache git
+    - go get -u github.com/VKCOM/noverify
+  script:
+    - noverify -cache-dir=/tmp/cache/noverify src/ | tee noverify.txt
+
+.TEMPLATE:DOCS:mkdocs:
+  stage: deploy
+  image: python:3.9-alpine
+  before_script:
+    - apk add --no-cache --virtual .build gcc musl-dev
     - pip install mkdocs-material
     - pip install mkdocs-minify-plugin
+  dependencies: [ ]
 
-.buster_template: &buster_template
-  image: debian:buster
-  stage: test
+.TEMPLATE:DOCKER:build:
+  image: docker:stable
+  stage: build
   variables:
-    GIT_STRATEGY: none
-    EMAIL: "ci@dev.acuparse.com"
-    TEST_USERNAME: "ci"
-    TEST_PASSWORD: ":}P@sssW0rd:)"
+    DOCKER_CLI_EXPERIMENTAL: enabled
+  services:
+    - name: docker:stable-dind
+      command: [ "--experimental" ]
   before_script:
-    - apt-get update
-    - apt-get dist-upgrade -y
-    - apt-get install curl wget -y
-    - wget https://gitlab.com/acuparse/installer/raw/"$INSTALLER_BRANCH"/install
-    - mkdir tests/
+    - mkdir -p $HOME/.docker/cli-plugins/
+    - wget -O $HOME/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v$BUILDX_VERSION/buildx-v$BUILDX_VERSION.linux-amd64
+    - chmod a+x $HOME/.docker/cli-plugins/docker-buildx
+    - apk add --no-cache jq
+    - export ACUPARSE_VERSION=$(cat .version | jq -r '.VERSION')
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker buildx create --use --driver docker-container --name custom --platform=$BUILDX_PLATFORM
+    - docker buildx inspect --bootstrap
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
   script:
-    - bash install -s -d
-    - export $(cat ~/.acuparse_db)
-    - curl -d 'mysql[hostname]=localhost&mysql[database]=acuparse&mysql[username]=acuparse&mysql[password]='"$ACUPARSE_DATABASE_PASSWORD"'&mysql[trim]=1' -X POST 'http://localhost/admin/install/?database'
-    - curl -d 'username='"$TEST_USERNAME"'&email='"$EMAIL"'&password='"$TEST_PASSWORD" -X POST 'http://127.0.0.1/admin/install/?account&do'
-    - curl -o tests/index.html http://127.0.0.1
-    - curl -k -o tests/index_ssl.html https://127.0.0.1
-    - curl -o tests/output.json http://127.0.0.1/?json
-    - curl -o tests/weather.html http://127.0.0.1/?weather
-    - curl -o tests/archive.html http://127.0.0.1/archive?html
+    - >
+      if [ "$TAGGED_RELEASE" = "true" ]; then
+        docker buildx build \
+        --build-arg BUILD_DATE=$DATE \
+        --build-arg VCS_REF=$CI_COMMIT_SHA \
+        --build-arg BUILD_VERSION=$ACUPARSE_VERSION \
+        --build-arg BUILD_BRANCH=$CI_COMMIT_REF_SLUG \
+        --tag $CI_REGISTRY_IMAGE:$ACUPARSE_VERSION \
+        --tag $CI_REGISTRY_IMAGE:latest \
+        --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
+        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA \
+        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$ACUPARSE_VERSION \
+        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:latest \
+        --tag $DOCKER_REGISTRY_TAG:$ACUPARSE_VERSION \
+        --tag $DOCKER_REGISTRY_TAG:latest \
+        --tag $DOCKER_REGISTRY_TAG:$CI_COMMIT_REF_SLUG \
+        --platform $BUILDX_PLATFORM \
+        --push \
+        .
+      else
+        docker buildx build \
+        --build-arg BUILD_DATE=$DATE \
+        --build-arg VCS_REF=$CI_COMMIT_SHA \
+        --build-arg BUILD_VERSION=$ACUPARSE_VERSION \
+        --build-arg BUILD_BRANCH=$CI_COMMIT_REF_SLUG \
+        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA \
+        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$ACUPARSE_VERSION \
+        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:latest \
+        --platform $BUILDX_PLATFORM_DEV \
+        --push \
+        .
+      fi
+  dependencies: [ ]
+
+#### END: Templates ####
+
+#### PHP ####
+
+#### PHP CLI ####
+PHP:CLI:
+  extends: .TEMPLATE:PHP:CLI
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stable"'
+
+DEV:PHP:CLI:
+  extends: .TEMPLATE:PHP:CLI
+  image: php:8.0-rc-cli
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "stable"'
+  allow_failure: true
+
+#### phpstan ####
+
+DEV:PHP:phpstan:
+  extends: .TEMPLATE:PHP:phpstan
+  script:
+    - phpstan analyse --level max src/ | tee phpstan.txt
   artifacts:
+    when: on_failure
     paths:
-      - tests/
+      - phpstan.txt
+    expire_in: 2 weeks
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "stable"'
 
-check_php:
-  <<: *php_template
-  only:
-    - master
+#### noverify ####
 
-DEV_check_php:
-  <<: *php_template
-  except:
-    - master
+DEV:PHP:noverify:
+  extends: .TEMPLATE:PHP:noverify
+  artifacts:
+    when: on_failure
+    paths:
+      - noverify.txt
+    expire_in: 2 weeks
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "stable"'
+
+#### END: PHP ####
+
+#### Markdown ####
+MD:markdownlint:
+  extends: .TEMPLATE:MD:markdownlint
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stable"'
+
+DEV:MD:markdownlint:
+  extends: .TEMPLATE:MD:markdownlint
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
-markdown:
-  <<: *md_template
-  only:
-    - master
+#### END: Markdown ####
 
-DEV_markdown:
-  <<: *md_template
-  except:
-    - master
-  allow_failure: true
-
-bash_scripts:
-  <<: *bash_template
+#### Bash ####
+BASH:shellcheck:
+  extends: .TEMPLATE:BASH:shellcheck
   before_script:
     - export SHELLCHECK_OPTS="-e SC2034 -e SC2059 -e SC2086"
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stable"'
 
-DEV_bash_scripts:
-  <<: *bash_template
-  except:
-    - master
+DEV:BASH:shellcheck:
+  extends: .TEMPLATE:BASH:shellcheck
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
-debian_buster:
-  <<: *buster_template
-  variables:
-    INSTALLER_BRANCH: master
-  only:
-    - master
+#### END: Bash ####
 
-DEV_debian_buster:
-  <<: *buster_template
-  variables:
-    INSTALLER_BRANCH: dev
-  allow_failure: true
-  except:
-    - master
+#### Build and Release a Docker Container ####
 
+DOCKER:build:RELEASE:
+  extends: .TEMPLATE:DOCKER:build
+  variables:
+    TAGGED_RELEASE: 'true'
+  rules:
+    - if: $CI_COMMIT_TAG
+
+DEV:DOCKER:build:
+  extends: .TEMPLATE:DOCKER:build
+  allow_failure: false
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+#### END: Docker Image ####
+
+#### Test Installer and Container ####
+INSTALLER:
+  stage: test
+  trigger:
+    project: acuparse/installer
+    branch: dev
+    strategy: depend
+  variables:
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+
+#### END: Test Installer ####
+
+#### Publish Project Documentation ####
 pages:
-  <<: *docs_template
+  extends: .TEMPLATE:DOCS:mkdocs
   script:
     - mkdocs build
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stable"'
   artifacts:
     paths:
       - public
 
-DEV_pages:
-  <<: *docs_template
+DEV:DOCS:mkdocs:
+  extends: .TEMPLATE:DOCS:mkdocs
   script:
     - mkdocs build --site-dir test
-  except:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
   artifacts:
     paths:
       - test
 
-code_quality:
-  stage: quality
-  image: docker:stable
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+#### END: Project Documentation ####
+
+#### Update Release ####
+RELEASE:tag:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stable"'
+      when: manual
   script:
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - docker run
-      --env SOURCE_CODE="$PWD"
-      --volume "$PWD":/code
-      --volume /var/run/docker.sock:/var/run/docker.sock
-      "registry.gitlab.com/gitlab-org/security-products/codequality:12-0-stable" /code
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-  only:
-    - branches
-    - tags
-  except:
-    variables:
-      - $CODE_QUALITY_DISABLED
+    - export VERSION=$(cat .version | jq -r '.VERSION')
+    - >
+      release-cli create --name Version $VERSION --description release-branch-$CI_COMMIT_REF_NAME-$CI_JOB_ID
+      --tag-name v$VERSION --ref $CI_COMMIT_SHA
+  dependencies: [ ]
+
+RELEASE:RMS:version:
+  image: alpine
+  stage: release
+  before_script:
+    - apk add curl jq --no-cache
+  script:
+    - export VERSION=$(cat .version | jq -r '.VERSION')
+    - "curl -H 'Authorization: Bearer ${RMS_TOKEN}' -X POST -d 'version=$VERSION' '${RMS_HOST}/releases'"
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
+  dependencies: [ ]
+
+#### End Release ####
+
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml

@@ -28,11 +28,8 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
+SET time_zone = "+00:00";
 
-CREATE DATABASE IF NOT EXISTS `acuparse` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `acuparse`;
-
-DROP TABLE IF EXISTS `5n1_status`;
 CREATE TABLE `5n1_status`
 (
     `device`      varchar(6) COLLATE utf8_bin NOT NULL,
@@ -43,7 +40,6 @@ CREATE TABLE `5n1_status`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `access_status`;
 CREATE TABLE `access_status`
 (
     `battery`     varchar(6) COLLATE utf8_bin NOT NULL,
@@ -52,26 +48,39 @@ CREATE TABLE `access_status`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `archive`;
 CREATE TABLE `archive`
 (
-    `reported`       timestamp     NOT NULL DEFAULT current_timestamp(),
-    `tempF`          decimal(5, 2) NOT NULL,
-    `feelsF`         decimal(5, 2) NOT NULL,
-    `windSmph`       decimal(5, 2) NOT NULL,
-    `windSmph_avg2m` decimal(5, 2) NOT NULL,
-    `windDEG`        decimal(3, 0) NOT NULL,
-    `windDEG_avg2m`  decimal(3, 0) NOT NULL,
-    `relH`           decimal(3, 0) NOT NULL,
-    `pressureinHg`   decimal(4, 2) NOT NULL,
-    `dewptF`         decimal(5, 2) NOT NULL,
-    `rainin`         decimal(5, 2) NOT NULL,
-    `total_rainin`   decimal(5, 2) NOT NULL
+    `reported`         timestamp            NOT NULL DEFAULT current_timestamp(),
+    `tempF`            float(5, 2)          NOT NULL,
+    `feelsF`           float(5, 2)          NOT NULL,
+    `windSpeedMPH`     float(5, 2)          NOT NULL,
+    `windSpeedMPH_avg` float(5, 2)                   DEFAULT NULL,
+    `windDEG`          smallint(5) UNSIGNED NOT NULL,
+    `windGustMPH`      tinyint(3) UNSIGNED           DEFAULT NULL,
+    `windGustDEG`      smallint(5) UNSIGNED          DEFAULT NULL,
+    `relH`             tinyint(3) UNSIGNED  NOT NULL,
+    `pressureinHg`     float(4, 2)          NOT NULL,
+    `dewptF`           float(5, 2)          NOT NULL,
+    `rainin`           float(5, 2)          NOT NULL,
+    `total_rainin`     float(5, 2)          NOT NULL,
+    `uvindex`          tinyint(3) UNSIGNED           DEFAULT NULL,
+    `light`            mediumint(8) UNSIGNED         DEFAULT NULL,
+    `lightSeconds`     smallint(5) UNSIGNED          DEFAULT NULL,
+    `lightning`        smallint(5) UNSIGNED          DEFAULT NULL
 ) ENGINE = MyISAM
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `atlas_status`;
+CREATE TABLE `atlasLightning`
+(
+    `dailystrikes`   smallint(5) UNSIGNED NOT NULL,
+    `currentstrikes` smallint(5) UNSIGNED NOT NULL,
+    `date`           date                 NOT NULL,
+    `last_update`    datetime             NOT NULL
+) ENGINE = MyISAM
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
 CREATE TABLE `atlas_status`
 (
     `battery`     varchar(6) COLLATE utf8_bin NOT NULL,
@@ -81,7 +90,6 @@ CREATE TABLE `atlas_status`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `cwop_updates`;
 CREATE TABLE `cwop_updates`
 (
     `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
@@ -90,10 +98,9 @@ CREATE TABLE `cwop_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `dailyrain`;
 CREATE TABLE `dailyrain`
 (
-    `dailyrainin` decimal(5, 2)            NOT NULL,
+    `dailyrainin` float(5, 2)              NOT NULL,
     `date`        date                     NOT NULL,
     `last_update` timestamp                NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     `device`      char(1) COLLATE utf8_bin NOT NULL,
@@ -102,7 +109,6 @@ CREATE TABLE `dailyrain`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `generic_updates`;
 CREATE TABLE `generic_updates`
 (
     `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
@@ -112,10 +118,9 @@ CREATE TABLE `generic_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `humidity`;
 CREATE TABLE `humidity`
 (
-    `relH`      decimal(3, 0)            NOT NULL,
+    `relH`      tinyint(3) UNSIGNED      NOT NULL,
     `device`    char(1) COLLATE utf8_bin NOT NULL,
     `source`    char(1) COLLATE utf8_bin NOT NULL,
     `timestamp` timestamp                NOT NULL DEFAULT current_timestamp()
@@ -123,7 +128,6 @@ CREATE TABLE `humidity`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `last_update`;
 CREATE TABLE `last_update`
 (
     `timestamp` datetime NOT NULL
@@ -131,29 +135,26 @@ CREATE TABLE `last_update`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `light`;
 CREATE TABLE `light`
 (
-    `timestamp`              timestamp                   NOT NULL DEFAULT current_timestamp(),
-    `lightintensity`         varchar(7) COLLATE utf8_bin NOT NULL,
-    `measured_light_seconds` varchar(6) COLLATE utf8_bin NOT NULL
+    `timestamp`              timestamp             NOT NULL DEFAULT current_timestamp(),
+    `lightintensity`         mediumint(8) UNSIGNED NOT NULL,
+    `measured_light_seconds` smallint(5) UNSIGNED  NOT NULL
 ) ENGINE = MyISAM
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `lightning`;
-CREATE TABLE `lightning`
+CREATE TABLE `lightningData`
 (
-    `timestamp`            timestamp                   NOT NULL DEFAULT current_timestamp(),
-    `strikecount`          varchar(3) COLLATE utf8_bin NOT NULL,
-    `interference`         tinyint(1)                  NOT NULL,
-    `last_strike_ts`       datetime                    NOT NULL,
-    `last_strike_distance` varchar(2) COLLATE utf8_bin NOT NULL
+    `strikecount`          smallint(5) UNSIGNED     NOT NULL,
+    `interference`         tinyint(1)               NOT NULL,
+    `last_strike_ts`       datetime            DEFAULT NULL,
+    `last_strike_distance` tinyint(3) UNSIGNED DEFAULT NULL,
+    `source`               char(1) COLLATE utf8_bin NOT NULL
 ) ENGINE = MyISAM
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `outage_alert`;
 CREATE TABLE `outage_alert`
 (
     `last_sent` timestamp  NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -162,19 +163,17 @@ CREATE TABLE `outage_alert`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `password_recover`;
 CREATE TABLE `password_recover`
 (
-    `uid`  int(4)                    NOT NULL,
+    `uid`  smallint(5) UNSIGNED      NOT NULL,
     `hash` char(32) COLLATE utf8_bin NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `pressure`;
 CREATE TABLE `pressure`
 (
-    `inhg`      decimal(4, 2)            NOT NULL,
+    `inhg`      float(4, 2)              NOT NULL,
     `timestamp` timestamp                NOT NULL DEFAULT current_timestamp(),
     `device`    char(1) COLLATE utf8_bin NOT NULL,
     `source`    char(1) COLLATE utf8_bin NOT NULL
@@ -182,7 +181,6 @@ CREATE TABLE `pressure`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `pws_updates`;
 CREATE TABLE `pws_updates`
 (
     `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
@@ -192,10 +190,9 @@ CREATE TABLE `pws_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `rainfall`;
 CREATE TABLE `rainfall`
 (
-    `rainin`      decimal(5, 2)            NOT NULL,
+    `rainin`      float(5, 2)              NOT NULL,
     `last_update` timestamp                NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     `device`      char(1) COLLATE utf8_bin NOT NULL,
     `source`      char(1) COLLATE utf8_bin NOT NULL
@@ -203,10 +200,9 @@ CREATE TABLE `rainfall`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE `sessions`
 (
-    `uid`        int(4)                        NOT NULL,
+    `uid`        smallint(5) UNSIGNED          NOT NULL,
     `device_key` char(40) COLLATE utf8_bin     NOT NULL,
     `token`      char(40) COLLATE utf8_bin     NOT NULL,
     `user_agent` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -215,7 +211,6 @@ CREATE TABLE `sessions`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `system`;
 CREATE TABLE `system`
 (
     `name`  varchar(255) COLLATE utf8_bin NOT NULL,
@@ -224,22 +219,30 @@ CREATE TABLE `system`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `temperature`;
 CREATE TABLE `temperature`
 (
     `timestamp` timestamp                NOT NULL DEFAULT current_timestamp(),
-    `tempF`     decimal(5, 2)            NOT NULL,
-    `heatindex` decimal(5, 2)                     DEFAULT NULL,
-    `feelslike` decimal(5, 2)                     DEFAULT NULL,
-    `windchill` decimal(5, 2)                     DEFAULT NULL,
-    `dewptf`    decimal(5, 2)                     DEFAULT NULL,
+    `tempF`     float(5, 2)              NOT NULL,
+    `heatindex` float(5, 2)                       DEFAULT NULL,
+    `feelslike` float(5, 2)                       DEFAULT NULL,
+    `windchill` float(5, 2)                       DEFAULT NULL,
+    `dewptf`    float(5, 2)                       DEFAULT NULL,
     `device`    char(1) COLLATE utf8_bin NOT NULL,
     `source`    char(1) COLLATE utf8_bin NOT NULL
 ) ENGINE = MyISAM
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `towers`;
+CREATE TABLE `towerLightning`
+(
+    `dailystrikes`   tinyint(3) UNSIGNED NOT NULL,
+    `currentstrikes` tinyint(3) UNSIGNED NOT NULL,
+    `date`           date                NOT NULL,
+    `last_update`    datetime            NOT NULL
+) ENGINE = MyISAM
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
 CREATE TABLE `towers`
 (
     `sensor`  char(8) COLLATE utf8_bin      NOT NULL,
@@ -250,12 +253,11 @@ CREATE TABLE `towers`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `tower_data`;
 CREATE TABLE `tower_data`
 (
-    `id`        int(11)                     NOT NULL,
-    `tempF`     decimal(5, 2)               NOT NULL,
-    `relH`      decimal(3, 0)               NOT NULL,
+    `id`        int(11) UNSIGNED            NOT NULL,
+    `tempF`     float(5, 2)                 NOT NULL,
+    `relH`      tinyint(3)                  NOT NULL,
     `battery`   varchar(6) COLLATE utf8_bin NOT NULL,
     `rssi`      tinyint(1)                  NOT NULL,
     `timestamp` timestamp                   NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -265,29 +267,27 @@ CREATE TABLE `tower_data`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`
 (
-    `uid`      int(4)                         NOT NULL,
+    `uid`      smallint(5) UNSIGNED           NOT NULL,
     `username` varchar(32) CHARACTER SET utf8 NOT NULL,
     `email`    varchar(255) COLLATE utf8_bin  NOT NULL,
     `password` varchar(255) COLLATE utf8_bin  NOT NULL,
+    `token`    char(40) COLLATE utf8_bin               DEFAULT NULL,
     `admin`    tinyint(1)                     NOT NULL DEFAULT 0,
     `added`    timestamp                      NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `uvindex`;
 CREATE TABLE `uvindex`
 (
-    `timestamp` timestamp                   NOT NULL DEFAULT current_timestamp(),
-    `uvindex`   varchar(2) COLLATE utf8_bin NOT NULL
+    `timestamp` timestamp           NOT NULL DEFAULT current_timestamp(),
+    `uvindex`   tinyint(3) UNSIGNED NOT NULL
 ) ENGINE = MyISAM
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `wc_updates`;
 CREATE TABLE `wc_updates`
 (
     `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
@@ -297,11 +297,10 @@ CREATE TABLE `wc_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `winddirection`;
 CREATE TABLE `winddirection`
 (
-    `degrees`   decimal(3, 0)            NOT NULL,
-    `gust`      decimal(3, 0)                     DEFAULT NULL,
+    `degrees`   smallint(5) UNSIGNED     NOT NULL,
+    `gust`      smallint(5) UNSIGNED              DEFAULT NULL,
     `timestamp` timestamp                NOT NULL DEFAULT current_timestamp(),
     `device`    char(1) COLLATE utf8_bin NOT NULL,
     `source`    char(1) COLLATE utf8_bin NOT NULL
@@ -309,12 +308,20 @@ CREATE TABLE `winddirection`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `windspeed`;
+CREATE TABLE `windguru_updates`
+(
+    `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
+    `query`     tinytext COLLATE utf8_bin NOT NULL,
+    `result`    tinytext COLLATE utf8_bin NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
 CREATE TABLE `windspeed`
 (
-    `speedMPH`   decimal(5, 2)            NOT NULL,
-    `gustMPH`    decimal(5, 2)                     DEFAULT NULL,
-    `averageMPH` decimal(5, 2)                     DEFAULT NULL,
+    `speedMPH`   float(5, 2)              NOT NULL,
+    `gustMPH`    float(5, 2)                       DEFAULT NULL,
+    `averageMPH` float(5, 2)                       DEFAULT NULL,
     `timestamp`  timestamp                NOT NULL DEFAULT current_timestamp(),
     `device`     char(1) COLLATE utf8_bin NOT NULL,
     `source`     char(1) COLLATE utf8_bin NOT NULL
@@ -322,7 +329,6 @@ CREATE TABLE `windspeed`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `windy_updates`;
 CREATE TABLE `windy_updates`
 (
     `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
@@ -332,7 +338,6 @@ CREATE TABLE `windy_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-DROP TABLE IF EXISTS `wu_updates`;
 CREATE TABLE `wu_updates`
 (
     `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
@@ -351,12 +356,15 @@ ALTER TABLE `access_status`
 ALTER TABLE `archive`
     ADD PRIMARY KEY (`reported`),
     ADD UNIQUE KEY `tempF` (`reported`, `tempF`),
-    ADD UNIQUE KEY `windSmph` (`reported`, `windSmph`),
+    ADD UNIQUE KEY `windSmph` (`reported`, `windSpeedMPH`),
     ADD UNIQUE KEY `windDEG` (`reported`, `windDEG`),
     ADD UNIQUE KEY `relH` (`reported`, `relH`),
     ADD UNIQUE KEY `pressureinHg` (`reported`, `pressureinHg`),
     ADD UNIQUE KEY `rainin` (`reported`, `rainin`),
     ADD UNIQUE KEY `total_rainin` (`reported`, `total_rainin`);
+
+ALTER TABLE `atlasLightning`
+    ADD PRIMARY KEY (`date`) USING BTREE;
 
 ALTER TABLE `atlas_status`
     ADD PRIMARY KEY (`last_update`);
@@ -378,8 +386,8 @@ ALTER TABLE `humidity`
 ALTER TABLE `light`
     ADD PRIMARY KEY (`timestamp`);
 
-ALTER TABLE `lightning`
-    ADD PRIMARY KEY (`timestamp`);
+ALTER TABLE `lightningData`
+    ADD PRIMARY KEY (`source`);
 
 ALTER TABLE `password_recover`
     ADD PRIMARY KEY (`uid`);
@@ -392,7 +400,7 @@ ALTER TABLE `pws_updates`
     ADD PRIMARY KEY (`timestamp`);
 
 ALTER TABLE `rainfall`
-    ADD PRIMARY KEY (`device`) USING BTREE;
+    ADD PRIMARY KEY (`device`);
 
 ALTER TABLE `sessions`
     ADD PRIMARY KEY (`device_key`),
@@ -405,13 +413,16 @@ ALTER TABLE `temperature`
     ADD PRIMARY KEY (`timestamp`),
     ADD UNIQUE KEY `tempF` (`timestamp`, `tempF`);
 
+ALTER TABLE `towerLightning`
+    ADD PRIMARY KEY (`date`) USING BTREE;
+
 ALTER TABLE `towers`
     ADD PRIMARY KEY (`sensor`),
     ADD UNIQUE KEY `sensor` (`sensor`);
 
 ALTER TABLE `tower_data`
     ADD PRIMARY KEY (`id`),
-    ADD KEY `sensor` (`sensor`, `timestamp`) USING BTREE;
+    ADD KEY `sensor` (`sensor`, `timestamp`);
 
 ALTER TABLE `users`
     ADD PRIMARY KEY (`uid`);
@@ -437,10 +448,10 @@ ALTER TABLE `wu_updates`
     ADD PRIMARY KEY (`timestamp`);
 
 ALTER TABLE `tower_data`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
-    MODIFY `uid` int(4) NOT NULL AUTO_INCREMENT;
+    MODIFY `uid` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `password_recover`
     ADD CONSTRAINT `password_recover_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -451,25 +462,35 @@ ALTER TABLE `sessions`
 ALTER TABLE `tower_data`
     ADD CONSTRAINT `tower_sensor_id` FOREIGN KEY (`sensor`) REFERENCES `towers` (`sensor`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+# Initial Defaults
+
 INSERT INTO `rainfall` (`rainin`, `last_update`)
-VALUES ('0.00', '1970-01-01 00:00:00');
+VALUES ('0.00', '2000-01-01 00:00:00');
 
 INSERT INTO `outage_alert` (`last_sent`, `status`)
-VALUES ('1970-01-01 00:00:00', '0');
+VALUES ('2000-01-01 00:00:00', '0');
 
 INSERT INTO `last_update` (`timestamp`)
-VALUES ('1970-01-01 00:00:00');
+VALUES ('2000-01-01 00:00:00');
 
 INSERT INTO `5n1_status` (`device`, `battery`, `rssi`, `last_update`)
-VALUES ('access', 'normal', '0', '1970-01-01 00:00:00');
+VALUES ('access', 'normal', '0', '2000-01-01 00:00:00');
 INSERT INTO `5n1_status` (`device`, `battery`, `rssi`, `last_update`)
-VALUES ('hub', 'normal', '0', '1970-01-01 00:00:00');
+VALUES ('hub', 'normal', '0', '2000-01-01 00:00:00');
 
 INSERT INTO `atlas_status` (`battery`, `rssi`, `last_update`)
-VALUES ('normal', '0', '1970-01-01 00:00:00');
+VALUES ('normal', '0', '2000-01-01 00:00:00');
 
 INSERT INTO `access_status` (`battery`, `last_update`)
-VALUES ('normal', '1970-01-01 00:00:00');
+VALUES ('normal', '2000-01-01 00:00:00');
+
+INSERT INTO `system` (`name`, `value`)
+VALUES ('latestRelease', '3.0.0');
+
+INSERT INTO `system` (`name`, `value`)
+VALUES ('lastUpdateCheck', '2000-01-01 00:00:00');
+
+# Schema Version
 
 INSERT INTO `system` (`name`, `value`)
 VALUES ('schema', '3.0');

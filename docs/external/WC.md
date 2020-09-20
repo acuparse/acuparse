@@ -1,4 +1,4 @@
-# Weathercloud Updater
+# Acuparse Weathercloud Updater Guide
 
 ## Registration
 

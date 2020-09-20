@@ -25,11 +25,14 @@
  * Builds and starts the session
  */
 
+/** @var mysqli $conn Global MYSQL Connection */
+
 if (!isset($_SESSION)) {
     session_start();
 
 // Process Login Cookie
-    if (!isset($_SESSION['authenticated'])) {
+    /** @var string $installed */
+    if (!isset($_SESSION['authenticated']) && $installed === true) {
         if (isset($_COOKIE['device'])) {
             $deviceKey = (string)$_COOKIE['device'];
             $result = mysqli_query($conn, "SELECT * FROM `sessions` WHERE `device_key`= '$deviceKey'");
@@ -54,26 +57,7 @@ if (!isset($_SESSION)) {
                     $_SESSION['username'] = $username;
                     $_SESSION['admin'] = (bool)$usersRow['admin'];
 
-                    // Generate the device key and token for this session
-                    $deviceKey = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz',
-                        mt_rand(1, 10))), 1,
-                        40);
-                    $token = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz',
-                        mt_rand(1, 10))), 1, 40);
-                    $tokenHash = (string)md5($token);
-                    $userAgent = (string)$_SERVER['HTTP_USER_AGENT'];
-
-                    // Save the session to the database
-                    $result = mysqli_query($conn,
-                        "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$deviceKey', '$token', '$userAgent')");
-                    if (!$result) {
-                        // Log it
-                        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed! Raw = " . mysqli_error($conn));
-                    }
-
-                    // Send the session cookie
-                    setcookie('device', $deviceKey, time() + 60 * 60 * 24 * 30, '/');
-                    setcookie('token', $tokenHash, time() + 60 * 60 * 24 * 30, '/');
+                    include(APP_BASE_PATH . '/fcn/sessionToken.php');
 
                     // Log it
                     syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully via cookie");
