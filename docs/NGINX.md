@@ -1,17 +1,26 @@
-# NGINX Proxy Config
+# Acuparse NGINX Proxy Config Guide
 
 When using a domain, install NGINX to make redirects easier. It also keeps your custom domain configuration separate from
 the Acuparse config.
 
 This is not generally required, as Apache should listen to everything by default.
 
-- Install NGINX: `apt-get install nginx`
-- Edit the config file: `nano /etc/nginx/sites-available/reverse.conf`
+- Install NGINX:
 
-** Replace `<domain>` with your domain and `<external_ip>` with your external IP address. Update `<certificate>` and `<key>`
-with the path to your certificate and key. **
+```bash
+apt install nginx
+```
 
-```text
+- Edit the config file:
+
+```bash
+nano /etc/nginx/sites-available/reverse.conf
+```
+
+**Replace `<domain>` with your domain and `<external_ip>` with your external IP address. Update `<certificate>` and `<key>`
+with the path to your certificate and key.**
+
+```nginx
 server {
     listen 443 ssl;
     server_name <external_ip> <domain> www.<domain>;
@@ -68,24 +77,61 @@ server {
 }
 ```
 
-- Activate NGINX config: `ln /etc/nginx/sites-available/reverse.conf /etc/nginx/sites-enabled/`
+- Activate NGINX config
 
-- Edit Apache port config: `nano /etc/apache2/ports.conf`
-    - Change `Listen 80` to `Listen 8080`
-    - Change `Listen 443` to `Listen 4433`
+```bash
+ln /etc/nginx/sites-available/reverse.conf /etc/nginx/sites-enabled/
+```
 
-- Update Apache site config `nano /etc/apache2/sites-available/acuparse.conf`
-    - Change `<VirtualHost *:80>` to `<VirtualHost *:8080>`
+- Edit Apache port config
 
-- Disable Apache SSL site `a2dissite acuparse-ssl.conf`
+```bash
+nano /etc/apache2/ports.conf
+```
 
-- Tell Apache where to get the real visitor IP: `apt-get install libapache2-mod-rpaf`
+- Change `Listen 80` to `Listen 8080`
+- Change `Listen 443` to `Listen 4433`
 
-    - Add your external IP to RPAFproxy_ips:
-        `nano /etc/apache2/mods-available/rpaf.conf`, `RPAFproxy_ips 127.0.0.1 <external_ip> ::1`
+- Update Apache site config
 
-    - Enable RPAF: `a2enmod rpaf`
+```bash
+nano /etc/apache2/sites-available/acuparse.conf
+```
 
-- Restart Apache and NGINX: `service apache2 restart && service nginx restart`
+- Change `<VirtualHost *:80>` to `<VirtualHost *:8080>`
 
-- Generate a Let's Encrypt Cert: `apt-get install python-certbot-nginx -y && certbot --nginx --email <email> -d <domain> -d www.<domain>`
+- Disable Apache SSL site
+
+```bash
+a2dissite acuparse-ssl.conf
+```
+
+- Tell Apache where to get the real visitor IP
+
+```bash
+apt install libapache2-mod-rpaf
+```
+
+- Add your external IP to RPAFproxy_ips:
+
+```bash
+nano /etc/apache2/mods-available/rpaf.conf`, `RPAFproxy_ips 127.0.0.1 <external_ip> ::1
+```
+
+- Enable RPAF:
+
+```bash
+a2enmod rpaf
+```
+
+- Restart Apache and NGINX:
+
+```bash
+service apache2 restart && service nginx restart
+```
+
+- Generate a Let's Encrypt Cert:
+
+```bash
+apt install python-certbot-nginx -y && certbot --nginx --email <email> -d <domain> -d www.<domain>
+```

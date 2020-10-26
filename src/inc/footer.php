@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -23,6 +23,16 @@
 /**
  * File: src/inc/footer.php
  * Page Footer
+ */
+
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+/**
+ * @return array
+ * @var object $appInfo Global Application Info
  */
 
 ?>
@@ -50,8 +60,17 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
         <div class="col-auto mx-auto">
             <p>Powered by <a href="<?= $appInfo->homepage; ?>"
                              target='_blank'><strong><?= ucfirst($appInfo->name); ?></strong></a>
-                <?php if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) { ?>
-                    <br><span class="small">Version <?= $config->version->app; ?></span> <?php } ?></p>
+                <?php
+                /** @var string $installed */
+                if ($installed === true) {
+                if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
+                    ?>
+                    <span class="small">(Version <a target="_blank"
+                                                    href="https://github.com/acuparse/acuparse/tree/v<?= $config->version->app; ?>"><?= $config->version->app; ?></a>)</span>
+                <?php }
+                $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`")); ?>
+                <br><span class="small">Last update: <?= $lastUpdate['timestamp']; ?></span></p>
+            <?php } ?>
         </div>
     </div>
 </footer>

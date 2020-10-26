@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -24,8 +24,13 @@
  * File: src/inc/nav.php
  * Build the navigation bar for the main site
  */
-?>
 
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
+?>
 <nav class="navbar navbar-expand-lg <?= ($config->site->theme === 'twilight') ? 'navbar-dark bg-dark' : 'navbar-light bg-light'; ?> fixed-top">
     <div class="container">
         <a class="navbar-brand" href="/"><?= $config->site->name; ?><br>
@@ -50,8 +55,8 @@
 
                 // Weather Camera
                 if ($config->camera->enabled === true) {
-                    $liveCamActive = (($_SERVER['PHP_SELF'] === '/camera.php') && (!isset($_GET['archive']))) ? true : false;
-                    $camArchiveActive = (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) ? true : false;
+                    $liveCamActive = ($_SERVER['PHP_SELF'] === '/camera.php') && (!isset($_GET['archive']));
+                    $camArchiveActive = ($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']));
                     ?>
                     <li class="<?= ($_SERVER['PHP_SELF'] === '/camera.php') ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
@@ -69,7 +74,7 @@
                 // External Weather Sites
                 ?>
 
-                <?php if ($config->upload->wu->enabled === true || $config->upload->pws->enabled === true || $config->upload->cwop->enabled === true) { ?>
+                <?php if ($config->upload->wu->enabled === true || $config->upload->pws->enabled === true || $config->upload->cwop->enabled === true || $config->upload->wc->enabled === true || $config->upload->windy->enabled === true || $config->upload->windguru->enabled === true) { ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                            aria-haspopup="true" aria-expanded="false"><i
@@ -99,6 +104,12 @@
                                    target="_blank"><img src="/img/external/windy.ico" width="16" height="16"
                                                         aria-hidden="true" alt="Windy Icon"> Windy</a>
                             <?php } ?>
+                            <?php if ($config->upload->windguru->enabled === true) { ?>
+                                <a class="dropdown-item"
+                                   href="//www.windguru.cz/station/<?= $config->upload->windguru->id; ?>"
+                                   target="_blank"><img src="/img/external/windguru.png" width="16" height="16"
+                                                        aria-hidden="true" alt="Windguru Icon"> Windguru</a>
+                            <?php } ?>
                             <?php if ($config->upload->cwop->enabled === true) { ?>
                                 <a class="dropdown-item"
                                    href="http://www.findu.com/cgi-bin/wxpage.cgi?call=<?= $config->upload->cwop->id; ?>"
@@ -124,7 +135,7 @@
 
                 // Member Account Functions
                 if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
-                    $userActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php')) ? true : false;
+                    $userActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php');
                     ?>
                     <li class="<?= ($userActive === true) ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
@@ -134,7 +145,7 @@
                         </a>
                         <div class="dropdown-menu">
                             <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === true) {
-                                $adminActive = ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || (isset($_GET['add'])) || (isset($_GET['view'])))) ? true : false;
+                                $adminActive = $_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || (isset($_GET['add'])) || (isset($_GET['view'])));
                                 ?>
                                 <a class="<?= ($adminActive === true) ? 'dropdown-item alert-danger active' : 'dropdown-item alert-danger'; ?>"
                                    href="/admin"><i
@@ -143,8 +154,8 @@
                                     Admin</a>
                                 <?php
                             }
-                            $userEditActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']))) ? true : false;
-                            $userPasswordActive = (($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']))) ? true : false;
+                            $userEditActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']));
+                            $userPasswordActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']));
                             ?>
                             <a class="<?= ($userEditActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
                                href="/admin/account?edit" data-instant><i class="fas fa-user-edit"

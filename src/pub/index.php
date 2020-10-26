@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -28,68 +28,39 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
-// System Time
-if (isset($_GET['time'])) {
-    $date = date($config->site->display_date);
-    echo "<p>$date</p>";
-    die();
-}
-// End system time
+/**
+ * @return array
+ * @var object $config Global Config
+ */
 
-// Get Weather HTML
-if (isset($_GET['weather'])) {
-    require(APP_BASE_PATH . '/fcn/weather/getCurrentHTML.php');
-    getCurrentHTML();
-    die();
-}
-
-// Get Weather JSON
-if (isset($_GET['json'])) {
-    require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
-    $getData = new getCurrentWeatherData();
-    echo json_encode($getData->getConditions());
-    die();
-}
-
-// Get Tower JSON
-if (isset($_GET['json_tower'])) {
-    $sensor = $_GET['sensor'];
-    require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerData.php');
-    $getData = new getCurrentTowerData(sprintf('%08d', $sensor));
-    echo json_encode($getData->getConditions());
-    die();
-}
-
-// Get Camera Watermark
-if (isset($_GET['cam'])) {
-    require(APP_BASE_PATH . '/fcn/wmark.php');
-    camWmark();
-    die();
-}
-
-if ($installed === false) {
+/** @var string $installed */
+if ($installed == false) {
     header("Location: /admin/install");
-    die();
+    exit();
+} elseif ((empty($config->station->access_mac) && empty($config->station->hub_mac)) && (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true)) {
+    $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Missing Access/Hub Mac. Please configure in sensor settings.</div>';
+    header("Location: /admin/settings");
+    exit();
+} elseif (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
+    $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Setup Required! Please login as an admin to continue.</div>';
+    header("Location: /admin/account");
+    exit();
 } else {
-
     $pageTitle = 'Live Weather';
     include(APP_BASE_PATH . '/inc/header.php');
 
-// PHP Info
-    if (isset($_GET['info']) && isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
-        phpinfo();
-        die();
-    }
 // Get Forcast Data
     ?>
-
     <!-- Time Section -->
-    <div id="local-time" class="row local-time">
-        <div class="col-auto mx-auto">
-            <div id="local-time-display"></div>
+    <section id="local-time" class="local-time">
+        <div class="row">
+            <div class="col-auto mx-auto">
+                <div>
+                    <p id="local-time-display"></p>
+                </div>
+            </div>
         </div>
-    </div>
-
+    </section>
     <!-- Live Weather Section -->
     <section id="live-weather">
         <div class="row">
@@ -101,42 +72,38 @@ if ($installed === false) {
         </div>
     </section>
     <?php
+    if ($config->station->primary_sensor === 0) {
+        $weatherRefreshTime = 150000;
+    } else {
+        $weatherRefreshTime = 80000;
+    }
 // Set the footer to include scripts required for this page
     $page_footer = '
     <!-- Refresh Weather Data -->
     <script>
         $(document).ready(function () {
-            function update() {
+            function updateWeather() {
                 $.ajax({
-                    url: \'/?weather\',
+                    url: \'/api/v1/html/dashboard/\',
                     success: function (data) {
                         $("#live-weather").html(data);
-                        window.setTimeout(update, 39000);
+                        setTimeout(updateWeather, ' . $weatherRefreshTime . ')
                     }
-                });
+                })
             }
-
-            update();
-        });
-    </script>
-    
-    <!-- Refresh Server Time -->
-    <script>
-        $(document).ready(function () {
-            function update() {
+            function updateTime() {
                 $.ajax({
-                    url: \'/?time\',
+                    url: \'/api/v1/text/time/\',
                     success: function (data) {
                         $("#local-time-display").html(data);
-                        window.setTimeout(update, 1000);
+                        setTimeout(updateTime, 1000);
                     }
                 });
             }
-    
-            update();
+            updateWeather();
+            updateTime();
         });
     </script>
 ';
-
     include(APP_BASE_PATH . '/inc/footer.php');
 }

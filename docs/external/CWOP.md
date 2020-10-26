@@ -1,4 +1,4 @@
-# Citizen Weather Observer Program Updater
+# Acuparse Citizen Weather Observer Program Updater Guide
 
 CWOP has a more complicated format and initialization process. Review the following site for [more details](http://www.wxqa.com/faq.html).
 
@@ -10,7 +10,7 @@ and ask to be registered. Your data can then flow to NOAA.
 
 ## Registration
 
-[http://www.findu.com/citizenweather/cw_form.html]([http://www.findu.com/citizenweather/cw_form.html)
+[http://www.findu.com/citizenweather/cw_form.html](http://www.findu.com/citizenweather/cw_form.html)
 
 ## Configuration
 

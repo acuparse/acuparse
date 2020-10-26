@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+##
+# Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @author Maxwell Power <max@acuparse.com>
+# @link http://www.acuparse.com
+# @license AGPL-3.0+
+#
+# This code is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this code. If not, see <http://www.gnu.org/licenses/>.
+##
+
+##
+# File: .docker/docker-healthcheck
+# Script to check services in a Docker container
+##
+
+function healthcheck_failed() {
+  echo "$1"
+  exit 1
+}
+
+function healthcheck() {
+  pgrep -x cron >/dev/null || healthcheck_failed "CRON HEALTHCHECK FAILED"
+  pgrep -x rsyslogd >/dev/null || healthcheck_failed "SYSLOG HEALTHCHECK FAILED"
+  pgrep -x apache2 >/dev/null || healthcheck_failed "APACHE2 HEALTHCHECK FAILED"
+  mysqladmin ping -h"${MYSQL_HOSTNAME}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent >/dev/null || healthcheck_failed "SQL HEALTHCHECK FAILED"
+  echo ""$(date +'%b %d %H:%M:%S')" ""${HOSTNAME}"" HEALTHCHECK[$$]: OK"
+}
+
+echo "Starting Acuparse Service HEALTHCHECK ..."
+while true; do
+  healthcheck
+  sleep 120
+done

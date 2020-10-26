@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -24,6 +24,13 @@
  * File: src/fcn/updater/2_x/2_5.php
  * 2.5 Site Update Tasks
  */
+
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+/** @var string $notes */
 
 switch ($config->version->app) {
 
@@ -50,21 +57,6 @@ switch ($config->version->app) {
                       COLLATE = utf8_bin;");
         mysqli_query($conn,
             "ALTER TABLE `wc_updates` ADD PRIMARY KEY (`timestamp`);"); // Add primary key
-        // Check the event scheduler
-        if ($config->mysql->trim !== 0) {
-            if ($config->mysql->trim === 1) {
-                $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/trim/enable.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
-            } elseif ($config->mysql->trim === 2) {
-                // Load the database with the trim schema
-                $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/trim/enable_xtower.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
-            }
-        }
         mysqli_query($conn, "truncate `sessions`;");
         setcookie('device_key', '', time() - 3600, '/');
         unset($_COOKIE['device_key']);

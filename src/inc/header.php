@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -25,12 +25,23 @@
  * Build the main site's header
  */
 
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+/**
+ * @return array
+ * @var object $appInfo Global Application Info
+ */
+/** @var string $installed */
+/** @var string $pageTitle Page Title */
 $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . ' | ' . $config->site->location : $pageTitle;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="handheldfriendly" content="true">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5">
     <meta name="description" content="<?= $config->site->desc; ?>">
@@ -82,9 +93,8 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             gtag('js', new Date());
             gtag('config', '<?= $config->google->analytics->id; ?>');
         </script>
-
-    <?php } ?>
-
+    <?php }
+if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
     <!-- Structured Data -->
     <script type="application/ld+json">
         {
@@ -95,7 +105,7 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             "url": "https://<?= $config->site->hostname; ?>/"
         }
     </script>
-
+<?php } ?>
 </head>
 <body>
 
@@ -116,29 +126,29 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
     // Logged in admin
     if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
-        // Check Git for updates
+        // Check for updates
         if ($config->site->updates === true) {
-            if ($_SERVER['PHP_SELF'] !== '/admin/install/index.php') {
+            if ($_SERVER['PHP_SELF'] === '/index.php' || $_SERVER['PHP_SELF'] === '/admin/index.php') {
                 $result = mysqli_fetch_assoc(mysqli_query($conn,
                     "SELECT `value` FROM `system` WHERE `name`='schema'"));
                 $schema = $result['value'];
-                $repo = "$appInfo->repo";
-                $headers = get_headers($repo);
-
                 if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
                     header("Location: /admin/install/?update");
                     die();
-                } elseif (strpos($headers[0], "200")) {
-                    $gitVersion = json_decode(file_get_contents($repo));
-                    if ($gitVersion !== null) {
-                        if (version_compare($appInfo->version, $gitVersion->version, '<')) {
+                }
+                else {
+                    $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
+                    $lastLatestRelease = $result['value'];
+                    if ($lastLatestRelease !== null) {
+                        if (version_compare($appInfo->version, $lastLatestRelease, '<')) {
                             ?>
                             <section id="update-message" class="row update-message"><br>
                                 <div class="col-md-8 col-12 mx-auto">
                                     <div class="alert alert-warning alert-dismissable">
                                         <a href="#" class="close" data-dismiss="alert">&times;</a>
-                                        <strong>Version <?= $gitVersion->version; ?> is available!</strong><br>
-                                        Execute "git pull" or upload new source to update.<br>
+                                        <strong>Version <?= $lastLatestRelease; ?> is available!</strong><br>
+                                        Execute <code>git pull</code>, <code>docker pull</code>, or upload new source to update.<br>
                                         <a href="<?= $appInfo->homepage; ?>">See docs for details.</a>
                                     </div>
                                 </div>

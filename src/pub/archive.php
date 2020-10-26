@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -28,12 +28,10 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
-// Get Archive Weather HTML
-if (isset($_GET['html'])) {
-    require(APP_BASE_PATH . '/fcn/weather/getArchiveHTML.php');
-    getArchiveHTML();
-    die();
-}
+/**
+ * @return array
+ * @var object $config Global Config
+ */
 
 if ($config->archive->enabled === true) {
     $pageTitle = 'Weather Archive';
@@ -66,13 +64,15 @@ if ($config->archive->enabled === true) {
         $(document).ready(function () {
             function update() {
                 $.ajax({
-                    url: \'/archive?html\',
+                    url: \'/api/v1/html/archive/\',
                     success: function (data) {
                         $("#weather-archive").html(data);
+                    },
+                    error: function (request) {
+                        alert("Archive Data Error:\n" + request.responseText);
                     }
                 });
             }
-
             update();
         });
     </script>';

@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -21,13 +21,19 @@
  */
 
 /**
- * File: src/getArchiveHTML.php
+ * File: src/fcn/weather/getArchiveHTML.php
  * Get the archive data HTML
  */
+
 function getArchiveHTML()
 {
     require(dirname(dirname(__DIR__)) . '/inc/loader.php');
     require(APP_BASE_PATH . '/fcn/weather/getArchiveWeatherData.php');
+
+    /**
+     * @return array
+     * @var object $config Global Config
+     */
 
 // Load Archive Weather Data:
     $getData = new getArchiveWeatherData();
@@ -37,6 +43,20 @@ function getArchiveHTML()
     $last_month = $getData->getLastMonth();
     $year = $getData->getYear();
     $ever = $getData->getAllTime();
+
+
+    // Load Atlas Data:
+    if ($config->station->primary_sensor === 0) {
+        // Load weather Data:
+        require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
+        $getAtlasData = new getArchiveAtlasWeatherData();
+        $atlasYesterday = $getAtlasData->getYesterday();
+        $atlasWeek = $getAtlasData->getWeek();
+        $atlasMonth = $getAtlasData->getMonth();
+        $atlasLastMonth = $getAtlasData->getLastMonth();
+        $atlasYear = $getAtlasData->getYear();
+        $atlasEver = $getAtlasData->getAllTime();
+    }
     ?>
 
     <div id="archive-weather-data" class="row archive-weather-data">
@@ -97,14 +117,42 @@ function getArchiveHTML()
                     </ul>
                     <?php if ($yesterday->rainfall_IN_total !== 0.) { ?>
                         <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
-                        <h4>Total Rain:</h4> <?php
-                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                            $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in ($yesterday->rainfall_MM_total mm)" : "$yesterday->rainfall_MM_total mm ($yesterday->rainfall_IN_total in)";
-                        } else {
-                            $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in" : "$yesterday->rainfall_MM_total mm";
-                        }
-                        echo $rain_total_yesterday; ?>
-                    <?php } ?>
+                        <ul class="list-unstyled">
+                            <li><h4>Total Rain:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in ($yesterday->rainfall_MM_total mm)" : "$yesterday->rainfall_MM_total mm ($yesterday->rainfall_IN_total in)";
+                                } else {
+                                    $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in" : "$yesterday->rainfall_MM_total mm";
+                                }
+                                echo $rain_total_yesterday; ?></li>
+                        </ul>
+                    <?php }
+                    if ($config->station->primary_sensor === 0) { ?>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>
+                                    High:</h4> <?= "$atlasYesterday->uvindex_high @ " . $atlasYesterday->uvindex_high_recorded; ?>
+                            </li>
+                        </ul>
+
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>Illuminance
+                                    High:</h4> <?= "$atlasYesterday->light_high @ " . $atlasYesterday->light_high_recorded; ?>
+                            </li>
+                            <li><h4>Measured
+                                    High:</h4> <?= "$atlasYesterday->lightHours_high hours @ " . $atlasYesterday->lightHours_high_recorded; ?>
+                            </li>
+                        </ul>
+                        <?php if ($atlasYesterday->lightning !== 0) { ?>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        Strikes:</h4> <?= "$atlasYesterday->lightning @ " . $atlasYesterday->lightning_recorded; ?>
+                                </li>
+                            </ul>
+                        <?php }
+                    } ?>
                 </section>
 
                 <!-- This Week -->
@@ -175,7 +223,33 @@ function getArchiveHTML()
                                 }
                                 echo $rain_total_week; ?></li>
                         </ul>
-                    <?php } ?>
+                    <?php }
+                    if ($config->station->primary_sensor === 0) { ?>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>
+                                    High:</h4> <?= "$atlasWeek->uvindex_high on " . $atlasWeek->uvindex_high_recorded; ?>
+                            </li>
+                        </ul>
+
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>Illuminance
+                                    High:</h4> <?= "$atlasWeek->light_high on " . $atlasWeek->light_high_recorded; ?>
+                            </li>
+                            <li><h4>Measured
+                                    High:</h4> <?= "$atlasWeek->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                            </li>
+                        </ul>
+                        <?php if ($atlasWeek->lightning !== 0) { ?>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        Strikes:</h4> <?= "$atlasWeek->lightning on " . $atlasWeek->lightning_recorded; ?>
+                                </li>
+                            </ul>
+                        <?php }
+                    } ?>
                 </section>
 
                 <!-- This Month -->
@@ -246,7 +320,33 @@ function getArchiveHTML()
                                 }
                                 echo $rain_total_month; ?></li>
                         </ul>
-                    <?php } ?>
+                    <?php }
+                    if ($config->station->primary_sensor === 0) { ?>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>
+                                    High:</h4> <?= "$atlasMonth->uvindex_high on " . $atlasMonth->uvindex_high_recorded; ?>
+                            </li>
+                        </ul>
+
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>Illuminance
+                                    High:</h4> <?= "$atlasMonth->light_high on " . $atlasWeek->light_high_recorded; ?>
+                            </li>
+                            <li><h4>Measured
+                                    High:</h4> <?= "$atlasMonth->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                            </li>
+                        </ul>
+                        <?php if ($atlasMonth->lightning !== 0) { ?>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        Strikes:</h4> <?= "$atlasMonth->lightning on " . $atlasMonth->lightning_recorded; ?>
+                                </li>
+                            </ul>
+                        <?php }
+                    } ?>
                 </section>
             </div>
 
@@ -322,7 +422,33 @@ function getArchiveHTML()
                                 }
                                 echo $rain_total_last_month; ?></li>
                         </ul>
-                    <?php } ?>
+                    <?php }
+                    if ($config->station->primary_sensor === 0) { ?>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>
+                                    High:</h4> <?= "$atlasLastMonth->uvindex_high on " . $atlasLastMonth->uvindex_high_recorded; ?>
+                            </li>
+                        </ul>
+
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>Illuminance
+                                    High:</h4> <?= "$atlasLastMonth->light_high on " . $atlasWeek->light_high_recorded; ?>
+                            </li>
+                            <li><h4>Measured
+                                    High:</h4> <?= "$atlasLastMonth->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                            </li>
+                        </ul>
+                        <?php if ($atlasLastMonth->lightning !== 0) { ?>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        Strikes:</h4> <?= "$atlasLastMonth->lightning on " . $atlasLastMonth->lightning_recorded; ?>
+                                </li>
+                            </ul>
+                        <?php }
+                    } ?>
                 </section>
 
                 <!-- This Year -->
@@ -393,7 +519,33 @@ function getArchiveHTML()
                                 }
                                 echo $rain_total_year; ?></li>
                         </ul>
-                    <?php } ?>
+                    <?php }
+                    if ($config->station->primary_sensor === 0) { ?>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>
+                                    High:</h4> <?= "$atlasYear->uvindex_high on " . $atlasYear->uvindex_high_recorded; ?>
+                            </li>
+                        </ul>
+
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>Illuminance
+                                    High:</h4> <?= "$atlasYear->light_high on " . $atlasWeek->light_high_recorded; ?>
+                            </li>
+                            <li><h4>Measured
+                                    High:</h4> <?= "$atlasYear->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                            </li>
+                        </ul>
+                        <?php if ($atlasYear->lightning !== 0) { ?>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        Strikes:</h4> <?= "$atlasYear->lightning on " . $atlasYear->lightning_recorded; ?>
+                                </li>
+                            </ul>
+                        <?php }
+                    } ?>
                 </section>
 
                 <!-- All Time -->
@@ -464,7 +616,33 @@ function getArchiveHTML()
                                 }
                                 echo $rain_total_ever; ?></li>
                         </ul>
-                    <?php } ?>
+                    <?php }
+                    if ($config->station->primary_sensor === 0) { ?>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>
+                                    High:</h4> <?= "$atlasEver->uvindex_high on " . $atlasEver->uvindex_high_recorded; ?>
+                            </li>
+                        </ul>
+
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>Illuminance
+                                    High:</h4> <?= "$atlasEver->light_high on " . $atlasWeek->light_high_recorded; ?>
+                            </li>
+                            <li><h4>Measured
+                                    High:</h4> <?= "$atlasEver->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                            </li>
+                        </ul>
+                        <?php if ($atlasEver->lightning !== 0) { ?>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        Strikes:</h4> <?= "$atlasEver->lightning on " . $atlasEver->lightning_recorded; ?>
+                                </li>
+                            </ul>
+                        <?php }
+                    } ?>
                 </section>
             </div>
         </div>

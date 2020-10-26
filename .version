@@ -1,1 +1,8 @@
-{"name":"acuparse","version":"2.10.0-release","schema":"2.9","repo":"https://gitlab.com/acuparse/acuparse/raw/master/.version","homepage":"https://www.acuparse.com"}
+{
+  "NAME": "acuparse",
+  "VERSION": "3.0.0",
+  "SCHEMA": "3.0",
+  "REPO": "https://gitlab.com/acuparse/acuparse",
+  "HOMEPAGE": "https://www.acuparse.com",
+  "RELEASE_SERVER": "https://version.acuparse.com"
+}

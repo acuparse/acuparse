@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+##
+# Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @author Maxwell Power <max@acuparse.com>
+# @link http://www.acuparse.com
+# @license AGPL-3.0+
+#
+# This code is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this code. If not, see <http://www.gnu.org/licenses/>.
+##
+
+##
+# File: .docker/docker-build
+# Setup Acuparse Docker Container
+##
+
+function buildAcuparse() {
+
+  echo "Modifying start-up script PERMISSIONS"
+  chmod +x /usr/local/bin/docker-entrypoint
+  chmod +x /usr/local/bin/docker-healthcheck
+  echo "END: PERMISSIONS"
+
+  echo "Setup LOGGING"
+  sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
+  ln -sf /proc/1/fd/1 /var/log/syslog
+  rm /var/log/apache2/error.log && touch /var/log/apache2/error.log
+  rm /var/log/apache2/access.log && touch /var/log/apache2/access.log
+  touch /opt/acuparse/logs/cron.log
+  echo "END: LOGGING"
+
+  echo "Setting up HTTPD"
+  openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+  -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
+  -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
+  -subj "/C=US/ST=Denver/L=Denver/O=Security/OU=Production/CN=acuparse" \
+  -addext "subjectAltName=DNS:acuparse,DNS:localhost,IP:127.0.0.1"
+  chown -R www-data:www-data /var/log/apache2
+  chown -R www-data:www-data "${ACUPARSE_DIR}"/src/pub
+  a2dissite 000-default.conf
+  rm /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
+  cp "${ACUPARSE_DIR}"/config/acuparse.conf /etc/apache2/sites-available/
+  cp "${ACUPARSE_DIR}"/config/acuparse-ssl.conf /etc/apache2/sites-available/
+  mkdir -p /var/opt/acuparse/config && cp "${ACUPARSE_DIR}"/src/usr/config.new.php /var/opt/acuparse/config/config.new.php
+  a2ensite acuparse.conf
+  a2ensite acuparse-ssl.conf
+  a2enmod rewrite ssl
+  rm -rf "${ACUPARSE_DIR}"/cam
+  mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+  echo "END: HTTPD"
+}
+
+echo "START: Acuparse Docker BUILD ..."
+echo "DOCKER=1" >>/etc/os-release
+buildAcuparse
+echo "END: Acuparse BUILD"

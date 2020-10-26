@@ -1,6 +1,6 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
  * @copyright Copyright (C) 2015-2018 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
@@ -19,40 +19,128 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  * File: src/fcn/weather/getCurrentTowerData.php
  * Gets the requested tower data from the database
  */
+
 class getCurrentTowerData
 {
     // Set variables
+    private $id;
+    private $name;
     private $tempF;
+    private $tempF_high;
+    private $tempF_low;
+    private $high_temp_recorded;
+    private $low_temp_recorded;
     private $tempC;
+    private $tempC_high;
+    private $tempC_low;
     private $relH;
-
+    private $battery;
+    private $rssi;
+    private $lastUpdate;
 
     function __construct($sensor)
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        /** @var mysqli $conn Global MYSQL Connection */
+
+        // Check for recent readings
+        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `timestamp` FROM `tower_data`"));
+        if (!isset($lastUpdate)) {
+            exit();
+        }
+
+        $this->id = $sensor;
 
         //Process Temp
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->tempF = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+            "SELECT * FROM `tower_data` WHERE `sensor` = '$this->id' ORDER BY `timestamp` DESC LIMIT 1"));
+        $this->tempF = round($result['tempF'], 1); // Fahrenheit
+        $this->tempC = round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
         //Process Humidity:
+        $this->relH = $result['relH']; // Percentage
+
+        // Additional Data
+        $sensorName = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `name` FROM `towers` WHERE `sensor` = '$sensor'"));
+        $this->name = $sensorName['name'];
+        $this->lastUpdate = $result['timestamp'];
+        $this->battery = $result['battery'];
+        $this->rssi = $result['rssi'];
+
+        // High Temp:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `relH` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->relH = (int)$result['relH']; // Percentage
+            "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MAX(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
+              AND DATE(`timestamp`) = CURDATE()"));
+        $this->high_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
+        $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
+        $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
+        // Low Temp:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MIN(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
+              AND DATE(`timestamp`) = CURDATE()"));
+        $this->low_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
+        $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
+        $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
     }
+
+    // Calculate the trending value
+    private function calculateTrend($unit, $sensor = null)
+    {
+        require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        /** @var mysqli $conn Global MYSQL Connection */
+
+        if ($sensor !== null) {
+            $sensor = "AND `sensor` = '$sensor'";
+        }
+
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT AVG(`$unit`) AS `trend1` FROM `tower_data` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 3 HOUR) $sensor"));
+        $trend_1 = (float)$result['trend1'];
+
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT AVG(`$unit`) AS `trend2` FROM `tower_data` WHERE `timestamp` BETWEEN DATE_SUB(NOW(), INTERVAL 6 HOUR) AND DATE_SUB(NOW(), INTERVAL 3 HOUR) $sensor"));
+        $trend_2 = (float)$result['trend2'];
+
+        $trend = $trend_1 - $trend_2;
+
+        if ($trend >= 1) {
+            $trend = 'Rising';
+        } elseif ($trend <= -1) {
+            $trend = 'Falling';
+        } else {
+            $trend = 'Steady';
+        }
+
+        return $trend;
+    }
+
     // Get current conditions
     public function getConditions()
     {
         return (object)array(
+            'name' => $this->name,
             'tempF' => $this->tempF,
+            'tempF_high' => $this->tempF_high,
+            'tempF_low' => $this->tempF_low,
+            'tempF_trend' => $this->calculateTrend('tempF', $this->id),
             'tempC' => $this->tempC,
-            'relH' => $this->relH
+            'tempC_high' => $this->tempC_high,
+            'tempC_low' => $this->tempC_low,
+            'high_temp_recorded' => $this->high_temp_recorded,
+            'low_temp_recorded' => $this->low_temp_recorded,
+            'relH' => $this->relH,
+            'relH_trend' => $this->calculateTrend('RelH', $this->id),
+            'battery' => $this->battery,
+            'signal' => $this->rssi,
+            'lastUpdated' => $this->lastUpdate,
         );
     }
 }

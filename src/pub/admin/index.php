@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -27,6 +27,11 @@
 
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
 // Logged in admin
 if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
@@ -50,10 +55,10 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                                                                                        aria-hidden="true"></i> Add New
                     User
                 </button>
-                <button type="button" id="view-users" class="btn btn-outline-secondary btn-block margin-top-10"
+                <button type="button" id="manage-users" class="btn btn-outline-secondary btn-block margin-top-10"
                         onclick="location.href = '/admin/account?view'" data-instant><i class="far fa-list-alt"
                                                                                         aria-hidden="true"></i>
-                    View/Edit Users
+                    Manage Users
                 </button>
             </div>
             <?php if ($config->station->towers === true) { ?>
@@ -76,6 +81,15 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                 <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
                         onclick="location.href = '/admin/settings'"><i class="fas fa-cogs"
                                                                        aria-hidden="true"></i> System Settings
+                </button>
+                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
+                        onclick="location.href = '/admin/mailer'"><i class="fas fa-envelope-open-text"
+                                                                     aria-hidden="true"></i> Send Test Email
+                </button>
+                <h4 class="margin-top-05">Sensors:</h4>
+                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
+                        onclick="location.href = '/admin/status'"><i class="fas fa-question-circle"
+                                                                     aria-hidden="true"></i> Sensor Status
                 </button>
                 <h4 class="margin-top-05">Access Tools:</h4>
                 <button type="button" id="access-server" class="btn btn-outline-secondary btn-block margin-top-10"

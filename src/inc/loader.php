@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -42,13 +42,8 @@ if (!isset($config)) {
 
 if (!isset($appInfo)) {
     $appInfo = json_decode(file_get_contents(dirname(dirname(__DIR__)) . '/.version'), true);
-    $appInfo = (object)array(
-        'name' => $appInfo['name'], // Application Name
-        'version' => $appInfo['version'], // Application version
-        'schema' => $appInfo['schema'], // Database Schema Version
-        'repo' => $appInfo['repo'], // Git Repository
-        'homepage' => $appInfo['homepage'] // Project Homepage
-    );
+    $appInfo = array_change_key_case($appInfo, CASE_LOWER);
+    $appInfo = (object)$appInfo;
 }
 
 // Set timezone
@@ -58,12 +53,18 @@ if (date_default_timezone_get() != $config->site->timezone) {
 
 // Open Database Connection
 if (!isset($conn)) {
+    /** @var string $installed */
     if ($installed === true) {
         $conn = mysqli_connect($config->mysql->host, $config->mysql->username, $config->mysql->password,
             $config->mysql->database);
         if (!$conn) {
-            die(syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error()));
+            header($_SERVER["SERVER_PROTOCOL"] . " 503 Service Unavailable");
+            require_once('templates/dbConnectFailed.php');
+            syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error());
+            exit();
         }
+        ini_set('mysqlnd_qc.enable_qc', 1);
+        ini_set('mysqlnd_qc.cache_by_default', 1);
     }
 }
 

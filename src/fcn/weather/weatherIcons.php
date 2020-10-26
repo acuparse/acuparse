@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -23,6 +23,11 @@
 /**
  * File: src/fcn/weather/weatherIcons.php
  * Builds the right moon icon for display
+ */
+
+/**
+ * @param $moonStage
+ * @return string
  */
 
 // Find the right moon icon to show:
@@ -53,6 +58,8 @@ function moonIcon($moonStage)
         case 'Waning Crescent':
             $moonIcon = 'wi-moon-waning-crescent-1';
             break;
+        default:
+            $moonIcon = 'Error';
     }
     return $moonIcon;
 }
@@ -89,6 +96,8 @@ function trendIcon($trend)
         case 'Steady':
             $trendIcon = ' <i class="fas fa-long-arrow-alt-right"></i>';
             break;
+        default:
+            $trendIcon = 'Error';
     }
     return $trendIcon;
 }

@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -27,6 +27,12 @@
 
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
+
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
 
 if (isset($_GET['do'])) {
 
@@ -55,11 +61,12 @@ if (isset($_GET['do'])) {
         $message = '<p><strong>You have received a new message from:</strong> <a href="mailto:' . $email . '?subject=' . $post_subject . '">' . $name . ' &lt;' . $email . '&gt;</a></p><p>' . $message . '</p>';
 
         $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
-        while ($row = mysqli_fetch_array($sql)) {
+        while ($row = mysqli_fetch_assoc($sql)) {
             $admin_email[] = $row['email'];
         }
 
         // Mail it
+        /** @var array  $admin_email Admins email addresses */
         foreach ($admin_email as $to) {
             mailer($to, $subject, $message, $email, $name, false);
         }
@@ -68,7 +75,7 @@ if (isset($_GET['do'])) {
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
         header("Location: /");
-        die();
+        exit();
     }
 } else {
     if ($config->contact->enabled === true) {
@@ -96,7 +103,7 @@ if (isset($_GET['do'])) {
                         <label for="email">Email Address:</label>
                         <input type="email" <?php if (isset($_SESSION['authenticated'])) {
                             $uid = $_SESSION['uid'];
-                            $email = mysqli_fetch_array(mysqli_query($conn,
+                            $email = mysqli_fetch_assoc(mysqli_query($conn,
                                 "SELECT `email` FROM `users` WHERE `uid`='$uid'"));
                             echo 'value="', $email['email'], '"';
                         } ?> class="form-control" name="email" id="email" placeholder="Email" required>

@@ -1,43 +1,72 @@
-site_name: Acuparse Docs
+site_name: Acuparse Documentation
 site_url: https://docs.acuparse.com/
-repo_url: https://gitlab.com/acuparse/acuparse/
+repo_url: https://github.com/acuparse/acuparse/
+repo_name: acuparse/acuparse
+edit_uri: ""
 theme:
   name: material
+  features:
+    - navigation.instant
+    - navigation.expand
+  palette:
+    scheme: preference
+    primary: blue grey
+  icon:
+    repo: fontawesome/brands/github
 site_dir: public
 google_analytics:
   - 'UA-93235303-2'
   - 'auto'
 nav:
   - Home: 'index.md'
-  - Install:
-    - Install Guide: 'INSTALL.md'
-    - DNS Redirect: 'DNS.md'
-    - NGINX Proxy: 'NGINX.md'
-    - Windows: 'WINDOWS.md'
-    - Updates:
-        - From 2.1: 'updates/from2_1.md'
-        - From 2.4: 'updates/from2_4.md'
-  - External:
-    - WeatherPoly: 'external/generic/WeatherPoly.md'
-    - CWOP: 'external/CWOP.md'
-    - PWS: 'external/PWS.md'
-    - WeatherCloud: 'external/WC.md'
-    - Windy: 'external/WINDY.md'
-    - WeatherUnderground: 'external/WU.md'
+  - Installing:
+      - Installation Guide: 'INSTALL.md'
+      - Docker Install: 'DOCKER.md'
+      - DNS Redirect: 'DNS.md'
+      - NGINX Proxy: 'NGINX.md'
+      - Troubleshooting: 'TROUBLESHOOTING.md'
+  - Updating:
+      - Version 2.3: 'updates/v2_3.md'
+      - Version 3.0: 'updates/v3.md'
+  - API Guide: 'API.md'
+  - Backup Guide: 'BACKUPS.md'
+  - Telemetry Guide: 'TELEMETRY.md'
+  - External Updaters:
+      - Weather Underground: 'external/WU.md'
+      - CWOP: 'external/CWOP.md'
+      - PWS Weather: 'external/PWS.md'
+      - Weathercloud: 'external/WC.md'
+      - Windy: 'external/WINDY.md'
+      - Windguru: 'external/WINDGURU.md'
+      - Generic:
+          - WeatherPoly: 'external/generic/WEATHERPOLY.md'
 copyright: "Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3"
 extra:
   social:
     - type: 'gitlab'
       link: 'https://gitlab.com/acuparse'
+      icon: 'fontawesome/brands/gitlab'
     - type: 'github'
       link: 'https://github.com/acuparse'
+      icon: 'fontawesome/brands/github'
+    - type: 'bitbucket'
+      link: 'https://bitbucket.com/acuparse'
+      icon: 'fontawesome/brands/bitbucket'
+    - type: 'facebook'
+      link: 'https://facebook.com/acuparse'
+      icon: 'fontawesome/brands/facebook'
   manifest: 'manifest.webmanifest'
   search:
     language: 'en'
 markdown_extensions:
   - toc:
       permalink: true
+  - pymdownx.highlight:
+      linenums_style: pymdownx.inline
+  - pymdownx.superfences
+  - admonition
 plugins:
-  - search
+  - search:
+      -lang: en
   - minify:
       minify_html: true

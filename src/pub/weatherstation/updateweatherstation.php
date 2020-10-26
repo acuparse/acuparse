@@ -1,7 +1,7 @@
 <?php
 /**
- * Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2019 Maxwell Power
+ * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+ * @copyright Copyright (C) 2015-2020 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -10,23 +10,40 @@
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  * File: src/pub/weatherstation/updateweatherstation.php
- * Hijacks data from the Access/smartHUB
+ * Commandeers data from the Access/smartHUB
  */
 
 // Get the loader
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+
+/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @return array
+ * @var object $config Global Config
+ */
+
+if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
+    $mac = $_GET['id'];
+    exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured."));
+}
+
+function last_updated_at() {
+    global $conn;
+    $lastUpdate = date("Y-m-d H:i:s");
+    mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate';");
+}
 
 // Process Access Update
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && $_GET['id'] === $config->station->access_mac) {
@@ -40,5 +57,5 @@ elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->stati
 else {
     $mac = $_GET['id'];
     // Log it
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured.");
+    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Ignored update from $mac.");
 }

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ##
-# Acuparse - AcuRite®‎ Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2019 Maxwell Power
+# Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
+# @copyright Copyright (C) 2015-2020 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -27,8 +27,6 @@
 ##
 
 ### USER VALUES ###
-WU_CAM_USER=''                                 # WeatherUnderground Webcam user
-WU_CAM_PASS=''                                 # WeatherUnderground Webcam password
 WATERMARK='Station Name | Station Web Address' # Image Watermark Text
 CAMERA_HOST='http://'                          # The camera host
 CAMERA_FILENAME='snapshot.jpg'                 # Camera image name
@@ -38,11 +36,15 @@ RESIZE='50%'
 WEBDIR='/opt/acuparse/src/pub/img/cam'
 ARCHIVE_DATE=$(date +"%Y-%m-%d")
 ARCHIVE_TIME=$(date +"%H%M")
-STATION_INFO=$(wget 'http://127.0.0.1/?cam' -q -O -)
+STATION_INFO=$(wget 'http://127.0.0.1/api/v1/text/watermark' -q -O -)
 TIMESTAMP=$(date +"%A, %d %B %Y %H:%M %Z")
 
 echo "Getting camera image"
+# HTTP Snapshot
 wget ${CAMERA_HOST}/${CAMERA_FILENAME}
+
+# RTSP Snapshot
+# ffmpeg -rtsp_transport tcp -loglevel fatal -i $CAMERA_HOST -vframes 1 -r 1 $CAMERA_FILENAME
 
 echo "Applying Timestamp and Copyright"
 convert ${CAMERA_FILENAME} \
@@ -59,15 +61,6 @@ convert ${CAMERA_FILENAME} \
         fill black  text 0,0 '${WATERMARK}' \
         fill OrangeRed2  text 1,1 '${WATERMARK}' " \
 image.jpg
-
-echo "Sending image to Weather Underground"
-ftp -n webcam.wunderground.com <<END_SCRIPT >/opt/acuparse/logs/wu_upload.log 2>&1
-quote USER ${WU_CAM_USER}
-quote PASS ${WU_CAM_PASS}
-binary
-put image.jpg
-quit
-END_SCRIPT
 
 echo "Moving image to webserver"
 cp image.jpg ${WEBDIR}/latest.jpg
