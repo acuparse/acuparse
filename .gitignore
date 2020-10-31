@@ -12,3 +12,4 @@ src/pub/img/cam/*
 logs/*
 !logs/.gitkeep
 site/
+vendor/

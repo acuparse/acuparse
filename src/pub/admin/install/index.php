@@ -10,12 +10,12 @@
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this code. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -77,16 +77,17 @@ if (isset($_GET['update']) && $installed === true) {
             <section id="update-system">
                 <div class="row">
                     <div class="col">
-                        <h2 class="page-header">Are you sure you want to proceed?</h2>
+                        <h2 class="page-header">Run the V3 Update Script</h2>
                         <div class="alert alert-danger text-center">
-                            <p><strong>Make sure you backup your database, config file, and webcam images before
-                                    proceeding!</strong></p>
+                            <p><strong>This Master repository has been deprecated. See the <a
+                                            href="https://docs.acuparse.com/updates/v3/">update guide</a> for
+                                    details.</strong></p>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <button type="submit" id="submit" value="submit" class="btn btn-success btn-block"
-                            onclick="location.href = '/admin/install?update&do'"><i
+                            disabled="disabled" onclick="location.href = '/admin/install?update&do'"><i
                                 class="fas fa-wrench"
                                 aria-hidden="true"></i>
                         Process Upgrade
