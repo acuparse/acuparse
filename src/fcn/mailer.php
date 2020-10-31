@@ -29,11 +29,36 @@
  * @param $sendTo
  * @param $subject
  * @param $message
- * @param bool $replyTo
- * @param bool $replyToName
- * @param bool $disclaimer
+ * @param $siteName
+ * @param $siteEmail
+ * @param $mgDomain
+ * @param $mgSecret
  * @return bool|mixed
  */
+
+function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgDomain, $mgSecret)
+{
+    $array_data = array(
+        'from' => $siteName . ' <' . $siteEmail . '>',
+        'to' => '<' . $sendTo . '>',
+        'subject' => $subject,
+        'html' => $message
+    );
+
+    $session = curl_init('https://api.mailgun.net/v3/' . $mgDomain . '/messages');
+    curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    curl_setopt($session, CURLOPT_USERPWD, 'api:' . $mgSecret);
+    curl_setopt($session, CURLOPT_POST, true);
+    curl_setopt($session, CURLOPT_POSTFIELDS, $array_data);
+    curl_setopt($session, CURLOPT_HEADER, false);
+    curl_setopt($session, CURLOPT_ENCODING, 'UTF-8');
+    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($session);
+    curl_close($session);
+
+    return json_decode($response, true);
+}
 
 function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = false, $disclaimer = true)
 {
@@ -46,41 +71,6 @@ function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = fa
      * @return array
      * @var object $appInfo Global Application Info
      */
-
-    /**
-     * @param $sendTo
-     * @param $subject
-     * @param $message
-     * @param $siteName
-     * @param $siteEmail
-     * @param $mgDomain
-     * @param $mgSecret
-     * @return array
-     */
-
-    function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgDomain, $mgSecret)
-    {
-        $array_data = array(
-            'from' => $siteName . ' <' . $siteEmail . '>',
-            'to' => '<' . $sendTo . '>',
-            'subject' => $subject,
-            'html' => $message
-        );
-
-        $session = curl_init('https://api.mailgun.net/v3/' . $mgDomain . '/messages');
-        curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($session, CURLOPT_USERPWD, 'api:' . $mgSecret);
-        curl_setopt($session, CURLOPT_POST, true);
-        curl_setopt($session, CURLOPT_POSTFIELDS, $array_data);
-        curl_setopt($session, CURLOPT_HEADER, false);
-        curl_setopt($session, CURLOPT_ENCODING, 'UTF-8');
-        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($session);
-        curl_close($session);
-
-        return json_decode($response, true);
-    }
 
     if ($config->mailgun->enabled === false) {
         $headers = 'MIME-Version: 1.0' . PHP_EOL;

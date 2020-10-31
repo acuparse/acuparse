@@ -24,6 +24,11 @@
  * File: src/fcn/settings/sensor.php
  * Sensor Settings
  */
+
+/**
+ * @return array
+ * @var object $config Global Config
+ */
 ?>
 <div class="tab-pane fade" id="nav-sensor" role="tabpanel" aria-labelledby="nav-sensor-tab">
     <div class="row">

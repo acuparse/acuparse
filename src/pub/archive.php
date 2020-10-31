@@ -62,18 +62,18 @@ if ($config->archive->enabled === true) {
     $page_footer = '
     <script>
         $(document).ready(function () {
-            function update() {
+            async function updateArchive() {
                 $.ajax({
                     url: \'/api/v1/html/archive/\',
                     success: function (data) {
                         $("#weather-archive").html(data);
                     },
                     error: function (request) {
-                        alert("Archive Data Error:\n" + request.responseText);
+                        console.log("Archive Data Error:\n" + request.responseText);
                     }
                 });
             }
-            update();
+            updateArchive();
         });
     </script>';
 

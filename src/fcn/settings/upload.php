@@ -578,7 +578,7 @@
                     <input class="form-check-input" type="radio"
                            name="upload[windguru][enabled]"
                            id="windguru-updates-enabled-0" value="0"
-                           onclick='document.getElementById("windguru-updates-id").disabled=true;document.getElementById("windguru-updates-password").disabled=true;'
+                           onclick='document.getElementById("windguru-updates-uid").disabled=true;document.getElementById("windguru-updates-id").disabled=true;document.getElementById("windguru-updates-password").disabled=true;'
                         <?= ($config->upload->windguru->enabled === false) ? 'checked="checked"' : false; ?>>
                     <label class="form-check-label alert alert-danger"
                            for="windguru-updates-enabled-0">Disabled</label>
@@ -587,7 +587,7 @@
                     <input class="form-check-input" type="radio"
                            name="upload[windguru][enabled]"
                            id="windguru-updates-enabled-1" value="1"
-                           onclick='document.getElementById("windguru-updates-id").disabled=false;document.getElementById("windguru-updates-password").disabled=false;'
+                           onclick='document.getElementById("windguru-updates-uid").disabled=false;document.getElementById("windguru-updates-id").disabled=false;document.getElementById("windguru-updates-password").disabled=false;'
                         <?= ($config->upload->windguru->enabled === true) ? 'checked="checked"' : false; ?>>
                     <label class="form-check-label alert alert-success"
                            for="windguru-updates-enabled-1">Enabled</label>
