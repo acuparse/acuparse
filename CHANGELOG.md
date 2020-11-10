@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [[3.0.0]](https://www.acuparse.com/releases/v3-0-0/) - 2020-10-14
+## [[3.0.1]](https://www.acuparse.com/releases/v3-0-1/) - 2020-11-09
+
+### Fixed
+
+- Sending email with Mailgun and multiple admins causing cron failures.
+- Cron failing when using an Atlas with no Lightning sensor.
+- Windguru setting stays disabled and not uploading as expected.
+
+## [[3.0.0]](https://www.acuparse.com/releases/v3-0-0/) - 2020-10-25
 
 See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instructions.
 

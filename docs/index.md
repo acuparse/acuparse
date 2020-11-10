@@ -37,7 +37,7 @@ when using a SmartHUB, Acuparse creates the response.
 
 ## Main Installation Guide
 
-> **Info:** Installation supported on Debian/Rasbian Buster(10) or Ubuntu 18.04/19.04.
+> **Info:** Installation supported on Debian/Rasbian Buster(10) or Ubuntu 18.04/20.04.
 
 - ***[Main Install Guide](INSTALL)***
 - ***[Docker Install Guide](DOCKER)***

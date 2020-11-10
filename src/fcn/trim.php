@@ -37,7 +37,7 @@ if ($config->mysql->trim !== 0) {
     $scheduler = $result['Value'];
     if ($scheduler === 'OFF') {
         if ($config->mysql->trim === 1) {
-            $schema = dirname(__DIR__) . '/sql/trim/enable.sql';
+            $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable.sql';
             $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
             $schema = shell_exec($schema);
             if ($schema) {

@@ -4,6 +4,8 @@ You will need to redirect your DNS so that your Access/smartHub uploads your dat
 > **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS.
 >
 >See [/admin/access_server](/admin/access_server) once logged into your site.
+>
+>You must use a hostname for the upload server. IP addresses will not work!
 
 ## External Connection to Acuparse
 

@@ -56,7 +56,7 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
     if (strtotime($outageAlert['last_sent']) < strtotime("-" . $config->outage_alert->interval)) {
 
         if ($config->outage_alert->enabled === true) {
-            require(APP_BASE_PATH . '/fcn/mailer.php');
+            require_once(APP_BASE_PATH . '/fcn/mailer.php');
             $subject = 'Access/smartHUB offline! No Updates received.';
             $message = '<p><strong>Acuparse is not receiving updates from your Access/smartHUB.</strong><p>Check your internet connection.</p>';
 

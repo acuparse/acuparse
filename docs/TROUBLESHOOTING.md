@@ -32,3 +32,19 @@ sudo rm /opt/acuparse/src/usr/config.php
 ```
 
 In more extreme cases, you may also need to remove and [reinitialize the Acuparse database](https://docs.acuparse.com/INSTALL/#setup-database).
+
+## Access Device
+
+If your not receiving data from your Access, ensure you have a DNS resolvable hostname set for the upload server and/or
+a DNS redirect in place. Then, reboot your Access. The Access can at times require multiple reboots to begin sending data.
+
+### Cisco Switches
+
+If your Access constantly reboots/reconnects when connected to a Cisco switch, enable Portfast.
+
+```text
+config terminal
+interface FastEthernet0/XX
+spanning-tree portfast
+end
+```

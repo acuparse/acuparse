@@ -84,7 +84,7 @@ $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` W
 if ($result) {
     syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Checking for updates");
     // Make sure update interval has passed since last update
-    if ((strtotime($result['value']) < strtotime("-" . '23 hours 20 min'))) {
+    if ((strtotime($result['value']) < strtotime("-" . '1 min'))) {
         $telemetry = getTelemetry();
         $telemetry['clientID'] = $config->version->installHash;
         $telemetry['version'] = $config->version->app;
@@ -95,37 +95,41 @@ if ($result) {
         } else {
             $telemetry['mac'] = 'none';
         }
-        $telemetry = json_encode($telemetry);
-        syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Telemetry = $telemetry");
+        if ($telemetry['mac'] !== 'none') {
+            $telemetry = json_encode($telemetry);
+            syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Telemetry = $telemetry");
 
-        $ch = curl_init($appInfo->release_server . '/current');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $telemetry);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $checkLatestVersion = curl_exec($ch);
-        curl_close($ch);
-        syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Response = $checkLatestVersion");
+            $ch = curl_init($appInfo->release_server . '/current');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $telemetry);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $checkLatestVersion = curl_exec($ch);
+            curl_close($ch);
+            syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Response = $checkLatestVersion");
 
-        if ($checkLatestVersion) {
-            $result = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
-            $lastLatestRelease = $result['value'];
-            $checkLatestVersion = json_decode($checkLatestVersion);
-            $latestRelease = $checkLatestVersion->latestRelease;
-            $lastCheckedOn = date("Y-m-d H:i:s");
-            mysqli_query($conn, "UPDATE `system` SET `value` = '$lastCheckedOn' WHERE `name` = 'lastUpdateCheck'");
-            if ($lastLatestRelease != $latestRelease) {
-                mysqli_query($conn, "UPDATE `system` SET `value` = '$latestRelease' WHERE `name` = 'latestRelease'");
-                syslog(LOG_INFO, "(SYSTEM){CRON}: New Version $latestRelease now available!");
-            } else if ($config->version->app != $latestRelease) {
-                syslog(LOG_INFO, "(SYSTEM){CRON}: Version $latestRelease available!");
+            if ($checkLatestVersion) {
+                $result = mysqli_fetch_assoc(mysqli_query($conn,
+                    "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
+                $lastLatestRelease = $result['value'];
+                $checkLatestVersion = json_decode($checkLatestVersion);
+                $latestRelease = $checkLatestVersion->latestRelease;
+                $lastCheckedOn = date("Y-m-d H:i:s");
+                mysqli_query($conn, "UPDATE `system` SET `value` = '$lastCheckedOn' WHERE `name` = 'lastUpdateCheck'");
+                if ($lastLatestRelease != $latestRelease) {
+                    mysqli_query($conn, "UPDATE `system` SET `value` = '$latestRelease' WHERE `name` = 'latestRelease'");
+                    syslog(LOG_INFO, "(SYSTEM){CRON}[RELEASES]: New Version $latestRelease now available!");
+                } else if ($config->version->app != $latestRelease) {
+                    syslog(LOG_INFO, "(SYSTEM){CRON}[RELEASES]: Version $latestRelease available!");
+                } else {
+                    syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: No new version available.");
+                }
             } else {
-                syslog(LOG_DEBUG, "(SYSTEM){CRON}: No new version available.");
+                syslog(LOG_ERR, "(SYSTEM){CRON}[RELEASES]: Error checking for update.");
             }
         } else {
-            syslog(LOG_ERR, "(SYSTEM){CRON}: Error checking for update.");
+            syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: No MAC set.");
         }
     } else {
-        syslog(LOG_DEBUG, "(SYSTEM){CRON}: Too soon to check for updates.");
+        syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Too soon to check for updates.");
     }
 }

@@ -132,6 +132,8 @@ DEV:PHP:CLI:
   image: php:8.0-rc-cli
   rules:
     - if: '$CI_COMMIT_BRANCH != "stable"'
+    - if: $CI_COMMIT_TAG
+      when: never
   allow_failure: true
 
 #### phpstan ####
@@ -148,6 +150,8 @@ DEV:PHP:phpstan:
   allow_failure: true
   rules:
     - if: '$CI_COMMIT_BRANCH != "stable"'
+    - if: $CI_COMMIT_TAG
+      when: never
 
 #### noverify ####
 
@@ -161,6 +165,8 @@ DEV:PHP:noverify:
   allow_failure: true
   rules:
     - if: '$CI_COMMIT_BRANCH != "stable"'
+    - if: $CI_COMMIT_TAG
+      when: never
 
 #### END: PHP ####
 
@@ -174,6 +180,8 @@ DEV:MD:markdownlint:
   extends: .TEMPLATE:MD:markdownlint
   rules:
     - if: '$CI_COMMIT_BRANCH != "stable"'
+    - if: $CI_COMMIT_TAG
+      when: never
   allow_failure: true
 
 #### END: Markdown ####
@@ -190,6 +198,8 @@ DEV:BASH:shellcheck:
   extends: .TEMPLATE:BASH:shellcheck
   rules:
     - if: '$CI_COMMIT_BRANCH != "stable"'
+    - if: $CI_COMMIT_TAG
+      when: never
   allow_failure: true
 
 #### END: Bash ####
@@ -220,6 +230,10 @@ INSTALLER:
     strategy: depend
   variables:
     UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
 
 #### END: Test Installer ####
 
@@ -240,6 +254,8 @@ DEV:DOCS:mkdocs:
     - mkdocs build --site-dir test
   rules:
     - if: '$CI_COMMIT_BRANCH != "stable"'
+    - if: $CI_COMMIT_TAG
+      when: never
   allow_failure: true
   artifacts:
     paths:
@@ -256,9 +272,18 @@ RELEASE:tag:
       when: manual
   script:
     - export VERSION=$(cat .version | jq -r '.VERSION')
-    - >
-      release-cli create --name Version $VERSION --description release-branch-$CI_COMMIT_REF_NAME-$CI_JOB_ID
-      --tag-name v$VERSION --ref $CI_COMMIT_SHA
+    - release-cli create --name "Version $VERSION" --description "Release Version $VERSION" --tag-name "v$VERSION" --ref "$CI_COMMIT_SHA"
+  dependencies: [ ]
+
+#### Update Release ####
+TEST:RELEASE:tag:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli
+  rules:
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - export VERSION=$(cat .version | jq -r '.VERSION')
+    - echo release-cli create --name "Version $VERSION" --description "Release Version $VERSION" --tag-name "v$VERSION" --ref "$CI_COMMIT_SHA"
   dependencies: [ ]
 
 RELEASE:RMS:version:
@@ -268,7 +293,7 @@ RELEASE:RMS:version:
     - apk add curl jq --no-cache
   script:
     - export VERSION=$(cat .version | jq -r '.VERSION')
-    - "curl -H 'Authorization: Bearer ${RMS_TOKEN}' -X POST -d 'version=$VERSION' '${RMS_HOST}/releases'"
+    - "curl -H 'Authorization: Bearer $RMS_TOKEN' -X POST -d 'version=$VERSION' '$RMS_HOST/releases'"
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]

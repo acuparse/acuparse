@@ -38,6 +38,41 @@
       "url": "https://www.venmo.com/maxtpower"
     }
   ],
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "lokesh/lightbox2",
+        "version": "2.11.3",
+        "dist": {
+          "url": "https://github.com/lokesh/lightbox2/archive/v2.11.3.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "erikflowers/weather-icons",
+        "version": "2.0.10",
+        "dist": {
+          "url": "https://github.com/erikflowers/weather-icons/archive/2.0.10.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "instantpage/instant.page",
+        "version": "5.1.0",
+        "dist": {
+          "url": "https://github.com/instantpage/instant.page/archive/v5.1.0.zip",
+          "type": "zip"
+        }
+      }
+    }
+  ],
   "require": {
     "php": "~7.3",
     "twbs/bootstrap": "~4",
@@ -125,41 +160,6 @@
       "rm -rf ./src/pub/lib/mit/instantpage",
       "mkdir -p ./src/pub/lib/mit/instantpage",
       "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/"
-    ],
-    "repositories": [
-      {
-        "type": "package",
-        "package": {
-          "name": "lokesh/lightbox2",
-          "version": "2.11.3",
-          "dist": {
-            "url": "https://github.com/lokesh/lightbox2/archive/v2.11.3.zip",
-            "type": "zip"
-          }
-        }
-      },
-      {
-        "type": "package",
-        "package": {
-          "name": "erikflowers/weather-icons",
-          "version": "2.0.10",
-          "dist": {
-            "url": "https://github.com/erikflowers/weather-icons/archive/2.0.10.zip",
-            "type": "zip"
-          }
-        }
-      },
-      {
-        "type": "package",
-        "package": {
-          "name": "instantpage/instant.page",
-          "version": "5.1.0",
-          "dist": {
-            "url": "https://github.com/instantpage/instant.page/archive/v5.1.0.zip",
-            "type": "zip"
-          }
-        }
-      }
     ],
     "test": [
       "php ./vendor/bin/lint ./src"

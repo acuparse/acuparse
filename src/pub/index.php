@@ -82,16 +82,19 @@ if ($installed == false) {
     <!-- Refresh Weather Data -->
     <script>
         $(document).ready(function () {
-            function updateWeather() {
+            async function updateWeather() {
                 $.ajax({
                     url: \'/api/v1/html/dashboard/\',
                     success: function (data) {
                         $("#live-weather").html(data);
                         setTimeout(updateWeather, ' . $weatherRefreshTime . ')
+                    },
+                    error: function (request) {
+                        console.log("Weather Data Error:\n" + request.responseText);
                     }
                 })
             }
-            function updateTime() {
+            async function updateTime() {
                 $.ajax({
                     url: \'/api/v1/text/time/\',
                     success: function (data) {
