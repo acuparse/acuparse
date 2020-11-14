@@ -71,7 +71,7 @@ if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->in
     $cwopSocket = fsockopen($config->upload->cwop->url, 14580, $cwopSocket_errno, $cwopSocket_errstr, 30);
     if (!$cwopSocket) {
         // Log it
-        syslog(LOG_ERR, "(EXTERNAL)[CWOP][ERROR]: $cwopSocket_errno ($cwopSocket_errstr)");
+        syslog(LOG_ERR, "(EXTERNAL){CWOP}[ERROR]: $cwopSocket_errno ($cwopSocket_errstr)");
 
     } else {
         $cwop_out = 'user ' . $config->upload->cwop->id . ' pass -1 vers ' . $appInfo->name . "\r" . $cwopQuery . '.' . ucfirst($appInfo->name) . "\r";
@@ -84,12 +84,12 @@ if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->in
     // Log
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL)[CWOP]: Query = $cwopQuery");
+        syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Query = $cwopQuery");
     }
 } // No new update to send
 else {
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL)[CWOP]: Update not sent. Not enough time has passed");
+        syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Update not sent. Not enough time has passed");
     }
 }

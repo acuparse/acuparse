@@ -17,7 +17,9 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detai
 [Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite
 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
 [Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com), [Weathercloud](https://weathercloud.net),
-[PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), and [Windguru](https://www.windguru.cz).
+[PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
+and [OpenWeather](https://openweathermap.org/).
+
 It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
@@ -26,7 +28,16 @@ not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's site
 Acuparse requires a working AcuRite Access/smartHUB. You redirect weather data from your Access/smartHUB to your Acuparse
 server. It is captured, stored, and then passed along to MyAcuRite untouched.
 The response received from MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or
-when using a SmartHUB, Acuparse creates the response.
+when using a smartHUB, Acuparse creates the response.
+
+### Direct to WiFi Consoles
+
+Acuparse does not directly support the new AcuRite direct to WiFi Consoles. You may have success configuring these as
+an Access & Atlas/5-in-1 sensor. Keep in mind, they do not support Tower sensors and there has been no official testing
+of these devices with Acuparse.
+
+If you have one of these consoles and want to assist in adding support to Acuparse, connect with us using the Support
+channels below. We'll work with you to grab a capture of the data they send, allowing for future direct support.
 
 ## Features
 
@@ -42,7 +53,7 @@ when using a SmartHUB, Acuparse creates the response.
 - Archived data display.
 - Watch data flow using the syslog.
 - Stays online even when MyAcuRite is not.
-- Does not require internet access. Can be deployed independently of MyAcuRite.
+- Does not require Internet access. Can be deployed independently of MyAcuRite.
 - Export API with JSON and HTML data for use in external applications.
 - Customizable email outage notifications.
 - Google Invisible reCAPTCHA and Analytics support.

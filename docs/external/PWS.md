@@ -8,4 +8,4 @@
 ## Configuration
 
 1. Change enabled to true.
-1. Input your station id and PWS password.
+1. Input your station ID and PWS password.

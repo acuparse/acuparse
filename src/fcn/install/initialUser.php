@@ -37,7 +37,7 @@ if (!$result) {
 } else {
     // Check to ensure there are no other accounts
     if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
-        $pageTitle = 'Create First User';
+        $pageTitle = 'Acuparse Installer | Create First User';
         include(APP_BASE_PATH . '/inc/header.php');
         ?>
         <section id="add-user" class="add-user">
@@ -95,6 +95,6 @@ if (!$result) {
         // Bailout
         header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
         header("Location: /");
-        exit(syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
+        exit(syslog(LOG_WARNING, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
     }
 }

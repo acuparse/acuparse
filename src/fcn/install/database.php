@@ -88,42 +88,30 @@ if ($saveConfig) {
             if (!unlink($configFilePath)) {
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Writing to Database. Could not remove config file. Please remove and try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
                 header("Location: /admin/install");
-                exit(syslog(LOG_INFO, "(SYSTEM)[ERROR]: Error Writing to Database. Could not remove config file. Please remove and try again."));
+                exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Could not remove config file. Please remove and try again."));
             } else {
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Writing to Database. Please try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
                 header("Location: /admin/install");
-                exit(syslog(LOG_INFO, "(SYSTEM)[ERROR]: Error Writing to Database. Please try again."));
+                exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Please try again."));
             }
         } else {
-            // Setup database trimming
-            if ($config->mysql->trim === 1) {
-                // Installing full trim schema
-                $schema = $sqlPath . '/trim/enable.sql';
-                $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All Enabled");
-            } elseif ($config->mysql->trim === 2) {
-                // Installing basic trim schema
-                $schema = $sqlPath . '/trim/enable_xtower.sql';
-                $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All except towers Enabled");
-            }
+            $updateComplete = true;
+            require(APP_BASE_PATH . '/fcn/trim.php');
         }
     } else {
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Connecting to Database!</div>';
         unlink(APP_BASE_PATH . '/usr/config.php');
         header("Location: /admin/install");
-        exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: Database Ping Failed"));
+        exit(syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Database Ping Failed"));
     }
     // Log it
     $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Database Configuration Saved Successfully!</div>';
     header("Location: /admin/install/?account");
-    exit(syslog(LOG_INFO, "(SYSTEM)[INFO]: Database configuration saved successfully"));
+    exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}: Database configuration saved successfully"));
 } else {
     // Log it
     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving Config File Failed!</div>';
     unlink(APP_BASE_PATH . '/usr/config.php');
     header("Location: /admin/install");
-    exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving Config File Failed"));
+    exit(syslog(LOG_ERR, "(SYSTEM){INSTALLER}: Saving Config File Failed"));
 }

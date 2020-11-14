@@ -191,7 +191,7 @@ class getCurrentWeatherData
     private function windDirection($windDEG)
     {
         switch ($windDEG) {
-            case ($windDEG === null):
+            case (is_null($windDEG)):
                 $windDIR = 'ERROR';
                 break;
             case ($windDEG >= 11.25 && $windDEG < 33.75):

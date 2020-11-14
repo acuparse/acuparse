@@ -26,7 +26,7 @@ Use a firewall that allows you to customise your DNS.
 
 ## Direct Connection to Acuparse
 
-You can use your Acuparse server to redirect your DNS locally. To use this method, connect your SmartHUB/Access directly
+You can use your Acuparse server to redirect your DNS locally. To use this method, connect your smartHUB/Access directly
 to an ethernet interface on the Acuparse system.
 
 ### MyAcurite Upload URL's

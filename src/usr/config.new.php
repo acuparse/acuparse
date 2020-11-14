@@ -172,6 +172,14 @@ return (object)array(
             'url' => 'http://www.windguru.cz/upload/api.php', // Server URL
         ),
 
+        // OpenWeather Settings
+        'openweather' => (object)array(
+            'enabled' => false, // true or false
+            'id' => '', // Station ID
+            'key' => '', // Password
+            'url' => 'http://api.openweathermap.org/data/3.0/measurements', // Server URL
+        ),
+
         // Generic Settings
         'generic' => (object)array(
             'enabled' => false, // true or false
@@ -183,8 +191,8 @@ return (object)array(
         // MyAcurite
         'myacurite' => (object)array(
             'access_enabled' => true, // true or false
-            'access_url' => 'https://atlasapi.myacurite.com', //MyAcurite API
-            'pass_unknown' => false, // Pass unadded sensors to MyAcurite?
+            'access_url' => 'https://atlasapi.myacurite.com', // MyAcurite API
+            'pass_unknown' => false, // Pass unknown sensors to MyAcurite?
         ),
     ),
 
@@ -218,8 +226,8 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.0.1',
-        'schema' => '3.0',
+        'app' => '3.1.0',
+        'schema' => '3.1',
         'installHash' => null,
     ),
 );

@@ -36,7 +36,7 @@ if (isset($_GET['do'])) {
         $uid = $_SESSION['uid'];
         if ($user !== $uid) {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: No permissions to modify $user. $uid is not an admin");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: No permissions to modify $user. $uid is not an admin");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
             header("Location: /");
@@ -52,7 +52,7 @@ if (isset($_GET['do'])) {
             "SELECT * FROM `users` WHERE `uid` = '$user'"));
         if (password_verify(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW), $userRow['password'])) {
             // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change request for UID $uid failed");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Password change request for UID $uid failed");
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password.</div>';
             header("Location: /admin/account?password");
             exit();
@@ -83,11 +83,11 @@ if (isset($_GET['do'])) {
         // Mail it
         mailer($email['email'], $subject, $message);
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Password change for UID $user successful");
+        syslog(LOG_INFO, "(SYSTEM){USER}: Password change for UID $user successful");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
     } else {
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Password change for UID $user failed: " . mysqli_error($conn));
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Password change for UID $user failed: " . mysqli_error($conn));
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Nothing changed! Password was probably the same ...</div>';
     }
     header("Location: /");

@@ -28,6 +28,7 @@
 /** @var mysqli $conn Global MYSQL Connection */
 
 if (isset($_COOKIE['device'])) {
+    $username = $_SESSION['username'];
     $deviceKey = (string)$_COOKIE['device'];
     mysqli_query($conn, "DELETE FROM `sessions` WHERE `device_key` = '$deviceKey'");
     unset($_COOKIE['device']);
@@ -37,5 +38,9 @@ if (isset($_COOKIE['device'])) {
 }
 $_SESSION = array();
 session_regenerate_id(true);
+
+// Log it
+syslog(LOG_INFO, "(SYSTEM){USER}: $username logged out successfully");
+
 header("Location: /");
 exit();

@@ -67,24 +67,24 @@ function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = fa
 
     /**
      * @return array
-     * @var object $config Global Config
      * @return array
+     * @var object $config Global Config
      * @var object $appInfo Global Application Info
      */
 
     if ($config->mailgun->enabled === false) {
         $headers = 'MIME-Version: 1.0' . PHP_EOL;
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . PHP_EOL;
-        $headers .= 'From: ' . $config->site->name . ' <' . $config->site->email . '>' . PHP_EOL;
+        $headers .= 'From: ' . $config->site->name . ' <' . 'noreply@' . $config->site->hostname . '>' . PHP_EOL;
         $headers .= 'X-Mailer: ' . $appInfo->name . ' ' . $appInfo->version . PHP_EOL;
         if ($replyTo !== false) {
             $headers .= 'Reply-to: ' . $replyToName . ' <' . $replyTo . '>' . PHP_EOL;
         }
     }
 
-    $messageHeader = '<html lang="en"><head><title>$subject</title></head><body>';
+    $messageHeader = '<html lang="en"><head><title>' . $subject . '</title></head><body>';
     $messageFooter = '</body></html>';
-    $messageDisclaimer = '<p>--<br>This is an automated message sent from ' . $config->site->name . '.</p><p>You can manage your account details by visiting <a href="https://' . $config->site->hostname . '">' . $config->site->hostname . '</a>.</p>';
+    $messageDisclaimer = '<p>--<br>This is an automated message sent by the ' . $config->site->name . '.</p><p>Manage your account details by visiting <a href="https://' . $config->site->hostname . '">' . $config->site->hostname . '</a>.</p>';
 
     $message = ($disclaimer === false) ?
         $messageHeader . $message . $messageFooter

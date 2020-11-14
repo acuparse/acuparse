@@ -21,8 +21,8 @@
  */
 
 /**
- * File: src/fcn/cron/windguru.php
- * Wind Guru Updater
+ * File: src/fcn/cron/windy.php
+ * Windy Updater
  */
 
 /** @var mysqli $conn Global MYSQL Connection */
@@ -32,23 +32,21 @@
  */
 /**
  * @return array
- * @return array
  * @var object $data Weather Data
+ * @return array
  * @var object $atlas Atlas Data
  */
 
-$windguruSalt = date('YmdHis');
-$windguruHash = md5($windguruSalt . $config->upload->windguru->uid . $config->upload->windguru->password);
-$windguruQueryUrl = $config->upload->windguru->url . '?uid=' . $config->upload->windguru->uid . '&salt=' . $windguruSalt . '&hash=' . $windguruHash;
-$windguruQuery = '&temperature=' . $data->tempC . '&wind_direction=' . $data->windDEG . '&wind_avg=' . round($data->windSpeedMPH / 1.15078, 1) . '&mslp=' . $data->pressure_kPa * 10 . '&rh=' . $data->relH . '&precip=' . $data->rainMM;
+$windyQueryUrl = $config->upload->windy->url . '/' . $config->upload->windy->key;
+$windyQuery = '?tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN;
 if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $windguruQuery = $windguruQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH / 1.15078 . '&wind_max=' . $atlas->windGustMPH / 1.15078;
+    $windyQuery = $windyQuery . '&uv=' . $atlas->uvIndex;
 }
-$windguruQueryResult = file_get_contents($windguruQueryUrl . $windguruQuery);
+$windyQueryResult = file_get_contents($windyQueryUrl . $windyQuery);
 // Save to DB
 mysqli_query($conn,
-    "INSERT INTO `windguru_updates` (`query`,`result`) VALUES ('$windguruQuery', '$windguruQueryResult')");
+    "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL)[Windguru]: Query = $windguruQuery | Result = $windguruQueryResult");
+    syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
 }

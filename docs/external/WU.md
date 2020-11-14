@@ -12,7 +12,7 @@
 ## Configuration
 
 1. Change enabled to true
-1. Add your station id and Weather Underground password
+1. Add your station ID and Weather Underground password
 
 ## Webcam
 

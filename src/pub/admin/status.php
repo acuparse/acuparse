@@ -38,16 +38,20 @@ function rssiConvert($rssi)
 {
     $result = array();
     switch ($rssi) {
+        case 0:
+            $signal = 'No Signal';
+            $colour = 'red';
+            break;
         case 1:
             $signal = 'Poor';
             $colour = 'indianred';
             break;
         case 2:
-            $signal = 'Fair';
+            $signal = 'Weak';
             $colour = 'yellowgreen';
             break;
         case 3:
-            $signal = 'Good';
+            $signal = 'Strong';
             $colour = 'greenyellow';
             break;
         case 4:
@@ -75,7 +79,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         <hr>
         <div class="row">
             <div class="col-md-8 col-12 mx-auto">
-                <table class="table <?= ($config->site->theme === 'twilight') ? 'table-dark' : 'table-light'; ?> table-hover table-responsive-sm"
+                <table class="table table-hover table-responsive-sm table-bordered <?= ($config->site->theme === 'twilight') ? 'table-dark' : 'table-light'; ?>"
                        id="sensor-table">
                     <thead>
                     <tr>
@@ -90,60 +94,55 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                     if ($config->station->access_mac != 0) {
                         $result = mysqli_fetch_assoc(mysqli_query($conn,
                             "SELECT `battery` FROM `access_status` ORDER BY `last_update` DESC LIMIT 1"));
+                        $batteryBackground = ($result['battery'] === 'normal') ? 'limegreen' : 'orangered';
                         ?>
                         <tr id="<?= $config->station->access_mac; ?>">
-                            <th scope="row"><?php echo ltrim($config->station->access_mac, '0'); ?></th>
+                            <th scope="row"><?= ltrim($config->station->access_mac, '0'); ?></th>
                             <td>Access</td>
-                            <td style="background-color: <?= ($result['battery'] = 'normal') ? 'lightgreen' : 'orangered'; ?>"><?php echo ucfirst($result['battery']); ?></td>
-                            <td>N/A</td>
+                            <td style="background-color: <?= $batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
+                            <td></td>
                         </tr>
                     <?php }
                     if ($config->station->sensor_atlas != 0) {
                         $result = mysqli_fetch_assoc(mysqli_query($conn,
                             "SELECT `battery`, `rssi` FROM `atlas_status` ORDER BY `last_update` DESC LIMIT 1"));
+                        $rssi = rssiConvert($result['rssi']);
+                        $batteryBackground = ($result['battery'] === 'normal') ? 'limegreen' : 'orangered';
                         ?>
                         <tr id="<?= $config->station->sensor_atlas; ?>">
-                            <th scope="row"><?php echo ltrim($config->station->sensor_atlas, '0'); ?></th>
+                            <th scope="row"><?= ltrim($config->station->sensor_atlas, '0'); ?></th>
                             <td>Atlas</td>
-                            <td style="background-color: <?= ($result['battery'] = 'normal') ? 'lightgreen' : 'orangered'; ?>"><?php echo ucfirst($result['battery']); ?></td>
-                            <?php
-                            $rssi = rssiConvert($result['rssi']);
-                            ?>
-                            <td style="background-color: <?= $rssi[1]; ?>;"><?php echo $rssi[0]; ?></td>
+                            <td style="background-color: <?= $batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
+                            <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>
                     <?php }
                     if ($config->station->sensor_5n1 != 0) {
                         $result = mysqli_fetch_assoc(mysqli_query($conn,
                             "SELECT `battery`, `rssi` FROM `5n1_status` ORDER BY `last_update` DESC LIMIT 1"));
+                        $rssi = rssiConvert($result['rssi']);
+                        $batteryBackground = ($result['battery'] === 'normal') ? 'limegreen' : 'orangered';
                         ?>
                         <tr id="<?= $config->station->sensor_5n1; ?>">
-                            <th scope="row"><?php echo ltrim($config->station->sensor_5n1, '0'); ?></th>
+                            <th scope="row"><?= ltrim($config->station->sensor_5n1, '0'); ?></th>
                             <td>5N1</td>
-                            <td style="background-color: <?= ($result['battery'] = 'normal') ? 'lightgreen' : 'orangered'; ?>"><?php echo ucfirst($result['battery']); ?></td>
-                            <?php
-                            $rssi = rssiConvert($result['rssi']);
-                            ?>
-                            <td style="background-color: <?= $rssi[1]; ?>;"><?php echo $rssi[0]; ?></td>
+                            <td style="background-color: <?=$batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
+                            <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>
-                    <?php } ?>
-                    <?php
-                    $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
+                    <?php }
+                    $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");
                     while ($row = mysqli_fetch_assoc($result)) {
                         $name = $row['name'];
                         $sensor = $row['sensor'];
+                        $result2 = mysqli_fetch_assoc(mysqli_query($conn,
+                            "SELECT `battery`, `rssi` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+                        $rssi = rssiConvert($result2['rssi']);
+                        $batteryBackground = ($result2['battery'] === 'normal') ? 'limegreen' : 'orangered';
                         ?>
-                        <tr id="<?php echo $sensor; ?>">
+                        <tr id="<?= $sensor; ?>">
                             <th scope="row"><?= ltrim($sensor, '0'); ?></th>
-                            <td><?php echo $name; ?></td>
-                            <?php
-                            $result2 = mysqli_fetch_assoc(mysqli_query($conn,
-                                "SELECT `battery`, `rssi` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
-                            ?>
-                            <td style="background-color: <?= ($result2['battery'] = 'normal') ? 'lightgreen' : 'orangered'; ?>"><?php echo ucfirst($result2['battery']); ?></td>
-                            <?php
-                            $rssi = rssiConvert($result2['rssi']);
-                            ?>
-                            <td style="background-color: <?= $rssi[1]; ?>;"><?php echo $rssi[0]; ?></td>
+                            <td><?= $name; ?></td>
+                            <td style="background-color: <?= $batteryBackground ?>"><?= ucfirst($result2['battery']); ?></td>
+                            <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>
                     <?php } ?>
                     </tbody>

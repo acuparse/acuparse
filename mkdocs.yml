@@ -26,8 +26,8 @@ nav:
       - NGINX Proxy: 'NGINX.md'
       - Troubleshooting: 'TROUBLESHOOTING.md'
   - Updating:
-      - Version 2.3: 'updates/v2_3.md'
       - Version 3.0: 'updates/v3.md'
+      - Version 2.3: 'updates/v2_3.md'
   - API Guide: 'API.md'
   - Backup Guide: 'BACKUPS.md'
   - Telemetry Guide: 'TELEMETRY.md'
@@ -38,9 +38,10 @@ nav:
       - Weathercloud: 'external/WC.md'
       - Windy: 'external/WINDY.md'
       - Windguru: 'external/WINDGURU.md'
+      - Open Weather Map: 'external/OPENWEATHER.md'
       - Generic:
           - WeatherPoly: 'external/generic/WEATHERPOLY.md'
-copyright: "Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3"
+copyright: "Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3</a><br><a href='https://www.acuparse.com'>Project Homepage</a>"
 extra:
   social:
     - type: 'gitlab'

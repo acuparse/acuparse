@@ -56,6 +56,9 @@ DROP EVENT IF EXISTS `rebuild_pws_updates`;
 DROP EVENT IF EXISTS `trim_windy_updates`;
 DROP EVENT IF EXISTS `rebuild_windy_updates`;
 
+DROP EVENT IF EXISTS `trim_openweather_updates`;
+DROP EVENT IF EXISTS `rebuild_openweather_updates`;
+
 DROP EVENT IF EXISTS `trim_generic_updates`;
 DROP EVENT IF EXISTS `rebuild_generic_updates`;
 

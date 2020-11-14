@@ -651,6 +651,71 @@
     <hr class="hr">
 
     <div class="row">
+        <!-- OpenWeather Upload -->
+        <div class="col-md-6 col-12 border">
+            <h3 class="panel-heading">OpenWeather</h3>
+            <div class="form-group">
+                <h4>Status:</h4>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio"
+                           name="upload[openweather][enabled]"
+                           id="openweather-updates-enabled-0" value="0"
+                           onclick='document.getElementById("openweather-updates-id").disabled=true;document.getElementById("openweather-updates-key").disabled=true;'
+                        <?= ($config->upload->openweather->enabled === false) ? 'checked="checked"' : false; ?>>
+                    <label class="form-check-label alert alert-danger"
+                           for="openweather-updates-enabled-0">Disabled</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio"
+                           name="upload[openweather][enabled]"
+                           id="openweather-updates-enabled-1" value="1"
+                           onclick='document.getElementById("openweather-updates-id").disabled=false;document.getElementById("openweather-updates-key").disabled=false;'
+                        <?= ($config->upload->openweather->enabled === true) ? 'checked="checked"' : false; ?>>
+                    <label class="form-check-label alert alert-success"
+                           for="openweather-updates-enabled-1">Enabled</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-form-label" for="openweather-updates-uid">Station ID:</label>
+                <div class="col form-group">
+                    <input type="text" class="form-control"
+                           name="upload[openweather][id]"
+                           id="openweather-updates-id"
+                           maxlength="24"
+                           placeholder="Station ID"
+                        <?= ($config->upload->openweather->enabled === false) ? 'disabled="disabled"' : false; ?>
+                           value="<?= $config->upload->openweather->id; ?>">
+                    <small id="openweather-updates-uid-help" class="form-text text-muted">Your <a
+                                href="https://openweathermap.org/stations#steps">OpenWeather</a> Station
+                        ID.<br>See <a href="https://docs.acuparse.com/external/OPENWEATHER">docs</a> for
+                        details.</small>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-form-label"
+                       for="openweather-updates-key">API Key:</label>
+                <div class="col form-group">
+                    <input type="text" class="form-control"
+                           name="upload[openweather][key]"
+                           id="openweather-updates-key"
+                           placeholder="API Key"
+                           maxlength="32"
+                        <?= ($config->upload->openweather->enabled === false) ? 'disabled="disabled"' : false; ?>
+                           value="<?= $config->upload->openweather->key; ?>">
+                    <small id="openweather-updates-key-help" class="form-text text-muted">Your API Key</small>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-form-label" for="openweather-updates-url">URL:</label>
+                <div class="col form-group">
+                    <input type="text" class="form-control"
+                           name="upload[openweather][url]"
+                           id="openweather-updates-url"
+                           disabled="disabled"
+                           value="<?= $config->upload->openweather->url; ?>">
+                </div>
+            </div>
+        </div>
         <!-- Generic Upload -->
         <div class="col-6 border mx-auto">
             <h3 class="panel-heading">Generic Update Server</h3>
@@ -719,7 +784,7 @@
             <p><strong>Supported Servers:</strong></p>
             <ul>
                 <li>
-                    <a href="https://docs.acuparse.com/external/generic/WeatherPoly">WeatherPoly</a>:
+                    <a href="https://docs.acuparse.com/external/generic/WEATHERPOLY">WeatherPoly</a>:
                     http(s)://{IP/HOSTNAME}:8080/acuparse
                 </li>
             </ul>

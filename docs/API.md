@@ -171,7 +171,7 @@ function getTowerSensorData($acuparseURL, $acuparseToken)
     return $t->towers;
 }
 
-$towers = getTowerSensorData('http(s)://<yourip/domain>', '');
+$towers = getTowerSensorData('http(s)://<yourip/domain>', '<API_Token>');
 
 foreach ($towers as $tower) {
     $name = $tower->name;

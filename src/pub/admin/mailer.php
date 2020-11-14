@@ -50,12 +50,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
     if (!$testEmail) {
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[ERROR]: Error sending test email!");
+        syslog(LOG_INFO, "(SYSTEM)[ERROR]: Error sending test email to $email");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Sending Test Email Failed! ' . $mgStatus . '</div>';
     } else {
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Sent test email to $email");
+        syslog(LOG_INFO, "(SYSTEM): Sent test email to $email");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Test Email Sent Successfully! ' . $mgStatus . '</div>';
     }

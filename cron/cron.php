@@ -25,18 +25,22 @@
  * Called by system to send data to external weather services, archive to database, and check for updates
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
-
 // Get the loader
 require(dirname(__DIR__) . '/src/inc/loader.php');
 
-syslog(LOG_DEBUG, "(SYSTEM){CRON}[DEBUG]: Running Tasks.");
+/**
+ * @return array
+ * @var object $config Global Config
+ * @var mysqli $conn Global MYSQL Connection
+ * @var string $installed
+ */
 
-/** @var string $installed */
+syslog(LOG_DEBUG, "(SYSTEM){CRON}: Running System Tasks");
+
 if ($installed === true) {
     // Not Configured
     if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
-        syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: No MAC Configured.");
+        syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: No Device MAC Configured");
     } // Run Tasks
     else {
         // Load weather Data
@@ -45,6 +49,7 @@ if ($installed === true) {
             $get_data = new getCurrentWeatherData();
             $data = $get_data->getConditions();
         }
+        /* @var object $data */
 
         // Load Atlas Data
         if ($config->station->primary_sensor === 0) {
@@ -53,6 +58,7 @@ if ($installed === true) {
                 $getAtlasData = new getCurrentAtlasData();
                 $atlas = $getAtlasData->getData();
             }
+
             if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
                 // Load Lightning Data
                 if (!class_exists('atlas\getCurrentLightningData')) {
@@ -62,6 +68,9 @@ if ($installed === true) {
                 }
             }
         }
+
+        /* @var object $atlas */
+        /* @var object $lightning */
 
         // If using tower data for archiving, set it now
         if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === true) {
@@ -96,20 +105,18 @@ if ($installed === true) {
             }
 
             // Save to DB
-            mysqli_query($conn, $archiveQuery) or syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: Error saving archive - SQL Error Details: " . mysqli_error($conn));
+            mysqli_query($conn, $archiveQuery) or syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ")");
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_DEBUG, "(SYSTEM){CRON}[DEBUG]: Processed Archive Update");
+                syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Updated");
             }
 
             // Check if this is the first update after an outage
             $status = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
             if ($status['status'] === '0') {
-
                 require(APP_BASE_PATH . '/fcn/mailer.php');
-                $subject = 'Access/smartHUB ONLINE';
-                $message = '<p><strong>Acuparse is receiving and processing updates from your Access/smartHUB.</strong>';
-
+                $subject = $config->station->hostname . ' ONLINE';
+                $message = '<p><strong>' . $config->station->hostname . ' is receiving weather updates.</strong></p>';
                 $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
                 while ($row = mysqli_fetch_assoc($sql)) {
                     $admin_email[] = $row['email'];
@@ -120,7 +127,7 @@ if ($installed === true) {
                         mailer($to, $subject, $message);
                     }
                     // Log it
-                    syslog(LOG_INFO, "(SYSTEM){CRON}[INFO]: Station Online. Email sent to admin.");
+                    syslog(LOG_INFO, "(SYSTEM){CRON}: *ONLINE* Now Receiving Updates (Notification Sent))");
 
                     // Update the time the email was sent
                     $lastSent = date("Y-m-d H:i:s");
@@ -129,7 +136,7 @@ if ($installed === true) {
                 } else {
                     // Log it
                     syslog(LOG_INFO,
-                        "(SYSTEM)[INFO]: ONLINE: Receiving updates from Access/smartHUB. Email notifications not enabled.");
+                        "(SYSTEM){CRON}: *ONLINE* Now Receiving Updates (Notifications Disabled)");
                     // Update the status
                     mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '1'");
                 }
@@ -140,40 +147,48 @@ if ($installed === true) {
                 require(APP_BASE_PATH . '/fcn/cron/towerData.php');
             }
 
+            ini_set('default_socket_timeout', 1);
+
             // Build PWS Update
             if ($config->upload->pws->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/pwsweather.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/pwsweather.php');
             }
 
             // Build Weather Underground Update
             if ($config->upload->wu->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/weatherunderground.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/weatherunderground.php');
             }
 
             // Build CWOP Update
             if ($config->upload->cwop->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/cwop.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/cwop.php');
             }
 
             // Build Weathercloud Update
             if ($config->upload->wc->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/weathercloud.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/weathercloud.php');
             }
 
             // Build Windy Update
             if ($config->upload->windy->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/windy.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/windy.php');
             }
 
             // Build Windguru Update
             if ($config->upload->windguru->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/windguru.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/windguru.php');
+            }
+
+            // Build OpenWeather Update
+            if ($config->upload->openweather->enabled === true) {
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/openweather.php');
             }
 
             // Build Generic WU Based Update
             if ($config->upload->generic->enabled === true) {
-                require(APP_BASE_PATH . '/fcn/cron/generic.php');
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/generic.php');
             }
+
         } // Nothing has changed
         else {
             require(APP_BASE_PATH . '/fcn/cron/noChange.php');
@@ -181,7 +196,7 @@ if ($installed === true) {
 
     }
 } else {
-    exit(syslog(LOG_WARNING, "(SYSTEM){CRON}[WARNING]: Not Installed. Run installer."));
+    exit(syslog(LOG_WARNING, "(SYSTEM){CRON}[WARNING]: Not Installed. Run installer"));
 }
 
 // Check the event scheduler
@@ -192,4 +207,4 @@ if ($config->site->updates === true) {
     require(APP_BASE_PATH . '/fcn/cron/checkUpdates.php');
 }
 
-syslog(LOG_DEBUG, "(SYSTEM){CRON}[DEBUG]: DONE Running Tasks.");
+syslog(LOG_DEBUG, "(SYSTEM){CRON}: DONE Running System Tasks");

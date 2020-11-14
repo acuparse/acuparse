@@ -42,16 +42,16 @@ if (isset($_GET['do'])) {
         "INSERT INTO `towers` (`name`, `sensor`, `arrange`, `private`) VALUES ('$towerName', '$towerSensorID', '$display', '$private')");
     if (!$result) {
         syslog(LOG_ERR,
-            "(SYSTEM)[ERROR]: Adding tower $towerSensorID - $towerName failed: " . mysqli_error($conn));
+            "(SYSTEM){TOWER}[ERROR]: Adding tower $towerSensorID - $towerName failed: " . mysqli_error($conn));
     }
 
     // If the insert Query was successful.
     if (mysqli_affected_rows($conn) === 1) {
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Added Successfully!</div>';
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Tower $towerSensorID - $towerName added successfully");
+        syslog(LOG_INFO, "(SYSTEM){TOWER}: Tower $towerSensorID - $towerName added successfully");
     } else {
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong creating new tower!</div>';
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding tower $towerSensorID - $towerName failed");
+        syslog(LOG_ERR, "(SYSTEM){TOWER}[ERROR]: Adding tower $towerSensorID - $towerName failed");
     }
     header("Location: /admin");
     exit();

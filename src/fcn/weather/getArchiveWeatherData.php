@@ -204,6 +204,8 @@ class getArchiveWeatherData
             exit();
         }
 
+        set_time_limit(0);
+
         // Process Wind Speed:
 
         // Yesterday
@@ -588,6 +590,9 @@ class getArchiveWeatherData
     private function windDirection($windDEG)
     {
         switch ($windDEG) {
+            case (is_null($windDEG)):
+                $windDIR = 'ERROR';
+                break;
             case ($windDEG >= 11.25 && $windDEG < 33.75):
                 $windDIR = 'NNE';
                 break;

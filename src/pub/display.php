@@ -37,7 +37,17 @@ require(dirname(__DIR__) . '/inc/loader.php');
 if ($installed == false) {
     header("Location: /admin/install");
     exit();
+} elseif ((empty($config->station->access_mac) && empty($config->station->hub_mac)) && (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true)) {
+    $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Missing Access/Hub Mac. Please configure in sensor settings.</div>';
+    header("Location: /admin/settings");
+    exit();
+} elseif (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
+    $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Setup Required! Please login as an admin to continue.</div>';
+    header("Location: /admin/account");
+    exit();
 } else {
+    $pageTitle = 'Live Weather';
+    include(APP_BASE_PATH . '/inc/header.php');
 
     $pageTitle = 'Live Weather - Display Mode';
 
@@ -55,13 +65,6 @@ if ($installed == false) {
 // Get Forcast Data
     ?>
 
-    <!-- Time Section -->
-    <div id="local-time" class="row local-time">
-        <div class="col-auto mx-auto">
-            <div id="local-time-display"></div>
-        </div>
-    </div>
-
     <!-- Modify CSS for Display Mode -->
     <style>
         body {
@@ -75,6 +78,16 @@ if ($installed == false) {
         }
     </style>
 
+    <!-- Time Section -->
+    <section id="local-time" class="local-time">
+        <div class="row">
+            <div class="col-auto mx-auto">
+                <div>
+                    <p id="local-time-display"></p>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Live Weather Section -->
     <section id="live-weather">
         <div class="row">
@@ -86,42 +99,49 @@ if ($installed == false) {
         </div>
     </section>
     <?php
+    if ($config->station->primary_sensor === 0) {
+        $weatherRefreshTime = 150000;
+    } else {
+        $weatherRefreshTime = 80000;
+    }
 // Set the footer to include scripts required for this page
     $page_footer = '
     <!-- Refresh Weather Data -->
     <script>
         $(document).ready(function () {
-            function update() {
+            async function updateWeather() {
                 $.ajax({
-                    url: \'/?weather\',
+                    url: \'/api/v1/html/dashboard/\',
                     success: function (data) {
                         $("#live-weather").html(data);
-                        window.setTimeout(update, 39000);
+                        setTimeout(updateWeather, ' . $weatherRefreshTime . ')
+                    },
+                    error: function (request) {
+                        console.log("Weather Data Error:\n" + request.responseText);
                     }
-                });
+                })
             }
-
-            update();
-        });
-    </script>
-    
-    <!-- Refresh Server Time -->
-    <script>
-        $(document).ready(function () {
-            function update() {
+            async function updateTime() {
                 $.ajax({
-                    url: \'/?time\',
-                    success: function (data) {
-                        $("#local-time-display").html(data);
-                        window.setTimeout(update, 1000);
+                    url: \'/api/v1/text/time/?ping\',
+                    startTime: new Date().getTime(),
+                    success: async function(data) {
+                        $.ajax({
+                            url: \'/api/v1/text/time/\',
+                            startTime: this.startTime,
+                            success: async function (data) {
+                                $("#local-time-display").html(data);
+                                let rtt = new Date().getTime() - this.startTime;
+                                setTimeout(updateTime, 1000 - rtt);
+                            }
+                        });
                     }
                 });
             }
-    
-            update();
+            updateWeather();
+            updateTime();
         });
     </script>
 ';
-
     include(APP_BASE_PATH . '/inc/footer.php');
 }

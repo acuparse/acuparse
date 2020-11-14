@@ -33,7 +33,7 @@ $user = (int)mysqli_real_escape_string($conn,
 // Don't delete the logged in user
 if ($user === $_SESSION['uid']) {
     // Log it
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: User $user cannot delete themselves");
+    syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: User $user cannot delete themselves");
     // Display message
     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Cannot delete your own account!</div>';
 } else {
@@ -41,12 +41,12 @@ if ($user === $_SESSION['uid']) {
     // If the insert Query was successful.
     if (mysqli_affected_rows($conn) === 1) {
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: User $user deleted successfully");
+        syslog(LOG_INFO, "(SYSTEM){USER}: User $user deleted successfully");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Deleted Successfully!</div>';
     } else {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Deleting user $user failed!");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Deleting user $user failed!");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong deleting the user!</div>';
     }

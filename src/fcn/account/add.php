@@ -46,7 +46,7 @@ if (isset($_GET['do'])) {
         "SELECT `username` FROM `users` WHERE `username` = '$username'"));
     if ($checkUsername !== 0) {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding user failed, username already exists");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Adding user failed, username already exists");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed, username already exists.</div>';
         header("Location: /admin/account?add_user");
@@ -56,7 +56,7 @@ if (isset($_GET['do'])) {
         "SELECT `email` FROM `users` WHERE `email` = '$email'"));
     if ($checkEmail !== 0) {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding user failed, email already exists");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Adding user failed, email already exists");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed, email already exists.</div>';
         header("Location: /admin/account?add_user");
@@ -72,12 +72,12 @@ if (isset($_GET['do'])) {
         $message = '<h2>New Account Created Successfully!</h2><p>Your new account has created successfully. You can now sign in at <a href="http://' . $config->site->hostname . '">' . $config->site->hostname . '</a> with the details below.</p><h3>Username: ' . $username . '</h3><h3>Password: ' . $password . '</h3>';
         mailer($email, $subject, $message);
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Account for $username added successfully");
+        syslog(LOG_INFO, "(SYSTEM){USER}: Account for $username added successfully");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Account added successfully.</div>';
     } else {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding user failed: " . mysqli_error($conn));
+        syslog(LOG_ERR, "(SYSTEM){USER}: Adding user failed: " . mysqli_error($conn));
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed.</div>';
     }

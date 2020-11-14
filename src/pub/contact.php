@@ -54,9 +54,19 @@ if (isset($_GET['do'])) {
 
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $email = strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['messages'] = '<div class="alert alert-danger text-center"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: ' . $email . ' is not a valid email</div>';
+            header("Location: /contact");
+            exit();
+        }
+        if ($_POST['captcha']) {
+            $_SESSION['messages'] = '<div class="alert alert-warning text-center"></a>Success: Message Sent</div>';
+            header("Location: /");
+            exit();
+        }
         $post_subject = filter_input(INPUT_POST, 'subject', FILTER_SANITIZE_STRING);
         $subject = 'Contact Form Submission - ' . $post_subject;
-        $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
+        $message = htmlentities(filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING));
 
         $message = '<p><strong>You have received a new message from:</strong> <a href="mailto:' . $email . '?subject=' . $post_subject . '">' . $name . ' &lt;' . $email . '&gt;</a></p><p>' . $message . '</p>';
 
@@ -66,12 +76,12 @@ if (isset($_GET['do'])) {
         }
 
         // Mail it
-        /** @var array  $admin_email Admins email addresses */
+        /** @var array $admin_email Admins email addresses */
         foreach ($admin_email as $to) {
             mailer($to, $subject, $message, $email, $name, false);
         }
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Mail sent to admin successfully");
+        syslog(LOG_INFO, "(SYSTEM){CONTACT}: Mail sent to admin successfully");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
         header("Location: /");
@@ -117,6 +127,11 @@ if (isset($_GET['do'])) {
                         <label for="message">Message:</label>
                         <textarea rows="10" cols="100" class="form-control" name="message" id="message"
                                   required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label hidden for="subject">Captcha:</label>
+                        <input type="text" class="form-control" name="captcha" id="captcha" placeholder="captcha"
+                               hidden>
                     </div>
                     <?php
                     if ($config->google->recaptcha->enabled === true && !isset($_SESSION['authenticated'])) { ?>
