@@ -31,30 +31,27 @@
  * @var object $config Global Config
  */
 
+syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Checking Database Trimming");
+
 if ($config->mysql->trim !== 0) {
-    syslog(LOG_DEBUG, "(SYSTEM)[DEBUG]: Checking Event Scheduler");
     $result = mysqli_fetch_assoc(mysqli_query($conn, "SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
     $scheduler = $result['Value'];
-    if ($scheduler === 'OFF') {
+    if ($scheduler === 'OFF' || isset($updateComplete)) {
         if ($config->mysql->trim === 1) {
             $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable.sql';
-            $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-            $schema = shell_exec($schema);
-            if ($schema) {
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
-            } else {
-                syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Failed to reset Event Scheduler");
-            }
         } elseif ($config->mysql->trim === 2) {
-            // Load the database with the trim schema
-            $schema = dirname(__DIR__) . '/sql/trim/enable_xtower.sql';
-            $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-            $schema = shell_exec($schema);
-            if ($schema) {
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Event Scheduler Reset");
-            } else {
-                syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Failed to reset Event Scheduler");
-            }
+            $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable_xtower.sql';
         }
+        $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+        $schema = exec($schema, $schemaOutput, $schemaReturn);
+        if ($schemaReturn !== 0) {
+            syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming");
+        } else {
+            syslog(LOG_INFO, "(SYSTEM){TRIM}: Successfully Enabled Database Trimming");
+        }
+    } else {
+        syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Database Trimming OK");
     }
+} else {
+    syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Database Trimming Disabled");
 }

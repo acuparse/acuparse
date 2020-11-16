@@ -54,12 +54,12 @@ if ((strtotime($result['timestamp']) < strtotime('-10 minutes')) or ($count == 0
     mysqli_query($conn, "INSERT INTO `wc_updates` (`query`,`result`) VALUES ('$wcQuery', '$wcQueryResult')");
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Query = $wcQuery | Result = $wcQueryResult");
+        syslog(LOG_DEBUG, "(EXTERNAL){WC}: Query = $wcQuery | Response = $wcQueryResult");
     }
 } // No new update to send
 else {
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL)[WC]: Update not sent. Not enough time has passed");
+        syslog(LOG_DEBUG, "(EXTERNAL){WC}: Update not sent. Not enough time has passed");
     }
 }

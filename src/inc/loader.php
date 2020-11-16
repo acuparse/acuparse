@@ -60,7 +60,7 @@ if (!isset($conn)) {
         if (!$conn) {
             header($_SERVER["SERVER_PROTOCOL"] . " 503 Service Unavailable");
             require_once('templates/dbConnectFailed.php');
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: MySQL Connection failed: " . mysqli_connect_error());
+            syslog(LOG_ERR, "(SYSTEM){LOADER}[ERROR]: MySQL Connection failed: " . mysqli_connect_error());
             exit();
         }
         ini_set('mysqlnd_qc.enable_qc', 1);
@@ -78,7 +78,7 @@ if (!isset($openlog)) {
 if (!isset($_SESSION)) {
     if ((isset($_SERVER["HTTP_X_PURPOSE"]) and (strtolower($_SERVER["HTTP_X_PURPOSE"]) == "preview")) or
         (isset($_SERVER["HTTP_X_MOZ"]) and (strtolower($_SERVER["HTTP_X_MOZ"]) == "prefetch"))) {
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Prefetch Detected");
+        syslog(LOG_INFO, "(SYSTEM){LOADER}[INFO]: Prefetch Detected");
     } else {
         include(APP_BASE_PATH . '/inc/session.php');
     }

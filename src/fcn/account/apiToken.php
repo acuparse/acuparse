@@ -34,7 +34,7 @@ if ($_SESSION['admin'] !== true) {
     $uid = $_SESSION['uid'];
     if ($user !== $uid) {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: No permissions to modify $user. $uid is not an admin");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: No permissions to modify $user. $uid is not an admin");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
         header("Location: /");
@@ -61,11 +61,11 @@ if (mysqli_affected_rows($conn) === 1) {
     // Mail it
     mailer($email['email'], $subject, $message);
     // Log it
-    syslog(LOG_INFO, "(SYSTEM)[INFO]: Successfully generated API Token for UID $user");
+    syslog(LOG_INFO, "(SYSTEM){USER}: Successfully generated API Token for UID $user");
     // Display message
     $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>API Token Generated Successfully. Token is <code>' . $token . '</code></div>';
 } else {
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Generating API Token for UID $user failed: " . mysqli_error($conn));
+    syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Generating API Token for UID $user failed: " . mysqli_error($conn));
     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Failed Generating API Token ' . $token . ' ...</div>';
 }
 header("Location: /");

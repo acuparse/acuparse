@@ -21,8 +21,8 @@
  */
 
 /**
- * File: src/fcn/cron/pwsweather.php
- * PWS Weather Updater
+ * File: src/fcn/cron/weatherunderground.php
+ * Weather Underground Updater
  */
 
 /** @var mysqli $conn Global MYSQL Connection */
@@ -40,16 +40,16 @@
  * @var string $utcDate Atlas Data
  */
 
-$pwsQueryUrl = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->password;
-$pwsQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
+$wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
+$wuQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
 if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $pwsQuery = $pwsQuery . '&UV=' . $atlas->uvIndex;
+    $wuQuery = $wuQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH . '&windgustmph' . $atlas->windGust . '&windgustdir' . $atlas->windGustDEG . '&UV=' . $atlas->uvIndex;
 }
-$pwsQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
-$pwsQueryResult = file_get_contents($pwsQueryUrl . $pwsQuery . $pwsQueryStatic);
+$wuQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
+$wuQueryResult = file_get_contents(htmlentities($wuQueryUrl . $wuQuery . $wuQueryStatic));
 // Save to DB
-mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pwsQuery', '$pwsQueryResult')");
+mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wuQuery', '$wuQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL)[PWS]: Query = $pwsQuery | Result = $pwsQueryResult");
+    syslog(LOG_DEBUG, "(EXTERNAL){WU}: Query = $wuQuery | Response = $wuQueryResult");
 }

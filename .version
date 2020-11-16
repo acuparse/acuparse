@@ -1,7 +1,7 @@
 {
   "NAME": "acuparse",
-  "VERSION": "3.0.1",
-  "SCHEMA": "3.0",
+  "VERSION": "3.1.0",
+  "SCHEMA": "3.1",
   "REPO": "https://gitlab.com/acuparse/acuparse",
   "HOMEPAGE": "https://www.acuparse.com",
   "RELEASE_SERVER": "https://version.acuparse.com"

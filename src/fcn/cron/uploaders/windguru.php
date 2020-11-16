@@ -21,8 +21,8 @@
  */
 
 /**
- * File: src/fcn/cron/weatherunderground.php
- * Weather Underground Updater
+ * File: src/fcn/cron/windguru.php
+ * Wind Guru Updater
  */
 
 /** @var mysqli $conn Global MYSQL Connection */
@@ -32,24 +32,23 @@
  */
 /**
  * @return array
+ * @return array
  * @var object $data Weather Data
- * @return array
  * @var object $atlas Atlas Data
- * @return array
- * @var object $appInfo Global Application Info
- * @var string $utcDate Atlas Data
  */
 
-$wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
-$wuQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
+$windguruSalt = date('YmdHis');
+$windguruHash = md5($windguruSalt . $config->upload->windguru->uid . $config->upload->windguru->password);
+$windguruQueryUrl = $config->upload->windguru->url . '?uid=' . $config->upload->windguru->uid . '&salt=' . $windguruSalt . '&hash=' . $windguruHash;
+$windguruQuery = '&temperature=' . $data->tempC . '&wind_direction=' . $data->windDEG . '&wind_avg=' . round($data->windSpeedMPH / 1.15078, 1) . '&mslp=' . round($data->pressure_kPa * 10, 1) . '&rh=' . $data->relH . '&precip=' . $data->rainMM;
 if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $wuQuery = $wuQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH . '&windgustmph' . $atlas->windGust . '&windgustdir' . $atlas->windGustDEG . '&UV=' . $atlas->uvIndex;
+    $windguruQuery = $windguruQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH / 1.15078 . '&wind_max=' . $atlas->windGustMPH / 1.15078;
 }
-$wuQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
-$wuQueryResult = file_get_contents(htmlentities($wuQueryUrl . $wuQuery . $wuQueryStatic));
+$windguruQueryResult = file_get_contents($windguruQueryUrl . $windguruQuery);
 // Save to DB
-mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wuQuery', '$wuQueryResult')");
+mysqli_query($conn,
+    "INSERT INTO `windguru_updates` (`query`,`result`) VALUES ('$windguruQuery', '$windguruQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL)[WU]: Query = $wuQuery | Result = $wuQueryResult");
+    syslog(LOG_DEBUG, "(EXTERNAL){Windguru}: Query = $windguruQuery | Response = $windguruQueryResult");
 }

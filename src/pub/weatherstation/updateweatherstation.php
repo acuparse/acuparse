@@ -34,9 +34,10 @@ require(dirname(dirname(__DIR__)) . '/inc/loader.php');
  * @var object $config Global Config
  */
 
+
 if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
     $mac = $_GET['id'];
-    exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: MAC $mac is not configured."));
+    exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: Device $mac is not configured"));
 }
 
 function last_updated_at() {
@@ -45,6 +46,7 @@ function last_updated_at() {
     mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate';");
 }
 
+ini_set('default_socket_timeout', 1);
 // Process Access Update
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && $_GET['id'] === $config->station->access_mac) {
     $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?&', '', $_SERVER['REQUEST_URI']);
@@ -57,5 +59,5 @@ elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->stati
 else {
     $mac = $_GET['id'];
     // Log it
-    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Ignored update from $mac.");
+    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Unrecognized Device $mac");
 }

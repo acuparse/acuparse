@@ -49,27 +49,16 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Check and adjust database trim level
         if ($config->mysql->trim != $_POST['mysql']['trim']) {
             if ($_POST['mysql']['trim'] === '0') {
-                // Load the database with the trim schema
                 $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/disable.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim Disabled");
-                $config->mysql->trim = (int)$_POST['mysql']['trim'];
             } elseif ($_POST['mysql']['trim'] === '1') {
-                // Load the database with the trim schema
                 $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All Enabled");
-                $config->mysql->trim = (int)$_POST['mysql']['trim'];
             } elseif ($_POST['mysql']['trim'] === '2') {
-                // Load the database with the trim schema
                 $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable_xtower.sql';
-                $schema = "mysql -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
-                $schema = shell_exec($schema);
-                syslog(LOG_INFO, "(SYSTEM)[INFO]: Trim All except towers Enabled");
-                $config->mysql->trim = (int)$_POST['mysql']['trim'];
             }
+            $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+            $schema = exec($schema, $schemaOutput, $schemaReturn);
+            syslog(LOG_INFO, "(SYSTEM){CONFIG}: Database Trimming Updated");
+            $config->mysql->trim = (int)$_POST['mysql']['trim'];
         }
 
         // Station
@@ -181,6 +170,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->windguru->password = (isset($_POST['upload']['windguru']['password'])) ? $_POST['upload']['windguru']['password'] : null;
         $config->upload->windguru->url = (isset($_POST['upload']['windguru']['url'])) ? $_POST['upload']['windguru']['url'] : 'http://www.windguru.cz/upload/api.php';
 
+        // OpenWeather
+        $config->upload->openweather->enabled = (bool)$_POST['upload']['openweather']['enabled'];
+        $config->upload->openweather->id = (isset($_POST['upload']['openweather']['id'])) ? $_POST['upload']['openweather']['id'] : null;
+        $config->upload->openweather->key = (isset($_POST['upload']['openweather']['key'])) ? $_POST['upload']['openweather']['key'] : null;
+        $config->upload->openweather->url = (isset($_POST['upload']['openweather']['url'])) ? $_POST['upload']['openweather']['url'] : 'http://api.openweathermap.org/data/3.0/measurements';
+
         // Generic
         $config->upload->generic->enabled = (bool)$_POST['upload']['generic']['enabled'];
         $config->upload->generic->id = (isset($_POST['upload']['generic']['id'])) ? $_POST['upload']['generic']['id'] : null;
@@ -203,13 +198,13 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
         if ($save !== false) {
             // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: Site configuration saved successfully");
+            syslog(LOG_INFO, "(SYSTEM){CONFIG}: Site configuration saved successfully");
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Configuration saved successfully!</div>';
             header("Location: /admin");
             exit();
         } else {
             // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: Saving configuration failed");
+            syslog(LOG_ERR, "(SYSTEM){CONFIG}[ERROR]: Saving configuration failed");
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving configuration failed!</div>';
             header("Location: /admin");
             exit();

@@ -36,20 +36,33 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
     // Process Upgrade
     if (isset($_GET['do'])) {
-        set_time_limit(0);
-        include(APP_BASE_PATH . '/inc/header.php');
         $notes = '';
-        $updatePattern = dirname(dirname(__DIR__)) . '/fcn/updater/*/*.php';
+        if (version_compare($config->version->app, '2.10.0-release', '>=')) {
+            $updatePattern = dirname(dirname(__DIR__)) . '/fcn/updater/3_x/*.php';
+        } else {
+            $updatePattern = dirname(dirname(__DIR__)) . '/fcn/updater/*/*.php';
+        }
+        set_time_limit(0);
         foreach (glob($updatePattern) as $filename) {
             include $filename;
         }
-        // Rebuild the event scheduler
-        require(APP_BASE_PATH . '/fcn/trim.php');
+
         // Save the users config file
         $export = var_export($config, true);
         $export = str_ireplace('stdClass::__set_state', '(object)', $export);
         $save = file_put_contents(APP_BASE_PATH . '/usr/config.php', '<?php return ' . $export . ';');
-        $pageTitle = 'Acuparse Setup';
+
+        if ($save) {
+            $updateComplete = true;
+            if ($config->site->updates === true) {
+                require(APP_BASE_PATH . '/fcn/cron/checkUpdates.php');
+            }
+
+            // Rebuild the event scheduler
+            require(APP_BASE_PATH . '/fcn/trim.php');
+
+        $pageTitle = 'Update Complete';
+        include(APP_BASE_PATH . '/inc/header.php');
         ?>
         <section id="update-system">
             <div class="row">
@@ -75,19 +88,36 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         <?php
         // Get app footer
         include(APP_BASE_PATH . '/inc/footer.php');
+        } else {
+            $pageTitle = 'Update Failed!';
+            include(APP_BASE_PATH . '/inc/header.php');
+            ?>
+            <section id="update-system">
+                <div class="row">
+                    <div class="col">
+                        <h2 class="page-header">Update Failed</h2>
+                        <div class="alert alert-danger text-center">
+                            <p><strong>Errors were encountered during the update.</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <?php
+        }
     } else {
-        $pageTitle = 'Acuparse Setup';
+        $pageTitle = 'Ready to Update';
         include(APP_BASE_PATH . '/inc/header.php');
         ?>
         <section id="update-system">
             <div class="row">
                 <div class="col">
                     <h2 class="page-header">Are you sure you want to proceed?</h2>
-                    <?php if ($appInfo->version === '3.0.0') { ?>
+                    <?php if (version_compare($config->version->app, '2.10.0-release', '==')) { ?>
                         <div class="alert alert-dark text-center">
                             <h3 class="font-weight-bolder">Updating to Version 3</h3>
-                            <p><strong>Make sure you review the <a href="https://docs.acuparse.com/updates/v3">update
-                                        guide</a> first!</strong></p>
+                            <p><strong>Review the <a class="btn btn-warning btn-lg"
+                                                     href="https://docs.acuparse.com/updates/v3">Update
+                                        Guide</a> before proceeding!</strong></p>
                         </div>
                     <?php } ?>
                     <div class="alert alert-warning text-center">
@@ -103,9 +133,9 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             <div class="col text-center">
                 <button type="submit" id="submit" value="submit" class="btn btn-danger"
                         onclick="location.href = '/admin/install?update&do'"><i
-                            class="fas fa-wrench"
+                            class="fas fa-play-circle"
                             aria-hidden="true"></i>
-                    Process Upgrade
+                    <?= (version_compare($config->version->app, '2.10.0-release', '==')) ? 'I\'ve reviewed the update guide!<br>Begin Update' : 'Begin Update'; ?>
                 </button>
             </div>
         </section>
@@ -116,7 +146,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 } // Not logged in
 else {
     // Log it
-    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: UNAUTHORIZED UPDATE ATTEMPT");
+    syslog(LOG_WARNING, "(SYSTEM){UPDATER}[WARNING]: UNAUTHORIZED UPDATE ATTEMPT");
 
     // Bailout
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");

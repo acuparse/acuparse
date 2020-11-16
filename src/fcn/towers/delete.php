@@ -33,10 +33,10 @@ $result = mysqli_query($conn, "DELETE FROM `towers` WHERE `sensor` = '$towerSens
 // If the insert Query was successful.
 if (mysqli_affected_rows($conn) === 1) {
     $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Deleted Successfully!</div>';
-    syslog(LOG_INFO, "(SYSTEM)[INFO]: Tower $towerSensorID deleted successfully");
+    syslog(LOG_INFO, "(SYSTEM){TOWER}: Tower $towerSensorID deleted successfully");
 } else {
     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong deleting the tower!</div>';
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Deleting tower $towerSensorID failed!");
+    syslog(LOG_ERR, "(SYSTEM){TOWER}[ERROR]: Deleting tower $towerSensorID failed!");
 }
 // Redirect to admin
 header("Location: /admin/tower?view");

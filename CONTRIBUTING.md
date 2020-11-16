@@ -12,7 +12,7 @@ Either directly or via Merge from a feature branch.
 
 ## Releases
 
-Code is released by merging `dev` into `stable` and tagging the merge commit.
+Code released by merging `dev` into `stable` and tagging the merge commit.
 
 ## Versioning
 
@@ -22,7 +22,7 @@ Acuparse follows the Semantic Versioning guidelines. Releases will be numbered i
 
 constructed within the following guidelines:
 
-- Breaking backward compatibility or major SQL changes bumps the major (and resets the minor and patch.
+- Breaking backward compatibility or major SQL changes bumps the major (and resets the minor and patch).
 - New additions and/or SQL changes without breaking backward compatibility bumps the minor (and resets the patch).
 - Bug fixes, minor and misc changes bumps the patch.
 

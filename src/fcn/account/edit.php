@@ -30,7 +30,6 @@
  * @return array
  * @var object $config Global Config
  */
-/** @var string $old_info */
 
 // Process the update
 if (isset($_GET['do'])) {
@@ -43,7 +42,7 @@ if (isset($_GET['do'])) {
     if ($_SESSION['admin'] !== true) {
         if ($user !== $uid) {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: No permissions to modify $user. $uid is not an admin");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: No permissions to modify $user. $uid is not an admin");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
             header("Location: /");
@@ -62,7 +61,7 @@ if (isset($_GET['do'])) {
         "SELECT `username`, `email`, `admin` FROM `users` WHERE `uid` = '$user'"));
     if (($username === $oldInfo['username']) && ($email === $oldInfo['email']) && ($admin === $oldInfo['admin'])) {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing user failed, nothing changed");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing user failed, nothing changed");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Nothing to change!</div>';
         header("Location: /");
@@ -72,7 +71,7 @@ if (isset($_GET['do'])) {
             "SELECT `username` FROM `users` WHERE `username` = '$username'"));
         if ($count !== 0) {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing user failed, username already exists");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing user failed, username already exists");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Duplicate Username</div>';
             header("Location: /");
@@ -83,7 +82,7 @@ if (isset($_GET['do'])) {
             "SELECT `email` FROM `users` WHERE `email` = '$email'"));
         if ($count !== 0) {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing user failed, email already exists");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing user failed, email already exists");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Duplicate Email</div>';
             header("Location: /");
@@ -94,7 +93,7 @@ if (isset($_GET['do'])) {
             "SELECT `uid` FROM `users` WHERE `admin` = '1'"));
         if ($count === 1) {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Editing a user failed! Can't demote only admin.");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing a user failed! Can't demote only admin.");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit user failed! Can\'t demote the only admin.</div>';
             header("Location: /");
@@ -112,16 +111,16 @@ if (isset($_GET['do'])) {
         $message = '<h2>Account Modified Successfully!</h2><p>Your account details have been modified successfully.</p>';
         mailer($email, $subject, $message);
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: User $user - $username updated successfully");
+        syslog(LOG_INFO, "(SYSTEM){USER}: User $user - $username updated successfully");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Updated Successfully!</div>';
 
-        if (($username !== $old_info['username']) && ($user === $uid)) {
+        if (($username !== $oldInfo['username']) && ($user === $uid)) {
             $_SESSION['username'] = $username;
         }
     } else {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Updating user $user - $username failed: " . mysqli_error($conn));
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Updating user $user - $username failed: " . mysqli_error($conn));
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong updating the user!</div>';
     }
@@ -149,7 +148,7 @@ else {
     $count = mysqli_num_rows(mysqli_query($conn, $sql));
     if ($count === 0) {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Updating user $user failed. Does not exist");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Updating user $user failed. Does not exist");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No User with that User ID.</div>';
         header("Location: /");

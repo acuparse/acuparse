@@ -35,7 +35,7 @@
 
 $device = 'H';
 
-// Process UTC timestamp
+// Generate update timestamp
 $timestamp = date("Y-m-d H:i:s");
 $todaysDate = date('Y-m-d');
 
@@ -79,18 +79,17 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
             INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`, `device`, `source`) VALUES ('$dailyRainIN', '$todaysDate', '$timestamp', '$device', '$source') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp', `device`='$device', `source`='$source';
             INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');
             UPDATE `5n1_status` SET `battery`='$battery', `rssi`='$rssi', `last_update`='$timestamp' WHERE `device`='hub';";
-        $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(HUB)[5N1][SQL ERROR]:" . mysqli_error($conn));
+        $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(HUB){5N1}[SQL ERROR]:" . mysqli_error($conn));
         while (mysqli_next_result($conn)) {
             null;
         }
 
         // Log it
         if ($config->debug->logging === true) {
+            syslog(LOG_DEBUG, "(HUB): Pressure = $baromin");
             syslog(LOG_DEBUG,
-                "(HUB)[SYS]: Pressure = $baromin");
-            syslog(LOG_DEBUG,
-                "(HUB)[5N1]: Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
-            syslog(LOG_DEBUG, "(HUB)[5N1]: Battery: $battery | Signal: $rssi");
+                "(HUB){5N1}: Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
+            syslog(LOG_DEBUG, "(HUB){5N1}: Battery: $battery | Signal: $rssi");
         }
 
         // Update the time the data was received
@@ -132,7 +131,7 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
             INSERT INTO `humidity` (`relH`, `timestamp`, `device`, `source`) VALUES ('$humidity', '$timestamp', '$device', '$source');
             INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');
             UPDATE `5n1_status` SET `battery`='$battery', `rssi`='$rssi', `last_update`='$timestamp' WHERE `device`='hub';";
-        $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(HUB)[5N1][SQL ERROR]:" . mysqli_error($conn));
+        $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(HUB){5N1}[SQL ERROR]:" . mysqli_error($conn));
         while (mysqli_next_result($conn)) {
             null;
         }
@@ -140,11 +139,10 @@ if ($_GET['sensor'] === $config->station->sensor_5n1) {
         // Log it
         if ($config->debug->logging === true) {
             // Log it
+            syslog(LOG_DEBUG, "(HUB): Pressure = $baromin");
             syslog(LOG_DEBUG,
-                "(HUB)[SYS]: Pressure = $baromin");
-            syslog(LOG_DEBUG,
-                "(HUB)[5N1]: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH");
-            syslog(LOG_DEBUG, "(HUB)[5N1]: Battery: $battery | Signal: $rssi");
+                "(HUB){5N1}: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH");
+            syslog(LOG_DEBUG, "(HUB){5N1}: Battery: $battery | Signal: $rssi");
         }
 
         // Update the time the data was received
@@ -161,10 +159,10 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
 // Check if this tower exists
     $sql = "SELECT * FROM `towers` WHERE `sensor` = '$towerID';";
     $count = mysqli_num_rows(mysqli_query($conn, $sql)) or syslog(LOG_ERR,
-        "(HUB)[5N1]{TOWER}[SQL ERROR]:" . mysqli_error($conn));
+        "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
     if ($count === 1) {
         $result = mysqli_fetch_assoc(mysqli_query($conn, $sql)) or syslog(LOG_ERR,
-            "(HUB)[5N1]{TOWER}[SQL ERROR]:" . mysqli_error($conn));
+            "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
         $towerName = $result['name'];
 
         // ProIn Specific Variables
@@ -203,28 +201,26 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
             // Insert pressure reading into DB
             $sql = "INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');";
             $result = mysqli_query($conn, $sql) or syslog(LOG_ERR,
-                "(HUB)[TOWER]{PRESSURE}[SQL ERROR]:" . mysqli_error($conn));
+                "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
 
             // Log it
             if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG,
-                    "(HUB)[SYS]: Pressure = $baromin");
+                syslog(LOG_DEBUG, "(HUB): Pressure = $baromin");
             }
         }
 
         // Insert Tower data into DB
         $sql = "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`, `battery`, `rssi`, `timestamp`, `device`) VALUES ('$tempF', '$humidity', '$towerID', '$battery', '$rssi', '$timestamp', '$device');";
-        $result = mysqli_query($conn, $sql) or syslog(LOG_ERR, "(HUB)[TOWER][SQL ERROR]:" . mysqli_error($conn));
+        $result = mysqli_query($conn, $sql) or syslog(LOG_ERR, "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
 
         // Log it
         if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG,
-                "(HUB)[TOWER][$towerName]: tempF = $tempF | relH = $humidity");
-            syslog(LOG_DEBUG, "(HUB)[TOWER][$towerName]: Battery = $battery | Signal = $rssi");
+            syslog(LOG_DEBUG, "(HUB){TOWER}<$towerName>: tempF = $tempF | relH = $humidity");
+            syslog(LOG_DEBUG, "(HUB){TOWER}<$towerName>: Battery = $battery | Signal = $rssi");
         }
     } // This tower has not been added
     else {
-        syslog(LOG_ERR, "(HUB)[TOWER][ERROR]: Unknown ID $towerID. Raw: $myacuriteQuery");
+        syslog(LOG_ERR, "(HUB){TOWER}[ERROR]: Unknown ID $towerID. Raw: $myacuriteQuery");
         exit();
     }
 } // Done Tower Sensors
@@ -234,9 +230,9 @@ else {
     $sensor = $_GET['sensor'];
     if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
         syslog(LOG_ERR,
-            "(HUB)[TOWER][ERROR]: Towers not enabled - Tower ID $sensor. Raw = $myacuriteQuery");
+            "(HUB){TOWER}[ERROR]: Towers not enabled - Tower ID $sensor. Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === '5N1') {
-        syslog(LOG_ERR, "(HUB)[5N1][ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
+        syslog(LOG_ERR, "(HUB){5N1}[ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
     } else {
         syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacuriteQuery");
     }

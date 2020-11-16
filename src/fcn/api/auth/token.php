@@ -48,7 +48,7 @@ function checkToken($authToken)
         $_SESSION['admin'] = (bool)$row['admin'];
 
         // Log it
-        syslog(LOG_INFO, '(SYSTEM)[INFO]: ' . $_SESSION['username'] . ' authenticated via API Token');
+        syslog(LOG_INFO, '(SYSTEM){USER}: ' . $_SESSION['username'] . ' authenticated via API Token');
         return true;
     } else {
         return false;

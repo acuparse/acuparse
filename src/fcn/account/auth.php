@@ -64,7 +64,7 @@ if ($response['success'] === true) {
             include(APP_BASE_PATH . '/fcn/sessionToken.php');
 
             // Log it
-            syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
+            syslog(LOG_INFO, "(SYSTEM){USER}: $username logged in successfully");
 
             // Redirect user after successful authentication
             header("Location: /");
@@ -72,7 +72,7 @@ if ($response['success'] === true) {
         } // Invalid password entered
         else {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid password for $username");
+            syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Invalid password for $username");
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: You have entered an invalid username or password.</div>';
             header("Location: /admin/account");
@@ -81,7 +81,7 @@ if ($response['success'] === true) {
     } // No rows found, user not authorized
     else {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid username $username");
+        syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Invalid username $username");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: You have entered an invalid username or password.</div>';
         header("Location: /admin/account");
@@ -90,7 +90,7 @@ if ($response['success'] === true) {
 } // Captcha Failed
 else {
     // Log it
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Invalid captcha response");
+    syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Invalid captcha response");
     // Display message
     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: Could not verify Captcha.</div>';
     header("Location: /admin/account");

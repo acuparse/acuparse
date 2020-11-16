@@ -89,8 +89,8 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
 
                     // Get the dailyStrikesSoFar so we can update it
                     $result = mysqli_fetch_assoc(mysqli_query($conn,
-                        "SELECT `dailystrikes` FROM `$dbsource` WHERE `date`='$timestampDate'")) or syslog(LOG_ERR,
-                        "(ACCESS)[$device]{LIGHTNING}[SQL INFO]: Fetching dailyStrikesSoFar failed. If this is the first update today and details is empty, this is normal. SQL Details: " . mysqli_error($conn));
+                        "SELECT `dailystrikes` FROM `$dbsource` WHERE `date`='$timestampDate'")) or syslog(LOG_WARNING,
+                        "(ACCESS)[$device]{LIGHTNING}[WARNING]: Fetching dailyStrikesSoFar failed. If this is the first update today and details is empty, this is normal. SQL Details: " . mysqli_error($conn));
                     $dailyStrikesSoFar = (float)$result['dailystrikes'];
 
                     // If there is no dailyStrikesSoFar then we are starting a new day or sensor.

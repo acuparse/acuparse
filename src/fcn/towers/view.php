@@ -94,7 +94,7 @@ $page_footer = '
                     function () {
                         $("#tower-table tbody").sortable({
                             update: function () {
-                                var serial = $(\'#tower-table tbody\').sortable(\'serialize\');
+                                let serial = $(\'#tower-table tbody\').sortable(\'serialize\');
                                 $.ajax({
                                     url: "/admin/tower?view&arrange",
                                     type: "post",

@@ -82,9 +82,9 @@ function getTelemetry()
 
 $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name` = 'lastUpdateCheck'"));
 if ($result) {
-    syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Checking for updates");
+    syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: Checking for updates");
     // Make sure update interval has passed since last update
-    if ((strtotime($result['value']) < strtotime("-" . '1 min'))) {
+    if ((strtotime($result['value']) < strtotime("-" . '23 hours 20 min')) || isset($updateComplete)) {
         $telemetry = getTelemetry();
         $telemetry['clientID'] = $config->version->installHash;
         $telemetry['version'] = $config->version->app;
@@ -97,7 +97,7 @@ if ($result) {
         }
         if ($telemetry['mac'] !== 'none') {
             $telemetry = json_encode($telemetry);
-            syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Telemetry = $telemetry");
+            syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: Telemetry = $telemetry");
 
             $ch = curl_init($appInfo->release_server . '/current');
             curl_setopt($ch, CURLOPT_POSTFIELDS, $telemetry);
@@ -105,7 +105,7 @@ if ($result) {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $checkLatestVersion = curl_exec($ch);
             curl_close($ch);
-            syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Response = $checkLatestVersion");
+            syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: Response = $checkLatestVersion");
 
             if ($checkLatestVersion) {
                 $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -117,19 +117,19 @@ if ($result) {
                 mysqli_query($conn, "UPDATE `system` SET `value` = '$lastCheckedOn' WHERE `name` = 'lastUpdateCheck'");
                 if ($lastLatestRelease != $latestRelease) {
                     mysqli_query($conn, "UPDATE `system` SET `value` = '$latestRelease' WHERE `name` = 'latestRelease'");
-                    syslog(LOG_INFO, "(SYSTEM){CRON}[RELEASES]: New Version $latestRelease now available!");
+                    syslog(LOG_INFO, "(SYSTEM){UPDATER}: New Version $latestRelease now available");
                 } else if ($config->version->app != $latestRelease) {
-                    syslog(LOG_INFO, "(SYSTEM){CRON}[RELEASES]: Version $latestRelease available!");
+                    syslog(LOG_INFO, "(SYSTEM){UPDATER}: Version $latestRelease available");
                 } else {
-                    syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: No new version available.");
+                    syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: No new version available");
                 }
             } else {
-                syslog(LOG_ERR, "(SYSTEM){CRON}[RELEASES]: Error checking for update.");
+                syslog(LOG_ERR, "(SYSTEM){UPDATER}: Error checking for update");
             }
         } else {
-            syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: No MAC set.");
+            syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: No Device MAC Found");
         }
     } else {
-        syslog(LOG_DEBUG, "(SYSTEM){CRON}[RELEASES]: Too soon to check for updates.");
+        syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: Too soon to check for updates");
     }
 }

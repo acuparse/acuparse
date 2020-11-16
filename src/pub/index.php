@@ -96,10 +96,18 @@ if ($installed == false) {
             }
             async function updateTime() {
                 $.ajax({
-                    url: \'/api/v1/text/time/\',
-                    success: function (data) {
-                        $("#local-time-display").html(data);
-                        setTimeout(updateTime, 1000);
+                    url: \'/api/v1/text/time/?ping\',
+                    startTime: new Date().getTime(),
+                    success: async function(data) {
+                        $.ajax({
+                            url: \'/api/v1/text/time/\',
+                            startTime: this.startTime,
+                            success: async function (data) {
+                                $("#local-time-display").html(data);
+                                let rtt = new Date().getTime() - this.startTime;
+                                setTimeout(updateTime, 1000 - rtt);
+                            }
+                        });
                     }
                 });
             }

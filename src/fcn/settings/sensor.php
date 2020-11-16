@@ -62,7 +62,7 @@
                                value="1"
                             <?= ($config->station->device === 1) ? 'checked="checked"' : false; ?>>
                         <label class="form-check-label alert bg-dark"
-                               for="station-device-smarthub">SmartHUB</label>
+                               for="station-device-smarthub">smartHUB</label>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label" for="station-access-mac">Access:</label>

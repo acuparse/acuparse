@@ -47,10 +47,10 @@ if (isset($_GET['do'])) {
     // If the insert Query was successful.
     if (mysqli_affected_rows($conn) === 1) {
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Updated Successfully!</div>';
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: Tower $towerSensorID - $towerName updated successfully");
+        syslog(LOG_INFO, "(SYSTEM){TOWER}: Tower $towerSensorID - $towerName updated successfully");
     } else {
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong updating the tower!</div>';
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Updating tower $towerSensorID - $towerName failed!");
+        syslog(LOG_ERR, "(SYSTEM){TOWER}[ERROR]: Updating tower $towerSensorID - $towerName failed!");
     }
     header("Location: /admin/?menu");
     exit();

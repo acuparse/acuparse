@@ -43,7 +43,7 @@ $result = mysqli_query($conn,
     "INSERT INTO `sessions` (`uid`, `device_key`, `token`, `user_agent`) VALUES ('$uid', '$deviceKey', '$token', '$userAgent')");
 if (!$result) {
     // Log it
-    syslog(LOG_ERR, "(SYSTEM)[ERROR]: Saving session failed! Raw = " . mysqli_error($conn));
+    syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Saving session failed! Raw = " . mysqli_error($conn));
 }
 
 // Send the session cookie

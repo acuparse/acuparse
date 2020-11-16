@@ -15,7 +15,7 @@ and ask to be registered. Your data can then flow to NOAA.
 ## Configuration
 
 1. Change enabled to true
-1. Input your station id
+1. Input your station ID
 1. Enter your station coordinates in `ddmm.hhN/dddmm.hhW` format.
     - Where d is degrees, m is minutes and h is hundredths of minutes.
     - The hemispheres are represented by capital letters; N, E, S, W

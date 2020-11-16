@@ -21,8 +21,8 @@
  */
 
 /**
- * File: src/fcn/cron/windy.php
- * Windy Updater
+ * File: src/fcn/cron/weatherunderground.php
+ * Weather Underground Updater
  */
 
 /** @var mysqli $conn Global MYSQL Connection */
@@ -35,18 +35,22 @@
  * @var object $data Weather Data
  * @return array
  * @var object $atlas Atlas Data
+ * @return array
+ * @var object $appInfo Global Application Info
+ * @var string $utcDate Atlas Data
  */
 
-$windyQueryUrl = $config->upload->windy->url . '/' . $config->upload->windy->key;
-$windyQuery = '?tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN;
+$genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;
+$genericQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
 if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $windyQuery = $windyQuery . '&uv=' . $atlas->uvIndex;
+    $genericQuery = $genericQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH . '&windgustmph' . $atlas->windGust . '&windgustdir' . $atlas->windGustDEG . '&UV=' . $atlas->uvIndex;
 }
-$windyQueryResult = file_get_contents($windyQueryUrl . $windyQuery);
+$genericQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
+$genericQueryResult = file_get_contents(htmlentities($genericQueryUrl . $genericQuery . $genericQueryStatic));
 // Save to DB
 mysqli_query($conn,
-    "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
+    "INSERT INTO `generic_updates` (`query`,`result`) VALUES ('$genericQuery', '$genericQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL)[Windy]: Query = $windyQuery | Result = $windyQueryResult");
+    syslog(LOG_DEBUG, "(EXTERNAL){GENERIC}: Query = $genericQuery | Response = $genericQueryResult");
 }

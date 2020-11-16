@@ -43,9 +43,9 @@ $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
 
 if ($config->station->access_mac != 0) {
     if ($config->outage_alert->offline_for == '5 minutes') {
-        $config->outage_alert->offline_for = '10 minutes';
+        $config->outage_alert->offline_for = '11 minutes';
     } elseif ($config->outage_alert->offline_for == '10 minutes') {
-        $config->outage_alert->offline_for = '15 minutes';
+        $config->outage_alert->offline_for = '16 minutes';
     }
 }
 
@@ -57,9 +57,8 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
 
         if ($config->outage_alert->enabled === true) {
             require_once(APP_BASE_PATH . '/fcn/mailer.php');
-            $subject = 'Access/smartHUB offline! No Updates received.';
-            $message = '<p><strong>Acuparse is not receiving updates from your Access/smartHUB.</strong><p>Check your internet connection.</p>';
-
+            $subject = $config->station->hostname . ' OFFLINE';
+            $message = '<p><strong>' . $config->station->hostname . ' is no longer receiving weather updates.</strong></p><p>Check your Internet connection and Acurite device!</p>';
             $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
             while ($row = mysqli_fetch_assoc($sql)) {
                 $admin_email[] = $row['email'];
@@ -71,23 +70,25 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
             }
             // Log it
             syslog(LOG_ERR,
-                "(SYSTEM)[ERROR]: OFFLINE: not receiving data from the Access/smartHUB. Email sent to admin.");
+                "(SYSTEM){CRON}[ERROR]: *OFFLINE* Not Receiving Updates (Notification Sent)");
             // Update the time the email was sent
             $lastSent = date("Y-m-d H:i:s");
             mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$lastSent', `status` = '0'");
 
         } else {
             // Log it
-            syslog(LOG_ERR, "(SYSTEM)[ERROR]: OFFLINE: not receiving data from the Access/smartHUB.");
+            syslog(LOG_ERR,
+                "(SYSTEM){CRON}[ERROR]: *OFFLINE* Not Receiving Updates (Notifications Disabled)");
             // Update the status
             mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '0'");
         }
     } else {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: OFFLINE: Too soon to send another notification.");
+        syslog(LOG_ERR,
+            "(SYSTEM){CRON}[ERROR]: *OFFLINE* Not Receiving Updates (Notification Skipped)");
     }
-} // Not offline long enough,
+} // Not offline long enough
 else {
     // Log it
-    syslog(LOG_INFO, "(SYSTEM)[INFO]: No update to send. There is no new data to send or station is offline.");
+    syslog(LOG_INFO, "(SYSTEM){CRON}: *ONLINE* Waiting for Updates ...");
 }

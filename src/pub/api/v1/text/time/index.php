@@ -33,8 +33,8 @@ if (date_default_timezone_get() != $config->site->timezone) {
     date_default_timezone_set($config->site->timezone);
 }
 
-// System Time
-$date = date($config->site->display_date);
-header('Content-Type: text/plain; charset=UTF-8');
-echo $date;
-exit();
+if (!isset($_GET['ping'])) {
+    // System Time
+    $date = date($config->site->display_date);
+    echo $date;
+}

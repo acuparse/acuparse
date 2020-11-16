@@ -42,7 +42,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         "INSERT INTO `users` (`username`, `password`, `email`, `admin`) VALUES ('$username', '$password', '$email', '1')");
     if (!$result) {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first user failed: " . mysqli_error($conn));
+        syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Adding first user failed: " . mysqli_error($conn));
     }
 
     // If adding the account was successful
@@ -56,7 +56,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         $message = '<h2>Admin Account Created Successfully!</h2><p>Your admin account has been added successfully. You can now sign in.</p>';
         mailer($email, $subject, $message);
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: First account for $username added successfully");
+        syslog(LOG_INFO, "(SYSTEM){INSTALLER}: First account for $username added successfully");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Added Successfully!</div>';
 
@@ -70,7 +70,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         include(APP_BASE_PATH . '/fcn/sessionToken.php');
 
         // Log it
-        syslog(LOG_INFO, "(SYSTEM)[INFO]: $username logged in successfully");
+        syslog(LOG_INFO, "(SYSTEM){INSTALLER}: $username logged in successfully");
 
         // Redirect user after successful authentication
         header("Location: /admin/settings");
@@ -78,7 +78,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
     } // Something went wrong ...
     else {
         // Log it
-        syslog(LOG_ERR, "(SYSTEM)[ERROR]: Adding first admin $username failed");
+        syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Adding first admin $username failed");
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
         header("Location: /admin");
@@ -89,5 +89,5 @@ else {
     // Bailout
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /");
-    exit(syslog(LOG_WARNING, "(SYSTEM)[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
+    exit(syslog(LOG_WARNING, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
 }

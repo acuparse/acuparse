@@ -347,6 +347,15 @@ CREATE TABLE `wu_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
+CREATE TABLE `openweather_updates`
+(
+    `timestamp` timestamp                 NOT NULL DEFAULT current_timestamp(),
+    `query`     tinytext COLLATE utf8_bin NOT NULL,
+    `result`    tinytext COLLATE utf8_bin NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
 ALTER TABLE `5n1_status`
     ADD PRIMARY KEY (`device`);
 
@@ -485,7 +494,7 @@ INSERT INTO `access_status` (`battery`, `last_update`)
 VALUES ('normal', '2000-01-01 00:00:00');
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('latestRelease', '3.0.0');
+VALUES ('latestRelease', '3.1.0');
 
 INSERT INTO `system` (`name`, `value`)
 VALUES ('lastUpdateCheck', '2000-01-01 00:00:00');
@@ -493,6 +502,6 @@ VALUES ('lastUpdateCheck', '2000-01-01 00:00:00');
 # Schema Version
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('schema', '3.0');
+VALUES ('schema', '3.1');
 
 COMMIT;

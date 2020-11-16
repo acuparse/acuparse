@@ -23,8 +23,9 @@ not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's site
 
 [Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite
 5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
-[Weather Underground](https://https://www.wunderground.com), [Weathercloud](https://weathercloud.net),
-[PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), and [CWOP](http://www.wxqa.com).
+[Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com), [Weathercloud](https://weathercloud.net),
+[PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
+and [OpenWeather](https://openweathermap.org/).
 It also processes and stores images from a local network camera for display and uploads to Weather Underground.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
@@ -33,7 +34,7 @@ not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's site
 Acuparse requires a working AcuRite Access/smartHUB. You redirect weather data from your Access/smartHUB to your Acuparse
 server. It is captured, stored, and then passed along to MyAcuRite untouched.
 The response received from MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or
-when using a SmartHUB, Acuparse creates the response.
+when using a smartHUB, Acuparse creates the response.
 
 ## Main Installation Guide
 
@@ -53,9 +54,9 @@ when using a SmartHUB, Acuparse creates the response.
 
 #### Docker Compose
 
-   ```bash
-    curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
-  ```
+```bash
+curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
+```
 
 - See [docs/DOCKER.md](https://docs.acuparse.com/DOCKER) for more details
 
@@ -65,8 +66,8 @@ when using a SmartHUB, Acuparse creates the response.
 
 ### Version Updates
 
-- [Version 2.3](updates/v2_3)
 - [Version 3](updates/v3)
+- [Version 2.3](updates/v2_3)
 
 ## Optional Configuration
 
@@ -81,6 +82,7 @@ when using a SmartHUB, Acuparse creates the response.
 - [CWOP](external/CWOP)
 - [WINDY](external/WINDY)
 - [Windguru](external/WINDGURU)
+- [Open Weather Map](external/OPENWEATHER)
 
 ### Generic
 
