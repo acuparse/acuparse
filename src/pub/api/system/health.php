@@ -38,7 +38,7 @@ header('Content-Type: application/json; charset=UTF-8'); // Set the header for J
 
 if (isset($installed) && $installed === true) {
     header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
-    if (($conn) && (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) >=1)) {
+    if (($conn) && (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) >= 1)) {
         $sqlStats = $conn->stat();
         $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `timestamp` FROM `last_update`"));
@@ -50,8 +50,7 @@ if (isset($installed) && $installed === true) {
             "stats" => "$sqlStats"
         ];
         echo json_encode($status);
-    }
-    else {
+    } else {
         header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
         $status = [
             "status" => "Error",

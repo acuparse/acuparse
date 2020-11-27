@@ -52,6 +52,7 @@ workflow:
     - go get -u github.com/VKCOM/noverify
   script:
     - noverify -cache-dir=/tmp/cache/noverify src/ | tee noverify.txt
+  dependencies: [ ]
 
 .TEMPLATE:DOCS:mkdocs:
   stage: deploy
@@ -81,9 +82,10 @@ workflow:
     - docker buildx inspect --bootstrap
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
+    - docker login -u $GITHUB_REGISTRY_USER -p $GITHUB_REGISTRY_PASSWORD $GITHUB_REGISTRY
   script:
     - >
-      if [ "$TAGGED_RELEASE" = "true" ]; then
+      if [ "$LATEST_RELEASE" = "true" ]; then
         docker buildx build \
         --build-arg BUILD_DATE=$DATE \
         --build-arg VCS_REF=$CI_COMMIT_SHA \
@@ -96,6 +98,8 @@ workflow:
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:latest \
         --tag $DOCKER_REGISTRY_TAG:$ACUPARSE_VERSION \
         --tag $DOCKER_REGISTRY_TAG:latest \
+        --tag $GITHUB_REGISTRY/$DOCKER_REGISTRY_TAG:$ACUPARSE_VERSION \
+        --tag $GITHUB_REGISTRY/$DOCKER_REGISTRY_TAG:latest \
         --platform $BUILDX_PLATFORM \
         --push \
         .
@@ -122,15 +126,17 @@ workflow:
 PHP:CLI:
   extends: .TEMPLATE:PHP:CLI
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
 
 DEV:PHP:CLI:
   extends: .TEMPLATE:PHP:CLI
   image: php:8.0-rc-cli
   rules:
-    - if: '$CI_COMMIT_BRANCH != "stable"'
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
 #### phpstan ####
@@ -146,9 +152,9 @@ DEV:PHP:phpstan:
     expire_in: 2 weeks
   allow_failure: true
   rules:
-    - if: '$CI_COMMIT_BRANCH != "stable"'
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
 
 #### noverify ####
 
@@ -161,9 +167,9 @@ DEV:PHP:noverify:
     expire_in: 2 weeks
   allow_failure: true
   rules:
-    - if: '$CI_COMMIT_BRANCH != "stable"'
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
 
 #### END: PHP ####
 
@@ -171,14 +177,16 @@ DEV:PHP:noverify:
 MD:markdownlint:
   extends: .TEMPLATE:MD:markdownlint
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
 
 DEV:MD:markdownlint:
   extends: .TEMPLATE:MD:markdownlint
   rules:
-    - if: '$CI_COMMIT_BRANCH != "stable"'
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
 #### END: Markdown ####
@@ -189,14 +197,16 @@ BASH:shellcheck:
   before_script:
     - export SHELLCHECK_OPTS="-e SC2034 -e SC2059 -e SC2086"
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
 
 DEV:BASH:shellcheck:
   extends: .TEMPLATE:BASH:shellcheck
   rules:
-    - if: '$CI_COMMIT_BRANCH != "stable"'
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
 #### END: Bash ####
@@ -206,14 +216,18 @@ DEV:BASH:shellcheck:
 DOCKER:build:RELEASE:
   extends: .TEMPLATE:DOCKER:build
   variables:
-    TAGGED_RELEASE: 'true'
+    LATEST_RELEASE: 'true'
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "stable"'
 
 DEV:DOCKER:build:
   extends: .TEMPLATE:DOCKER:build
   allow_failure: false
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
 
 #### END: Docker Image ####
@@ -223,14 +237,29 @@ INSTALLER:
   stage: test
   trigger:
     project: acuparse/installer
+    branch: master
+    strategy: depend
+  variables:
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "stable"'
+  needs: [ "DOCKER:build:RELEASE" ]
+
+DEV:INSTALLER:
+  stage: test
+  trigger:
+    project: acuparse/installer
     branch: dev
     strategy: depend
   variables:
     UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
+  needs: [ "DEV:DOCKER:build" ]
 
 #### END: Test Installer ####
 
@@ -240,27 +269,31 @@ pages:
   script:
     - mkdocs build
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
   artifacts:
     paths:
       - public
+  needs: [ "MD:markdownlint" ]
 
 DEV:DOCS:mkdocs:
   extends: .TEMPLATE:DOCS:mkdocs
   script:
-    - mkdocs build --site-dir test
+    - mkdocs build --site-dir public_html
   rules:
-    - if: '$CI_COMMIT_BRANCH != "stable"'
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
   artifacts:
     paths:
-      - test
+      - public_html
+  needs: [ "DEV:MD:markdownlint" ]
 
 #### END: Project Documentation ####
 
-#### Update Release ####
+#### Tag Release ####
 RELEASE:tag:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli
@@ -274,31 +307,23 @@ RELEASE:tag:
     - release-cli create --name "Version $VERSION" --description "Release Version $VERSION" --tag-name "v$VERSION" --ref "$CI_COMMIT_SHA"
   dependencies: [ ]
 
-#### Update Release ####
-TEST:RELEASE:tag:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "dev"'
-  before_script:
-    - apk add curl jq --no-cache
-    - export VERSION=$(cat .version | jq -r '.VERSION')
-  script:
-    - echo release-cli create --name "Version $VERSION" --description "Release Version $VERSION" --tag-name "v$VERSION" --ref "$CI_COMMIT_SHA"
-  dependencies: [ ]
-
+#### Update RMS ####
 RELEASE:RMS:version:
-  image: alpine
   stage: release
+  image: alpine
   before_script:
     - apk add curl jq --no-cache
     - export VERSION=$(cat .version | jq -r '.VERSION')
+    - export RELEASE_VERSION="${VERSION//./-}"
   script:
     - >
       curl -H "Authorization: Bearer $RMS_TOKEN" -X POST -d "version=$VERSION" "$RMS_HOST/releases" | jq
+    - >
+      curl -X POST --data-urlencode 'payload={"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"Acuparse Version `'"$VERSION"'` is now available!\nSee the <https://www.acuparse.com/releases/v'"$RELEASE_VERSION"'|Release Notes> for more details!\n\nFor update instructions, see the <https://docs.acuparse.com/INSTALL/#updating|Install Guide>."},"accessory":{"type":"image","image_url":"https://www.acuparse.com/assets/img/release.jpg","alt_text":"Ship Image"}}]}' "$SLACK_RELEASE_HOOK_URL"
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
+  needs: [ ]
 
 #### End Release ####
 
@@ -308,3 +333,10 @@ include:
   - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/License-Scanning.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
+
+code_quality:
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "stable"'
+    - if: '$CI_COMMIT_BRANCH == "dev"'

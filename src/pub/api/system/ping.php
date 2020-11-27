@@ -21,20 +21,6 @@
  */
 
 /**
- * File: src/api/v1/time/index.php
- * Time API
+ * File: src/api/system/ping.php
+ * Ping
  */
-
-// Get the config
-$config = require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/usr/config.php');
-
-// Set timezone
-if (date_default_timezone_get() != $config->site->timezone) {
-    date_default_timezone_set($config->site->timezone);
-}
-
-if (!isset($_GET['ping'])) {
-    // System Time
-    $date = date($config->site->display_date);
-    echo $date;
-}

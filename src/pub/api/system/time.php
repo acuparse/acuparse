@@ -21,26 +21,19 @@
  */
 
 /**
- * File: src/fcn/weather/dashboard/pressure.php
- * Get the dashboard pressure HTML
+ * File: src/api/system/time.php
+ * Time API
  */
 
-/**
- * @return array
- * @return array
- * @var object $config Global Config
- * @var object $wx Weather Values
- */
-?>
-<div class="row">
-    <div class="col">
-        <h1><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h1>
-        <h2><?php
-            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg ($wx->pressure_kPa kPa)" : "$wx->pressure_kPa kPa ($wx->pressure_inHg inHg)";
-            } else {
-                $pressure = ($config->site->imperial === true) ? "$wx->pressure_inHg inHg" : "$wx->pressure_kPa kPa";
-            }
-            echo $pressure . trendIcon($wx->pressure_trend); ?></h2>
-    </div>
-</div>
+// Get the config
+$config = require(dirname(dirname(dirname(__DIR__))) . '/usr/config.php');
+
+// Set timezone
+if (date_default_timezone_get() != $config->site->timezone) {
+    date_default_timezone_set($config->site->timezone);
+}
+
+// System Time
+$date = date($config->site->display_date);
+echo $date;
+

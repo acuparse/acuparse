@@ -55,7 +55,7 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
         // Get the last update data
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `strikecount`, `last_strike_ts` FROM `lightningData` WHERE `source`='$source';")) or syslog(LOG_WARNING,
-            "(ACCESS)[$device]{LIGHTNING}[SQL WARN]: Failed getting last update. Details: " . mysqli_error($conn));
+            "(ACCESS){LIGHTNING}<$device>[SQL WARN]: Failed getting last update. Details: " . mysqli_error($conn));
         $lastStrikecount = (float)$result['strikecount'];
         $lastStrikeTime = $result['last_strike_ts'];
 
@@ -64,7 +64,7 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
             $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
             INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
             $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
-                "(ACCESS)[$device]{LIGHTNING}[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
+                "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
             while (mysqli_next_result($conn)) {
                 null;
             }
@@ -79,9 +79,7 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
                     $currentStrikes = $strikecount - $lastStrikecount;
                     if ($currentStrikes == $strikecount) {
                         $currentStrikes = 0;
-                    }
-
-                    // Negative currentStrikes means the count was reset. So we'll use the total strikeCount to create the currentStrikes.
+                    } // Negative currentStrikes means the count was reset. So we'll use the total strikeCount to create the currentStrikes.
                     elseif ($currentStrikes < 0) {
                         //$currentStrikes = round($strikecount / 2.18, 1);
                         $currentStrikes = $strikecount;
@@ -90,7 +88,7 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
                     // Get the dailyStrikesSoFar so we can update it
                     $result = mysqli_fetch_assoc(mysqli_query($conn,
                         "SELECT `dailystrikes` FROM `$dbsource` WHERE `date`='$timestampDate'")) or syslog(LOG_WARNING,
-                        "(ACCESS)[$device]{LIGHTNING}[WARNING]: Fetching dailyStrikesSoFar failed. If this is the first update today and details is empty, this is normal. SQL Details: " . mysqli_error($conn));
+                        "(ACCESS){LIGHTNING}<$device>[WARNING]: Fetching dailyStrikesSoFar failed. If this is the first update today and details is empty, this is normal. SQL Details: " . mysqli_error($conn));
                     $dailyStrikesSoFar = (float)$result['dailystrikes'];
 
                     // If there is no dailyStrikesSoFar then we are starting a new day or sensor.
@@ -104,22 +102,22 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
                     $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES('$dailyStrikes', '$currentStrikes', '$timestamp', '$timestampDate') ON DUPLICATE KEY UPDATE `dailystrikes`='$dailyStrikes', `currentstrikes`='$currentStrikes', `last_update`='$timestamp';
                             UPDATE `lightningData` SET `strikecount`='$strikecount', `interference`='$interference', `last_strike_ts`='$last_strike_ts', `last_strike_distance`='$last_strike_distance' WHERE `source`='$source';";
                     $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
-                        "(ACCESS)[$device]{LIGHTNING}[SQL ERROR]: Failed to insert readings. Details: " . mysqli_error($conn));
+                        "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed to insert readings. Details: " . mysqli_error($conn));
                     while (mysqli_next_result($conn)) {
                         null;
                     }
                     if ($config->debug->logging === true) {
                         syslog(LOG_DEBUG,
-                            "(ACCESS)[$device]{LIGHTNING}: Daily = $dailyStrikes | Current: $currentStrikes | Count: $strikecount | Last: $lastStrikecount | Last Daily: $dailyStrikesSoFar | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+                            "(ACCESS){LIGHTNING}<$device>: Daily = $dailyStrikes | Current: $currentStrikes | Count: $strikecount | Last: $lastStrikecount | Last Daily: $dailyStrikesSoFar | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
                     }
                 } // strikeCount changed, date not greater, update the readings
                 else {
                     $sql = "UPDATE `lightningData` SET `strikecount`='$strikecount', `interference`='$interference', `last_strike_ts`='$last_strike_ts', `last_strike_distance`='$last_strike_distance' WHERE `source`='$source'";
                     $result = mysqli_query($conn, $sql) or syslog(LOG_ERR,
-                        "(ACCESS)[$device]{LIGHTNING}[SQL ERROR]: Count changed, date not greater - Insert Failed. Details: " . mysqli_error($conn));
+                        "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Count changed, date not greater - Insert Failed. Details: " . mysqli_error($conn));
                     if ($config->debug->logging === true) {
                         syslog(LOG_DEBUG,
-                            "(ACCESS)[$device]{LIGHTNING}: Count and date mismatch | Count: $strikecount | Last: $lastStrikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+                            "(ACCESS){LIGHTNING}<$device>: Count and date mismatch | Count: $strikecount | Last: $lastStrikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
                     }
                 }
             } // strikeCount is equal, update the last reading time
@@ -127,17 +125,17 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
                 // Insert lightning readings into DB
                 $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate') ON DUPLICATE KEY UPDATE `last_update`='$timestamp'";
                 $result = mysqli_query($conn, $sql) or syslog(LOG_ERR,
-                    "(ACCESS)[$device]{LIGHTNING}[SQL ERROR]: Equal Strikecount - Failed to insert readings. Details: " . mysqli_error($conn));
+                    "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Equal Strikecount - Failed to insert readings. Details: " . mysqli_error($conn));
                 if ($config->debug->logging === true) {
                     syslog(LOG_DEBUG,
-                        "(ACCESS)[$device]{LIGHTNING}: No Lightning Detected | Count: $strikecount | Last: $lastStrikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+                        "(ACCESS){LIGHTNING}<$device>: No Lightning Detected | Count: $strikecount | Last: $lastStrikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
                 }
             }
         }
     } else {
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,
-                "(ACCESS)[$device]{LIGHTNING}: No Lightning Detected | Count: $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+                "(ACCESS){LIGHTNING}<$device>: No Lightning Detected | Count: $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
         }
     }
 }

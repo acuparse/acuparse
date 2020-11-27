@@ -58,7 +58,7 @@ if (!class_exists('getCurrentWeatherData')) {
 $wx = $getData->getConditions();
 
 // Load Lightning Data
-if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
+if ($config->station->device === 0 && $config->station->primary_sensor === 0 && ($config->station->lightning_source === 1 || $config->station->lightning_source === 3)) {
     if (!class_exists('atlas\getCurrentLightningData')) {
         require_once(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
         $getLightningData = new atlas\getCurrentLightningData;
@@ -67,7 +67,7 @@ if ($config->station->lightning_source === 1 || $config->station->lightning_sour
 }
 
 // Load Tower Lightning Data
-if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
     if (!class_exists('tower\getCurrentLightningData')) {
         require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
         $getTowerLightningData = new tower\getCurrentLightningData;
@@ -76,7 +76,7 @@ if ($config->station->lightning_source === 2 || $config->station->lightning_sour
 }
 
 // Load Atlas Data
-if ($config->station->primary_sensor === 0) {
+if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
     // Load weather Data:
     if (!class_exists('getCurrentAtlasData')) {
         require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');

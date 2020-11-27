@@ -37,8 +37,8 @@ if (!function_exists('trendIcon')) {
     require(APP_BASE_PATH . '/fcn/weather/weatherIcons.php');
 }
 
-// Load Tower Lightning Data:
-if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+// Load Tower Lightning Data
+if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
     if (!class_exists('tower\getCurrentLightningData')) {
         require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
         $getTowerLightningData = new tower\getCurrentLightningData;

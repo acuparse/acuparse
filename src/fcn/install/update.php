@@ -61,33 +61,33 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             // Rebuild the event scheduler
             require(APP_BASE_PATH . '/fcn/trim.php');
 
-        $pageTitle = 'Update Complete';
-        include(APP_BASE_PATH . '/inc/header.php');
-        ?>
-        <section id="update-system">
-            <div class="row">
-                <div class="col">
-                    <h2 class="page-header">Update Complete</h2>
-                    <div class="alert alert-warning text-center">
-                        <p><strong>Double check your config settings before proceeding!</strong></p>
-                    </div>
-                    <div><h3>Notes:</h3>
-                        <ul class="list-unstyled"><?= $notes; ?></ul>
+            $pageTitle = 'Update Complete';
+            include(APP_BASE_PATH . '/inc/header.php');
+            ?>
+            <section id="update-system">
+                <div class="row">
+                    <div class="col">
+                        <h2 class="page-header">Update Complete</h2>
+                        <div class="alert alert-warning text-center">
+                            <p><strong>Double check your config settings before proceeding!</strong></p>
+                        </div>
+                        <div><h3>Notes:</h3>
+                            <ul class="list-unstyled"><?= $notes; ?></ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button type="button" class="btn btn-primary btn-block"
-                            onclick="location.href = '/admin/settings'">
-                        <i class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
-                    </button>
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary btn-block"
+                                onclick="location.href = '/admin/settings'">
+                            <i class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </section>
-        <?php
-        // Get app footer
-        include(APP_BASE_PATH . '/inc/footer.php');
+            </section>
+            <?php
+            // Get app footer
+            include(APP_BASE_PATH . '/inc/footer.php');
         } else {
             $pageTitle = 'Update Failed!';
             include(APP_BASE_PATH . '/inc/header.php');

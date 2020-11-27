@@ -349,7 +349,7 @@ elseif ($config->station->towers === true) {
             }
         } // This tower has not been added
         else {
-            syslog(LOG_ERR, "(ACCESS){TOWER}[ERROR]: Unknown ID: $towerID . Raw = $myacuriteQuery");
+            syslog(LOG_ERR, "(ACCESS){TOWER}[ERROR]: Unknown Sensor ID $towerID . Raw = $myacuriteQuery");
             goto upload_unknown;
         }
     }
@@ -366,7 +366,7 @@ else {
     } elseif ($_GET['mt'] === 'Atlas') {
         syslog(LOG_ERR, "(ACCESS){ATLAS}[ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
     } else {
-        syslog(LOG_ERR, "(ACCESS)[ERROR]: Unknown Sensor $sensor . Raw = $myacuriteQuery");
+        syslog(LOG_ERR, "(ACCESS)[ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
     }
 
     upload_unknown:
@@ -394,6 +394,7 @@ if ($config->upload->myacurite->access_enabled === true) {
 
     // Make sure data was sent
     if (!$myacurite) {
+        syslog(LOG_WARNING, "(ACCESS){MyAcuRite}[WARN]: MyAcurite Offline - Generating Access Response");
         goto myacurite_upload_disabled;
     } else {
 
@@ -403,6 +404,9 @@ if ($config->upload->myacurite->access_enabled === true) {
         }
 
         // Output the response to the Access
+        header_remove();
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
         echo $myacurite;
     }
 } // MyAcurite is disabled
@@ -410,10 +414,15 @@ else {
     myacurite_upload_disabled:
     // Output the expected response to the Access
     $accessTimezoneOffset = date('P');
-    $myacurite = '{"timezone":"' . $accessTimezoneOffset . '"}';
+    $accessResponse = json_encode(["timezone" => "$accessTimezoneOffset"]);
     // Log the raw data
     if ($config->debug->logging === true) {
-        syslog(LOG_DEBUG, "(ACCESS){MyAcuRite}: Query = $myacuriteQuery | Response = $myacurite");
+        syslog(LOG_DEBUG, "(ACCESS){Update}: Query = $myacuriteQuery | Response = $accessResponse");
     }
-    echo $myacurite;
+
+    // Output the response to the Access
+    header_remove();
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    echo $accessResponse;
 }

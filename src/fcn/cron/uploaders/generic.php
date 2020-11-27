@@ -32,10 +32,10 @@
  */
 /**
  * @return array
- * @var object $data Weather Data
+ * @return array
  * @return array
  * @var object $atlas Atlas Data
- * @return array
+ * @var object $data Weather Data
  * @var object $appInfo Global Application Info
  * @var string $utcDate Atlas Data
  */

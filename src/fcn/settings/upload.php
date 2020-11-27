@@ -111,7 +111,7 @@
         <div class="col-md-6 col-12 border alert">
             <h3 class="panel-heading">MyAcuRite</h3>
             <div class="form-group">
-                <h4>Access Upload:</h4>
+                <h4>Upload Access Data</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[myacurite][access_enabled]"
@@ -132,10 +132,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <h4>Unknown Sensors:</h4>
-                <p>Send unknown sensor data?<br>
-                    <span class="small text-danger">Can include neighbours/noise and is generally not recommend.</span>
-                </p>
+                <h4>Upload Unknown Sensor Data</h4>
+                <p>Sends all data received by your Access to MyAcurite.</p>
+                <p class="small text-danger">Can include neighbours/noise and is generally not recommend.</p>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[myacurite][pass_unknown]"
@@ -156,11 +155,13 @@
                 </div>
             </div>
             <hr class="hr-dashed">
-            <h4>Upload URL:</h4>
+            <h4>Upload URL</h4>
             <div class="row">
                 <div class="col">
                     <p class="alert-info">If installed on the same network as your device,
-                        use secondary. See <code>docs/DNS.md</code></p>
+                        use secondary. See <a class="text-danger"
+                                              href="https://docs.acuparse.com/DNS/#direct-connection-to-acuparse">docs/DNS.md</a>
+                    </p>
                 </div>
             </div>
             <div class="form-row">
@@ -191,7 +192,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">Weather Underground</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[wu][enabled]"
@@ -260,7 +260,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">PWS Weather</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[pws][enabled]"
@@ -329,7 +328,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">CWOP</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[cwop][enabled]"
@@ -419,7 +417,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">Weathercloud</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[wc][enabled]"
@@ -506,7 +503,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">Windy</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[windy][enabled]"
@@ -573,7 +569,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">Windguru</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[windguru][enabled]"
@@ -655,7 +650,6 @@
         <div class="col-md-6 col-12 border">
             <h3 class="panel-heading">OpenWeather</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[openweather][enabled]"
@@ -721,7 +715,6 @@
             <h3 class="panel-heading">Generic Update Server</h3>
             <p>Sends data in wunderground format to any compatible provider.</p>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="upload[generic][enabled]"

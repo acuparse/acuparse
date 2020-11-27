@@ -40,7 +40,7 @@
             </div>
             <div class="row">
                 <div class="col-md-8 col-12 mx-auto alert alert-secondary">
-                    <h3>MAC Address:</h3>
+                    <h3>MAC Address</h3>
                     <p class="alert alert-info">Enter the addresses for your devices below.
                         You can only use one device to report readings at a time.</p>
                     <p class="alert alert-warning">Check your settings after making changes!</p>
@@ -86,7 +86,7 @@
             <div class="row">
                 <div class="col-md-8 col-12 mx-auto alert alert-primary">
                     <div class="form-group">
-                        <h3>Primary Data Source:</h3>
+                        <h3>Primary Data Source</h3>
                         <p class="alert alert-warning">You can use an Atlas or 5-in-1 sensor as
                             your
                             primary sensor. You must have an Access to receive Atlas data.</p>
@@ -96,7 +96,8 @@
                                    id="station-primary-sensor-0"
                                    onclick='document.getElementById("station-sensor-5n1").disabled=true;document.getElementById("station-sensor-atlas").disabled=false;'
                                    value="0"
-                                <?= ($config->station->primary_sensor === 0) ? 'checked="checked"' : false; ?>>
+                                <?= ($config->station->primary_sensor === 0) ? 'checked="checked"' : false; ?>
+                                <?= ($config->station->device === 1) ? 'disabled="disabled"' : false; ?>>
                             <label class="form-check-label alert bg-dark"
                                    for="station-primary-sensor-0">Atlas</label>
                         </div>
@@ -165,7 +166,7 @@
                     <hr>
                     <div class="col-md-8 col-12 mx-auto">
                         <div class="form-group">
-                            <p><strong>Tower Sensors</strong></p>
+                            <h2>Tower Sensors</h2>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio"
                                        name="station[towers]"
@@ -214,8 +215,8 @@
                     <hr>
                     <div class="col-md-8 col-12 mx-auto">
                         <div class="form-group">
-                            <p><strong>Lightning Sensor</strong><br><small>(Acurite Access
-                                    Required)</small></p>
+                            <h2>Lightning Sensor</strong></h2>
+                            <p><small>(Acurite Access Required)</small></p>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio"
                                        name="station[lightning_source]"

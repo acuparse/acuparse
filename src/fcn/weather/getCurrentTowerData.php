@@ -24,7 +24,6 @@
  * File: src/fcn/weather/getCurrentTowerData.php
  * Gets the requested tower data from the database
  */
-
 class getCurrentTowerData
 {
     // Set variables

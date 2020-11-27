@@ -81,12 +81,11 @@ if (mysqli_num_rows($result) >= 1) {
     <!-- END: Tower Sensors -->
 
     <?php
-    if ($config->station->access_mac != null && $config->station->primary_sensor === 0 && $config->station->lightning_source === 3) { ?>
+    if (($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) && $config->station->lightning_source === 3) { ?>
         <hr class="hr-dotted hr-half">
         <!-- BEGIN: Tower Lightning -->
         <?php require(APP_BASE_PATH . '/fcn/weather/dashboard/towerLightning.php'); ?>
         <!-- END: Tower Lightning -->
         <?php
     }
-
 }

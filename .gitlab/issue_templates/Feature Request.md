@@ -31,6 +31,6 @@ For example, "The user should be able to ..."
 
 ### Links / references
 
-<!-- E.g. related GitLab issues/MRs -->
+<!-- E.g. related issues/MRs -->
 
 /label ~feature

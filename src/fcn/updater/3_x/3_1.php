@@ -58,4 +58,11 @@ switch ($config->version->app) {
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.0");
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support Open Weather Map and Bug Fixes. See Changelog!';
 
+    // Update from 3.1.0 to 3.1.1
+    case '3.1.0':
+        syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.1.1");
+        $config->version->app = '3.1.1';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug Fixes. See Changelog.';
+        syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.1");
+
 }

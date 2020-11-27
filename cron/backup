@@ -31,7 +31,7 @@
 #MYSQL_USER=acuparse
 #MYSQL_PASSWORD=STRONG_PASSWORD
 #MYSQL_HOSTNAME=localhost
-KEEP_BACKUPS_FOR=7 # Days
+KEEP_BACKUPS_FOR=7  # Days
 BACKUP_CAM_IMAGES=1 # Set to 0 to skip backing up images. Can slow down and increase backup size substantially.
 
 ### Other Variables ###

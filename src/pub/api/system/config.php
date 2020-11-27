@@ -32,8 +32,8 @@ require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 /** @var mysqli $conn Global MYSQL Connection */
 /**
  * @return array
- * @var object $config Global Config
  * @return array
+ * @var object $config Global Config
  * @var object $appInfo App Info
  */
 
@@ -44,9 +44,9 @@ include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');
 if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
     $env = getenv();
     echo "<h1>Acuparse Data</h1><h2>Application Data</h2>";
-    print("<pre>".print_r($appInfo,true)."</pre><h2>Configuration Data</h2>");
-    print("<pre>".print_r($config,true)."</pre><h2>Environment</h2>");
-    print("<pre>".print_r($env,true)."</pre>");
+    print("<pre>" . print_r($appInfo, true) . "</pre><h2>Configuration Data</h2>");
+    print("<pre>" . print_r($config, true) . "</pre><h2>Environment</h2>");
+    print("<pre>" . print_r($env, true) . "</pre>");
 } else {
     header($_SERVER['SERVER_PROTOCOL'] . ' 401 Unauthorized');
     echo 'Unauthorized';

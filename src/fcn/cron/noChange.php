@@ -57,8 +57,13 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
 
         if ($config->outage_alert->enabled === true) {
             require_once(APP_BASE_PATH . '/fcn/mailer.php');
-            $subject = $config->station->hostname . ' OFFLINE';
-            $message = '<p><strong>' . $config->station->hostname . ' is no longer receiving weather updates.</strong></p><p>Check your Internet connection and Acurite device!</p>';
+            if ($config->site->hostname === 'localhost') {
+                $hostname = 'Acuparse';
+            } else {
+                $hostname = $config->site->hostname;
+            }
+            $subject = $hostname . ' OFFLINE';
+            $message = '<p><strong>' . $hostname . ' is no longer receiving weather updates.</strong></p><p>Check your Internet connection and Acurite device!</p>';
             $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
             while ($row = mysqli_fetch_assoc($sql)) {
                 $admin_email[] = $row['email'];

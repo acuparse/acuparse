@@ -234,7 +234,7 @@ else {
     } elseif ($_GET['mt'] === '5N1') {
         syslog(LOG_ERR, "(HUB){5N1}[ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
     } else {
-        syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor $sensor. Raw = $myacuriteQuery");
+        syslog(LOG_ERR, "(HUB)[ERROR]: Unknown Sensor ID $sensor. Raw = $myacuriteQuery");
     }
     exit();
 }
@@ -246,12 +246,17 @@ if ($config->debug->server->enabled === true) {
     file_get_contents('http://' . $config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
 }
 
-$hubResponse = '{"localtime":"' . date('H:i:s') . '"}';
+$responseTimestamp = date('H:i:s');
+$hubResponse = json_encode(["localtime" => "$responseTimestamp"]);
 
 // Log the raw data
 if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(HUB)[Update]: Query = $myacuriteQuery | Response = $hubResponse");
+    syslog(LOG_DEBUG, "(HUB){Update}: Query = $myacuriteQuery | Response = $hubResponse");
 }
 
 // Output the expected response to the smartHUB
+
+header_remove();
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 echo $hubResponse;

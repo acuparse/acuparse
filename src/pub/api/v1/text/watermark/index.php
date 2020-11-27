@@ -31,9 +31,9 @@ function camWmark()
     require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
 
     /**
- * @return array
- * @var object $config Global Config
- */
+     * @return array
+     * @var object $config Global Config
+     */
 
     // Load weather Data:
     if (!class_exists('getCurrentWeatherData')) {

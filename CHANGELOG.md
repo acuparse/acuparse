@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.1.1]](https://www.acuparse.com/releases/v3-1-1/) - 2020-11-26
+
+### Fixed
+
+- Using Tower Data for Upload and Archive.
+- Lightning Tower breaks Dashboard.
+- Small UI improvements.
+- Improve Access Stability (Especially during outages).
+
+### Changed
+
+- Time and Ping API moved to /system.
+
 ## [[3.1.0]](https://www.acuparse.com/releases/v3-1-0/) - 2020-11-15
 
 ### Added

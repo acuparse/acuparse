@@ -27,8 +27,8 @@
 
 /**
  * @return array
- * @var object $config Global Config
  * @return array
+ * @var object $config Global Config
  * @var object $wx Weather Values
  */
 ?>
