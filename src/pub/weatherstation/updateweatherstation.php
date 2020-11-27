@@ -40,7 +40,8 @@ if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
     exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: Device $mac is not configured"));
 }
 
-function last_updated_at() {
+function last_updated_at()
+{
     global $conn;
     $lastUpdate = date("Y-m-d H:i:s");
     mysqli_query($conn, "UPDATE `last_update` SET `timestamp` = '$lastUpdate';");
@@ -59,5 +60,9 @@ elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->stati
 else {
     $mac = $_GET['id'];
     // Log it
-    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Unrecognized Device $mac");
+    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Unknown Device $mac");
+
+    header_remove();
+    header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error', true, 500);
+    echo 'Unrecognized Device';
 }

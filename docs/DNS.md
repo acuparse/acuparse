@@ -35,4 +35,5 @@ Redirecting the DNS locally will cause issues with uploads to MyAcurite. The red
 to its self. In this case, you should select the secondary urls in the MyAcuRite config settings. Acuparse will then upload
 readings to MyAcuRite as expected.
 
-- Secondary DNS entries point to the Acuparse domain hosted on Cloudflare. Records are synced with Acurite on a regular basis.
+- Secondary DNS entries point to the Acuparse domain hosted on Cloudflare.
+[Records are synced with Acurite](https://gitlab.com/acuparse/dns_sync/-/pipelines) on a regular basis.

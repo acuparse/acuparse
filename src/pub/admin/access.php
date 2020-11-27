@@ -58,7 +58,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                         <input type="text" class="form-control" name="ser" id="server-hostname"
                                placeholder="atlasapi.myacurite.com" value="<?= $config->site->hostname; ?>"
                                required>
-                        <p class="alert alert-warning margin-top-05">Cannot be an IP address! Must be a DNS resolvable hostname.</p>
+                        <p class="alert alert-warning margin-top-05">Cannot be an IP address! Must be a DNS resolvable
+                            hostname.</p>
                         <p class="alert alert-info margin-top-05">Default: <code>atlasapi.myacurite.com</code></p>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-power-off"></i> Reboot</button>

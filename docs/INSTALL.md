@@ -222,15 +222,25 @@ curl -d 'ser=atlasapi.myacurite.com' http://<ACCESS IP>/config.cgi
 
 ## Updating
 
-Detailed upgrade instructions for significant releases will be published in the docs/updates folder if required.
+Detailed upgrade instructions for significant releases will be published in the docs/updates folder, when required.
 
 - Pull the changes from Git.
 
 ```bash
-cd /opt/acuparse && sudo git pull
+cd /opt/acuparse
+sudo git pull
 ```
 
-- Connect to your site to complete the update.
+- Navigate to your Acuparse website to complete the update.
+
+### Git Repository
+
+If you make changes to the source code locally, your changes will break `git pull` unless you `commit` or `stash` them.
+If you receive errors while doing a `git pull`. You can remove your changes and reset your code back to release state by
+running `git reset --hard`.
+
+If you're interested in learning Git, there is an excellent resource here:
+[Git Exercises](https://gitexercises.fracz.com/).
 
 ---
 

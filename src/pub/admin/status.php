@@ -125,7 +125,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                         <tr id="<?= $config->station->sensor_5n1; ?>">
                             <th scope="row"><?= ltrim($config->station->sensor_5n1, '0'); ?></th>
                             <td>5N1</td>
-                            <td style="background-color: <?=$batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
+                            <td style="background-color: <?= $batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
                             <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>
                     <?php }

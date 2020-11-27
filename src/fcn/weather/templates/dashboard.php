@@ -71,7 +71,7 @@
         <!-- END: Rain -->
 
         <?php
-        if ($config->station->access_mac != null) {
+        if ($config->station->device === 0 && $config->station->access_mac != null) {
             if ($config->station->primary_sensor === 0) {
                 ?>
                 <!-- BEGIN: Light -->
@@ -82,11 +82,7 @@
                 <!-- BEGIN: Lightning -->
                 <?php require_once(APP_BASE_PATH . '/fcn/weather/dashboard/lightning.php'); ?>
                 <!-- END: Lightning -->
-            <?php } elseif ($config->station->primary_sensor === 1 && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) { ?>
-                <!-- BEGIN: Lightning Tower -->
-                <?php require_once(APP_BASE_PATH . '/fcn/weather/dashboard/towerLightning.php'); ?>
-                <!-- END: Lightning Tower-->
-            <?php } elseif ($config->station->primary_sensor === 0 && $config->station->lightning_source === 2) { ?>
+            <?php } elseif (($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) { ?>
                 <!-- BEGIN: Lightning Tower -->
                 <?php require_once(APP_BASE_PATH . '/fcn/weather/dashboard/towerLightning.php'); ?>
                 <!-- END: Lightning Tower-->

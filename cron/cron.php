@@ -52,7 +52,7 @@ if ($installed === true) {
         /* @var object $data */
 
         // Load Atlas Data
-        if ($config->station->primary_sensor === 0) {
+        if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
             if (!class_exists('getCurrentAtlasData')) {
                 require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
                 $getAtlasData = new getCurrentAtlasData();
@@ -74,18 +74,18 @@ if ($installed === true) {
 
         // If using tower data for archiving, set it now
         if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === true) {
-            if ($config->station->device === 0) {
-
-                // Load Lightning Data:
-                if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
-                    if (!class_exists('tower\getCurrentLightningData')) {
-                        require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                        $getLightningData = new tower\getCurrentLightningData;
-                        $lightning = $getLightningData->getData();
-                    }
+            // Load Tower Lightning
+            if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
+                if (!class_exists('tower\getCurrentLightningData')) {
+                    require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                    $getLightningData = new tower\getCurrentLightningData;
+                    $lightning = $getLightningData->getData();
                 }
-                require(APP_BASE_PATH . '/fcn/cron/towerData.php');
             }
+            // Load Tower Data
+            require(APP_BASE_PATH . '/fcn/cron/towerData.php');
+            /* @var string $sensor */
+            syslog(LOG_DEBUG, "(SYSTEM){CRON}: Using Tower $sensor for Archive & Uploads");
         }
 
         // Set the UTC date for the update
@@ -96,7 +96,7 @@ if ($installed === true) {
         if (($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) {
             // New Data, proceed
 
-            if ($config->station->device === 0 && $config->station->primary_sensor === 0 && ($config->station->lightning_source !== 0)) {
+            if ($config->station->device === 0 && $config->station->primary_sensor === 0 && $config->station->lightning_source !== 0) {
                 $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`, `lightning`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$atlas->windAvgMPH', '$atlas->windGustMPH', '$data->windDEG', '$atlas->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds', '$lightning->dailystrikes')";
             } elseif ($config->station->device === 0 && $config->station->primary_sensor === 0 && $config->station->lightning_source === 0) {
                 $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$atlas->windAvgMPH', '$atlas->windGustMPH', '$data->windDEG', '$atlas->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds')";
@@ -115,8 +115,8 @@ if ($installed === true) {
             $status = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
             if ($status['status'] === '0') {
                 require(APP_BASE_PATH . '/fcn/mailer.php');
-                $subject = $config->station->hostname . ' ONLINE';
-                $message = '<p><strong>' . $config->station->hostname . ' is receiving weather updates.</strong></p>';
+                $subject = $config->site->hostname . ' ONLINE';
+                $message = '<p><strong>' . $config->site->hostname . ' is receiving weather updates.</strong></p>';
                 $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
                 while ($row = mysqli_fetch_assoc($sql)) {
                     $admin_email[] = $row['email'];
@@ -145,6 +145,8 @@ if ($installed === true) {
             // Using Tower Data
             if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === false) {
                 require(APP_BASE_PATH . '/fcn/cron/towerData.php');
+                /* @var string $sensor */
+                syslog(LOG_DEBUG, "(SYSTEM){CRON}: Using Tower $sensor for Uploads");
             }
 
             ini_set('default_socket_timeout', 1);

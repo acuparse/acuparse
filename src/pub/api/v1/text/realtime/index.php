@@ -24,7 +24,7 @@
  * File: src/pub/api/v1/text/realtime/index.php
  * Builds a Cumulus compatible realtime file
  * https://cumuluswiki.org/a/Realtime.txt
-*/
+ */
 
 /**
  * @param $unit
@@ -56,9 +56,9 @@ function realtime()
 
     /** @var mysqli $conn Global MYSQL Connection */
     /**
- * @return array
- * @var object $config Global Config
- */
+     * @return array
+     * @var object $config Global Config
+     */
 
     $pressureTrend = calculateTrend('ingh', 'pressure');
     $tempTrend = calculateTrend('tempF', 'temperature');

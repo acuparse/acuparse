@@ -41,7 +41,6 @@
     <div class="row">
         <div class="col-md-6 col-12 mx-auto border">
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="debug[server][enabled]"

@@ -27,10 +27,10 @@
 
 /**
  * @return array
- * @var object $config Global Config
+ * @return array
  * @return array
  * @var object $wx Weather Values
- * @return array
+ * @var object $config Global Config
  * @var object $atlas Atlas Values
  */
 ?>
@@ -40,14 +40,14 @@
             <i class="wi wi-wind-beaufort-<?= $wx->windBeaufort; ?>" aria-hidden="true"
                title="Beauford <?= $wx->windBeaufort; ?>"></i> Wind</h1>
         <?php
-            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                $windSpeed = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSpeedMPH mph ($wx->windSpeedKMH km/h)" :
-                    "$wx->windDIR @ $wx->windSpeedKMH km/h ($wx->windSpeedMPH mph)";
-            } else {
-                $windSpeed = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSpeedMPH mph" : "$wx->windDIR @
+        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+            $windSpeed = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSpeedMPH mph ($wx->windSpeedKMH km/h)" :
+                "$wx->windDIR @ $wx->windSpeedKMH km/h ($wx->windSpeedMPH mph)";
+        } else {
+            $windSpeed = ($config->site->imperial === true) ? "$wx->windDIR @ $wx->windSpeedMPH mph" : "$wx->windDIR @
             $wx->windSpeedKMH km/h";
-            }
-            echo '<h2>from <i class="wi wi-wind wi-from-' . strtolower($wx->windDIR) . '" aria-hidden="true"></i> ' . $windSpeed . '</h2>'; ?>
+        }
+        echo '<h2>from <i class="wi wi-wind wi-from-' . strtolower($wx->windDIR) . '" aria-hidden="true"></i> ' . $windSpeed . '</h2>'; ?>
         <ul class="list-unstyled">
             <?php if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
                 if ($atlas->windGustMPH !== $wx->windSpeedMPH) {

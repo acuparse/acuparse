@@ -25,6 +25,6 @@ Please fill out as much as possible below to help triage your report
 
 ### Other links/references
 
-<!-- E.g. related GitLab issues/MRs -->
+<!-- E.g. related issues/MRs -->
 
 /label ~documentation

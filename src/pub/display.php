@@ -64,17 +64,24 @@ if ($installed == false) {
 
 // Get Forcast Data
     ?>
-
     <!-- Modify CSS for Display Mode -->
     <style>
         body {
+            position: absolute;
+            margin: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
             padding-top: unset;
-            display: -webkit-flex;
             display: flex;
             -webkit-align-items: center;
             align-items: center;
             -webkit-justify-content: center;
             justify-content: center;
+            overflow: hidden;
         }
     </style>
 
@@ -123,11 +130,11 @@ if ($installed == false) {
             }
             async function updateTime() {
                 $.ajax({
-                    url: \'/api/v1/text/time/?ping\',
+                    url: \'/api/system/ping\',
                     startTime: new Date().getTime(),
                     success: async function(data) {
                         $.ajax({
-                            url: \'/api/v1/text/time/\',
+                            url: \'/api/system/time\',
                             startTime: this.startTime,
                             success: async function (data) {
                                 $("#local-time-display").html(data);

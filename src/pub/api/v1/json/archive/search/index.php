@@ -91,50 +91,50 @@ if (isset($_GET['query'])) {
         // Atlas Readings
         if ($config->station->primary_sensor === 0) {
             $result = mysqli_query($conn,
-                "SELECT `reported`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+                "SELECT `reported`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
         } //5n1
         else {
             $result = mysqli_query($conn,
-                "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+                "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
         }
     } // Temp
     else if ($_GET['query'] === 'temp') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `tempF`, `feelsF`, `dewptF` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `tempF`, `feelsF`, `dewptF` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // Rain
     else if ($_GET['query'] === 'rain') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `rainin`, `total_rainin` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `rainin`, `total_rainin` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // Humidity
     else if ($_GET['query'] === 'relh') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `relH` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `relH` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // Pressure
     else if ($_GET['query'] === 'pressure') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // Lightning
     else if ($_GET['query'] === 'lightning') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `lightning` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `lightning` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // Light
     else if ($_GET['query'] === 'light') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `light`, `lightSeconds` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `light`, `lightSeconds` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // UV
     else if ($_GET['query'] === 'uv') {
         $result = mysqli_query($conn,
-            "SELECT `reported`, `uvindex` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+            "SELECT `reported`, `uvindex` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
     } // All
     else if ($_GET['query'] === 'all') {
         // Atlas Readings
         if ($config->station->primary_sensor === 0) {
             $result = mysqli_query($conn,
-                "SELECT `reported`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `windGustMPH`, `windGustDEG`, `tempF`, `feelsF`, `dewptF`, `rainin`, `total_rainin`, `relH`, `pressureinHg`, `lightning`, `light`, `lightSeconds`, `uvindex`  FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+                "SELECT `reported`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `windGustMPH`, `windGustDEG`, `tempF`, `feelsF`, `dewptF`, `rainin`, `total_rainin`, `relH`, `pressureinHg`, `lightning`, `light`, `lightSeconds`, `uvindex`  FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
         } //5n1
         else {
             $result = mysqli_query($conn,
-                "SELECT `reported`, `windSpeedMPH`, `windDEG`, `tempF`, `feelsF`, `dewptF`, `rainin`, `total_rainin`, `relH`, `pressureinHg`, `lightning`, `light`, `lightSeconds`, `uvindex`  FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'". $sort . $limit);
+                "SELECT `reported`, `windSpeedMPH`, `windDEG`, `tempF`, `feelsF`, `dewptF`, `rainin`, `total_rainin`, `relH`, `pressureinHg`, `lightning`, `light`, `lightSeconds`, `uvindex`  FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
         }
     }
 } else {

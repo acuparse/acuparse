@@ -32,8 +32,8 @@
  */
 /**
  * @return array
- * @var object $data Weather Data
  * @return array
+ * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
 

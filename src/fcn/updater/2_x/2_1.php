@@ -36,19 +36,19 @@ switch ($config->version->app) {
     // Update from 2.1.0
     case '2.1.0':
 
-    // Update from 2.1.1
+        // Update from 2.1.1
     case '2.1.1':
 
-    // Update from 2.1.2
+        // Update from 2.1.2
     case '2.1.2':
 
-    // Update from 2.1.3
+        // Update from 2.1.3
     case '2.1.3':
 
-    // Update from 2.1.4
+        // Update from 2.1.4
     case '2.1.4':
 
-    // Update from 2.1.5
+        // Update from 2.1.5
     case '2.1.5':
         $config->version->app = '2.1.6';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
@@ -56,10 +56,10 @@ switch ($config->version->app) {
     // Update from 2.1.6
     case '2.1.6':
 
-    // Update from 2.1.7
+        // Update from 2.1.7
     case '2.1.7':
 
-    // Update from 2.1.8
+        // Update from 2.1.8
     case '2.1.8':
         $config->version->app = '2.1.9';
         $config->site->hide_alternate = 'false';

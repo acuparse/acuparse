@@ -111,13 +111,27 @@ img {
     padding-left: .5em;
 }
 
+@media (max-width: 992px) {
+    .navbar-nav .nav-link,
+    .dropdown-menu .dropdown-item {
+        font-size: 1.275em;
+    }
+
+}
+
 /* END: Navigation */
 /* ---------------------------- */
 
 /* Local Time */
 
 .local-time p {
-    font-weight: 700;
+    font-weight: bolder;
+}
+
+@media (max-width: 375px) {
+    .local-time p {
+        font-size: .9em;
+    }
 }
 
 /* END: Local Time */

@@ -96,11 +96,11 @@ if ($installed == false) {
             }
             async function updateTime() {
                 $.ajax({
-                    url: \'/api/v1/text/time/?ping\',
+                    url: \'/api/system/ping\',
                     startTime: new Date().getTime(),
                     success: async function(data) {
                         $.ajax({
-                            url: \'/api/v1/text/time/\',
+                            url: \'/api/system/time\',
                             startTime: this.startTime,
                             success: async function (data) {
                                 $("#local-time-display").html(data);

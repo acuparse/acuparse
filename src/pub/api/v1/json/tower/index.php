@@ -50,13 +50,11 @@ function getTowerLightningData()
 include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');
 
 if (isset($_GET['lightning'])) {
-    if ($config->station->primary_sensor === 0) {
-        if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
-            getTowerLightningData();
-        } else {
-            header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-            echo json_encode(array("message" => "Bad Request - Tower lightning not enabled"));
-        }
+    if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
+        getTowerLightningData();
+    } else {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        echo json_encode(array("message" => "Bad Request - Tower lightning not enabled"));
     }
 } elseif ($config->station->towers === true) {
     if (isset($_GET['id'])) {

@@ -41,7 +41,7 @@
         <div class="col-md-8 col-12 mx-auto">
             <div class="row">
                 <div class="col border">
-                    <h3>Camera:</h3>
+                    <h3>Camera</h3>
                     <div class="form-group">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio"
@@ -118,7 +118,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <h3>Archive:</h3>
+                    <h3>Archive</h3>
                     <div class="form-group">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio"
@@ -141,7 +141,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <h3>Contact:</h3>
+                    <h3>Contact</h3>
                     <div class="form-group">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio"
@@ -200,7 +200,7 @@
                     <div class="form-row">
                         <div class="col form-group">
                             <label class="col-form-label" for="outage-alert-offline-for">Offline
-                                For:</label>
+                                For</label>
                             <select name="outage_alert[offline_for]"
                                     id="outage-alert-offline-for"
                                 <?= ($config->outage_alert->enabled === false) ? 'disabled="disabled"' : false; ?>
@@ -214,7 +214,7 @@
                         </div>
                         <div class="col form-group">
                             <label class="col-form-label" for="outage-alert-interval">Send
-                                Interval:</label>
+                                Interval</label>
                             <select name="outage_alert[interval]" id="outage-alert-interval"
                                     class="form-control">
                                 <?php
@@ -243,7 +243,6 @@
                 <div class="col-md-6 col-12 border">
                     <h3 class="panel-heading">Invisible reCAPTCHA</h3>
                     <div class="form-group">
-                        <h4>Status:</h4>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio"
                                    name="google[recaptcha][enabled]"
@@ -282,7 +281,7 @@
                     </div>
                     <div class="form-row">
                         <label class="col-form-label" for="recaptcha-sitekey">Site
-                            Key:</label>
+                            Key</label>
                         <div class="col form-group">
                             <input type="text" class="form-control"
                                    name="google[recaptcha][sitekey]"
@@ -302,7 +301,6 @@
                 <div class="col-md-6 col-12 border">
                     <h3 class="panel-heading">Analytics</h3>
                     <div class="form-group">
-                        <h4>Status:</h4>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio"
                                    name="google[analytics][enabled]"
@@ -350,7 +348,6 @@
         <div class="col-md-8 col-12 mx-auto">
             <h3 class="panel-heading">Mailgun</h3>
             <div class="form-group">
-                <h4>Status:</h4>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                            name="mailgun[enabled]"

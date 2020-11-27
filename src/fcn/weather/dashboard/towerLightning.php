@@ -27,10 +27,10 @@
 
 /**
  * @return array
- * @var object $config Global Config
+ * @return array
  * @return array
  * @var object $towerLightning Tower Lightning Values
- * @return array
+ * @var object $config Global Config
  * @var object $lightning Lightning Values
  */
 
@@ -57,8 +57,7 @@
             } else {
                 ?>
                 <li><h3>No Lightning Detected</h3></li>
-                <li><h3>Interference:</h3> <?= $lightning->interference; ?> |
-                    <h3>Last:</h3> <?= $lightning->last_update; ?></li>
+                <li><h3>Interference:</h3> <?= $towerLightning->interference; ?></li>
                 <?php
             }
             ?>

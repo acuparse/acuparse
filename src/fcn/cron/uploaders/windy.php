@@ -32,21 +32,34 @@
  */
 /**
  * @return array
- * @var object $data Weather Data
  * @return array
+ * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
 
-$windyQueryUrl = $config->upload->windy->url . '/' . $config->upload->windy->key;
-$windyQuery = '?tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN;
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $windyQuery = $windyQuery . '&uv=' . $atlas->uvIndex;
-}
-$windyQueryResult = file_get_contents($windyQueryUrl . $windyQuery);
+$sql = "SELECT `timestamp` FROM `windy_updates` ORDER BY `timestamp` DESC LIMIT 1";
+$result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
+$count = mysqli_num_rows(mysqli_query($conn, $sql));
+
+// Make sure update interval has passed since last update
+if ((strtotime($result['timestamp']) < strtotime('-5 minutes')) or ($count == 0)) {
+    $windyQueryUrl = $config->upload->windy->url . '/' . $config->upload->windy->key;
+    $windyQuery = '?tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN;
+    if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
+        $windyQuery = $windyQuery . '&uv=' . $atlas->uvIndex;
+    }
+    $windyQueryResult = file_get_contents($windyQueryUrl . $windyQuery);
 // Save to DB
-mysqli_query($conn,
-    "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
-if ($config->debug->logging === true) {
-    // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
+    mysqli_query($conn,
+        "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
+    if ($config->debug->logging === true) {
+        // Log it
+        syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
+    }
+} // No new update to send
+else {
+    if ($config->debug->logging === true) {
+        // Log it
+        syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Update not sent. Not enough time has passed");
+    }
 }

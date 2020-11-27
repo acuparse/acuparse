@@ -52,11 +52,11 @@ You can create an API token from your user profile page.
 ## Plain Text Output
 
 - Camera Watermark: `http(s)://<yourip/domain>/api/v1/text/watermark`
-- Date/Time: `http(s)://<yourip/domain>/api/v1/text/time`
 - [Cumulus formatted](https://cumuluswiki.org/a/Realtime.txt) Realtime: `http(s)://<yourip/domain>/api/v1/text/realtime`
 
 ## System Data
 
+- Date/Time: `http(s)://<yourip/domain>/api/system/time`
 - Health: `http(s)://<yourip/domain>/api/system/health`
 
 ### API Token/Admin (Login Required)

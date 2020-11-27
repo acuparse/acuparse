@@ -27,10 +27,10 @@
 
 /**
  * @return array
- * @var object $config Global Config
+ * @return array
  * @return array
  * @var object $wx Weather Values
- * @return array
+ * @var object $config Global Config
  * @var object $atlas Atlas Values
  */
 ?>

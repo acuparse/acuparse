@@ -85,6 +85,7 @@ if (!$result) {
                 document.getElementById("submit").disabled = pass.value.length === 0 ||
                     pass.value !== pass2.value;
             }
+
             verifyPassword();
         </script>
         <?php

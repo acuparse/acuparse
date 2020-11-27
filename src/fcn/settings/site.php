@@ -165,11 +165,11 @@
                     </div>
                     <hr class="hr-dotted">
                     <div class="col border">
-                        <h2>Display Format:</h2>
+                        <h2>Display Format</h2>
                         <p>By default, readings are displayed in Metric with Imperial in
                             brackets. Eg. 0℃ (32℉)</p>
                         <div class="form-group">
-                            <p><strong>Primary Display Format:</strong></p>
+                            <p><strong>Primary Display Format</strong></p>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio"
                                        name="site[imperial]"
@@ -225,7 +225,7 @@
                     </div>
                     <hr class="hr-dotted">
                     <div class="form-group">
-                        <p><strong>Check for updates?</strong></p>
+                        <h2>Check for Updates</h2>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="site[updates]"
                                    id="site-updates-0" value="1"
