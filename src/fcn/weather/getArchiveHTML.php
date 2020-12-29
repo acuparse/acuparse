@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -44,18 +44,19 @@ function getArchiveHTML()
     $year = $getData->getYear();
     $ever = $getData->getAllTime();
 
-
     // Load Atlas Data:
-    if ($config->station->primary_sensor === 0) {
-        // Load weather Data:
-        require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
-        $getAtlasData = new getArchiveAtlasWeatherData();
-        $atlasYesterday = $getAtlasData->getYesterday();
-        $atlasWeek = $getAtlasData->getWeek();
-        $atlasMonth = $getAtlasData->getMonth();
-        $atlasLastMonth = $getAtlasData->getLastMonth();
-        $atlasYear = $getAtlasData->getYear();
-        $atlasEver = $getAtlasData->getAllTime();
+    if ($config->station->device === 0) {
+        if ($config->station->primary_sensor === 0) {
+            // Load weather Data:
+            require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
+            $getAtlasData = new getArchiveAtlasWeatherData();
+            $atlasYesterday = $getAtlasData->getYesterday();
+            $atlasWeek = $getAtlasData->getWeek();
+            $atlasMonth = $getAtlasData->getMonth();
+            $atlasLastMonth = $getAtlasData->getLastMonth();
+            $atlasYear = $getAtlasData->getYear();
+            $atlasEver = $getAtlasData->getAllTime();
+        }
     }
     ?>
 
@@ -628,10 +629,10 @@ function getArchiveHTML()
                         <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
-                                    High:</h4> <?= "$atlasEver->light_high on " . $atlasWeek->light_high_recorded; ?>
+                                    High:</h4> <?= "$atlasEver->light_high on " . $atlasEver->light_high_recorded; ?>
                             </li>
                             <li><h4>Measured
-                                    High:</h4> <?= "$atlasEver->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                                    High:</h4> <?= "$atlasEver->lightHours_high hours on " . $atlasEver->lightHours_high_recorded; ?>
                             </li>
                         </ul>
                         <?php if ($atlasEver->lightning !== 0) { ?>

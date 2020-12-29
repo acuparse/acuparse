@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -129,22 +129,24 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>
                     <?php }
-                    $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $name = $row['name'];
-                        $sensor = $row['sensor'];
-                        $result2 = mysqli_fetch_assoc(mysqli_query($conn,
-                            "SELECT `battery`, `rssi` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
-                        $rssi = rssiConvert($result2['rssi']);
-                        $batteryBackground = ($result2['battery'] === 'normal') ? 'limegreen' : 'orangered';
-                        ?>
-                        <tr id="<?= $sensor; ?>">
-                            <th scope="row"><?= ltrim($sensor, '0'); ?></th>
-                            <td><?= $name; ?></td>
-                            <td style="background-color: <?= $batteryBackground ?>"><?= ucfirst($result2['battery']); ?></td>
-                            <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
-                        </tr>
-                    <?php } ?>
+                    if ($config->station->towers === true) {
+                        $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $name = $row['name'];
+                            $sensor = $row['sensor'];
+                            $result2 = mysqli_fetch_assoc(mysqli_query($conn,
+                                "SELECT `battery`, `rssi` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+                            $rssi = rssiConvert($result2['rssi']);
+                            $batteryBackground = ($result2['battery'] === 'normal') ? 'limegreen' : 'orangered';
+                            ?>
+                            <tr id="<?= $sensor; ?>">
+                                <th scope="row"><?= ltrim($sensor, '0'); ?></th>
+                                <td><?= $name; ?></td>
+                                <td style="background-color: <?= $batteryBackground ?>"><?= ucfirst($result2['battery']); ?></td>
+                                <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
+                            </tr>
+                        <?php }
+                    } ?>
                     </tbody>
                 </table>
                 <div class="row">

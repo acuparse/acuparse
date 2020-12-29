@@ -10,7 +10,7 @@ theme:
     - navigation.expand
   palette:
     scheme: preference
-    primary: blue grey
+    primary: amber
   icon:
     repo: fontawesome/brands/github
 site_dir: public
@@ -20,17 +20,18 @@ google_analytics:
 nav:
   - Home: 'index.md'
   - Installing:
-      - Installation Guide: 'INSTALL.md'
+      - Local Install: 'INSTALL.md'
       - Docker Install: 'DOCKER.md'
-      - DNS Redirect: 'DNS.md'
-      - NGINX Proxy: 'NGINX.md'
-      - Troubleshooting: 'TROUBLESHOOTING.md'
+      - Extras:
+          - DNS Redirect: 'DNS.md'
+          - NGINX Proxy: 'NGINX.md'
   - Updating:
       - Version 3.0: 'updates/v3.md'
       - Version 2.3: 'updates/v2_3.md'
-  - API Guide: 'API.md'
-  - Backup Guide: 'BACKUPS.md'
-  - Telemetry Guide: 'TELEMETRY.md'
+  - API: 'API.md'
+  - Troubleshooting: 'TROUBLESHOOTING.md'
+  - Backups: 'BACKUPS.md'
+  - Telemetry: 'TELEMETRY.md'
   - External Updaters:
       - Weather Underground: 'external/WU.md'
       - CWOP: 'external/CWOP.md'
@@ -41,7 +42,7 @@ nav:
       - Open Weather Map: 'external/OPENWEATHER.md'
       - Generic:
           - WeatherPoly: 'external/generic/WEATHERPOLY.md'
-copyright: "Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3</a><br><a href='https://www.acuparse.com'>Project Homepage</a>"
+copyright: "Copyright © 2015-2021 <a href='https://www.acuparse.com'>Acuparse Project</a><br />Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3</a>"
 extra:
   social:
     - type: 'gitlab'

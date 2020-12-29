@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2018 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -36,23 +36,27 @@ class getCurrentAtlasData
     private $windSpeedMPH_avg;
     private $windSpeedKMH_avg;
     private $windGust_peak_recorded;
+    private $windGust_peak_recorded_json;
     private $windGustMPH_peak;
     private $windGustKMH_peak;
     private $windGustDEG_peak;
-    private $battery;
-    private $rssi;
     private $lastUpdate;
+    private $lastUpdate_json;
 
     function __construct()
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
-
+        /**
+         * @return array
+         * @var object $config Global Config
+         */
         // Check for recent readings
         $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_update` FROM `atlas_status`"));
         if (!isset($lastUpdate)) {
+            echo '<div class="col text-center alert alert-danger"><strong>No Atlas Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
             exit();
         }
 
@@ -87,20 +91,20 @@ class getCurrentAtlasData
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
         $this->windGust_peak_recorded = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->windGust_peak_recorded = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
         $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
         $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
 
-        // Get Status
+        // Get last Update
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT * FROM `atlas_status` LIMIT 1"));
-        $this->battery = $result['battery'];
-        $this->rssi = $result['rssi'];
+            "SELECT `last_update` FROM `atlas_status` LIMIT 1"));
         $this->lastUpdate = $result['last_update'];
+        $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['last_update']));
     }
 
     // Calculate the UV Index Text
-    private function calculateUV($index)
+    private function calculateUV($index): string
     {
         if ($index <= 2) {
             $result = 'Low';
@@ -120,7 +124,7 @@ class getCurrentAtlasData
     }
 
     // Calculate the Light Intensity Text
-    private function lightText($index)
+    private function lightText($index): string
     {
         if (($index >= 0) && ($index <= 500)) {
             $result = 'Dark/Night';
@@ -140,13 +144,13 @@ class getCurrentAtlasData
     }
 
     // Calculate Light Hours
-    private function calculateLightHours($seconds)
+    private function calculateLightHours($seconds): float
     {
         return round($seconds / 3600, 2);
     }
 
     // Calculate human readable wind direction from a range of values:
-    private function windGustDirection($windDEG)
+    private function windGustDirection($windDEG): string
     {
         switch ($windDEG) {
             case ($windDEG >= 11.25 && $windDEG < 33.75):
@@ -201,8 +205,8 @@ class getCurrentAtlasData
         return (string)$windDIR;
     }
 
-    // Get Data
-    public function getData()
+    // Get Dashboard Data
+    public function getData(): object
     {
         return (object)array(
             'lightIntensity' => $this->lightIntensity,
@@ -222,9 +226,32 @@ class getCurrentAtlasData
             'windGustPeakRecorded' => $this->windGust_peak_recorded,
             'windAvgMPH' => $this->windSpeedMPH_avg,
             'windAvgKMH' => $this->windSpeedKMH_avg,
-            'battery' => $this->battery,
-            'signal' => $this->rssi,
             'lastUpdate' => $this->lastUpdate,
+        );
+    }
+
+    // Get JSON Data
+    public function getJSONData(): object
+    {
+        return (object)array(
+            'lightIntensity' => $this->lightIntensity,
+            'lightIntensity_text' => $this->lightText($this->lightIntensity),
+            'lightSeconds' => $this->lightSeconds,
+            'lightHours' => $this->calculateLightHours($this->lightSeconds),
+            'uvIndex' => $this->uvIndex,
+            'uvIndex_text' => $this->calculateUV($this->uvIndex),
+            'windGustDEG' => $this->windGustDEG,
+            'windGustDIR' => $this->windGustDirection($this->windGustDEG),
+            'windGustMPH' => $this->windGustMPH,
+            'windGustKMH' => $this->windGustKMH,
+            'windGustPeakMPH' => $this->windGustMPH_peak,
+            'windGustPeakKMH' => $this->windGustKMH_peak,
+            'windGustDEGPeak' => $this->windGustDEG_peak,
+            'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
+            'windGustPeakRecorded' => $this->windGust_peak_recorded_json,
+            'windAvgMPH' => $this->windSpeedMPH_avg,
+            'windAvgKMH' => $this->windSpeedKMH_avg,
+            'lastUpdate' => $this->lastUpdate_json,
         );
     }
 }

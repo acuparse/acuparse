@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -41,31 +41,40 @@ function getMainWeatherData()
     global $config;
     require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
     $getData = new getCurrentWeatherData();
-    $jsonExportMain = array("main" => $getData->getConditions());
+    $jsonExportMain = array("main" => $getData->getJSONConditions());
 
     if ($config->station->device === 0) {
-        require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
-        $getAtlasData = new getCurrentAtlasData();
-        $jsonExportAtlas = array("atlas" => $getAtlasData->getData());
+        if ($config->station->primary_sensor === 0) {
+            require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
+            $getAtlasData = new getCurrentAtlasData();
+            $jsonExportAtlas = array("atlas" => $getAtlasData->getJSONData());
+        }
         // Load Lightning Data:
-        if (($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) && ($config->station->lightning_source === 1 || $config->station->lightning_source === 3)) {
-            require(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
-            $getLightningData = new atlas\getCurrentLightningData('json');
-            $jsonExportLightning = array("lightning" => $getLightningData->getData());
-            $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportLightning);
-        } // Load Tower Lightning Data:
-        elseif (($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
-            require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-            $getTowerLightningData = new tower\getCurrentLightningData;
-            $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getData());
-            $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportTowerLightning);
-        } else {
-            $result = array_merge($jsonExportMain, $jsonExportAtlas);
+        if ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) {
+            if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
+                require(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
+                $getLightningData = new atlas\getCurrentLightningData('json');
+                $jsonExportLightning = array("lightning" => $getLightningData->getJSONData());
+                $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportLightning);
+            } // Load Tower Lightning Data:
+            elseif ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+                require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                $getTowerLightningData = new tower\getCurrentLightningData;
+                $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getJSONData());
+                $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportTowerLightning);
+            } else {
+                $result = array_merge($jsonExportMain, $jsonExportAtlas);
+            }
         }
     } else {
         $result = $jsonExportMain;
     }
-    return json_encode($result);
+    if (empty($result)) {
+        header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
+        echo json_encode(['Error' => "Weather Data Unavailable"]);
+    } else {
+        return json_encode($result);
+    }
 }
 
 // Access Token

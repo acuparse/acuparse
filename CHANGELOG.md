@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.1.2]](https://www.acuparse.com/releases/v3-1-2/) - 2021-01-03
+
+### Fixed
+
+- Moonrise/Moonset always displaying in UTC.
+- All Time Light Archive readings displaying weekly values.
+
+### Added
+
+- Note in settings and docs to only enter characters for MAC addresses.
+    - Saving settings will now properly check for unwanted MAC characters.
+- dockerignore and container image cleanup.
+- Additional Date/Time Formatting in Settings.
+    - JSON API now uses the ISO 8601 format by default.
+- Nullmailer configuration added to Docker container.
+    - [Details](https://docs.acuparse.com/DOCKER/#email)
+- Sensor Status API endpoint @ `/api/system/status`.
+
+### Changed
+
+- Header/Footer updated.
+- Updated Copyright for 2021.
+- Doc updates for Docker and V3 update.
+    - Clarify migration process from local 2.10 to Docker.
+    - Clarify that Docker image `acuparse/acuparse` DOES NOT include a Database.
+    - More details about required environment variables.
+
 ## [[3.1.1]](https://www.acuparse.com/releases/v3-1-1/) - 2020-11-26
 
 ### Fixed

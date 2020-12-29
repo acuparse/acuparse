@@ -1,6 +1,6 @@
 /*
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -44,7 +44,8 @@ a:hover {
     background-color: rgba(43, 43, 43, 0.9);
 }
 
-.table td, .table th {
+.table td,
+.table th {
     background-color: rgba(72, 72, 72, 0.88);
 }
 
@@ -57,7 +58,8 @@ a:hover {
     background-color: rgb(50, 50, 50);
 }
 
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled,
+.form-control[readonly] {
     background-color: rgb(66, 39, 39);
 }
 
@@ -76,6 +78,16 @@ a:hover {
     border-color: #d6d8db;
 }
 
+.alert-danger a,
+.alert-warning a {
+    color: #002ca7
+}
+
+.alert-danger a:hover,
+.alert-warning a:hover {
+    color: #2e58ce
+}
+
 /* END - Global Styles */
 /* ---------------------------- */
 
@@ -90,7 +102,8 @@ a:hover {
     color: rgba(255, 255, 255, .9);
 }
 
-.camera-archive .img-thumbnail, .live-camera .img-thumbnail {
+.camera-archive .img-thumbnail,
+.live-camera .img-thumbnail {
     background: rgba(200, 200, 200, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.16);
 }

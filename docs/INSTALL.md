@@ -170,13 +170,12 @@ crontab -e`, `* * * * * php /opt/acuparse/cron/cron.php > /dev/null 2>&1
 
 - Visit `http://{IP_ADDRESS/HOSTNAME}` to populate the database, create an account, and finish configuration.
 
-#### Optional
+#### Initial Configuration
 
-- Install phpMyAdmin for database administration
-
-```bash
-apt install phpmyadmin
-```
+- After setting the database configuration, you will need to add your Access/SmartHUB MAC address and sensor ID's.
+    - Visit `/admin/settings` and click on the `Sensor` tab.
+    - Enter your MAC address with no spaces, dashes, or colons.
+    - Enter your 8 digit 5-in-1 or Atlas ID including any leading 0's.
 
 ## Check Installation
 
@@ -188,6 +187,8 @@ View your syslog to see the data flowing through your system and to look for any
 tail -f /var/log/syslog
 ```
 
+- See the [Troubleshooting Guide](https://docs.acuparse.com/TROUBLESHOOTING) for more details
+
 ## DNS Redirect
 
 > **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS.
@@ -198,7 +199,7 @@ If you are connecting your Access/smartHUB directly to Acuparse, you can install
 Otherwise, you will need a DNS server installed on your network. See the ***[DNS Redirect Guide](https://docs.acuparse.com/DNS)***
 for more details.
 
-### Manually Update Access
+### Manually Update Access Server
 
 Change to Acuparse:
 

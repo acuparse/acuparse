@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -96,43 +96,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label" for="header-display-date">Header Date/Time
-                            Format:</label>
-                        <input type="text" class="form-control" name="site[display_date]"
-                               id="header-display-date"
-                               aria-describedby="header-display-date-help"
-                               placeholder="l, j F Y G:i:s T" maxlength="32"
-                               value="<?= $config->site->display_date; ?>" required>
-                        <small id="header-display-date-help" class="form-text text-muted">See:
-                            <a
-                                    href="http://php.net/manual/en/function.date.php">PHP
-                                Date</a> (Default = l, j F Y G:i:s T)
-                        </small>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label" for="dashboard-display-date">Dashboard
-                            Date/Time
-                            Format:</label>
-                        <input type="text" class="form-control"
-                               name="site[dashboard_display_date]"
-                               id="dashboard-display-date"
-                               aria-describedby="dashboard-display-date-help"
-                               placeholder="j M @ H:i" maxlength="32"
-                               value="<?= $config->site->dashboard_display_date; ?>" required>
-                        <small id="dashboard-display-date-help" class="form-text text-muted">See:
-                            <a
-                                    href="http://php.net/manual/en/function.date.php">PHP
-                                Date</a> (Default = j M @ H:i)
-                        </small>
-                    </div>
-                    <div class="form-group">
                         <label class="col-form-label" for="site-lat">Latitude:</label>
                         <input type="number" step=".001" class="form-control"
                                name="site[lat]" id="site-lat" aria-describedby="lat-help"
                                placeholder="Station Latitude" max="90" min="-90"
                                value="<?= $config->site->lat; ?>" required>
-                        <small id="lat-help" class="form-text text-muted">Decimal Format
-                        </small>
+                        <small id="lat-help" class="form-text text-muted">Decimal Format</small>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label" for="site-long">Longitude:</label>
@@ -165,7 +134,7 @@
                     </div>
                     <hr class="hr-dotted">
                     <div class="col border">
-                        <h2>Display Format</h2>
+                        <h2>Display Formats</h2>
                         <p>By default, readings are displayed in Metric with Imperial in
                             brackets. Eg. 0℃ (32℉)</p>
                         <div class="form-group">
@@ -221,6 +190,53 @@
                                 <label class="form-check-label alert alert-warning"
                                        for="site-hide-alt-3">Archive</label>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <p><strong>Date/Time</strong><br/>(<small>See: <a
+                                            href="https://www.php.net/manual/en/datetime.format.php">PHP Date
+                                        Formats</a></small>)</p>
+                            <label class="col-form-label" for="header-display-date">Live</label>
+                            <input type="text" class="form-control" name="site[display_date]"
+                                   id="header-display-date"
+                                   aria-describedby="header-display-date-help"
+                                   placeholder="l, j F Y G:i:s T" maxlength="25"
+                                   value="<?= $config->site->display_date; ?>" required>
+                            <small id="header-display-date-help" class="form-text text-muted">Default = l, j F Y G:i:s
+                                T</small>
+                            <label class="col-form-label" for="dashboard-display-time">Time</label>
+                            <input type="text" class="form-control"
+                                   name="site[dashboard_display_time]"
+                                   id="dashboard-display-time"
+                                   aria-describedby="dashboard-display-time-help"
+                                   placeholder="H:i" maxlength="10"
+                                   value="<?= $config->site->dashboard_display_time; ?>" required>
+                            <small id="dashboard-display-time-help" class="form-text text-muted">Default = H:i</small>
+                            <label class="col-form-label" for="dashboard-display-date">Short</label>
+                            <input type="text" class="form-control"
+                                   name="site[dashboard_display_date]"
+                                   id="dashboard-display-date"
+                                   aria-describedby="dashboard-display-date-help"
+                                   placeholder="j M @ H:i" maxlength="15"
+                                   value="<?= $config->site->dashboard_display_date; ?>" required>
+                            <small id="dashboard-display-date-help" class="form-text text-muted">Default = j M @
+                                H:i</small>
+                            <label class="col-form-label" for="dashboard-display-date_full">Full</label>
+                            <input type="text" class="form-control"
+                                   name="site[dashboard_display_date_full]"
+                                   id="dashboard-display-date_full"
+                                   aria-describedby="dashboard-display-date-full-help"
+                                   placeholder="j M Y @ H:i" maxlength="20"
+                                   value="<?= $config->site->dashboard_display_date_full; ?>" required>
+                            <small id="dashboard-display-date-full-help" class="form-text text-muted">Default = j M Y @
+                                H:i</small>
+                            <label class="col-form-label" for="date_api_json">JSON API</label>
+                            <input type="text" class="form-control"
+                                   name="site[date_api_json]"
+                                   id="date_api_json"
+                                   aria-describedby="date-api-json-help"
+                                   placeholder="c" maxlength="25"
+                                   value="<?= $config->site->date_api_json; ?>" required>
+                            <small id="date-api-json-help" class="form-text text-muted">Default = c</small>
                         </div>
                     </div>
                     <hr class="hr-dotted">

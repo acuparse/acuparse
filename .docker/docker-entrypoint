@@ -2,7 +2,7 @@
 
 ##
 # Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @copyright Copyright (C) 2015-2021 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -36,14 +36,14 @@ if [ "$1" = 'acuparse' ]; then
       sed -i "s/#ServerName/ServerName ${LE_FQDN}/g" /etc/apache2/sites-available/acuparse-ssl.conf
     fi
 
-    if [[ ("$LE_REDIRECT_ENABLED" == "yes") ]]; then
+    if [[ ("$LE_REDIRECT_ENABLED" == 1 || "$LE_REDIRECT_ENABLED" == "yes") ]]; then
       LE_REDIRECT="redirect"
     else
       LE_REDIRECT="no-redirect"
     fi
 
     echo "Requesting CERTIFICATE"
-    if [[ ("$LE_STAGING" == "yes") ]]; then
+    if [[ ("$LE_STAGING" == 1 || "$LE_STAGING" == "yes") ]]; then
       certbot -n --staging --authenticator standalone --installer apache --agree-tos --"${LE_REDIRECT}" --email "${LE_EMAIL}" "${LE_SECURE_DOMAINS[@]}"
     else
       certbot -n --authenticator standalone --installer apache --agree-tos --"${LE_REDIRECT}" --email "${LE_EMAIL}" "${LE_SECURE_DOMAINS[@]}"
@@ -100,10 +100,25 @@ if [ "$1" = 'acuparse' ]; then
 
   function enable_debugging() {
     echo "NOTICE: DEBUG MODE ENABLED"
-    apt-get install nano inetutils-tools net-tools iproute2 -yqq
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update && apt-get install nano inetutils-tools net-tools iproute2 -yqq
     mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
     ln -sf /proc/1/fd/1 /var/log/apache2/error.log
     ln -sf /proc/1/fd/1 /opt/acuparse/logs/cron.log
+    apt clean
+    rm -rf /var/lib/apt/lists/*
+    unset DEBIAN_FRONTEND
+  }
+
+  function enable_mail_relay() {
+    echo "NOTICE: Mail Relay Enabled"
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update && apt-get install nullmailer mailutils -yqq
+    echo "$SMTP_HOST" > /etc/nullmailer/remotes
+    service nullmailer restart
+    apt clean
+    rm -rf /var/lib/apt/lists/*
+    unset DEBIAN_FRONTEND
   }
 
   function check_sql_permissions() {
@@ -134,7 +149,7 @@ if [ "$1" = 'acuparse' ]; then
   check_default_config
   echo "DONE: CONFIG"
 
-  if [[ ("$DEBUG_ENABLED" == "yes") ]]; then
+  if [[ ("$DEBUG_ENABLED" == 1 || "$DEBUG_ENABLED" == "yes") ]]; then
     enable_debugging
   fi
 
@@ -148,19 +163,27 @@ if [ "$1" = 'acuparse' ]; then
     check_sql_permissions
     echo "DONE: SQL PERMISSIONS"
   elif [ "$2" = 'manual' ]; then
-    echo "Manual Startup Requested"
+    echo "DEBUG: Manual SQL Startup Requested"
   else
     echo "ERROR: Missing SQL Environment Variables"
     exit 1
   fi
 
   echo "Check SSL Certificate"
-  if [[ ("$LE_ENABLED" == "yes") ]]; then
+  if [[ ("$LE_ENABLED" == 1 || "$LE_ENABLED" == "yes") ]]; then
     check_ssl_cert
   else
     echo "Certificate Disabled"
   fi
   echo "DONE: CERTIFICATE"
+
+  echo "Check Mail Relay"
+  if [[ ("$SMTP_RELAY" == 1) ]]; then
+    enable_mail_relay
+  else
+    echo "Mail Relay Disabled"
+  fi
+  echo "DONE: MAIL RELAY"
 
   echo "Starting System SERVICES ..."
   start_services

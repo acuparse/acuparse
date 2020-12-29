@@ -63,6 +63,7 @@ You can create an API token from your user profile page.
 
 - Config Data: `http(s)://<yourip/domain>/api/system/config`
 - PHP Info: `http(s)://<yourip/domain>/api/system/phpinfo`
+- Sensor Status: `http(s)://<yourip/domain>/api/system/status`
 
 ## Examples
 
@@ -155,6 +156,7 @@ $lastUpdate = $weather->atlas->lastUpdate;
 $dailystrikes = $weather->lightning->dailystrikes;
 $currentstrikes = $weather->lightning->currentstrikes;
 $interference = $weather->lightning->interference;
+$interference_text = $weather->lightning->interference_text;
 $last_strike_ts = $weather->lightning->last_strike_ts;
 $last_strike_distance_KM = $weather->lightning->last_strike_distance_KM;
 $last_strike_distance_M = $weather->lightning->last_strike_distance_M;

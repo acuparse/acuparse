@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -42,12 +42,12 @@ function getArchiveWeatherData()
 // Load Archive Weather Data:
     require(APP_BASE_PATH . '/fcn/weather/getArchiveWeatherData.php');
     $getData = new getArchiveWeatherData();
-    $yesterday = $getData->getYesterday();
-    $week = $getData->getWeek();
-    $month = $getData->getMonth();
-    $last_month = $getData->getLastMonth();
-    $year = $getData->getYear();
-    $ever = $getData->getAllTime();
+    $yesterday = $getData->getJSONYesterday();
+    $week = $getData->getJSONWeek();
+    $month = $getData->getJSONMonth();
+    $last_month = $getData->getJSONLastMonth();
+    $year = $getData->getJSONYear();
+    $ever = $getData->getJSONAllTime();
 
     $jsonExportArchive = array(
         "main" => array(
@@ -61,36 +61,48 @@ function getArchiveWeatherData()
     );
 
 // Load Atlas Data:
-    if ($config->station->primary_sensor === 0) {
-        // Load weather Data:
-        require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
-        $getAtlasData = new getArchiveAtlasWeatherData();
-        $atlasYesterday = $getAtlasData->getYesterday();
-        $atlasWeek = $getAtlasData->getWeek();
-        $atlasMonth = $getAtlasData->getMonth();
-        $atlasLastMonth = $getAtlasData->getLastMonth();
-        $atlasYear = $getAtlasData->getYear();
-        $atlasEver = $getAtlasData->getAllTime();
+    if ($config->station->device === 0) {
+        if ($config->station->primary_sensor === 0) {
+            // Load weather Data:
+            require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
+            $getAtlasData = new getArchiveAtlasWeatherData();
+            $atlasYesterday = $getAtlasData->getJSONYesterday();
+            $atlasWeek = $getAtlasData->getJSONWeek();
+            $atlasMonth = $getAtlasData->getJSONMonth();
+            $atlasLastMonth = $getAtlasData->getJSONLastMonth();
+            $atlasYear = $getAtlasData->getJSONYear();
+            $atlasEver = $getAtlasData->getJSONAllTime();
 
-        $jsonExportAtlasArchive = array(
-            "atlas" => array(
-                "yesterday" => $atlasYesterday,
-                "week" => $atlasWeek,
-                "month" => $atlasMonth,
-                "lastMonth" => $atlasLastMonth,
-                "year" => $atlasYear,
-                "ever" => $atlasEver
-            )
-        );
+            $jsonExportAtlasArchive = array(
+                "atlas" => array(
+                    "yesterday" => $atlasYesterday,
+                    "week" => $atlasWeek,
+                    "month" => $atlasMonth,
+                    "lastMonth" => $atlasLastMonth,
+                    "year" => $atlasYear,
+                    "ever" => $atlasEver
+                )
+            );
 
-        $result = array_merge($jsonExportArchive, $jsonExportAtlasArchive);
+            $result = array_merge($jsonExportArchive, $jsonExportAtlasArchive);
+        }
     } else {
         $result = $jsonExportArchive;
     }
-    return json_encode($result);
+
+    if (empty($result)) {
+        return json_encode(['Error' => "Atlas Data Unavailable"]);
+    } else {
+        return json_encode($result);
+    }
 }
 
 // Get Dashboard JSON
 
 $archiveData = getArchiveWeatherData();
-echo $archiveData;
+if (empty($archiveData)) {
+    header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
+    echo json_encode(['Error' => "Archive Data Unavailable"]);
+} else {
+    echo $archiveData;
+}

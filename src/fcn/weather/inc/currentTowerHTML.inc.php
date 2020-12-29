@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -38,11 +38,15 @@ if (!function_exists('trendIcon')) {
 }
 
 // Load Tower Lightning Data
-if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
-    if (!class_exists('tower\getCurrentLightningData')) {
-        require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-        $getTowerLightningData = new tower\getCurrentLightningData;
-        $towerLightning = $getTowerLightningData->getData();
+if ($config->station->device === 0) {
+    if ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) {
+        if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+            if (!class_exists('tower\getCurrentLightningData')) {
+                require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                $getTowerLightningData = new tower\getCurrentLightningData;
+                $towerLightning = $getTowerLightningData->getData();
+            }
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -36,22 +36,6 @@
  */
 
 ?>
-
-<!-- JS -->
-
-<script src="/lib/mit/jquery/js/jquery.min.js"></script>
-<script src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
-<?php
-if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
-    ?>
-    <script src='https://www.google.com/recaptcha/api.js'></script>
-    <script>
-        function onSubmit(token) {
-            document.getElementById("recaptcha-form").submit();
-        }
-    </script>
-<?php } ?>
-
 <!-- Page Footer -->
 <hr>
 
@@ -77,8 +61,36 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
 </div>
 <!-- END Site Container -->
 
-<!-- instant.page prefetch -->
-<script src="/lib/mit/instantpage/instantpage.js" type="module"></script>
+<!-- JS -->
+<script src="/lib/mit/jquery/js/jquery.min.js"></script>
+<script async src="/lib/mit/fontawesome/js/all.min.js"></script>
+<script defer src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
+<script defer src="/lib/mit/instantpage/instantpage.js" type="module"></script>
+<?php
+if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
+    ?>
+    <script defer src='https://www.google.com/recaptcha/api.js'></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("recaptcha-form").submit();
+        }
+    </script>
+<?php }
+if ($config->google->analytics->enabled === true) { ?>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config->google->analytics->id; ?>"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', '<?= $config->google->analytics->id; ?>');
+    </script>
+<?php } ?>
 
 <!-- Page Specific Scripts -->
 <?php

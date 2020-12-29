@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -56,21 +56,43 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
     <meta property="og:image"
           content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
 
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="<?= $config->site->desc; ?>">
+    <meta name="twitter:title" content="<?= $config->site->name; ?>">
+    <meta name="twitter:image" content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
+
     <title><?= $pageTitle ?></title>
 
-    <!-- JS -->
-    <script defer src="/lib/mit/fontawesome/js/all.min.js"></script>
-
     <!-- CSS -->
-    <link href="/lib/mit/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
-    <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
+    <link rel="preload" href="/lib/mit/bootstrap/css/bootstrap.min.css" as="style"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/lib/mit/weather_icons/css/weather-icons.min.css" as="style"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" as="style"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/lib/mit/bootstrap/css/bootstrap.min.css">
+        <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
+        <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
+    </noscript>
+
     <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) { ?>
-        <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link rel="preload" href="/lib/mit/lightbox/css/lightbox.min.css" as="style"
+              onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
+        </noscript>
     <?php }
     if (($_SERVER['PHP_SELF'] === '/admin/tower.php') && (isset($_GET['view']))) { ?>
-        <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
-        <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
+        <link rel="preload" href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" as="style"
+              onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" as="style"
+              onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
+            <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
+        </noscript>
     <?php } ?>
 
     <!-- Base CSS -->
@@ -79,24 +101,9 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
     <link href="/themes/<?= $config->site->theme; ?>.min.css" rel="stylesheet">
 
     <?php
-    if ($config->google->analytics->enabled === true) { ?>
-
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config->google->analytics->id; ?>"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-
-            gtag('js', new Date());
-            gtag('config', '<?= $config->google->analytics->id; ?>');
-        </script>
-    <?php }
-if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
-    <!-- Structured Data -->
-    <script type="application/ld+json">
+    if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
+        <!-- Structured Data -->
+        <script type="application/ld+json">
         {
             "@context": "http://schema.org",
             "@type": "WebSite",
@@ -104,8 +111,8 @@ if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
             "description": "<?= $config->site->desc; ?>",
             "url": "https://<?= $config->site->hostname; ?>/"
         }
-    </script>
-<?php } ?>
+        </script>
+    <?php } ?>
 </head>
 <body>
 
@@ -135,21 +142,21 @@ if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
                 if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
                     header("Location: /admin/install/?update");
                     die();
-                }
-                else {
+                } else {
                     $result = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
-                    $lastLatestRelease = $result['value'];
-                    if ($lastLatestRelease !== null) {
-                        if (version_compare($appInfo->version, $lastLatestRelease, '<')) {
+                        "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
+                    $latestRelease = $result['value'];
+                    if ($latestRelease !== null) {
+                        if (version_compare($appInfo->version, $latestRelease, '<')) {
                             ?>
                             <section id="update-message" class="row update-message"><br>
                                 <div class="col-md-8 col-12 mx-auto">
                                     <div class="alert alert-warning alert-dismissable">
                                         <a href="#" class="close" data-dismiss="alert">&times;</a>
-                                        <strong>Version <?= $lastLatestRelease; ?> is available!</strong><br>
-                                        Execute <code>git pull</code>, <code>docker pull</code>, or upload new source to update.<br>
-                                        <a href="<?= $appInfo->homepage; ?>">See docs for details.</a>
+                                        <strong>Version <?= $latestRelease; ?> is available!</strong><br>
+                                        Execute <code>git pull</code>, <code>docker pull</code>, or upload new source to
+                                        update.<br>
+                                        <a href="https://docs.acuparse.com/INSTALL/#updating">See docs for details.</a>
                                     </div>
                                 </div>
                             </section>
@@ -160,3 +167,4 @@ if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
             }
         }
     }
+    ?>

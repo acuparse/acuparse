@@ -14,8 +14,8 @@ install a DNS server on your local network.
 
 ### DNS Servers
 
-- Install Bind9 on a device installed locally on your network
-- Use something like [Pi-hole®](https://pi-hole.net)
+- Use something like [Pi-hole®](https://pi-hole.net).
+- Install Bind9, unbound, etc on a device installed locally on your network.
 
 ### Firewalls
 

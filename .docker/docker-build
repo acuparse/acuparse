@@ -2,7 +2,7 @@
 
 ##
 # Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @copyright Copyright (C) 2015-2021 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -53,11 +53,11 @@ function buildAcuparse() {
   rm /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
   cp "${ACUPARSE_DIR}"/config/acuparse.conf /etc/apache2/sites-available/
   cp "${ACUPARSE_DIR}"/config/acuparse-ssl.conf /etc/apache2/sites-available/
+  rm -rf "${ACUPARSE_DIR}"/config
   mkdir -p /var/opt/acuparse/config && cp "${ACUPARSE_DIR}"/src/usr/config.new.php /var/opt/acuparse/config/config.new.php
   a2ensite acuparse.conf
   a2ensite acuparse-ssl.conf
   a2enmod rewrite ssl
-  rm -rf "${ACUPARSE_DIR}"/cam
   mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
   echo "END: HTTPD"
 }

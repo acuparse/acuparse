@@ -1,6 +1,6 @@
 ##
 # Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @copyright Copyright (C) 2015-2021 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -46,21 +46,25 @@ org.label-schema.vendor="Acuparse"
 
 RUN echo "Process Updates and Install PACKAGES" \
 && export DEBIAN_FRONTEND=noninteractive \
-&& apt-get update -qq \
-&& apt-get dist-upgrade -yqq \
-&& apt-get install mariadb-client rsyslog python-certbot-apache cron -yqq \
+&& apt-get update -qq && apt-get install -yqq --no-install-recommends \
+mariadb-client \
+rsyslog \
+python-certbot-apache \
+cron \
 && docker-php-ext-install mysqli \
 && docker-php-ext-enable mysqli \
 && apt-get autoremove --purge -yqq \
-&& apt-get clean -yqq
+&& rm -rf /var/lib/apt/lists/*
 
 COPY .. "${ACUPARSE_DIR}"
 WORKDIR "${ACUPARSE_DIR}"
 
 RUN echo "Copy and then run Acuparse BUILD" \
 && mv .docker/* /usr/local/bin/ \
+&& rm -rf .docker \
 && chmod +x /usr/local/bin/docker-build \
-&& docker-build
+&& docker-build \
+&& rm -rf /usr/local/bin/docker-build
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["acuparse"]
