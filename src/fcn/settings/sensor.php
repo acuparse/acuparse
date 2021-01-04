@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -71,6 +71,8 @@
                             <?= $config->station->device === 1 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->device) ? 'disabled="disabled"' : false; ?>
                                value="<?= $config->station->access_mac; ?>">
+                        <small id="station-sensor-atlas-help" class="form-text text-muted">Enter ONLY the digits. No
+                            Colons, Spaces, or Dashes.</small>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label" for="station-hub-mac">smartHUB:</label>
@@ -80,6 +82,8 @@
                             <?= $config->station->device === 0 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->device) ? 'disabled="disabled"' : false; ?>
                                value="<?= $config->station->hub_mac; ?>">
+                        <small id="station-sensor-atlas-help" class="form-text text-muted">Enter ONLY the digits. No
+                            Colons, Spaces, or Dashes.</small>
                     </div>
                 </div>
             </div>

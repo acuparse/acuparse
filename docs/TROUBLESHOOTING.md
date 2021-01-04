@@ -4,7 +4,7 @@
 
 ### Syslog
 
-The best way to troubleshoot your install is to view the syslog. All Acuparse output is logged there.
+The best way to troubleshoot your installation is to view the syslog. All Acuparse output is logged there.
 
 ```bash
 tail -f /var/log/syslog
@@ -106,14 +106,21 @@ for `pool.ntp.org` to a local NTP server.
 If the installer was not able to configure NTP for you, review your OS documentation for the proper way to configure NTP
 on your system.
 
-### Google DNS
+### Hardcoded DNS Servers
 
-The Access device appears to be configured to resolve DNS through `8.8.8.8` by default. Testing shows that the Access will
-query your local DNS for a while, but for currently unknown reasons, will switch and lock onto `8.8.8.8`.
-This could be a way to prevent DNS redirects, but there is no data to support that.
+The Access device appears to be configured to resolve DNS through `8.8.8.8` by default. This is becoming more and more
+popular with IoT device makers, to prevent local filtering and also to ease technical support costs.
+Currently, testing has shown that the Access will query your local DNS for a while, but for currently unknown reasons,
+can switch and lock onto `8.8.8.8`. Connecting to the Access TTY output confirms this hardcode on boot.
 
-To solve, redirect DNS requests from your Access destined for `8.8.8.8` to your local DNS server in your local firewall rules.
-Also, ensure your Acuparse hostname set in your Access will resolve through `8.8.8.8`.
+There is a great article on how to resolve this [Your Smart TV is probably ignoring your PiHole](https://labzilla.io/blog/force-dns-pihole)
+and some great discussion on this article, hardcoding, and DoH over at [Hacker News](https://news.ycombinator.com/item?id=25313776).
+
+To resolve, you need to redirect DNS requests from your Access destined for `8.8.8.8` to your local DNS server
+using your local firewall rules.
+
+If your Acuparse install is **NOT** local, that is, installed in the cloud you should ensure your Acuparse hostname
+is publicly resolvable through `8.8.8.8`.
 
 ### Cisco Switches
 
@@ -133,3 +140,21 @@ end
 MyAcurite has terminated support for the SmartHUB. Acuparse will receive and store these readings and respond to your hub.
 Readings will not be uploaded to MyAcurite and will only be stored locally. You can still use the Hub to upload to external
 providers.
+
+## Inaccurate Readings
+
+There are times when the sensors report inaccurate readings. You can clean them from your archive table using MySQL.
+
+Modify the query below to fit your requirements.
+
+Main:
+
+```bash
+mysql -u<USER> -p<PASSWORD> -e "use acuparse; DELETE FROM `archive` WHERE `tempF`='-40' AND (`relH`='0' OR `relH`='1');
+```
+
+Towers:
+
+```bash
+mysql -u<USER> -p<PASSWORD> -e "use acuparse; DELETE FROM `tower_data` WHERE `sensor`='<SENSOR_ID>' AND `tempF`='-40' AND (`relH`='0' OR `relH`='1');
+```

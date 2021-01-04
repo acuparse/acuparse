@@ -23,7 +23,10 @@
  * File: sql/updates/v3.0/beta.sql
  * SQL upgrade operations for version 3.0-beta
  */
+
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
+SET time_zone = "+00:00";
 
 ALTER TABLE `winddirection`
     ENGINE =MyISAM;
@@ -91,7 +94,7 @@ CREATE TABLE `access_status`
 ALTER TABLE `access_status`
     ADD PRIMARY KEY (`last_update`);
 INSERT INTO `access_status` (`battery`, `last_update`)
-VALUES ('normal', '1970-01-01 00:00:00');
+VALUES ('normal', '2000-01-01 00:00:00');
 
 CREATE TABLE `atlas_status`
 (
@@ -106,7 +109,7 @@ CREATE TABLE `atlas_status`
 ALTER TABLE `atlas_status`
     ADD PRIMARY KEY (`last_update`);
 INSERT INTO `atlas_status` (`battery`, `rssi`, `last_update`)
-VALUES ('normal', '0', '1970-01-01 00:00:00');
+VALUES ('normal', '0', '2000-01-01 00:00:00');
 
 CREATE TABLE `5n1_status`
 (
@@ -122,9 +125,9 @@ CREATE TABLE `5n1_status`
 ALTER TABLE `5n1_status`
     ADD PRIMARY KEY (`device`);
 INSERT INTO `5n1_status` (`device`, `battery`, `rssi`, `last_update`)
-VALUES ('access', 'normal', '0', '1970-01-01 00:00:00');
+VALUES ('access', 'normal', '0', '2000-01-01 00:00:00');
 INSERT INTO `5n1_status` (`device`, `battery`, `rssi`, `last_update`)
-VALUES ('hub', 'normal', '0', '1970-01-01 00:00:00');
+VALUES ('hub', 'normal', '0', '2000-01-01 00:00:00');
 
 CREATE TABLE `uvindex`
 (
@@ -177,8 +180,6 @@ ALTER TABLE `tower_data`
 ALTER TABLE `archive`
     ENGINE =MyISAM;
 ALTER TABLE `archive`
-    DROP INDEX `readings`;
-ALTER TABLE `archive`
     ADD UNIQUE `tempF` (`reported`, `tempF`);
 ALTER TABLE `archive`
     ADD UNIQUE `windSmph` (`reported`, `windSmph`);
@@ -215,11 +216,11 @@ ALTER TABLE `windspeed`
 
 TRUNCATE TABLE `last_update`;
 INSERT INTO `last_update` (`timestamp`)
-VALUES ('1970-01-01 00:00:00');
+VALUES ('2000-01-01 00:00:00');
 
 TRUNCATE TABLE `outage_alert`;
 INSERT INTO `outage_alert` (`last_sent`, `status`)
-VALUES ('1970-01-01 00:00:00', '0');
+VALUES ('2000-01-01 00:00:00', '0');
 
 TRUNCATE TABLE `sessions`;
 

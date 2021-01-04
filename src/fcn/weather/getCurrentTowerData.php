@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2018 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -33,25 +33,31 @@ class getCurrentTowerData
     private $tempF_high;
     private $tempF_low;
     private $high_temp_recorded;
+    private $high_temp_recorded_json;
     private $low_temp_recorded;
+    private $low_temp_recorded_json;
     private $tempC;
     private $tempC_high;
     private $tempC_low;
     private $relH;
-    private $battery;
-    private $rssi;
     private $lastUpdate;
+    private $lastUpdate_json;
 
     function __construct($sensor)
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
+        /**
+         * @return array
+         * @var object $config Global Config
+         */
 
         // Check for recent readings
         $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `timestamp` FROM `tower_data`"));
         if (!isset($lastUpdate)) {
+            echo '<div class="col text-center alert alert-danger"><strong>No Tower Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
             exit();
         }
 
@@ -70,14 +76,14 @@ class getCurrentTowerData
         $sensorName = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `name` FROM `towers` WHERE `sensor` = '$sensor'"));
         $this->name = $sensorName['name'];
         $this->lastUpdate = $result['timestamp'];
-        $this->battery = $result['battery'];
-        $this->rssi = $result['rssi'];
+        $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['timestamp']));
 
         // High Temp:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MAX(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
         $this->high_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
+        $this->high_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
         $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
@@ -86,12 +92,13 @@ class getCurrentTowerData
             "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MIN(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
         $this->low_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
+        $this->low_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
         $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
     }
 
     // Calculate the trending value
-    private function calculateTrend($unit, $sensor = null)
+    private function calculateTrend($unit, $sensor = null): string
     {
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
@@ -122,7 +129,7 @@ class getCurrentTowerData
     }
 
     // Get current conditions
-    public function getConditions()
+    public function getConditions(): object
     {
         return (object)array(
             'name' => $this->name,
@@ -137,9 +144,28 @@ class getCurrentTowerData
             'low_temp_recorded' => $this->low_temp_recorded,
             'relH' => $this->relH,
             'relH_trend' => $this->calculateTrend('RelH', $this->id),
-            'battery' => $this->battery,
-            'signal' => $this->rssi,
             'lastUpdated' => $this->lastUpdate,
         );
     }
+
+    // Get current JSON conditions
+    public function getJSONConditions(): object
+    {
+        return (object)array(
+            'name' => $this->name,
+            'tempF' => $this->tempF,
+            'tempF_high' => $this->tempF_high,
+            'tempF_low' => $this->tempF_low,
+            'tempF_trend' => lcfirst($this->calculateTrend('tempF', $this->id)),
+            'tempC' => $this->tempC,
+            'tempC_high' => $this->tempC_high,
+            'tempC_low' => $this->tempC_low,
+            'high_temp_recorded' => $this->high_temp_recorded_json,
+            'low_temp_recorded' => $this->low_temp_recorded_json,
+            'relH' => $this->relH,
+            'relH_trend' => lcfirst($this->calculateTrend('RelH', $this->id)),
+            'lastUpdated' => $this->lastUpdate_json,
+        );
+    }
 }
+

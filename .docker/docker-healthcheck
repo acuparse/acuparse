@@ -2,7 +2,7 @@
 
 ##
 # Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2020 Maxwell Power
+# @copyright Copyright (C) 2015-2021 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -23,24 +23,24 @@
 
 ##
 # File: .docker/docker-healthcheck
-# Script to check services in a Docker container
+# Script to check services in a container
 ##
 
-function healthcheck_failed() {
+function healthCheckFailed() {
   echo "$1"
   exit 1
 }
 
-function healthcheck() {
-  pgrep -x cron >/dev/null || healthcheck_failed "CRON HEALTHCHECK FAILED"
-  pgrep -x rsyslogd >/dev/null || healthcheck_failed "SYSLOG HEALTHCHECK FAILED"
-  pgrep -x apache2 >/dev/null || healthcheck_failed "APACHE2 HEALTHCHECK FAILED"
-  mysqladmin ping -h"${MYSQL_HOSTNAME}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent >/dev/null || healthcheck_failed "SQL HEALTHCHECK FAILED"
+function healthCheck() {
+  pgrep -x cron >/dev/null || healthCheckFailed "CRON HEALTHCHECK FAILED"
+  pgrep -x rsyslogd >/dev/null || healthCheckFailed "SYSLOG HEALTHCHECK FAILED"
+  pgrep -x apache2 >/dev/null || healthCheckFailed "APACHE2 HEALTHCHECK FAILED"
+  mysqladmin ping -h"${MYSQL_HOSTNAME}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent >/dev/null || healthCheckFailed "SQL HEALTHCHECK FAILED"
   echo ""$(date +'%b %d %H:%M:%S')" ""${HOSTNAME}"" HEALTHCHECK[$$]: OK"
 }
 
 echo "Starting Acuparse Service HEALTHCHECK ..."
 while true; do
-  healthcheck
+  healthCheck
   sleep 120
 done

@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -56,13 +56,22 @@ switch ($config->version->app) {
                       DEFAULT CHARSET = utf8
                       COLLATE = utf8_bin;");
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.0");
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support Open Weather Map and Bug Fixes. See Changelog!';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support Open Weather Map and Bug Fixes.';
 
     // Update from 3.1.0 to 3.1.1
     case '3.1.0':
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.1.1");
         $config->version->app = '3.1.1';
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug Fixes. See Changelog.';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug Fixes.';
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.1");
+
+    case '3.1.1':
+        syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.1.2");
+        $config->version->app = '3.1.2';
+        $config->site->dashboard_display_date_full = 'j M Y @ H:i';
+        $config->site->dashboard_display_time = 'H:i';
+        $config->site->date_api_json = 'c';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'API & Doc Updates and Bug Fixes.';
+        syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.2");
 
 }

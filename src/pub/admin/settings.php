@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -38,6 +38,16 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
     // Process the changes
     if (isset($_GET['do'])) {
 
+        function checkMAC($MAC)
+        {
+            $patterns = array();
+            $patterns[0] = '/:/';
+            $patterns[1] = '/-/';
+            $patterns[1] = '/ /';
+            $replacement = '';
+            return preg_replace($patterns, $replacement, $MAC);
+        }
+
         // Do some quick input filtering
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -63,8 +73,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
         // Station
         $config->station->device = (int)$_POST['station']['device'];
-        $config->station->hub_mac = (isset($_POST['station']['hub_mac'])) ? $_POST['station']['hub_mac'] : null;
-        $config->station->access_mac = (isset($_POST['station']['access_mac'])) ? $_POST['station']['access_mac'] : null;
+        $config->station->hub_mac = (isset($_POST['station']['hub_mac'])) ? checkMAC($_POST['station']['hub_mac']) : null;
+        $config->station->access_mac = (isset($_POST['station']['access_mac'])) ? checkMAC($_POST['station']['access_mac']) : null;
         $config->station->primary_sensor = (int)$_POST['station']['primary_sensor'];
         $config->station->sensor_5n1 = (isset($_POST['station']['sensor_5n1'])) ? sprintf('%08d',
             $_POST['station']['sensor_5n1']) : null;
@@ -82,8 +92,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->site->hostname = $_POST['site']['hostname'];
         $config->site->email = $_POST['site']['email'];
         $config->site->timezone = $_POST['site']['timezone'];
-        $config->site->dashboard_display_date = $_POST['site']['dashboard_display_date'];
         $config->site->display_date = $_POST['site']['display_date'];
+        $config->site->dashboard_display_time = $_POST['site']['dashboard_display_time'];
+        $config->site->dashboard_display_date = $_POST['site']['dashboard_display_date'];
+        $config->site->dashboard_display_date_full = $_POST['site']['dashboard_display_date_full'];
+        $config->site->date_api_json = $_POST['site']['date_api_json'];
         $config->site->lat = (float)$_POST['site']['lat'];
         $config->site->long = (float)$_POST['site']['long'];
         $config->site->imperial = (bool)$_POST['site']['imperial'];

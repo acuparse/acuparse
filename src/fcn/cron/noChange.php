@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -42,9 +42,9 @@ $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
 */
 
 if ($config->station->access_mac != 0) {
-    if ($config->outage_alert->offline_for == '5 minutes') {
+    if ($config->outage_alert->offline_for === '5 minutes') {
         $config->outage_alert->offline_for = '11 minutes';
-    } elseif ($config->outage_alert->offline_for == '10 minutes') {
+    } elseif ($config->outage_alert->offline_for === '10 minutes') {
         $config->outage_alert->offline_for = '16 minutes';
     }
 }

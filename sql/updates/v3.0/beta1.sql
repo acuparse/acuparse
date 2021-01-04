@@ -24,7 +24,9 @@
  * SQL upgrade operations for version 3.0-beta1
  */
 
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
+SET time_zone = "+00:00";
 
 DROP TABLE `lightning`;
 

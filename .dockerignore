@@ -1,0 +1,15 @@
+.git
+.github
+.gitlab
+cam
+docs
+vendor
+.dockerignore
+.gitignore
+.gitlab-ci.yml
+.markdownlint.yml
+composer.json
+composer.lock
+CONTRIBUTING.md
+Dockerfile
+mkdocs.yml

@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -40,18 +40,27 @@ function getTowerLightningData()
 {
     require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
     $getTowerLightningData = new tower\getCurrentLightningData;
-    $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getData());
+    $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getJSONData());
     $result = $jsonExportTowerLightning;
 
-    return json_encode($result);
+    if (empty($result)) {
+        header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
+        echo json_encode(['Error' => "Lightning Data Unavailable"]);
+    } else {
+        return json_encode($result);
+    }
 }
 
 // Access Token
 include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');
 
 if (isset($_GET['lightning'])) {
-    if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
-        getTowerLightningData();
+    if ($config->station->device === 0) {
+        if ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) {
+            if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+                getTowerLightningData();
+            }
+        }
     } else {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         echo json_encode(array("message" => "Bad Request - Tower lightning not enabled"));

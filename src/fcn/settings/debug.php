@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -41,7 +41,7 @@
     <div class="row">
         <div class="col-md-6 col-12 mx-auto border">
             <div class="form-group">
-                <div class="form-check form-check-inline">
+                <div class="form-check form-check-inline margin-top-10">
                     <input class="form-check-input" type="radio"
                            name="debug[server][enabled]"
                            onclick='document.getElementById("debug-server-url").disabled=true;'

@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -35,6 +35,7 @@ require(dirname(dirname(dirname(dirname(dirname(dirname(__DIR__)))))) . '/inc/lo
  */
 
 header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
+
 if (isset($_GET['start'])) {
     $startDate = strtotime(mysqli_real_escape_string($conn,
         filter_input(INPUT_GET, 'start', FILTER_SANITIZE_STRING)));
@@ -43,6 +44,7 @@ if (isset($_GET['start'])) {
     echo "Missing start date";
     exit ();
 }
+
 if (isset($_GET['end'])) {
     $endDate = strtotime(mysqli_real_escape_string($conn,
         filter_input(INPUT_GET, 'end', FILTER_SANITIZE_STRING)));
@@ -148,15 +150,21 @@ $count = mysqli_num_rows($result);
 $i = 1;
 
 // Output Readings
-echo '[';
-while ($row = mysqli_fetch_assoc($result)) {
-    echo json_encode($row);
-    if ($i < $count) {
-        echo ",";
+
+if (empty($result)) {
+    return json_encode(['Error' => "Data Unavailable"]);
+} else {
+    echo '[';
+    while ($row = mysqli_fetch_assoc($result)) {
+        $row['reported'] = date($config->site->date_api_json, strtotime($row['reported']));
+        echo json_encode($row);
+        if ($i < $count) {
+            echo ",";
+        }
+        $i++;
     }
-    $i++;
+    echo ']';
 }
-echo ']';
 
 // End Token
 include(APP_BASE_PATH . '/fcn/api/auth/endToken.php');

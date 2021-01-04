@@ -2,15 +2,19 @@
 
 **Running Acuparse in Docker is currently in early but stable support.**
 
-**The Acuparse container itself does contain a local database.**
+**The Acuparse container itself does NOT contain a local database.**
 Use `acuparse/mariadb` for best compatibility.
 
-Acuparse is available on [Docker Hub](https://hub.docker.com/r/acuparse/acuparse).
+The Acuparse container image is available via Docker Hub (`acuparse/acuparse`) as well as the GitLab Container
+Registry (`registry.gitlab.com/acuparse/acuparse`). A docker-compose file and a convenient helper script are available
+from the Acuparse repo and are the only supported method of running Acuparse in containers. See below for automatic and
+manual install instructions.
 
-To use set your image to:
-
-- `acuparse/acuparse` (Docker Hub)
-- `registry.gitlab.com/acuparse/acuparse` (GitLab Registry)
+The Acuparse image includes the Acuparse application and web server. The Acuparse image does not include a database. The
+included docker-compose file will run a Mariadb database image (acuparse/mariadb). If you do not use the compose file,
+you'll need to arrange to run a database and give the Acuparse container access to it. The compose file will make
+Acuparse available on port 80 and 443 of the host system. A self-signed certificate will be used for https but Let's
+Encrypt can be enabled when needed.
 
 ## Docker Compose
 
@@ -40,8 +44,7 @@ Use Docker Compose to run Acuparse in production. A script is available to set u
      ```
 
     - On an existing system with Docker and Compose installed.
-        - MacOS users should install Docker and Compose manually,
-        then run the command below.
+        - MacOS users should install Docker and Compose manually, then run the command below.
 
          ```bash
          sudo bash install_docker | tee ~/acuparse.log
@@ -61,17 +64,33 @@ Use Docker Compose to run Acuparse in production. A script is available to set u
 - [Get Docker Compose](https://docs.docker.com/compose/install/)
 
 - Download and install the Acuparse compose files to `/opt/acuparse/`.
-  
+
     ```bash
     curl 'https://gitlab.com/acuparse/installer/-/archive/master/installer-master.zip?path=docker' -o acuparse_docker.zip`
     ```
-  
-**You MUST edit the `acuparse.env` file to set your SQL password before use!**
+
+**You MUST edit the `acuparse.env` file to set your SQL password and Timezone before use!**
+
+If you are using a custom environment, ensure at the very least, you set the below template variables in your config:
+
+- [Acuparse Environment Template](https://gitlab.com/acuparse/installer/-/blob/master/docker/acuparse.env)
+
+## SSL Certificates
+
+Acuparse includes a snake oil cert in the container that is fine for most uses. If you require a valid certficate, you
+can enable Let's Encrypt using environment variables outlined in the template above.
+
+## Ports
+
+The Acuparse APP container will listen on ports 80 and 443 by default. The Acurite Access needs to send data to port 443
+and this cannot be changed. If you have multiple containers and ports in use, suggest running a
+[load balancer](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer) to route traffic to your
+container.
 
 ## Helper Script
 
-A script is installed automatically to help assist with running your containers.
-If you installed the Docker Compose files manually, copy the script to `/usr/local/bin`.
+A script is installed automatically to help assist with running your containers. If you installed the Docker Compose
+files manually, copy the script to `/usr/local/bin`.
 
 ```bash
 mv acuparse /usr/local/bin
@@ -102,7 +121,7 @@ To **REMOVE ALL DATA** and start over
 acuparse destroy
 ```
 
-### Updating
+### Updating (**MUST BE RUN AS ROOT/SUDO**)
 
 Also updates the run script and the docker-compose config.
 
@@ -155,10 +174,45 @@ The following volumes are created in `/opt/acuparse/volumes`
 
 ## Webcam
 
-When using a webcam with Acuparse, run the webcam scripts on the docker host. Then copy the images to `/opt/acuparse/volumes/webcam`
+When using a webcam with Acuparse, run the webcam scripts on the docker host. Then copy the images
+to `/opt/acuparse/volumes/webcam`
 instead of the default location `/opt/acuparse/src/img/cam`.
 
 The container is not setup to run the webcam scripts directly or be accessed via SSH.
+
+You can download the webcam templates as a
+
+- [ZIP File](https://gitlab.com/acuparse/acuparse/-/archive/master/acuparse-master.zip?path=cam/templates)
+- [TAR.GZ File](https://gitlab.com/acuparse/acuparse/-/archive/master/acuparse-master.tar.gz?path=cam/templates)
+- [RAW Git](https://gitlab.com/acuparse/acuparse/-/tree/master/cam/templates)
+
+## Email
+
+For sending outbound email it's recommended to use Mailgun where possible.
+
+The Docker image has support for [nullmailer](https://wiki.debian.org/nullmailer), if you need to use a custom SMTP
+server.
+
+Configure nullmailer in your `acuparse.env` file.
+
+```bash
+# Enable SMTP Relay?
+SMTP_RELAY=1
+
+# SMTP Smarthost
+# GMAIL = smtp.gmail.com smtp --port=587 --auth-login --user=<GMAIL_ADDRESS> --pass=<GMAIL_PASSWORD> --starttls
+SMTP_HOST='mail smtp'
+```
+
+If you don't have a local SMTP server, you can add one to your docker compose config.
+
+Example using [namshi/smtp](https://hub.docker.com/r/namshi/smtp).
+
+```docker-compose
+  mail:
+    image: namshi/smtp
+    restart: always
+```
 
 ## Backup/Restore
 
@@ -180,6 +234,7 @@ mysql -p$MYSQL_ROOT_PASSWORD acuparse < mysql.sql
 
 ### Restore Config File
 
-Connect to your `acuparse console` and extract the archive located in `tar -xvf /var/opt/acuparse/backups/<BACKUPDATE>.tar.gz`.
+Connect to your `acuparse console` and extract the archive located
+in `tar -xvf /var/opt/acuparse/backups/<BACKUPDATE>.tar.gz`.
 
 Copy your config file back `cp config.php /opt/acuparse/src/usr/config.php`

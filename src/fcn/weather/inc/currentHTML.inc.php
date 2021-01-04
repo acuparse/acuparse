@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -58,30 +58,40 @@ if (!class_exists('getCurrentWeatherData')) {
 $wx = $getData->getConditions();
 
 // Load Lightning Data
-if ($config->station->device === 0 && $config->station->primary_sensor === 0 && ($config->station->lightning_source === 1 || $config->station->lightning_source === 3)) {
-    if (!class_exists('atlas\getCurrentLightningData')) {
-        require_once(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
-        $getLightningData = new atlas\getCurrentLightningData;
-        $lightning = $getLightningData->getData();
+if ($config->station->device === 0) {
+    if ($config->station->primary_sensor === 0) {
+        if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
+            if (!class_exists('atlas\getCurrentLightningData')) {
+                require_once(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
+                $getLightningData = new atlas\getCurrentLightningData;
+                $lightning = $getLightningData->getData();
+            }
+        }
     }
 }
 
 // Load Tower Lightning Data
-if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
-    if (!class_exists('tower\getCurrentLightningData')) {
-        require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-        $getTowerLightningData = new tower\getCurrentLightningData;
-        $towerLightning = $getTowerLightningData->getData();
+if ($config->station->device === 0) {
+    if ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) {
+        if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+            if (!class_exists('tower\getCurrentLightningData')) {
+                require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                $getTowerLightningData = new tower\getCurrentLightningData;
+                $towerLightning = $getTowerLightningData->getData();
+            }
+        }
     }
 }
 
 // Load Atlas Data
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    // Load weather Data:
-    if (!class_exists('getCurrentAtlasData')) {
-        require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
-        $getAtlasData = new getCurrentAtlasData();
-        $atlas = $getAtlasData->getData();
+if ($config->station->device === 0) {
+    if ($config->station->primary_sensor === 0) {
+        // Load weather Data:
+        if (!class_exists('getCurrentAtlasData')) {
+            require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
+            $getAtlasData = new getCurrentAtlasData();
+            $atlas = $getAtlasData->getData();
+        }
     }
 }
 

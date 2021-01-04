@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -58,8 +58,11 @@ return (object)array(
         'hostname' => 'localhost', // Station Domain or IP Address
         'email' => 'noreply@localhost', // System email address.
         'timezone' => 'Etc/UCT', // Station Timezone - http://php.net/manual/en/timezones.php
-        'display_date' => 'l, j F Y G:i:s T', // Header Date Format
+        'display_date' => 'l, j F Y G:i:s T', // Live Date Format - https://www.php.net/manual/en/datetime.format.php
+        'dashboard_display_time' => 'H:i', // Dashboard Time Format
         'dashboard_display_date' => 'j M @ H:i', // Dashboard Date Format
+        'dashboard_display_date_full' => 'j M Y @ H:i', // Full Dashboard Date Format
+        'date_api_json' => 'c', // Header Date Format
         'lat' => 0, // Station Latitude - Decimal Format
         'long' => 0, // Station Longitude - Decimal Format
         'imperial' => false, // Use imperial measurements by default? True/False
@@ -226,7 +229,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.1.1',
+        'app' => '3.1.2',
         'schema' => '3.1',
         'installHash' => null,
     ),

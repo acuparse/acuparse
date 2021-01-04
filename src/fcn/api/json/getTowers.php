@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -27,10 +27,9 @@
 
 /**
  * @var string $initString
- * @var string $result
+ * @var mysqli_result $result
  * @var string $towerCount
  */
-
 
 $i = 1;
 require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerData.php');
@@ -39,7 +38,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $sensor = $row['sensor'];
     echo "\"$sensor\": ";
     $getTowerData = new getCurrentTowerData($sensor);
-    echo json_encode($getTowerData->getConditions());
+    echo json_encode($getTowerData->getJSONConditions());
     if ($i < $towerCount) {
         echo ",";
     }

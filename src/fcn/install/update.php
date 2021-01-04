@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2020 Maxwell Power
+ * @copyright Copyright (C) 2015-2021 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -46,6 +46,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         foreach (glob($updatePattern) as $filename) {
             include $filename;
         }
+
+        $notes .= '<li><strong>See CHANGELOG for full details!</strong></li>';
 
         // Save the users config file
         $export = var_export($config, true);
