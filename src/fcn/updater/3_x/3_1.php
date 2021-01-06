@@ -65,13 +65,13 @@ switch ($config->version->app) {
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug Fixes.';
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.1");
 
+    // Update from 3.1.1 to 3.1.2
     case '3.1.1':
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.1.2");
         $config->version->app = '3.1.2';
         $config->site->dashboard_display_date_full = 'j M Y @ H:i';
         $config->site->dashboard_display_time = 'H:i';
         $config->site->date_api_json = 'c';
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'API & Doc Updates and Bug Fixes.';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'API, Doc, and Bug Fixes.';
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.2");
-
 }

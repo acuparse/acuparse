@@ -40,13 +40,10 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL)));
     $result = mysqli_query($conn,
         "INSERT INTO `users` (`username`, `password`, `email`, `admin`) VALUES ('$username', '$password', '$email', '1')");
-    if (!$result) {
-        // Log it
-        syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Adding first user failed: " . mysqli_error($conn));
-    }
 
     // If adding the account was successful
-    if (mysqli_affected_rows($conn) === 1) {
+    if (!$result && mysqli_affected_rows($conn) === 1) {
+        $createdUserID = (int)mysqli_insert_id($conn);
         $installHash = $config->version->installHash;
         mysqli_query($conn, "INSERT INTO `system` (`name`, `value`) VALUES ('installHash', '$installHash')");
 
@@ -63,7 +60,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         // Let's remember the user is logged in
         $_SESSION['authenticated'] = true;
         $_SESSION['username'] = $username;
-        $_SESSION['uid'] = (int)mysqli_insert_id($conn);
+        $_SESSION['uid'] = $createdUserID;
         $_SESSION['admin'] = true;
         $uid = $_SESSION['uid'];
 

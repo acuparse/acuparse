@@ -63,13 +63,13 @@ $opts = array(
 );
 $context = stream_context_create($opts);
 
-// Process 5-in-1 Update
-if ($_GET['mt'] === '5N1') {
+// Process Iris Update
+if ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
 
     // Set the source
-    $source = '5';
+    $source = 'I';
 
-    if ($_GET['sensor'] === $config->station->sensor_5n1 && $config->station->primary_sensor === 1) {
+    if ($_GET['sensor'] === $config->station->sensor_iris && $config->station->primary_sensor === 1) {
 
         //Barometer
         $baromin = (float)mysqli_real_escape_string($conn,
@@ -121,7 +121,7 @@ if ($_GET['mt'] === '5N1') {
         $batteryAccess = (string)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'hubbattery', FILTER_SANITIZE_STRING));
 
-        // Insert 5N1 Readings into DB
+        // Insert Iris Readings into DB
         $sql = "INSERT INTO `windspeed` (`speedMPH`, `gustMPH`, `averageMPH`, `timestamp`, `device`, `source`) VALUES ('$windSpeedMPH', '$windGustMPH', '$windSpeedAvgMPH', '$timestamp', '$device', '$source');
             INSERT INTO `temperature` (`tempF`, `heatindex`, `feelslike`, `windchill`, `dewptf`, `timestamp`, `device`, `source`) VALUES ('$tempF', '$heatIndex', '$feelsLike', '$windChill', '$dewptF', '$timestamp', '$device', '$source');
             INSERT INTO `winddirection` (`degrees`, `gust`, `timestamp`, `device`, `source`) VALUES ('$windDirection', '$windGustDirection', '$timestamp', '$device', '$source');
@@ -130,8 +130,8 @@ if ($_GET['mt'] === '5N1') {
             INSERT INTO `dailyrain` (`dailyrainin`, `date`, `last_update`, `device`, `source`) VALUES ('$dailyRainIN', '$date', '$timestamp', '$device', '$source') ON DUPLICATE KEY UPDATE `dailyrainin`='$dailyRainIN', `last_update`='$timestamp', `device`='$device', `source`='$source';
             INSERT INTO `pressure` (`inhg`, `timestamp`, `device`, `source`) VALUES ('$baromin', '$timestamp', '$device', '$source');
             UPDATE `access_status` SET `battery`='$batteryAccess',`last_update`='$timestamp';
-            UPDATE `5n1_status` SET `battery`='$battery', `rssi`='$rssi', `last_update`='$timestamp' WHERE `device`='access';";
-        $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(ACCESS){5N1}[SQL ERROR]:" . mysqli_error($conn));
+            UPDATE `iris_status` SET `battery`='$battery', `rssi`='$rssi', `last_update`='$timestamp' WHERE `device`='access';";
+        $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(ACCESS){IRIS}[SQL ERROR]:" . mysqli_error($conn));
         while (mysqli_next_result($conn)) {
             null;
         }
@@ -139,15 +139,15 @@ if ($_GET['mt'] === '5N1') {
         // Log it
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG, "(ACCESS): Pressure = $baromin");
-            syslog(LOG_DEBUG, "(ACCESS){5N1}: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
-            syslog(LOG_DEBUG, "(ACCESS){5N1}: Battery = $battery | Signal = $rssi");
+            syslog(LOG_DEBUG, "(ACCESS){IRIS}: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
+            syslog(LOG_DEBUG, "(ACCESS){IRIS}: Battery = $battery | Signal = $rssi");
             syslog(LOG_DEBUG, "(ACCESS): Battery = $batteryAccess");
         }
 
         // Update the time the data was received
         last_updated_at();
     }
-} //Done 5N1
+} //Done Iris
 
 // Process Atlas Update
 elseif ($_GET['mt'] === 'Atlas') {
@@ -361,8 +361,8 @@ else {
     if ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light') {
         syslog(LOG_ERR,
             "(ACCESS){TOWER}[ERROR]: Towers not enabled - Tower ID $sensor . Raw = $myacuriteQuery");
-    } elseif ($_GET['mt'] === '5N1') {
-        syslog(LOG_ERR, "(ACCESS){5N1}[ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
+    } elseif ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
+        syslog(LOG_ERR, "(ACCESS){IRIS}[ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
     } elseif ($_GET['mt'] === 'Atlas') {
         syslog(LOG_ERR, "(ACCESS){ATLAS}[ERROR]: Unknown Sensor ID $sensor . Raw = $myacuriteQuery");
     } else {
@@ -387,14 +387,14 @@ if ($config->debug->server->enabled === true) {
 }
 
 myacurite_upload:
-// Forward the raw data to MyAcurite
+// Forward the raw data to MyAcuRite
 if ($config->upload->myacurite->access_enabled === true) {
     $myacurite = file_get_contents($config->upload->myacurite->access_url . '/weatherstation/updateweatherstation?&' . $myacuriteQuery,
         false, $context);
 
     // Make sure data was sent
     if (!$myacurite) {
-        syslog(LOG_WARNING, "(ACCESS){MyAcuRite}[WARN]: MyAcurite Offline - Generating Access Response");
+        syslog(LOG_WARNING, "(ACCESS){MyAcuRite}[WARN]: MyAcuRite Offline - Generating Access Response");
         goto myacurite_upload_disabled;
     } else {
 
@@ -409,7 +409,7 @@ if ($config->upload->myacurite->access_enabled === true) {
         header('Access-Control-Allow-Origin: *');
         echo $myacurite;
     }
-} // MyAcurite is disabled
+} // MyAcuRite is disabled
 else {
     myacurite_upload_disabled:
     // Output the expected response to the Access

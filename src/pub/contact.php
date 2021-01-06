@@ -129,7 +129,7 @@ if (isset($_GET['do'])) {
                                   required></textarea>
                     </div>
                     <div class="form-group">
-                        <label hidden for="subject">Captcha:</label>
+                        <label hidden for="captcha">Captcha:</label>
                         <input type="text" class="form-control" name="captcha" id="captcha" placeholder="captcha"
                                hidden>
                     </div>

@@ -112,7 +112,7 @@ class getArchiveAtlasWeatherData
     private $lightning_recorded_ever;
     private $lightning_recorded_ever_JSON;
 
-    function __construct()
+    function __construct($json = null)
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -126,15 +126,21 @@ class getArchiveAtlasWeatherData
         $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
         if (!isset($lastUpdate)) {
-            echo '<div class="col text-center alert alert-danger"><strong>No Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
-            exit();
+            if ($json === true) {
+                $json_output = ['Status' => 'error', 'message' => 'No Atlas Archive Data Reported'];
+                echo json_encode($json_output);
+                exit();
+            } else {
+                echo '<div class="col text-center alert alert-danger"><p><strong>No Atlas Archive Data Reported!</strong><br>Check that your Cron tasks are running! See your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</p></div>';
+                exit();
+            }
         }
 
         // Process UV:
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `uvindex` FROM `archive` WHERE `uvindex` = (SELECT MAX(`uvindex`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->uvindex_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->uvindex_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->uvindex_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->uvindex_high_yesterday = (int)$result['uvindex']; // Percent
         // This Week High
@@ -172,7 +178,7 @@ class getArchiveAtlasWeatherData
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `light` FROM `archive` WHERE `light` = (SELECT MAX(`light`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->light_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->light_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->light_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->light_high_yesterday = (int)$result['light']; // Percent
         // This Week High
@@ -210,7 +216,7 @@ class getArchiveAtlasWeatherData
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `lightSeconds` FROM `archive` WHERE `lightSeconds` = (SELECT MAX(`lightSeconds`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->lightSeconds_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->lightSeconds_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->lightSeconds_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->lightSeconds_high_yesterday = (int)$result['lightSeconds']; // Seconds
         // This Week High
@@ -248,7 +254,7 @@ class getArchiveAtlasWeatherData
         // Yesterday
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `lightning` FROM `archive` WHERE `lightning` = (SELECT MAX(`lightning`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->lightning_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->lightning_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->lightning_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->lightning_yesterday = (int)$result['lightning']; // Percent
         // This Week

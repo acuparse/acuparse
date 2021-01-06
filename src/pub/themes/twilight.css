@@ -79,12 +79,14 @@ a:hover {
 }
 
 .alert-danger a,
-.alert-warning a {
+.alert-warning a,
+.alert-info a {
     color: #002ca7
 }
 
 .alert-danger a:hover,
-.alert-warning a:hover {
+.alert-warning a:hover,
+.alert-info a:hover {
     color: #2e58ce
 }
 

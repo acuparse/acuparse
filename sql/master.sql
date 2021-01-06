@@ -30,7 +30,7 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-CREATE TABLE `5n1_status`
+CREATE TABLE `iris_status`
 (
     `device`      varchar(6) COLLATE utf8_bin NOT NULL,
     `battery`     varchar(6) COLLATE utf8_bin NOT NULL,
@@ -356,7 +356,7 @@ CREATE TABLE `openweather_updates`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
-ALTER TABLE `5n1_status`
+ALTER TABLE `iris_status`
     ADD PRIMARY KEY (`device`);
 
 ALTER TABLE `access_status`
@@ -482,9 +482,9 @@ VALUES ('2000-01-01 00:00:00', '0');
 INSERT INTO `last_update` (`timestamp`)
 VALUES ('2000-01-01 00:00:00');
 
-INSERT INTO `5n1_status` (`device`, `battery`, `rssi`, `last_update`)
+INSERT INTO `iris_status` (`device`, `battery`, `rssi`, `last_update`)
 VALUES ('access', 'normal', '0', '2000-01-01 00:00:00');
-INSERT INTO `5n1_status` (`device`, `battery`, `rssi`, `last_update`)
+INSERT INTO `iris_status` (`device`, `battery`, `rssi`, `last_update`)
 VALUES ('hub', 'normal', '0', '2000-01-01 00:00:00');
 
 INSERT INTO `atlas_status` (`battery`, `rssi`, `last_update`)
@@ -494,7 +494,7 @@ INSERT INTO `access_status` (`battery`, `last_update`)
 VALUES ('normal', '2000-01-01 00:00:00');
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('latestRelease', '3.1.0');
+VALUES ('latestRelease', '3.2.0');
 
 INSERT INTO `system` (`name`, `value`)
 VALUES ('lastUpdateCheck', '2000-01-01 00:00:00');
@@ -502,6 +502,6 @@ VALUES ('lastUpdateCheck', '2000-01-01 00:00:00');
 # Schema Version
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('schema', '3.1');
+VALUES ('schema', '3.2');
 
 COMMIT;

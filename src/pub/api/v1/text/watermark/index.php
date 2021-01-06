@@ -25,7 +25,7 @@
  * Builds the watermark for the camera image
  */
 
-function camWmark()
+function camWmark(): string
 {
     // Get the loader
     require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');

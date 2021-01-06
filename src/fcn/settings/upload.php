@@ -133,7 +133,7 @@
             </div>
             <div class="form-group">
                 <h4>Upload Unknown Sensor Data</h4>
-                <p>Sends all data received by your Access to MyAcurite.</p>
+                <p>Sends all data received by your Access to MyAcuRite.</p>
                 <p class="small text-danger">Can include neighbours/noise and is generally not recommend.</p>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"

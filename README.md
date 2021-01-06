@@ -15,7 +15,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detai
 ## How it Works
 
 [Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite
-5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
+Iris (5-in-1) or Atlas (7-in-1) weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
 [Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com), [Weathercloud](https://weathercloud.net),
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
 and [OpenWeather](https://openweathermap.org/).
@@ -33,7 +33,7 @@ when using a smartHUB, Acuparse creates the response.
 ### Direct to WiFi Consoles
 
 Acuparse does not directly support the new AcuRite direct to WiFi Consoles. You may have success configuring these as
-an Access & Atlas/5-in-1 sensor. Keep in mind, they do not support Tower sensors and there has been no official testing
+an Access & Atlas/Iris sensor. Keep in mind, they do not support Tower sensors and there has been no official testing
 of these devices with Acuparse.
 
 If you have one of these consoles and want to assist in adding support to Acuparse, connect with us using the Support
@@ -43,7 +43,7 @@ channels below. We'll work with you to grab a capture of the data they send, all
 
 - **Your weather data belongs to you, stored on your OWN server.**
 - Display live camera images, send them to Weather Underground, and link from other sites like Weathercloud.
-- Uploads weather data from your 5-in-1/Atlas and Tower sensors to external providers.
+- Uploads weather data from your Iris/Atlas and Tower sensors to external providers.
 - Customize barometer readings.
 - Light and Dark Themes.
 - Display data in both &#8457; and &#8451;. Selectable default.
@@ -62,7 +62,7 @@ channels below. We'll work with you to grab a capture of the data they send, all
 
 > **Note:** If you are not using an Access, you will need to setup a DNS redirect using a DNS server on your local network.
 >
-> **Access Users:** The Acurite Access sends data to MyAcuRite using an SSL connection. By Default Apache will use the snake oil cert to serve over HTTPS.
+> **Access Users:** The AcuRite Access sends data to MyAcuRite using an SSL connection. By Default Apache will use the snake oil cert to serve over HTTPS.
 > For most users, this should be sufficient. If you use a hostname, you will need to install and configure an SSL certificate.
 > The installer will ask and attempt to generate a Lets Encrypt cert for you.
 
@@ -118,8 +118,8 @@ See [docs/TROUBLESHOOTING.md](https://docs.acuparse.com/TROUBLESHOOTING).
         - phpMyAdmin is an excellent tool for advanced manual reporting on your station.
 - Charts and Graphing.
     - Since this is available at most external weather sites.
-- Multiple Access/smartHUB/5-in-1/Atlas sensors.
-    - The current framework built around a single Access/smartHUB and 5-in-1/Atlas sensor.
+- Multiple Access/smartHUB/Iris/Atlas sensors.
+    - The current framework built around a single Access/smartHUB and Iris/Atlas sensor.
 
 ## Donations
 

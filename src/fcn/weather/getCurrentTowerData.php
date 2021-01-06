@@ -82,7 +82,7 @@ class getCurrentTowerData
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MAX(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
-        $this->high_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
+        $this->high_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
         $this->high_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
         $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
@@ -91,7 +91,7 @@ class getCurrentTowerData
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MIN(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
-        $this->low_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
+        $this->low_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
         $this->low_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
         $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
@@ -168,4 +168,3 @@ class getCurrentTowerData
         );
     }
 }
-

@@ -82,7 +82,7 @@ can enable Let's Encrypt using environment variables outlined in the template ab
 
 ## Ports
 
-The Acuparse APP container will listen on ports 80 and 443 by default. The Acurite Access needs to send data to port 443
+The Acuparse APP container will listen on ports 80 and 443 by default. The AcuRite Access needs to send data to port 443
 and this cannot be changed. If you have multiple containers and ports in use, suggest running a
 [load balancer](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer) to route traffic to your
 container.
@@ -161,9 +161,9 @@ You must configure volumes for your SQL database, or it will be lost on containe
 
 The default compose file will do this for you.
 
-### Local Bind Volumes
+### [Local Bind Mounts](https://docs.docker.com/storage/bind-mounts)
 
-The following volumes are created in `/opt/acuparse/volumes`
+The following mounts are created in `/opt/acuparse/volumes`
 
 - `/opt/acuparse/volumes/webcam`
     - Copy your webcam images to this directory for use in Acuparse.
@@ -171,6 +171,13 @@ The following volumes are created in `/opt/acuparse/volumes`
 - `/opt/acuparse/volumes/backups`
     - Acuparse Config and Database backups.
     - Also, mounted to the Database container; if you need to perform a restore.
+
+### [Docker Volumes](https://docs.docker.com/storage/volumes)
+
+- `acuparse_config`
+    - Holds your configuration data.
+- `acuparse_ssl`
+    - Contains any Let's Encrypt Certificates.
 
 ## Webcam
 
@@ -188,12 +195,12 @@ You can download the webcam templates as a
 
 ## Email
 
-For sending outbound email it's recommended to use Mailgun where possible.
+For sending outbound email, using [mailgun](https://www.mailgun.com/) is the recommended option.
 
-The Docker image has support for [nullmailer](https://wiki.debian.org/nullmailer), if you need to use a custom SMTP
+The Docker image has support for [Nullmailer](https://wiki.debian.org/nullmailer), if you need to use a custom SMTP
 server.
 
-Configure nullmailer in your `acuparse.env` file.
+Configure Nullmailer in your `acuparse.env` file.
 
 ```bash
 # Enable SMTP Relay?

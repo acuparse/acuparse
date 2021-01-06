@@ -41,7 +41,7 @@ tail -f /opt/acuparse/logs/cron.log
 ## Sensor ID's and MAC Addresses
 
 Without a MAC configured for your Hub or Access, Acuparse has no way of knowing what data it should listen for. You must
-set a MAC and 5-in-1/Atlas sensor ID in the admin settings to begin receiving and uploading your readings.
+set a MAC and Iris (5-in-1) or Atlas (7-in-1) sensor ID in the admin settings to begin receiving and uploading your readings.
 
 Sensor ID's/MAC addresses are located on the sensors themselves. If you can't locate them, the syslog will report all
 sensors and MAC addresses it does not recognize.
@@ -71,7 +71,7 @@ When you are directly connecting your Access/Hub to a Rasberry Pi, you must chan
 ones. This is due to the fact that the Pi is redirecting your DNS locally and without changing the upload server, you can
 end up with a never ending cycle of readings.
 
-See [MyAcurite Upload URL's](https://docs.acuparse.com/DNS/#myacurite-upload-urls) for more details!
+See [MyAcuRite Upload URL's](https://docs.acuparse.com/DNS/#myacurite-upload-urls) for more details!
 
 ## Installation Errors
 
@@ -88,11 +88,11 @@ In more extreme cases, you may also need to remove and [reinitialize the Acupars
 If your not receiving data from your Access, ensure you have a DNS resolvable hostname set for the upload server and/or
 a DNS redirect in place. Then, reboot your Access. The Access can at times require multiple reboots to begin sending data.
 
-### MyAcurite Offline
+### MyAcuRite Offline
 
-If MyAcurite is offline, Acuparse will respond to your Accesss and store your readings but they will not be back filled
-to MyAcurite after their outage is over. The Access is capable of storing the data and sending it later but when used
-with Acuparse, the Access will continue to think MyAcurite was online and the readings stored.
+If MyAcuRite is offline, Acuparse will respond to your Accesss and store your readings but they will not be back filled
+to MyAcuRite after their outage is over. The Access is capable of storing the data and sending it later but when used
+with Acuparse, the Access will continue to think MyAcuRite was online and the readings stored.
 
 You will receive a warning in your `syslog` when this happens.
 
@@ -119,7 +119,7 @@ and some great discussion on this article, hardcoding, and DoH over at [Hacker N
 To resolve, you need to redirect DNS requests from your Access destined for `8.8.8.8` to your local DNS server
 using your local firewall rules.
 
-If your Acuparse install is **NOT** local, that is, installed in the cloud you should ensure your Acuparse hostname
+If your Acuparse install is **NOT** local, that is, installed in the cloud, you should ensure your Acuparse hostname\FQDN
 is publicly resolvable through `8.8.8.8`.
 
 ### Cisco Switches
@@ -135,10 +135,10 @@ end
 
 ## Hub Device
 
-### MyAcurite Support
+### MyAcuRite Support
 
-MyAcurite has terminated support for the SmartHUB. Acuparse will receive and store these readings and respond to your hub.
-Readings will not be uploaded to MyAcurite and will only be stored locally. You can still use the Hub to upload to external
+MyAcuRite has terminated support for the SmartHUB. Acuparse will receive and store these readings and respond to your hub.
+Readings will not be uploaded to MyAcuRite and will only be stored locally. You can still use the Hub to upload to external
 providers.
 
 ## Inaccurate Readings

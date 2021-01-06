@@ -29,11 +29,11 @@
 /**
  * @param $unit
  * @param $table
- * @return float
+ * @return string
  */
 
 // Calculate the trending value
-function calculateTrend($unit, $table)
+function calculateTrend($unit, $table): string
 {
     require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
     /** @var mysqli $conn Global MYSQL Connection */
@@ -49,7 +49,7 @@ function calculateTrend($unit, $table)
     return round($trend_1 - $trend_2, 1);
 }
 
-function realtime()
+function realtime(): string
 {
     // Get the loader
     require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
@@ -60,7 +60,7 @@ function realtime()
      * @var object $config Global Config
      */
 
-    $pressureTrend = calculateTrend('ingh', 'pressure');
+    $pressureTrend = calculateTrend('inhg', 'pressure');
     $tempTrend = calculateTrend('tempF', 'temperature');
 
     $rainfall_IN_total_yesterday = mysqli_fetch_assoc(mysqli_query($conn,
@@ -114,12 +114,12 @@ function realtime()
     // High Pressure
     $result = mysqli_fetch_assoc(mysqli_query($conn,
         "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-    $pressure_inHg_high_recorded = date('H:i', strtotime($result['reported'])); // Recorded at
+    $pressure_inHg_high_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
     $pressure_inHg_high = (float)$result['pressureinHg']; // Inches of Mercury
     // Low Pressure
     $result = mysqli_fetch_assoc(mysqli_query($conn,
         "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-    $pressure_inHg_low_recorded = date('H:i', strtotime($result['reported'])); // Recorded at
+    $pressure_inHg_low_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
     $pressure_inHg_low = (float)$result['pressureinHg']; // Inches of Mercury
 
     $date = date('d/m/y H:m:s');

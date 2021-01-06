@@ -48,7 +48,7 @@
                         <input class="form-check-input" type="radio"
                                name="station[device]"
                                id="station-device-atlas"
-                               onclick='document.getElementById("station-sensor-5n1").disabled=false;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-hub-mac").disabled=true;document.getElementById("station-primary-sensor-0").disabled=false;document.getElementById("station-access-mac").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false'
+                               onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-hub-mac").disabled=true;document.getElementById("station-primary-sensor-0").disabled=false;document.getElementById("station-access-mac").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false'
                                value="0"
                             <?= ($config->station->device === 0) ? 'checked="checked"' : false; ?>>
                         <label class="form-check-label alert bg-dark"
@@ -58,7 +58,7 @@
                         <input class="form-check-input" type="radio"
                                name="station[device]"
                                id="station-device-smarthub"
-                               onclick='document.getElementById("station-sensor-5n1").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;document.getElementById("station-primary-sensor-0").disabled=true;document.getElementById("station-primary-sensor-1").checked=true;document.getElementById("station-access-mac").disabled=true;document.getElementById("station-hub-mac").disabled=false;document.getElementById("station-lightning-source-0").checked="checked";document.getElementById("station-lightning-source-1").disabled=true;document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;document.getElementById("myacurite-access-enabled-1").disabled=true;document.getElementById("myacurite-access-enabled-0").checked="checked"'
+                               onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;document.getElementById("station-primary-sensor-0").disabled=true;document.getElementById("station-primary-sensor-1").checked=true;document.getElementById("station-access-mac").disabled=true;document.getElementById("station-hub-mac").disabled=false;document.getElementById("station-lightning-source-0").checked="checked";document.getElementById("station-lightning-source-1").disabled=true;document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;document.getElementById("myacurite-access-enabled-1").disabled=true;document.getElementById("myacurite-access-enabled-0").checked="checked"'
                                value="1"
                             <?= ($config->station->device === 1) ? 'checked="checked"' : false; ?>>
                         <label class="form-check-label alert bg-dark"
@@ -91,14 +91,13 @@
                 <div class="col-md-8 col-12 mx-auto alert alert-primary">
                     <div class="form-group">
                         <h3>Primary Data Source</h3>
-                        <p class="alert alert-warning">You can use an Atlas or 5-in-1 sensor as
-                            your
-                            primary sensor. You must have an Access to receive Atlas data.</p>
+                        <p class="alert alert-warning">You can use an Iris (5-in-1) or Atlas (7-in-1) sensor as
+                            your primary sensor.<br/><strong>You must have an Access to receive Atlas data.</strong></p>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio"
                                    name="station[primary_sensor]"
                                    id="station-primary-sensor-0"
-                                   onclick='document.getElementById("station-sensor-5n1").disabled=true;document.getElementById("station-sensor-atlas").disabled=false;'
+                                   onclick='document.getElementById("station-sensor-iris").disabled=true;document.getElementById("station-sensor-atlas").disabled=false;'
                                    value="0"
                                 <?= ($config->station->primary_sensor === 0) ? 'checked="checked"' : false; ?>
                                 <?= ($config->station->device === 1) ? 'disabled="disabled"' : false; ?>>
@@ -109,16 +108,15 @@
                             <input class="form-check-input" type="radio"
                                    name="station[primary_sensor]"
                                    id="station-primary-sensor-1"
-                                   onclick='document.getElementById("station-sensor-5n1").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;'
+                                   onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;'
                                    value="1"
                                 <?= ($config->station->primary_sensor === 1) ? 'checked="checked"' : false; ?>>
                             <label class="form-check-label alert bg-dark"
-                                   for="station-primary-sensor-1">5-in-1</label>
+                                   for="station-primary-sensor-1">Iris</label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label" for="station-sensor-atlas">Atlas Station
-                            ID:</label>
+                        <label class="col-form-label" for="station-sensor-atlas">Atlas (7-in-1) Station ID:</label>
                         <input type="text" class="form-control"
                                name="station[sensor_atlas]"
                                id="station-sensor-atlas" placeholder="00000000"
@@ -132,17 +130,16 @@
                         </small>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label" for="station-sensor-5n1">5-in-1 Station
-                            ID:</label>
+                        <label class="col-form-label" for="station-sensor-iris">Iris (5-in-1) Station ID:</label>
                         <input type="text" class="form-control"
-                               name="station[sensor_5n1]"
-                               id="station-sensor-5n1" placeholder="00000000"
+                               name="station[sensor_iris]"
+                               id="station-sensor-iris" placeholder="00000000"
                                maxlength="8" pattern="[0-9]{8}"
                                title="8 Digits including leading 0's"
                             <?= $config->station->primary_sensor === 0 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->primary_sensor) ? 'disabled="disabled"' : false; ?>
-                               value="<?= $config->station->sensor_5n1; ?>">
-                        <small id="station-sensor-5n1-help" class="form-text text-muted">8
+                               value="<?= $config->station->sensor_iris; ?>">
+                        <small id="station-sensor-iris-help" class="form-text text-muted">8
                             Digits including leading 0's
                         </small>
                     </div>
@@ -217,10 +214,10 @@
                 </div>
                 <div class="col-md-8 col-12 mx-auto">
                     <hr>
-                    <div class="col-md-8 col-12 mx-auto">
+                    <div class="col-auto mx-auto">
                         <div class="form-group">
                             <h2>Lightning Sensor</strong></h2>
-                            <p><small>(Acurite Access Required)</small></p>
+                            <p><small><strong>(AcuRite Access Required)</strong></small></p>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio"
                                        name="station[lightning_source]"
@@ -260,9 +257,6 @@
                                 <label class="form-check-label alert alert-warning"
                                        for="station-lightning-source-3">Both</label>
                             </div>
-                            <small id="station-lightning-source-help"
-                                   class="form-text text-muted">Do you have a lightning sensor?
-                            </small>
                         </div>
                     </div>
                 </div>

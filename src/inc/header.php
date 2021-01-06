@@ -38,72 +38,92 @@
 /** @var string $pageTitle Page Title */
 $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . ' | ' . $config->site->location : $pageTitle;
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="handheldfriendly" content="true">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5">
-    <meta name="description" content="<?= $config->site->desc; ?>">
-    <meta name="keywords" content="weather, <?= strtolower($config->site->location); ?>">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="handheldfriendly" content="true">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5">
+        <meta name="description" content="<?= $config->site->desc; ?>">
+        <meta name="keywords" content="weather, <?= strtolower($config->site->location); ?>">
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="<?= $config->site->name; ?>">
-    <meta property="og:title" content="<?= $pageTitle ?>">
-    <meta property="og:description" content="<?= $config->site->desc; ?>">
-    <meta property="og:url" content="<?= $config->site->hostname; ?>">
-    <meta property="og:image"
-          content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
+        <!-- Open Graph -->
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="<?= $config->site->name; ?>">
+        <meta property="og:title" content="<?= $pageTitle ?>">
+        <meta property="og:description" content="<?= $config->site->desc; ?>">
+        <meta property="og:url" content="<?= $config->site->hostname; ?>">
+        <meta property="og:image"
+              content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:description" content="<?= $config->site->desc; ?>">
-    <meta name="twitter:title" content="<?= $config->site->name; ?>">
-    <meta name="twitter:image" content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:description" content="<?= $config->site->desc; ?>">
+        <meta name="twitter:title" content="<?= $config->site->name; ?>">
+        <meta name="twitter:image"
+              content="<?= ($config->camera->enabled === true) ? '/img/cam/latest.jpg?' . time() : '/img/social.jpg'; ?>">
 
-    <title><?= $pageTitle ?></title>
+        <title><?= $pageTitle ?></title>
 
-    <!-- CSS -->
-    <link rel="preload" href="/lib/mit/bootstrap/css/bootstrap.min.css" as="style"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="/lib/mit/weather_icons/css/weather-icons.min.css" as="style"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" as="style"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet" href="/lib/mit/bootstrap/css/bootstrap.min.css">
-        <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
-        <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
-    </noscript>
+        <!-- CSS -->
+        <?php
+        if (isset($_SERVER['HTTP_USER_AGENT']) && stripos($_SERVER['HTTP_USER_AGENT'], "chrome") > 0) { ?>
+            <link rel="preload" href="/lib/mit/bootstrap/css/bootstrap.min.css" as="style"
+                  onload="this.onload=null;this.rel='stylesheet'">
+            <link rel="preload" href="/lib/mit/weather_icons/css/weather-icons.min.css" as="style"
+                  onload="this.onload=null;this.rel='stylesheet'">
+            <link rel="preload" href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" as="style"
+                  onload="this.onload=null;this.rel='stylesheet'">
+            <noscript>
+                <link rel="stylesheet" href="/lib/mit/bootstrap/css/bootstrap.min.css">
+                <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
+                <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
+            </noscript>
+        <?php } else { ?>
+            <link rel="stylesheet" href="/lib/mit/bootstrap/css/bootstrap.min.css">
+            <link href="/lib/mit/weather_icons/css/weather-icons.min.css" rel="stylesheet">
+            <link href="/lib/mit/weather_icons/css/weather-icons-wind.min.css" rel="stylesheet">
+        <?php }
 
-    <?php if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) { ?>
-        <link rel="preload" href="/lib/mit/lightbox/css/lightbox.min.css" as="style"
-              onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
-        </noscript>
-    <?php }
-    if (($_SERVER['PHP_SELF'] === '/admin/tower.php') && (isset($_GET['view']))) { ?>
-        <link rel="preload" href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" as="style"
-              onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" as="style"
-              onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
-            <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
-        </noscript>
-    <?php } ?>
+        if (($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']))) {
+            if (isset($_SERVER['HTTP_USER_AGENT']) && stripos($_SERVER['HTTP_USER_AGENT'], "chrome") > 0) { ?>
+                <link rel="preload" href="/lib/mit/lightbox/css/lightbox.min.css" as="style"
+                      onload="this.onload=null;this.rel='stylesheet'">
+                <noscript>
+                    <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
+                </noscript>
+            <?php } else { ?>
+                <link href="/lib/mit/lightbox/css/lightbox.min.css" rel="stylesheet">
+                <?php
+            }
+        }
+        if (($_SERVER['PHP_SELF'] === '/admin/tower.php') && (isset($_GET['view']))) {
+            if (isset($_SERVER['HTTP_USER_AGENT']) && stripos($_SERVER['HTTP_USER_AGENT'], "chrome") > 0) { ?>
+                <link rel="preload" href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" as="style"
+                      onload="this.onload=null;this.rel='stylesheet'">
+                <link rel="preload" href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" as="style"
+                      onload="this.onload=null;this.rel='stylesheet'">
+                <noscript>
+                    <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
+                    <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
+                </noscript>
+            <?php } else {
+                ?>
+                <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet">
+                <link href="/lib/mit/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet">
+                <?php
+            }
+        } ?>
 
-    <!-- Base CSS -->
-    <link href="/themes/base.min.css" rel="stylesheet">
-    <!-- Site Theme -->
-    <link href="/themes/<?= $config->site->theme; ?>.min.css" rel="stylesheet">
+        <!-- Base CSS -->
+        <link href="/themes/base.min.css" rel="stylesheet">
+        <!-- Site Theme -->
+        <link href="/themes/<?= $config->site->theme; ?>.min.css" rel="stylesheet">
 
-    <?php
-    if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
-        <!-- Structured Data -->
-        <script type="application/ld+json">
+        <?php
+        if ($_SERVER['PHP_SELF'] === '/index.php') { ?>
+            <!-- Structured Data -->
+            <script type="application/ld+json">
         {
             "@context": "http://schema.org",
             "@type": "WebSite",
@@ -111,60 +131,47 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             "description": "<?= $config->site->desc; ?>",
             "url": "https://<?= $config->site->hostname; ?>/"
         }
-        </script>
-    <?php } ?>
-</head>
+            </script>
+        <?php } ?>
+    </head>
 <body>
 
-<!-- Site Container -->
+    <!-- Site Container -->
 <div class="container">
 
     <!-- Navigation -->
-    <?php if ($_SERVER['PHP_SELF'] !== '/display.php') {
-        include 'nav.php';
-    } ?>
+<?php if ($_SERVER['PHP_SELF'] !== '/display.php') {
+    include 'nav.php';
+} ?>
 
-    <?php
-    // Messages
-    if (isset($_SESSION['messages'])) {
-        echo '<div id="system-messages" class="row system-messages"><br><div class="col-md-8 col-12 mx-auto"><strong>', $_SESSION['messages'], '</strong></div></div>';
-        unset($_SESSION['messages']);
-    }
-    // Logged in admin
-    if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
+<?php
+// Messages
+if (isset($_SESSION['messages'])) {
+    echo '<div id="system-messages" class="row system-messages"><br><div class="col-md-8 col-12 mx-auto"><strong>', $_SESSION['messages'], '</strong></div></div>';
+    unset($_SESSION['messages']);
+}
+// Logged in admin
+if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
-        // Check for updates
-        if ($config->site->updates === true) {
-            if ($_SERVER['PHP_SELF'] === '/index.php' || $_SERVER['PHP_SELF'] === '/admin/index.php') {
+    // Check for updates
+    if ($config->site->updates === true) {
+        if ($_SERVER['PHP_SELF'] === '/index.php' || $_SERVER['PHP_SELF'] === '/admin/index.php') {
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `value` FROM `system` WHERE `name`='schema'"));
+            $schema = $result['value'];
+            if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
+                header("Location: /admin/install/?update");
+                die();
+            } else {
                 $result = mysqli_fetch_assoc(mysqli_query($conn,
-                    "SELECT `value` FROM `system` WHERE `name`='schema'"));
-                $schema = $result['value'];
-                if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
-                    header("Location: /admin/install/?update");
-                    die();
-                } else {
-                    $result = mysqli_fetch_assoc(mysqli_query($conn,
-                        "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
-                    $latestRelease = $result['value'];
-                    if ($latestRelease !== null) {
-                        if (version_compare($appInfo->version, $latestRelease, '<')) {
-                            ?>
-                            <section id="update-message" class="row update-message"><br>
-                                <div class="col-md-8 col-12 mx-auto">
-                                    <div class="alert alert-warning alert-dismissable">
-                                        <a href="#" class="close" data-dismiss="alert">&times;</a>
-                                        <strong>Version <?= $latestRelease; ?> is available!</strong><br>
-                                        Execute <code>git pull</code>, <code>docker pull</code>, or upload new source to
-                                        update.<br>
-                                        <a href="https://docs.acuparse.com/INSTALL/#updating">See docs for details.</a>
-                                    </div>
-                                </div>
-                            </section>
-                            <?php
-                        }
+                    "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
+                $latestRelease = $result['value'];
+                if ($latestRelease !== null) {
+                    if (version_compare($appInfo->version, $latestRelease, '<')) {
+                        include 'templates/updateAvailable.php';
                     }
                 }
             }
         }
     }
-    ?>
+}

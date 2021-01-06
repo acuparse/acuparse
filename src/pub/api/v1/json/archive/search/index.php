@@ -94,7 +94,7 @@ if (isset($_GET['query'])) {
         if ($config->station->primary_sensor === 0) {
             $result = mysqli_query($conn,
                 "SELECT `reported`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
-        } //5n1
+        } //Iris
         else {
             $result = mysqli_query($conn,
                 "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
@@ -133,7 +133,7 @@ if (isset($_GET['query'])) {
         if ($config->station->primary_sensor === 0) {
             $result = mysqli_query($conn,
                 "SELECT `reported`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `windGustMPH`, `windGustDEG`, `tempF`, `feelsF`, `dewptF`, `rainin`, `total_rainin`, `relH`, `pressureinHg`, `lightning`, `light`, `lightSeconds`, `uvindex`  FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);
-        } //5n1
+        } //Iris
         else {
             $result = mysqli_query($conn,
                 "SELECT `reported`, `windSpeedMPH`, `windDEG`, `tempF`, `feelsF`, `dewptF`, `rainin`, `total_rainin`, `relH`, `pressureinHg`, `lightning`, `light`, `lightSeconds`, `uvindex`  FROM `archive` WHERE `reported` BETWEEN '$startDate' AND '$endDate'" . $sort . $limit);

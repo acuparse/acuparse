@@ -43,11 +43,11 @@ return (object)array(
         'hub_mac' => null, // smartHUB MAC Address
         'primary_sensor' => null, // Primary Sensor
         'sensor_atlas' => null, // Atlas Sensor ID (8 Digits including leading 0's)
-        'sensor_5n1' => null, // 5n1 Sensor ID (8 Digits including leading 0's)
+        'sensor_iris' => null, // Iris Sensor ID (8 Digits including leading 0's)
         'towers' => false, // Tower Sensors Active? True/False
         'towers_additional' => false, // Show additional High/Low values
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
-        'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower)
+        'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower/3-both)
     ),
 
     // Site specific config variables
@@ -191,18 +191,18 @@ return (object)array(
             'url' => '', // Server URL
         ),
 
-        // MyAcurite
+        // MyAcuRite
         'myacurite' => (object)array(
             'access_enabled' => true, // true or false
-            'access_url' => 'https://atlasapi.myacurite.com', // MyAcurite API
-            'pass_unknown' => false, // Pass unknown sensors to MyAcurite?
+            'access_url' => 'https://atlasapi.myacurite.com', // MyAcuRite API
+            'pass_unknown' => false, // Pass unknown sensors to MyAcuRite?
         ),
     ),
 
     // Email Outage Alerts
     'outage_alert' => (object)array(
         'enabled' => false, // true or false
-        'offline_for' => '5 minutes', // Time the station is offline before sending emails.
+        'offline_for' => '10 minutes', // Time the station is offline before sending emails.
         'interval' => '1 hour', // How often to email admin about outages.
     ),
 
@@ -229,8 +229,8 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.1.2',
-        'schema' => '3.1',
+        'app' => '3.2.0',
+        'schema' => '3.2',
         'installHash' => null,
     ),
 );

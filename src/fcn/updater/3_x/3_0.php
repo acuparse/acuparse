@@ -48,7 +48,8 @@ switch ($config->version->app) {
             $config->version->app = '3.0.0-beta';
             syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.0.0-beta");
         } else {
-            syslog(LOG_INFO, "(SYSTEM){UPDATER}: FAILED to update schema to 3.0.0-beta!");
+            syslog(LOG_INFO, "(SYSTEM){UPDATER}: FAILED to update schema to 3.0-beta!");
+            echo "Oops, Something went wrong updating Schema";
             exit();
         }
 
@@ -66,7 +67,6 @@ switch ($config->version->app) {
         if ($schema_version === '3.0-beta1') {
             $config->version->schema = '3.0-beta1';
             syslog(LOG_INFO, "(SYSTEM){UPDATER}: Database schema upgraded to 3.0-beta1");
-
             syslog(LOG_INFO, "(SYSTEM){UPDATER}: Updating System Configuration");
             unset($config->station->lightning);
             unset($config->station->baro_source);
@@ -114,19 +114,28 @@ switch ($config->version->app) {
             $config->version->app = '3.0.0-beta1';
             syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.0.0-beta1");
         } else {
-            syslog(LOG_INFO, "(SYSTEM){UPDATER}: FAILED updating schema to 3.0.0-beta1!");
+            syslog(LOG_INFO, "(SYSTEM){UPDATER}: FAILED updating schema to 3.0-beta1!");
+            echo "Oops, Something went wrong updating Schema";
             exit();
         }
 
     // Update from 3.0.0-beta1 to 3.0.0
     case '3.0.0-beta1':
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.0.0");
-        $config->version->schema = '3.0';
         mysqli_query($conn,
             "UPDATE `system` SET `value` = '3.0' WHERE `system`.`name` = 'schema';"); // Update Schema Version
-        $config->version->app = '3.0.0';
-        syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.0.0");
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Major update. Support all Atlas sensors. Framework updates.';
+        $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name`='schema'"));
+        $schema_version = $result['value'];
+        if ($schema_version === '3.0') {
+            $config->version->schema = '3.0';
+            $config->version->app = '3.0.0';
+            syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.0.0");
+            $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Major update. Support all Atlas sensors. Framework updates.';
+        } else {
+            syslog(LOG_INFO, "(SYSTEM){UPDATER}: FAILED updating schema to 3.0");
+            echo "Oops, Something went wrong updating Schema";
+            exit();
+        }
 
     // Update from 3.0.0 to 3.0.1
     case '3.0.0':

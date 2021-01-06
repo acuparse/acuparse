@@ -22,7 +22,7 @@ not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's site
 ## How it Works
 
 [Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite
-5-in-1/Atlas weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
+Iris (5-in-1) or Atlas (7-in-1) weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
 [Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com), [Weathercloud](https://weathercloud.net),
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
 and [OpenWeather](https://openweathermap.org/).
@@ -59,6 +59,10 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 ```
 
 - See [docs/DOCKER.md](https://docs.acuparse.com/DOCKER) for more details
+
+## Updating
+
+- [Updating Guide](UPDATING)
 
 ## Troubleshooting
 

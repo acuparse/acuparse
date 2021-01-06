@@ -36,14 +36,14 @@ class getCurrentAtlasData
     private $windSpeedMPH_avg;
     private $windSpeedKMH_avg;
     private $windGust_peak_recorded;
-    private $windGust_peak_recorded_json;
+    private $windGust_peak_recorded_JSON;
     private $windGustMPH_peak;
     private $windGustKMH_peak;
     private $windGustDEG_peak;
     private $lastUpdate;
     private $lastUpdate_json;
 
-    function __construct()
+    function __construct($cron = false)
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -81,26 +81,29 @@ class getCurrentAtlasData
         $this->windGustMPH = (int)$result['gustMPH'];
         $this->windGustKMH = (int)round($result['gustMPH'] * 1.60934);
 
+
         // 2 Min Average Windspeed:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `averageMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->windSpeedMPH_avg = (int)$result['averageMPH']; // Miles per hour
         $this->windSpeedKMH_avg = (int)round($result['averageMPH'] * 1.60934); // Convert to Kilometers per hour
 
-        // Today's Peak Gust:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-        $this->windGust_peak_recorded = date('H:i', strtotime($result['reported'])); // Recorded at
-        $this->windGust_peak_recorded = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
-        $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
-        $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
+        if ($cron === false) {
+            // Today's Peak Gust:
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+            $this->windGust_peak_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
+            $this->windGust_peak_recorded_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+            $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
+            $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
+            $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
 
-        // Get last Update
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `last_update` FROM `atlas_status` LIMIT 1"));
-        $this->lastUpdate = $result['last_update'];
-        $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['last_update']));
+            // Get last Update
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `last_update` FROM `atlas_status` LIMIT 1"));
+            $this->lastUpdate = $result['last_update'];
+            $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['last_update']));
+        }
     }
 
     // Calculate the UV Index Text
@@ -248,10 +251,22 @@ class getCurrentAtlasData
             'windGustPeakKMH' => $this->windGustKMH_peak,
             'windGustDEGPeak' => $this->windGustDEG_peak,
             'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
-            'windGustPeakRecorded' => $this->windGust_peak_recorded_json,
+            'windGustPeakRecorded' => $this->windGust_peak_recorded_JSON,
             'windAvgMPH' => $this->windSpeedMPH_avg,
             'windAvgKMH' => $this->windSpeedKMH_avg,
             'lastUpdate' => $this->lastUpdate_json,
+        );
+    }
+
+    public function getCRONData(): object
+    {
+        return (object)array(
+            'lightIntensity' => $this->lightIntensity,
+            'lightSeconds' => $this->lightSeconds,
+            'uvIndex' => $this->uvIndex,
+            'windAvgMPH' => $this->windSpeedMPH_avg,
+            'windGustDEG' => $this->windGustDEG,
+            'windGustMPH' => $this->windGustMPH
         );
     }
 }

@@ -7,12 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.2.0]](https://www.acuparse.com/releases/v3-2-0/) - 2021-01-07
+
+### Fixed
+
+- Updated Lightning logic.
+- CSS not loading properly in Firefox.
+    - Prefetch not yet enabled in Firefox.
+- Empty SQL file in Docker backup task.
+
+### Changed
+
+- AcuRite is now advertising the 5-in-1 as the Iris for at least the last quarter.
+    - Updated Doc/Settings/Variables/DB references to reflect the new name.
+    - Add **or** `Iris` to Access `5N1` parsing.
+        - AcuRite *could* switch `mt` via a firmware update.
+- Updated archiving in local & combined cam scripts.
+
 ## [[3.1.2]](https://www.acuparse.com/releases/v3-1-2/) - 2021-01-03
 
 ### Fixed
 
 - Moonrise/Moonset always displaying in UTC.
 - All Time Light Archive readings displaying weekly values.
+- Backup running evey minute in Docker container.
 
 ### Added
 
@@ -189,7 +207,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 
 ### Changed
 
-- Removed legacy MyAcurite SmartHub uploading and always generate a system response.
+- Removed legacy MyAcuRite SmartHub uploading and always generate a system response.
 - Removed DateTimePicker as is currently unused.
 - FontAwesome to v5.7.2.
 - Bootstrap to 4.3.1.
@@ -324,7 +342,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 ### Changed
 
 - Findu does not play nice with https at the moment. Forcing nav link to be http.
-- External updates will use the proper appname when building update packets.
+- External updates will use the proper appname when building update packets.
 
 ## [[2.3.0]](https://www.acuparse.com/releases/v2-3-0/) - 2018-04-07
 
@@ -459,7 +477,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 
 ### Changed
 
-- Undoing changes to MyAcurite localtime response. It breaks rainfall data.
+- Undoing changes to MyAcuRite localtime response. It breaks rainfall data.
 
 ## [[2.1.1]](https://www.acuparse.com/releases/v2-1-1/) - 2017-06-10
 
@@ -475,9 +493,10 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 
 ### Added
 
-- Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the roadmap.)
+- Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the
+  roadmap.)
 - Google Captcha added to contact form.
-- MyAcurite is terrible keeping time. They send the hour for the min and sec in their response.
+- MyAcuRite is terrible keeping time. They send the hour for the min and sec in their response.
     - Modify the response to the HUB and send server time instead.
 
 ## [[2.1.0]](https://www.acuparse.com/releases/v2-1-0/) - 2017-03-14
