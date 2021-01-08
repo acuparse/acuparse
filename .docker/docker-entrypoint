@@ -61,8 +61,9 @@ if [ "$1" = 'acuparse' ]; then
 
   function setup_crontab() {
     ACUPARSE_MAIN_CRON='* * * * * /usr/local/bin/php /opt/acuparse/cron/cron.php > /opt/acuparse/logs/cron.log 2>&1'
-    ACUPARSE_BACKUP_CRON='* 0 * * * /bin/bash /opt/acuparse/cron/backup > /opt/acuparse/logs/cron.log 2>&1'
+    ACUPARSE_BACKUP_CRON='5 0 * * * /bin/bash /opt/acuparse/cron/backup > /opt/acuparse/logs/cron.log 2>&1'
     printf "%s\n%s\n" "$ACUPARSE_MAIN_CRON" "$ACUPARSE_BACKUP_CRON" | crontab -
+    env | grep -E MYSQL\|TZ >>/etc/environment
   }
 
   function start_services() {
@@ -114,7 +115,7 @@ if [ "$1" = 'acuparse' ]; then
     echo "NOTICE: Mail Relay Enabled"
     export DEBIAN_FRONTEND=noninteractive
     apt-get update && apt-get install nullmailer mailutils -yqq
-    echo "$SMTP_HOST" > /etc/nullmailer/remotes
+    echo "$SMTP_HOST" >/etc/nullmailer/remotes
     service nullmailer restart
     apt clean
     rm -rf /var/lib/apt/lists/*

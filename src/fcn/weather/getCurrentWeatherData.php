@@ -80,7 +80,7 @@ class getCurrentWeatherData
     private $lastUpdate;
     private $lastUpdate_json;
 
-    function __construct()
+    function __construct($cron = false, $json = false)
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -92,46 +92,54 @@ class getCurrentWeatherData
          */
 
         // Check for recent readings
-        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
-        if (!isset($lastUpdate)) {
-            echo '<div class="col text-center alert alert-danger"><strong>No Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
-            exit();
+        if ($cron === false) {
+            $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
+            if (!isset($lastUpdate)) {
+                if ($json === true) {
+                    $json_output = ['Status' => 'error', 'message' => 'No Archive Data Reported'];
+                    echo json_encode($json_output);
+                    exit();
+                } else {
+                    echo '<div class="col text-center alert alert-danger"><p><strong>No Archive Data Reported!</strong><br>Check that your Cron tasks are running! See your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</p></div>';
+                    exit();
+                }
+            }
+
+            // Get Moon Data:
+            require(APP_BASE_PATH . '/pub/lib/mit/moon/moonPhase.php');
+            $moon = new Solaris\MoonPhase();
+            $this->moon_age = round($moon->get('age'));
+            $this->moon_stage = $moon->phase_name();
+            $this->moon_illumination = round($moon->get('illumination'), 1) * 100 . '%';
+            $this->next_new_moon = date($config->site->dashboard_display_date, $moon->get_phase('next_new_moon'));
+            $this->next_new_moon_json = date($config->site->date_api_json, $moon->get_phase('next_new_moon'));
+            $this->next_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('next_full_moon'));
+            $this->next_full_moon_json = date($config->site->date_api_json, $moon->get_phase('next_full_moon'));
+            $this->last_new_moon = date($config->site->dashboard_display_date, $moon->get_phase('new_moon'));
+            $this->last_new_moon_json = date($config->site->date_api_json, $moon->get_phase('new_moon'));
+            $this->last_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('full_moon'));
+            $this->last_full_moon_json = date($config->site->date_api_json, $moon->get_phase('full_moon'));
+
+            // Moon rise/set
+            if (file_exists(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php')) {
+                require(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php');
+                $moon_time = Moon::calculateMoonTimes($config->site->lat, $config->site->long);
+                $this->moonrise = date($config->site->dashboard_display_date, $moon_time->moonrise);
+                $this->moonset = date($config->site->dashboard_display_date, $moon_time->moonset);
+
+                $this->moonrise_json = date($config->site->date_api_json, $moon_time->moonrise);
+                $this->moonset_json = date($config->site->date_api_json, $moon_time->moonset);
+            }
+
+            // Get Sun Data
+            $zenith = 90 + (50 / 60);
+            $offset = date('Z') / 3600;
+            $this->sunrise = date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
+            $this->sunrise_json = date($config->site->date_api_json, strtotime(date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset)));
+            $this->sunset = date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
+            $this->sunset_json = date($config->site->date_api_json, strtotime(date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset)));
         }
-
-        // Get Moon Data:
-        require(APP_BASE_PATH . '/pub/lib/mit/moon/moonPhase.php');
-        $moon = new Solaris\MoonPhase();
-        $this->moon_age = round($moon->get('age'));
-        $this->moon_stage = $moon->phase_name();
-        $this->moon_illumination = round($moon->get('illumination'), 1) * 100 . '%';
-        $this->next_new_moon = date($config->site->dashboard_display_date, $moon->get_phase('next_new_moon'));
-        $this->next_new_moon_json = date($config->site->date_api_json, $moon->get_phase('next_new_moon'));
-        $this->next_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('next_full_moon'));
-        $this->next_full_moon_json = date($config->site->date_api_json, $moon->get_phase('next_full_moon'));
-        $this->last_new_moon = date($config->site->dashboard_display_date, $moon->get_phase('new_moon'));
-        $this->last_new_moon_json = date($config->site->date_api_json, $moon->get_phase('new_moon'));
-        $this->last_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('full_moon'));
-        $this->last_full_moon_json = date($config->site->date_api_json, $moon->get_phase('full_moon'));
-
-        // Moon rise/set
-        if (file_exists(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php')) {
-            require(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php');
-            $moon_time = Moon::calculateMoonTimes($config->site->lat, $config->site->long);
-            $this->moonrise = date($config->site->dashboard_display_date, $moon_time->moonrise);
-            $this->moonset = date($config->site->dashboard_display_date, $moon_time->moonset);
-
-            $this->moonrise_json = date($config->site->date_api_json, $moon_time->moonrise);
-            $this->moonset_json = date($config->site->date_api_json, $moon_time->moonset);
-        }
-
-        // Get Sun Data
-        $zenith = 90 + (50 / 60);
-        $offset = date('Z') / 3600;
-        $this->sunrise = date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
-        $this->sunrise_json = date($config->site->date_api_json, strtotime(date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset)));
-        $this->sunset = date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
-        $this->sunset_json = date($config->site->date_api_json, strtotime(date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset)));
 
         // Process Wind Speed:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -145,76 +153,83 @@ class getCurrentWeatherData
         $this->windDEG = (int)$result['degrees']; // Degrees
 
         // Today's Peak Windspeed:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-        $this->wind_recorded_peak = date('H:i', strtotime($result['reported'])); // Recorded at
-        $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->windSpeedMPH_peak = (int)round($result['windSpeedMPH']); // Miles per hour
-        $this->windSkmh_peak = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
-        $this->windDEG_peak = (int)$result['windDEG']; // Degrees
+        if ($cron === false) {
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+            $this->wind_recorded_peak = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
+            $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+            $this->windSpeedMPH_peak = (int)round($result['windSpeedMPH']); // Miles per hour
+            $this->windSkmh_peak = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+            $this->windDEG_peak = (int)$result['windDEG']; // Degrees
+        }
 
-        // Process Pressure:
+// Process Pressure:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `inhg` FROM `pressure` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->pressure_inHg = (float)$result['inhg']; // Inches of Mercury
         $this->pressure_kPa = (float)round($result['inhg'] * 3.38638866667, 2); // Convert to Kilopascals
 
-        // Process Temp:
+// Process Temp:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `tempF` FROM `temperature` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->tempF = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
-        // High Temp:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `timestamp`, `tempF` FROM `temperature` WHERE `tempF` = (SELECT MAX(tempF) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE())
+        if ($cron === false) {
+            // High Temp:
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp`, `tempF` FROM `temperature` WHERE `tempF` = (SELECT MAX(tempF) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
-        $this->high_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
-        $this->high_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
-        $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+            $this->high_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
+            $this->high_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
+            $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
+            $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
-        // Low Temp:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `timestamp`, `tempF` FROM `temperature` WHERE `tempF` = (SELECT MIN(tempF) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE())
+            // Low Temp:
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp`, `tempF` FROM `temperature` WHERE `tempF` = (SELECT MIN(tempF) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
-        $this->low_temp_recorded = date('H:i', strtotime($result['timestamp'])); // Recorded at
-        $this->low_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
-        $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+            $this->low_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
+            $this->low_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
+            $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
+            $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
-        // Average Temp:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT AVG(tempF) AS `avg_tempF` FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()"));
-        $this->tempF_avg = (float)round($result['avg_tempF'], 1); // Fahrenheit
-        $this->tempC_avg = (float)round(($result['avg_tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+            // Average Temp:
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT AVG(tempF) AS `avg_tempF` FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()"));
+            $this->tempF_avg = (float)round($result['avg_tempF'], 1); // Fahrenheit
+            $this->tempC_avg = (float)round(($result['avg_tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+        }
 
-        // Process Humidity:
+// Process Humidity:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `relH` FROM `humidity` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->relH = (int)$result['relH']; // Percentage
 
-        // Process Rainfall:
+// Process Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `rainin` FROM `rainfall`"));
         $this->rainIN = (float)$result['rainin']; // Inches
         $this->rainMM = (float)round($result['rainin'] * 25.4, 2); // Millimeters
 
-        // Today's Rainfall:
+// Today's Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `dailyrainin` FROM `dailyrain` WHERE DATE(`date`) = CURDATE()"));
         $this->rainTotalIN_today = (float)$result['dailyrainin']; // Inches
         $this->rainTotalMM_today = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
 
-        // Last Update
-        $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`"));
-        $this->lastUpdate = $result['timestamp'];
-        $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['timestamp']));
+        if ($cron === false) {
+            // Last Update
+            $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`"));
+            $this->lastUpdate = $result['timestamp'];
+            $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['timestamp']));
+        }
     }
 
-    //Private Functions
+//Private Functions
 
-    // Calculate human readable wind direction from a range of values:
-    private function windDirection($windDEG): string
+// Calculate human readable wind direction from a range of values:
+    private
+    function windDirection($windDEG): string
     {
         switch ($windDEG) {
             case ($windDEG >= 11.25 && $windDEG < 33.75):
@@ -269,8 +284,9 @@ class getCurrentWeatherData
         return (string)$windDIR;
     }
 
-    // Calculate feels like temp
-    private function feelsLike(): object
+// Calculate feels like temp
+    private
+    function feelsLike(): object
     {
         $feelsF = 0;
         $feelsC = 0;
@@ -291,8 +307,9 @@ class getCurrentWeatherData
         );
     }
 
-    // Calculate dew point
-    private function dewPoint(): object
+// Calculate dew point
+    private
+    function dewPoint(): object
     {
         $dewptC = ((pow(($this->relH / 100), 0.125)) * (112 + 0.9 * $this->tempC) + (0.1 * $this->tempC) - 112);
         $dewptF = ($dewptC * 9 / 5) + 32;
@@ -303,7 +320,8 @@ class getCurrentWeatherData
         );
     }
 
-    private function windBeaufort($windSpeedMPH): int
+    private
+    function windBeaufort($windSpeedMPH): int
     {
         $windSpeed = $windSpeedMPH;
 
@@ -351,10 +369,11 @@ class getCurrentWeatherData
         return (int)$beaufort;
     }
 
-    // Public Functions
+// Public Functions
 
-    // Calculate the trending value
-    public function calculateTrend($unit, $table, $sensor = null): string
+// Calculate the trending value
+    public
+    function calculateTrend($unit, $table, $sensor = null): string
     {
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
@@ -384,8 +403,9 @@ class getCurrentWeatherData
         return $trend;
     }
 
-    // Get current conditions
-    public function getConditions(): object
+// Get current conditions
+    public
+    function getConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
@@ -437,8 +457,9 @@ class getCurrentWeatherData
         );
     }
 
-    // Get current JSON conditions
-    public function getJSONConditions(): object
+// Get current JSON conditions
+    public
+    function getJSONConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
@@ -487,6 +508,23 @@ class getCurrentWeatherData
             'moon_lastNew' => $this->last_new_moon_json,
             'moon_lastFull' => $this->last_full_moon_json,
             'lastUpdated' => $this->lastUpdate_json
+        );
+    }
+
+// Get current JSON conditions
+    public
+    function getCRONConditions(): object
+    {
+        return (object)array(
+            'tempF' => $this->tempF,
+            'feelsF' => $this->feelsLike()->feelsF,
+            'dewptF' => $this->dewPoint()->dewptF,
+            'relH' => $this->relH,
+            'windSpeedMPH' => $this->windSpeedMPH,
+            'windDEG' => $this->windDEG,
+            'rainIN' => $this->rainIN,
+            'rainTotalIN_today' => $this->rainTotalIN_today,
+            'pressure_inHg' => $this->pressure_inHg
         );
     }
 }

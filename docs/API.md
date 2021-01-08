@@ -4,8 +4,8 @@
 
 The API is available at `http(s)://<yourip/domain>/api/<VERSION>`.
 
-To get private data, you must pass an API token with the request.
-You can create an API token from your user profile page.
+To get private data, you must pass an API token with the request. You can create an API token from your user profile
+page.
 
 **To pass your token, add it to the beginning or anywhere in your API query:**
 
@@ -45,7 +45,7 @@ You can create an API token from your user profile page.
 - JSON: `http(s)://<yourip/domain>/api/v1/json/archive/search?query=&start=&end=&sort=&limit=`
     - Set `query` to one of `wind`/`rain`/`temp`/`relh`/`pressure`/`lightning`/`uv`/`light`.
     - Set `start` and optionally `end` to the Start/End Date and Time. Setting just the date will use 00:00:00 for time.
-    If `end` is not specified, defaults to `now`.
+      If `end` is not specified, defaults to `now`.
     - Optionally, set `sort` to `asc` or `desc`. Sort defaults to `asc`.
     - Optionally, set `limit` to limit the number of results returned. **Defaults to 100 without a token/admin login!**
 

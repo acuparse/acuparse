@@ -31,6 +31,7 @@ WATERMARK='Station Name | Station Web Address' # Image Watermark Text
 CAMERA_HOST='http://'                          # The camera host
 CAMERA_FILENAME='snapshot.jpg'                 # Camera image name
 RESIZE='50%'
+#ARCHIVE_DIR='/opt/acuparse/cam/archive'
 ### END USER VALUES ###
 
 WEBDIR='/opt/acuparse/src/pub/img/cam'
@@ -69,8 +70,21 @@ cp image.jpg ${WEBDIR}/"${ARCHIVE_DATE}"/"${ARCHIVE_TIME}".jpg
 chown -R www-data:www-data ${WEBDIR}
 echo "Updating Animation"
 convert -delay 25 -loop 0 ${WEBDIR}/"${ARCHIVE_DATE}"/*.jpg ${WEBDIR}/"${ARCHIVE_DATE}"/daily.gif
-echo "Cleaning up files"
 
+# Local Archiving
+#ARCHIVE=$(date +"%F_%H%M")
+#mkdir -p "${ARCHIVE_DIR}"/"$(date +%Y)"
+#FOLDER="$(date +%Y)"
+#echo "Archiving"
+#convert $CAMERA_FILENAME \
+#    -font DejaVu-Sans-Bold -pointsize 16 \
+#    -draw "gravity south \
+#   fill black  text 0,36 '$TIMESTAMP' \
+#    fill OrangeRed2  text 1,37 '$TIMESTAMP' " \
+#   archive.jpg
+#mv archive.jpg "${ARCHIVE_DIR}"/"${FOLDER}"/"${ARCHIVE}".jpg
+
+echo "Cleaning up files"
 rm image.jpg*
 rm ${CAMERA_FILENAME}*
 

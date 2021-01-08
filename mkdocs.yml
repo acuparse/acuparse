@@ -26,6 +26,7 @@ nav:
           - DNS Redirect: 'DNS.md'
           - NGINX Proxy: 'NGINX.md'
   - Updating:
+      - Update Guide: 'UPDATING.md'
       - Version 3.0: 'updates/v3.md'
       - Version 2.3: 'updates/v2_3.md'
   - API: 'API.md'

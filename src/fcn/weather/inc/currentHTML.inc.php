@@ -72,8 +72,16 @@ if ($config->station->device === 0) {
 
 // Load Tower Lightning Data
 if ($config->station->device === 0) {
-    if ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) {
+    if ($config->station->primary_sensor === 0) {
         if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+            if (!class_exists('tower\getCurrentLightningData')) {
+                require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                $getTowerLightningData = new tower\getCurrentLightningData;
+                $towerLightning = $getTowerLightningData->getData();
+            }
+        }
+    } else if ($config->station->primary_sensor === 1) {
+        if ($config->station->lightning_source === 2) {
             if (!class_exists('tower\getCurrentLightningData')) {
                 require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
                 $getTowerLightningData = new tower\getCurrentLightningData;

@@ -56,8 +56,12 @@ include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');
 
 if (isset($_GET['lightning'])) {
     if ($config->station->device === 0) {
-        if ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1) {
+        if ($config->station->primary_sensor === 0) {
             if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+                getTowerLightningData();
+            }
+        } else if ($config->station->primary_sensor === 1) {
+            if ($config->station->lightning_source === 2) {
                 getTowerLightningData();
             }
         }

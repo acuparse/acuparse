@@ -46,8 +46,8 @@ if ($installed === true) {
         // Load weather Data
         if (!class_exists('getCurrentWeatherData')) {
             require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
-            $get_data = new getCurrentWeatherData();
-            $data = $get_data->getConditions();
+            $get_data = new getCurrentWeatherData(true);
+            $data = $get_data->getCRONConditions();
         }
         /* @var object $data */
 
@@ -55,16 +55,16 @@ if ($installed === true) {
         if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
             if (!class_exists('getCurrentAtlasData')) {
                 require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
-                $getAtlasData = new getCurrentAtlasData();
-                $atlas = $getAtlasData->getData();
+                $getAtlasData = new getCurrentAtlasData(true);
+                $atlas = $getAtlasData->getCRONData();
             }
 
             if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
                 // Load Lightning Data
                 if (!class_exists('atlas\getCurrentLightningData')) {
                     require(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
-                    $getLightningData = new atlas\getCurrentLightningData;
-                    $lightning = $getLightningData->getData();
+                    $getLightningData = new atlas\getCurrentLightningData(NULL, true);
+                    $lightning = $getLightningData->getCRONData();
                 }
             }
         }
@@ -78,8 +78,8 @@ if ($installed === true) {
             if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
                 if (!class_exists('tower\getCurrentLightningData')) {
                     require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                    $getLightningData = new tower\getCurrentLightningData;
-                    $lightning = $getLightningData->getData();
+                    $getLightningData = new tower\getCurrentLightningData(NULL, true);
+                    $lightning = $getLightningData->getCRONData();
                 }
             }
             // Load Tower Data

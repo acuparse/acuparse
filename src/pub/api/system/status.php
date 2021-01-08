@@ -55,12 +55,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $battery_atlas = $result['battery'];
         $atlas = array_push($sensors['sensors'], ['atlas' => ['battery' => $battery_atlas, 'rssi' => $rssi_atlas]]);
     }
-    if ($config->station->sensor_5n1 != 0) {
+    if ($config->station->sensor_iris != 0) {
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `battery`, `rssi` FROM `5n1_status` ORDER BY `last_update` DESC LIMIT 1"));
-        $rssi_5n1 = $result['rssi'];
-        $battery_5n1 = $result['battery'];
-        $z5n1 = array_push($sensors['sensors'], ['atlas' => ['battery' => $battery_5n1, 'rssi' => $rssi_5n1]]);
+            "SELECT `battery`, `rssi` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
+        $rssi_iris = $result['rssi'];
+        $battery_iris = $result['battery'];
+        $iris = array_push($sensors['sensors'], ['atlas' => ['battery' => $battery_iris, 'rssi' => $rssi_iris]]);
     }
     if ($config->station->towers === true) {
         $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");

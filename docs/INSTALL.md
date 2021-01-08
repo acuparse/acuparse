@@ -1,9 +1,9 @@
 # Acuparse Installation Guide
 
-This guide is designed to walk through the steps required to install Acuparse on a freshly installed Debian based server.
+This guide is designed to walk through the steps required to install Acuparse on a freshly installed Debian based
+server.
 
-!!! note
-    Installation only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
+!!! note Installation only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
 
 ## Automated Acuparse Installation
 
@@ -27,29 +27,29 @@ curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 !!! warning Only follow the below guide if you are **directly** connecting an Access/SmartHub to your Pi. If you are not
 directly connecting to a Pi, follow the automated, Docker, or manual install process described in this doc.
 
-- If you're connecting an Access/SmartHub **directly** to your PI, see the detailed direct installation guide for Raspbian
-in this [Wiki Doc](https://gitlab.com/acuparse/acuparse/wikis/Installation-on-Raspberry-Pi).
+- If you're connecting an Access/SmartHub **directly** to your PI, see the detailed direct installation guide for
+  Raspbian in this [Wiki Doc](https://gitlab.com/acuparse/acuparse/wikis/Installation-on-Raspberry-Pi).
 
 ## Manual Acuparse Installation
 
 - Switch to the root account to install:
-  
+
     ```bash
     sudo su
     ```
-  
+
 - Change to the root directory:
-  
+
     ```bash
     cd ~
     ```
-  
+
 - Check and update your system timezone:
-  
+
     ```bash
     dpkg-reconfigure tzdata && systemctl restart rsyslog.service
     ```
-  
+
 - Install the required packages:
 
     - Debian/Rasbian Buster(10):
@@ -71,7 +71,7 @@ in this [Wiki Doc](https://gitlab.com/acuparse/acuparse/wikis/Installation-on-Ra
       ```
 
 - Secure your MySQL install:
-  
+
   ```bash
   mysql_secure_installation
   ```
@@ -84,62 +84,63 @@ Run `dpkg-reconfigure exim4-config` and choose the correct values for your syste
 ### Install Acuparse
 
 - Get the Acuparse source:
-  
+
   ```bash
   git init /opt/acuparse && cd /opt/acuparse && git remote add -t master -f origin https://gitlab.com/acuparse/acuparse.git && git checkout master
   ```
-  
+
 - Set the owner on the web root:
-  
+
   ```bash
   chown -R www-data:www-data src
   ```
-  
+
 - Disable the default Apache config:
-  
+
   ```bash
   a2dissite 000-default.conf
   ```
-  
+
 - Remove unneeded config files:
-  
+
   ```bash
   rm /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
   ```
-  
+
 - Enable the Acuparse virtual host config:
-  
+
   ```bash
   cp /opt/acuparse/config/acuparse.conf /etc/apache2/sites-available/
   ```
-  
+
 - Enable the Acuparse SSL virtual host config:
-  
+
   ```bash
   cp /opt/acuparse/config/acuparse-ssl.conf /etc/apache2/sites-available/
   ```
-  
+
 - Ensure mod-rewrite is enabled:
-  
+
   ```bash
   a2enmod rewrite
   ```
-  
+
 - Ensure SSL is enabled:
-  
+
   ```bash
   a2enmod ssl
   ```
-  
+
 - Restart Apache:
-  
+
   ```bash
   service apache2 restart
   ```
 
 ### SSL Certificate Installation
 
-By Default Apache will use the snake oil cert to serve over HTTPS. For most users, this should be sufficient. If you use a hostname, install a certificate!
+By Default Apache will use the snake oil cert to serve over HTTPS. For most users, this should be sufficient. If you use
+a hostname, install a certificate!
 
 ```bash
 wget https://gitlab.com/acuparse/installer/raw/master/resources/le && sudo bash le
@@ -148,7 +149,7 @@ wget https://gitlab.com/acuparse/installer/raw/master/resources/le && sudo bash 
 ### Setup Database
 
 - Create a new MySQL database for Acuparse:
-  
+
 ```bash
 mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "DELETE FROM mysql.user WHERE User=''; DELETE FROM mysql.user WHERE
 User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1'); DROP DATABASE IF EXISTS test; DELETE FROM mysql.db WHERE
@@ -175,13 +176,23 @@ crontab -e`, `* * * * * php /opt/acuparse/cron/cron.php > /dev/null 2>&1
 - After setting the database configuration, you will need to add your Access/SmartHUB MAC address and sensor ID's.
     - Visit `/admin/settings` and click on the `Sensor` tab.
     - Enter your MAC address with no spaces, dashes, or colons.
-    - Enter your 8 digit 5-in-1 or Atlas ID including any leading 0's.
+    - Enter your 8 digit Iris (5-in-1) or Atlas (7-in-1) ID including any leading 0's.
 
 ## Check Installation
 
+### Initial Readings
+
+It can take some time for your readings to fill the dashboard.
+
+After your readings are received, Cron will process them into `archive` readings. You may receive a `No Data` message on
+your dashboard, until initial archive readings are processed and stored.
+
+See the Syslog details below to verify your data is being captured and processed.
+
 ### Syslog
 
-View your syslog to see the data flowing through your system and to look for any trouble. Enable debug logging for a more detailed view.
+View your syslog to see the data flowing through your system and to look for any trouble. Enable debug logging for a
+more detailed view.
 
 ```bash
 tail -f /var/log/syslog
@@ -196,7 +207,8 @@ tail -f /var/log/syslog
 > See [/admin/access](/admin/access) once logged into your site.
 
 If you are connecting your Access/smartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally.
-Otherwise, you will need a DNS server installed on your network. See the ***[DNS Redirect Guide](https://docs.acuparse.com/DNS)***
+Otherwise, you will need a DNS server installed on your network. See
+the ***[DNS Redirect Guide](https://docs.acuparse.com/DNS)***
 for more details.
 
 ### Manually Update Access Server
@@ -204,7 +216,7 @@ for more details.
 Change to Acuparse:
 
 ```bash
-curl -d 'ser=<ACUPARSE IP/FQDN>' http://<ACCESS IP>/config.cgi
+curl -d 'ser=<ACUPARSE FQDN>' http://<ACCESS IP>/config.cgi
 ```
 
 Reset to default:
@@ -221,18 +233,10 @@ curl -d 'ser=atlasapi.myacurite.com' http://<ACCESS IP>/config.cgi
 
 - Setup a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 
-## Updating
+### Troubleshooting
 
-Detailed upgrade instructions for significant releases will be published in the docs/updates folder, when required.
-
-- Pull the changes from Git.
-
-```bash
-cd /opt/acuparse
-sudo git pull
-```
-
-- Navigate to your Acuparse website to complete the update.
+If your having trouble getting your Access readings sent to Acuparse, you might be running into trouble with
+the [hardcoded DNS servers](https://docs.acuparse.com/TROUBLESHOOTING/#hardcoded-dns-servers).
 
 ### Git Repository
 
@@ -247,8 +251,8 @@ If you're interested in learning Git, there is an excellent resource here:
 
 ## Database Trimming
 
-Readings get stored in multiple temporary database tables. This temporary data should be cleaned up regularly to avoid ballooning
-the database.
+Readings get stored in multiple temporary database tables. This temporary data should be cleaned up regularly to avoid
+ballooning the database.
 
 When the external updater runs, it archives the most recent readings to the archive table for later use.
 
@@ -257,8 +261,8 @@ When the external updater runs, it archives the most recent readings to the arch
 - Recommend enabling trimming, unless you need the additional data.
     - When enabled tower data is also trimmed. Should you wish to keep tower data, use that option instead.
 
-If you find that the event scheduler is not behaving, ensure MySQL is up to date. Some upgrades from Debian 8 will not upgrade
-the database properly.
+If you find that the event scheduler is not behaving, ensure MySQL is up to date. Some upgrades from Debian 8 will not
+upgrade the database properly.
 
 ```bash
 mysql_upgrade -u root -p {YOUR_SQL_ROOT_PASSWORD}
@@ -269,11 +273,11 @@ mysql_upgrade -u root -p {YOUR_SQL_ROOT_PASSWORD}
 You can modify the barometer readings used by Acuparse. Set your Access/smartHUB to use station pressure using MyAcuRite
 and adjust your offset.
 
-Readings are only modified in Acuparse and sent to 3rd party sites. It **does not** modify the reading MyAcuRite receives
-from your Access/smartHUB.
+Readings are only modified in Acuparse and sent to 3rd party sites. It **does not** modify the reading MyAcuRite
+receives from your Access/smartHUB.
 
-Check the syslog and watch for your changes. Once your Access/smartHUB is reporting updated readings, modify the Acuparse
-config with your required offset.
+Check the syslog and watch for your changes. Once your Access/smartHUB is reporting updated readings, modify the
+Acuparse config with your required offset.
 
 ### Barometer Source
 
@@ -291,7 +295,8 @@ be slightly different.
 
 Detailed instructions for each available in docs/external.
 
-- The cron job setup earlier will process your weather data and send updates to external sites automatically, as required.
+- The cron job setup earlier will process your weather data and send updates to external sites automatically, as
+  required.
     - Data only sent to external sites when there is new data to send and enough time has passed for CWOP updates.
 
 > **Notice:** Disable updating of Weather Underground from your Access/smartHUB/MyAcuRite. Watch your syslog for the response
@@ -299,11 +304,11 @@ Detailed instructions for each available in docs/external.
 
 ### Master Sensor
 
-By default Acuparse will use the 5-in-1/Atlas sensor to upload data to external sites. To upload data from a tower, change
+By default Acuparse will use the Iris/Atlas sensor to upload data to external sites. To upload data from a tower, change
 the Master Temp/Humidity Sensor.
 
-Changing the sensor sends those readings externally instead of the 5-in-1/Atlas data. You can also choose to use the tower
-readings for the data archive or use the readings from the 5-in-1/Atlas.
+Changing the sensor sends those readings externally instead of the Iris/Atlas data. You can also choose to use the tower
+readings for the data archive or use the readings from the Iris/Atlas.
 
 ## MyAcuRite Responses
 
@@ -312,7 +317,13 @@ readings for the data archive or use the readings from the 5-in-1/Atlas.
 When MyAcuRite receives your readings, it responds with a JSON response in the following format:
 
 ```json
-{"sensor1":"","PASSWORD1":"","timezone":"","elevation":"","ID1":""}
+{
+  "sensor1": "",
+  "PASSWORD1": "",
+  "timezone": "",
+  "elevation": "",
+  "ID1": ""
+}
 ```
 
 Variable | Description
@@ -339,7 +350,14 @@ elevation | Elevation of the Access in feet.
 When MyAcuRite receives your readings, it responds with a JSON response in the following format:
 
 ```json
-{"localtime":"00:00:00","checkversion":"","ID1":"","PASSWORD1":"","sensor1":"","elevation":""}
+{
+  "localtime": "00:00:00",
+  "checkversion": "",
+  "ID1": "",
+  "PASSWORD1": "",
+  "sensor1": "",
+  "elevation": ""
+}
 ```
 
 Variable | Description
@@ -354,7 +372,10 @@ elevation | Elevation of the smartHUB in feet.
 Acuparse will now always respond with:
 
 ```json
-{"localtime":"00:00:00","checkversion":"224"}
+{
+  "localtime": "00:00:00",
+  "checkversion": "224"
+}
 ```
 
 Setting localtime to the local time of your Acuparse install.
@@ -371,25 +392,24 @@ See [How Do I Add or Delete a Domain?](https://help.mailgun.com/hc/en-us/article
 
 ## Email Outage Notifications
 
-Outage notifications are sent to all registered admins. You can configure some simple values for outage checking,
-the system will email you when there is no data received.
+Outage notifications are sent to all registered admins. You can configure some simple values for outage checking, the
+system will email you when there is no data received.
 
-The updater first checks to see if there is new data to send. If there isn't, it will start the email process.
-If there is no new data due to updates not being received in the configured period, Acuparse will send an email at your
-chosen interval.
+The updater first checks to see if there is new data to send. If there isn't, it will start the email process. If there
+is no new data due to updates not being received in the configured period, Acuparse will send an email at your chosen
+interval.
 
 ## Tower Sensors
 
-Acuparse allows for the addition of as many Tower sensors as the Access/smartHUB will pass along.
-You can choose which sensors are shown publicly or only to logged in users. Towers are configured and arranged using the
-admin settings.
+Acuparse allows for the addition of as many Tower sensors as the Access/smartHUB will pass along. You can choose which
+sensors are shown publicly or only to logged in users. Towers are configured and arranged using the admin settings.
 
 - Acuparse also supports Indoor/Outdoor Temp and Humidity monitors, as well as lightning towers.
 
 ## Lightning Sensors
 
-You can have a main Lightning sensor on your Atlas, as well as one Tower sensor.
-Configure the Lightning sensor settings in your admin site settings inorder to display those readings.
+You can have a main Lightning sensor on your Atlas, as well as one Tower sensor. Configure the Lightning sensor settings
+in your admin site settings inorder to display those readings.
 
 ## Additional Outputs
 
@@ -420,7 +440,8 @@ combined | Processes an image when the camera and Acuparse are both installed lo
 
 ### Cam Archive Sort Order
 
-The timestamp sort order can be changed in your admin features settings. You can sort today and archive by either `descending`
+The timestamp sort order can be changed in your admin features settings. You can sort today and archive by
+either `descending`
 or `ascending`. Default is `ascending`.
 
 ### Local/Remote Setup
@@ -460,7 +481,7 @@ or `ascending`. Default is `ascending`.
 ### Combined Setup
 
 - Copy `combined` from `cam/templates` to the cam folder and modify the values:
-  
+
 ```bash
 cp cam/templates/combined cam/
 ```
@@ -471,8 +492,7 @@ cp cam/templates/combined cam/
 crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/combined > /dev/null 2>&1
 ```
 
-!!! info
-    Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
+!!! info Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
 
 ## Invisible reCAPTCHA
 

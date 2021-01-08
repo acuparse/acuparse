@@ -64,5 +64,6 @@ function buildAcuparse() {
 
 echo "START: Acuparse Docker BUILD ..."
 echo "DOCKER=1" >>/etc/os-release
+echo "DOCKER=1" >>/etc/environment
 buildAcuparse
 echo "END: Acuparse BUILD"

@@ -63,7 +63,7 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
                 $hostname = $config->site->hostname;
             }
             $subject = $hostname . ' OFFLINE';
-            $message = '<p><strong>' . $hostname . ' is no longer receiving weather updates.</strong></p><p>Check your Internet connection and Acurite device!</p>';
+            $message = '<p><strong>' . $hostname . ' is no longer receiving weather updates.</strong></p><p>Check your Internet connection and AcuRite device!</p>';
             $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
             while ($row = mysqli_fetch_assoc($sql)) {
                 $admin_email[] = $row['email'];

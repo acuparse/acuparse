@@ -41,7 +41,7 @@ function getArchiveWeatherData()
 
 // Load Archive Weather Data:
     require(APP_BASE_PATH . '/fcn/weather/getArchiveWeatherData.php');
-    $getData = new getArchiveWeatherData();
+    $getData = new getArchiveWeatherData(true);
     $yesterday = $getData->getJSONYesterday();
     $week = $getData->getJSONWeek();
     $month = $getData->getJSONMonth();

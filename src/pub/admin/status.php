@@ -116,15 +116,15 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>
                     <?php }
-                    if ($config->station->sensor_5n1 != 0) {
+                    if ($config->station->sensor_iris != 0) {
                         $result = mysqli_fetch_assoc(mysqli_query($conn,
-                            "SELECT `battery`, `rssi` FROM `5n1_status` ORDER BY `last_update` DESC LIMIT 1"));
+                            "SELECT `battery`, `rssi` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
                         $rssi = rssiConvert($result['rssi']);
                         $batteryBackground = ($result['battery'] === 'normal') ? 'limegreen' : 'orangered';
                         ?>
-                        <tr id="<?= $config->station->sensor_5n1; ?>">
-                            <th scope="row"><?= ltrim($config->station->sensor_5n1, '0'); ?></th>
-                            <td>5N1</td>
+                        <tr id="<?= $config->station->sensor_iris; ?>">
+                            <th scope="row"><?= ltrim($config->station->sensor_iris, '0'); ?></th>
+                            <td>Iris</td>
                             <td style="background-color: <?= $batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
                             <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                         </tr>

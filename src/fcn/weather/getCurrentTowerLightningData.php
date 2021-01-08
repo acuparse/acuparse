@@ -43,7 +43,7 @@ class getCurrentLightningData
     private $source;
     private $json_date;
 
-    function __construct($source = null)
+    function __construct($source = null, $cron = false)
     {
         $todaysDate = date('Y-m-d');
 
@@ -72,13 +72,16 @@ class getCurrentLightningData
         $atlasData = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_strike_ts`, `interference`, `last_strike_distance` FROM `lightningData` WHERE `source` = 'T'"));
         $this->dailystrikes = (float)$currentData['dailystrikes'];
-        $this->currentstrikes = (float)$currentData['currentstrikes'];
-        $this->interference = (float)$atlasData['interference'];
-        $this->last_strike_ts = $atlasData['last_strike_ts'];
-        $this->last_strike_ts_json = date($this->json_date, strtotime($atlasData['last_strike_ts']));
-        $this->last_strike_display = date($config->site->dashboard_display_date, strtotime($this->last_strike_ts));
-        $this->last_strike_distance_KM = (float)round($atlasData['last_strike_distance'] / 1.609, 1);
-        $this->last_strike_distance_M = (float)round($atlasData['last_strike_distance'], 1);
+
+        if ($cron === false) {
+            $this->currentstrikes = (float)$currentData['currentstrikes'];
+            $this->interference = (float)$atlasData['interference'];
+            $this->last_strike_ts = $atlasData['last_strike_ts'];
+            $this->last_strike_ts_json = date($this->json_date, strtotime($atlasData['last_strike_ts']));
+            $this->last_strike_display = date($config->site->dashboard_display_date, strtotime($this->last_strike_ts));
+            $this->last_strike_distance_KM = (float)round($atlasData['last_strike_distance'] / 1.609, 1);
+            $this->last_strike_distance_M = (float)round($atlasData['last_strike_distance'], 1);
+        }
     }
 
     // Calculate Light Hours
@@ -95,7 +98,7 @@ class getCurrentLightningData
         }
 
         if ($source === 'json') {
-            $output = date($json_date,strtotime($last_strike_ts));
+            $output = date($json_date, strtotime($last_strike_ts));
         } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 1800,
             strtotime(date('Y-m-d H:i:s')) + 1800)) {
             $output = '<i title="Reported within last 30 Minutes" class="fas fa-exclamation-triangle lightningDanger"></i><strong> ' . $last_strike_display . '</strong>';
@@ -124,16 +127,10 @@ class getCurrentLightningData
     }
 
     // Get Data
-    public function getJSONData(): object
+    public function getCRONData(): object
     {
         return (object)array(
-            'dailystrikes' => $this->dailystrikes,
-            'currentstrikes' => $this->currentstrikes,
-            'interference' => $this->interference,
-            'last_strike_ts' => $this->last_strike_ts_json,
-            'last_update' => $this->lastUpdate($this->last_strike_ts, $this->last_strike_display, $this->source, $this->json_date),
-            'last_strike_distance_KM' => $this->last_strike_distance_KM,
-            'last_strike_distance_M' => $this->last_strike_distance_M
+            'dailystrikes' => $this->dailystrikes
         );
     }
 }

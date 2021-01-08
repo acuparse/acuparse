@@ -33,6 +33,7 @@ WATERMARK='Station Name | Station Web Address'
 REMOTE_USER='root'
 REMOTE_HOST=''
 RESIZE='50%'
+#ARCHIVE_DIR='/opt/acuparse/cam/archive'
 ### END USER VALUES ###
 
 REMOTE_TMP='/opt/acuparse/cam/tmp'
@@ -66,15 +67,17 @@ echo "Running remote commands"
 ssh ${REMOTE_USER}@"${REMOTE_HOST}" 'sh ' ${REMOTE_SCRIPT}
 
 # Local Archiving
-# ARCHIVE=$(date +"%F_%H%M")
-# echo "Archiving"
-# convert ${CAMERA_FILENAME} \
-#     -font DejaVu-Sans-Bold -pointsize 16 \
-#     -draw "gravity south \
-#     fill black  text 0,0 '$TIMESTAMP' \
-#     fill OrangeRed2  text 1,1 '$TIMESTAMP' " \
-#     archive.jpg
-# mv archive.jpg archive/${ARCHIVE}.jpg
+#ARCHIVE=$(date +"%F_%H%M")
+#mkdir -p "${ARCHIVE_DIR}"/"$(date +%Y)"
+#FOLDER="$(date +%Y)"
+#echo "Archiving"
+#convert $CAMERA_FILENAME \
+#    -font DejaVu-Sans-Bold -pointsize 16 \
+#    -draw "gravity south \
+#   fill black  text 0,36 '$TIMESTAMP' \
+#    fill OrangeRed2  text 1,37 '$TIMESTAMP' " \
+#   archive.jpg
+#mv archive.jpg "${ARCHIVE_DIR}"/"${FOLDER}"/"${ARCHIVE}".jpg
 
 echo "Cleaning up files"
 rm image.jpg*

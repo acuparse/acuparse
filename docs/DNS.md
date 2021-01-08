@@ -9,7 +9,7 @@ You will need to redirect your DNS so that your Access/smartHub uploads your dat
 
 ## External Connection to Acuparse
 
-If your smartHUB/Access is connected to your local network and sending readings to MyAcurite directly, you will need to
+If your smartHUB/Access is connected to your local network and sending readings to MyAcuRite directly, you will need to
 install a DNS server on your local network.
 
 ### DNS Servers
@@ -29,11 +29,11 @@ Use a firewall that allows you to customise your DNS.
 You can use your Acuparse server to redirect your DNS locally. To use this method, connect your smartHUB/Access directly
 to an ethernet interface on the Acuparse system.
 
-### MyAcurite Upload URL's
+### MyAcuRite Upload URL's
 
-Redirecting the DNS locally will cause issues with uploads to MyAcurite. The redirect will cause Acuparse to upload data
+Redirecting the DNS locally will cause issues with uploads to MyAcuRite. The redirect will cause Acuparse to upload data
 to its self. In this case, you should select the secondary urls in the MyAcuRite config settings. Acuparse will then upload
 readings to MyAcuRite as expected.
 
 - Secondary DNS entries point to the Acuparse domain hosted on Cloudflare.
-[Records are synced with Acurite](https://gitlab.com/acuparse/dns_sync/-/pipelines) on a regular basis.
+[Records are synced with AcuRite](https://gitlab.com/acuparse/dns_sync/-/pipelines) on a regular basis.

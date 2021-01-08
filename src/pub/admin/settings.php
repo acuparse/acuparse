@@ -76,11 +76,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->station->hub_mac = (isset($_POST['station']['hub_mac'])) ? checkMAC($_POST['station']['hub_mac']) : null;
         $config->station->access_mac = (isset($_POST['station']['access_mac'])) ? checkMAC($_POST['station']['access_mac']) : null;
         $config->station->primary_sensor = (int)$_POST['station']['primary_sensor'];
-        $config->station->sensor_5n1 = (isset($_POST['station']['sensor_5n1'])) ? sprintf('%08d',
-            $_POST['station']['sensor_5n1']) : null;
+        $config->station->sensor_iris = (isset($_POST['station']['sensor_iris'])) ? sprintf('%08d',
+            $_POST['station']['sensor_iris']) : null;
         $config->station->sensor_atlas = (isset($_POST['station']['sensor_atlas'])) ? sprintf('%08d',
             $_POST['station']['sensor_atlas']) : null;
         $config->station->baro_offset = (isset($_POST['station']['baro_offset'])) ? (float)$_POST['station']['baro_offset'] : 0;
+        $config->station->towers = (bool)$_POST['station']['towers'];
         $config->station->towers = (bool)$_POST['station']['towers'];
         $config->station->towers_additional = (bool)$_POST['station']['towers_additional'];
         $config->station->lightning_source = (int)$_POST['station']['lightning_source'];
@@ -195,7 +196,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->generic->password = (isset($_POST['upload']['generic']['password'])) ? $_POST['upload']['generic']['password'] : null;
         $config->upload->generic->url = (isset($_POST['upload']['generic']['url'])) ? $_POST['upload']['generic']['url'] : null;
 
-        // MyAcurite
+        // MyAcuRite
         $config->upload->myacurite->access_enabled = (bool)$_POST['upload']['myacurite']['access_enabled'];
         $config->upload->myacurite->access_url = $_POST['upload']['myacurite']['access_url'];
         $config->upload->myacurite->pass_unknown = (bool)$_POST['upload']['myacurite']['pass_unknown'];

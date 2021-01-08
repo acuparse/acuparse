@@ -236,7 +236,7 @@ class getArchiveWeatherData
     private $rainfall_IN_total_ever_since;
     private $rainfall_IN_total_ever_since_JSON;
 
-    function __construct()
+    function __construct($json = false)
     {
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
@@ -250,8 +250,14 @@ class getArchiveWeatherData
         $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
         if (!isset($lastUpdate)) {
-            echo '<div class="col text-center alert alert-danger"><strong>No Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
-            exit();
+            if ($json === true) {
+                $json_output = ['Status' => 'error', 'message' => 'No Archive Data Reported'];
+                echo json_encode($json_output);
+                exit();
+            } else {
+                echo '<div class="col text-center alert alert-danger"><p><strong>No Archive Data Reported!</strong><br>Check that your Cron tasks are running! See your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</p></div>';
+                exit();
+            }
         }
 
         set_time_limit(0);
@@ -261,7 +267,7 @@ class getArchiveWeatherData
         // Yesterday
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->windS_mph_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->windS_mph_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->windS_mph_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->windDIR_yesterday = $this->windDirection($result['windDEG']); // Wind from
         $this->windS_mph_high_yesterday = (int)round($result['windSpeedMPH']); // Miles per hour
@@ -317,7 +323,7 @@ class getArchiveWeatherData
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->tempF_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->tempF_high_yesterday = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_high_yesterday = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
@@ -365,7 +371,7 @@ class getArchiveWeatherData
         // Yesterday Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_low_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->tempF_low_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->tempF_low_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->tempF_low_yesterday = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC_low_yesterday = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
@@ -415,7 +421,7 @@ class getArchiveWeatherData
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_high_yesterday = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_high_yesterday = (float)round($result['pressureinHg'] * 3.38638866667,
@@ -469,7 +475,7 @@ class getArchiveWeatherData
         // Yesterday Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_low_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->pressure_inHg_low_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_low_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->pressure_inHg_low_yesterday = (float)$result['pressureinHg']; // Inches of Mercury
         $this->pressure_kPa_low_yesterday = (float)round($result['pressureinHg'] * 3.38638866667,
@@ -525,7 +531,7 @@ class getArchiveWeatherData
         // Yesterday High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_high_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_high_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->relH_high_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->relH_high_yesterday = (int)$result['relH']; // Percent
 
@@ -567,7 +573,7 @@ class getArchiveWeatherData
         // Yesterday Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE DATE(`reported`) = SUBDATE(CURDATE(),1)) AND DATE(`reported`) = SUBDATE(CURDATE(),1) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_low_recorded_yesterday = date('H:i', strtotime($result['reported'])); // Recorded at
+        $this->relH_low_recorded_yesterday = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
         $this->relH_low_recorded_yesterday_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->relH_low_yesterday = (int)$result['relH']; // Percent
 

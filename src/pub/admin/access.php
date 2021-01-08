@@ -81,6 +81,13 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                     </div>
                 </div>
                 <div class="row">
+                    <div class="alert alert-info mx-auto">
+                        <p><strong>Having Trouble?</strong><br/>See the <a
+                                    href="https://docs.acuparse.com/TROUBLESHOOTING">Troubleshooting Guide</a> for
+                            more details or <a href="https://www.acuparse.com/#discussion">contact the project</a>.</p>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-8 col-12 mx-auto">
                         <form name="access-server" id="access-server" action="/admin/access" method="GET">
                             <div class="form-group">
