@@ -23,11 +23,11 @@
 
 ##
 # File: .docker/docker-entrypoint
-# Start the Docker container
+# Startup and Configure Container
 ##
 
 if [ "$1" = 'acuparse' ]; then
-  function check_ssl_cert() {
+  function _enable_lets_encrypt() {
     if [[ ("$LE_SECURE_WWW" == "yes") ]]; then
       LE_SECURE_DOMAINS=(-d "$LE_FQDN" -d www."$LE_FQDN")
       sed -i "s/#ServerName/ServerName ${LE_FQDN}\n    ServerAlias www.${LE_FQDN}/g" /etc/apache2/sites-available/acuparse-ssl.conf
@@ -52,32 +52,29 @@ if [ "$1" = 'acuparse' ]; then
     service apache2 stop
   }
 
-  function setup_timezone() {
+  function _set_system_timezone() {
     rm /etc/localtime
     rm /etc/timezone
     ln -s ../usr/share/zoneinfo/"${TZ}" /etc/localtime
     echo "${TZ}" >/etc/timezone
   }
 
-  function setup_crontab() {
+  function _install_system_crontab() {
     ACUPARSE_MAIN_CRON='* * * * * /usr/local/bin/php /opt/acuparse/cron/cron.php > /opt/acuparse/logs/cron.log 2>&1'
-    ACUPARSE_BACKUP_CRON='5 0 * * * /bin/bash /opt/acuparse/cron/backup > /opt/acuparse/logs/cron.log 2>&1'
+    ACUPARSE_BACKUP_CRON='5 0 * * * /bin/bash /opt/acuparse/cron/backup > /opt/acuparse/logs/backup.log 2>&1'
     printf "%s\n%s\n" "$ACUPARSE_MAIN_CRON" "$ACUPARSE_BACKUP_CRON" | crontab -
     env | grep -E MYSQL\|TZ >>/etc/environment
   }
 
-  function start_services() {
+  function _start_system_services() {
     echo "Starting syslog ..."
     service rsyslog start
-    sleep 1
 
     echo "Starting cron ..."
     service cron start
-    sleep 1
 
     echo "Starting apache2 ..."
     apache2ctl start
-    sleep 1
 
     echo "Checking Services after startup ..."
 
@@ -91,7 +88,7 @@ if [ "$1" = 'acuparse' ]; then
     service apache2 status || exit 1
   }
 
-  function check_default_config() {
+  function _check_default_config() {
     if [ -z "$(ls -A '/opt/acuparse/src/usr/')" ]; then
       echo "Empty config dir found, copying config template"
       cp /var/opt/acuparse/config/config.new.php /opt/acuparse/src/usr/config.new.php
@@ -99,30 +96,30 @@ if [ "$1" = 'acuparse' ]; then
     fi
   }
 
-  function enable_debugging() {
+  function _enable_debug() {
     echo "NOTICE: DEBUG MODE ENABLED"
     export DEBIAN_FRONTEND=noninteractive
     apt-get update && apt-get install nano inetutils-tools net-tools iproute2 -yqq
     mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
     ln -sf /proc/1/fd/1 /var/log/apache2/error.log
     ln -sf /proc/1/fd/1 /opt/acuparse/logs/cron.log
-    apt clean
+    apt-get clean
     rm -rf /var/lib/apt/lists/*
     unset DEBIAN_FRONTEND
   }
 
-  function enable_mail_relay() {
+  function _enable_mail_relay() {
     echo "NOTICE: Mail Relay Enabled"
     export DEBIAN_FRONTEND=noninteractive
     apt-get update && apt-get install nullmailer mailutils -yqq
     echo "$SMTP_HOST" >/etc/nullmailer/remotes
     service nullmailer restart
-    apt clean
+    apt-get clean
     rm -rf /var/lib/apt/lists/*
     unset DEBIAN_FRONTEND
   }
 
-  function check_sql_permissions() {
+  function _check_database_permissions() {
     if [ -z "$(mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "use mysql; SELECT super_priv FROM user where user='acuparse' AND super_priv='Y';")" ]; then
       echo "Updating DB User Permissions"
       mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'; GRANT SUPER, EVENT ON *.* TO '${MYSQL_USER}'; FLUSH PRIVILEGES;" || exit 1
@@ -131,27 +128,27 @@ if [ "$1" = 'acuparse' ]; then
 
   echo "Starting Acuparse Container"
 
-  echo "Setting up TIMEZONE"
+  echo "Configuring Timezone"
   if [ -n "${TZ}" ]; then
-    setup_timezone
+    _set_system_timezone
   elif [ "$2" = 'manual' ]; then
     echo "Manual Startup Requested"
   else
-    echo "ERROR: Missing Timezone Environment Variables"
+    echo "ERROR: Missing Timezone Environment Variable!"
     exit 1
   fi
-  echo "DONE: TIMEZONE"
+  echo "DONE: Configuring Timezone"
 
-  echo "Adding Acuparse to CRONTAB"
-  setup_crontab
-  echo "DONE: CRONTAB"
+  echo "Installing CRONTAB"
+  _install_system_crontab
+  echo "DONE: Installing CRONTAB"
 
   echo "Checking default CONFIG ..."
-  check_default_config
-  echo "DONE: CONFIG"
+  _check_default_config
+  echo "DONE: Checking CONFIG"
 
   if [[ ("$DEBUG_ENABLED" == 1 || "$DEBUG_ENABLED" == "yes") ]]; then
-    enable_debugging
+    _enable_debug
   fi
 
   echo "Check SQL Database"
@@ -161,7 +158,7 @@ if [ "$1" = 'acuparse' ]; then
       sleep 1
     done
     echo "Checking SQL PERMISSIONS"
-    check_sql_permissions
+    _check_database_permissions
     echo "DONE: SQL PERMISSIONS"
   elif [ "$2" = 'manual' ]; then
     echo "DEBUG: Manual SQL Startup Requested"
@@ -172,26 +169,26 @@ if [ "$1" = 'acuparse' ]; then
 
   echo "Check SSL Certificate"
   if [[ ("$LE_ENABLED" == 1 || "$LE_ENABLED" == "yes") ]]; then
-    check_ssl_cert
+    _enable_lets_encrypt
   else
     echo "Certificate Disabled"
   fi
-  echo "DONE: CERTIFICATE"
+  echo "DONE: SSL CERTIFICATE"
 
   echo "Check Mail Relay"
-  if [[ ("$SMTP_RELAY" == 1) ]]; then
-    enable_mail_relay
+  if [[ ("$SMTP_RELAY" == 1 || "$SMTP_RELAY" == "yes") ]]; then
+    _enable_mail_relay
   else
     echo "Mail Relay Disabled"
   fi
   echo "DONE: MAIL RELAY"
 
   echo "Starting System SERVICES ..."
-  start_services
-  echo "DONE: SERVICES"
+  _start_system_services
+  echo "DONE: Starting SERVICES"
 
-  echo "Acuparse Startup Successful"
-  echo "Passing control to HEALTHCHECK"
+  echo "Acuparse Startup Complete!"
+  echo "Passing container control to HEALTHCHECK service ..."
   exec docker-healthcheck
 else
   exec "$@"

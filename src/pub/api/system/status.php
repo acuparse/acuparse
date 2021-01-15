@@ -41,27 +41,34 @@ include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');
 
 $sensors = ['sensors' => []];
 
-if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
+if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
+    // Access Data
     if ($config->station->access_mac != 0) {
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `battery` FROM `access_status` ORDER BY `last_update` DESC LIMIT 1"));
-        $battery_access = ucfirst($result['battery']);
-        $access = array_push($sensors['sensors'], ['access' => ['battery' => $battery_access]]);
+            "SELECT `battery`, `last_update` FROM `access_status` ORDER BY `last_update` DESC LIMIT 1"));
+        $battery_access = $result['battery'];
+        $lastUpdate_access = $result['last_update'];
+        $access = array_push($sensors['sensors'], ['access' => ['mac' => $config->station->access_mac, 'battery' => $battery_access, 'last_update' => $lastUpdate_access]]);
     }
+    // Atlas Data
     if ($config->station->sensor_atlas != 0) {
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `battery`, `rssi` FROM `atlas_status` ORDER BY `last_update` DESC LIMIT 1"));
+            "SELECT `battery`, `rssi`, `last_update` FROM `atlas_status` ORDER BY `last_update` DESC LIMIT 1"));
         $rssi_atlas = $result['rssi'];
         $battery_atlas = $result['battery'];
-        $atlas = array_push($sensors['sensors'], ['atlas' => ['battery' => $battery_atlas, 'rssi' => $rssi_atlas]]);
+        $lastUpdate_atlas = $result['last_update'];
+        $atlas = array_push($sensors['sensors'], ['atlas' => ['sensor' => $config->station->sensor_atlas, 'battery' => $battery_atlas, 'rssi' => $rssi_atlas, 'last_update' => $lastUpdate_atlas]]);
     }
+    // Iris Data
     if ($config->station->sensor_iris != 0) {
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `battery`, `rssi` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
+            "SELECT `battery`, `rssi`, `last_update` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
         $rssi_iris = $result['rssi'];
         $battery_iris = $result['battery'];
-        $iris = array_push($sensors['sensors'], ['atlas' => ['battery' => $battery_iris, 'rssi' => $rssi_iris]]);
+        $lastUpdate_iris = $result['last_update'];
+        $iris = array_push($sensors['sensors'], ['iris' => ['sensor' => $config->station->sensor_iris, 'battery' => $battery_iris, 'rssi' => $rssi_iris, 'last_update' => $lastUpdate_iris]]);
     }
+    // Tower Data
     if ($config->station->towers === true) {
         $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");
         $towers = ['towers' => []];
@@ -69,10 +76,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             $name = $row['name'];
             $sensor = $row['sensor'];
             $result2 = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `battery`, `rssi` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+                "SELECT `battery`, `rssi`, `timestamp` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
             $rssi = $result2['rssi'];
             $battery = $result2['battery'];
-            $towers_output = array_push($towers['towers'], ['name' => $name, 'sensor' => $sensor, 'battery' => $battery, 'rssi' => $rssi]);
+            $last_update = $result2['timestamp'];
+            $towers_output = array_push($towers['towers'], ['sensor' => $sensor, 'name' => $name, 'battery' => $battery, 'rssi' => $rssi, 'last_update' => $last_update]);
         }
         $towers_export = array_push($sensors['sensors'], $towers);
     }

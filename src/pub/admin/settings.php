@@ -239,8 +239,6 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
         <section id="modify-settings" class="row modify-settings">
             <div class="col">
-
-                <!-- Modify Settings Navigation -->
                 <nav>
                     <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link active" id="nav-site-tab" data-toggle="tab" href="#nav-site"
@@ -253,13 +251,13 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                            role="tab" aria-controls="nav-upload" aria-selected="false">Upload</a>
                         <a class="nav-item nav-link" id="nav-database-tab" data-toggle="tab" href="#nav-database"
                            role="tab" aria-controls="nav-database" aria-selected="false">Database</a>
-                        <?php if ($config->debug->server->show === true) { ?><a class="nav-item nav-link"
-                                                                                id="nav-debug-tab" data-toggle="tab"
-                                                                                href="#nav-debug"
-                                                                                role="tab" aria-controls="nav-debug"
-                                                                                aria-selected="false">Debug</a> <?php }; ?>
+                        <?php if ($config->debug->server->show === true) { ?>
+                            <a class="nav-item nav-link" id="nav-debug-tab" data-toggle="tab" href="#nav-debug"
+                               role="tab" aria-controls="nav-debug" aria-selected="false">Debug</a>
+                        <?php } ?>
                     </div>
                 </nav>
+
                 <form action="/admin/settings?do" method="POST">
                     <!-- Content Tabs-->
                     <div class="tab-content margin-top-15" id="nav-tabContent">

@@ -170,8 +170,10 @@ The following mounts are created in `/opt/acuparse/volumes`
     - See Webcam details below
 - `/opt/acuparse/volumes/backups`
     - Acuparse Config and Database backups.
-    - Also, mounted to the Database container; if you need to perform a restore.
-
+    - Also, mounted to the Database and App containers; if you need to perform a restore.
+    - This directory should not be used to store user files; aside from the backup tasks.
+        - The backup task will clear all files in this directory.
+  
 ### [Docker Volumes](https://docs.docker.com/storage/volumes)
 
 - `acuparse_config`
@@ -223,7 +225,11 @@ Example using [namshi/smtp](https://hub.docker.com/r/namshi/smtp).
 
 ## Backup/Restore
 
-The automated backup script will run once daily and save backups to `/opt/acuparse/volumes/backups`.
+The automated backup script will run once daily and save backups to `/opt/acuparse/volumes/backups` on your host.
+
+Backup files are kept for 7 days by default and can be changed by modifying `KEEP_BACKUPS_FOR` in your container.
+
+- `nano /opt/acuparse/cron/backup`.
 
 ### Restore Database
 

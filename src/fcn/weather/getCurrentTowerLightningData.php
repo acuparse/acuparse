@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/weather/getCurrentLightningData.php
+ * File: src/fcn/weather/getCurrentTowerLightningData.php
  * Gets the requested lightning data from the database
  */
 
@@ -56,11 +56,19 @@ class getCurrentLightningData
          */
 
         // Check for recent readings
-        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `last_update` FROM `towerLightning`"));
-        if (!isset($lastUpdate)) {
-            echo '<div class="col text-center alert alert-danger"><strong>No Lightning Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
-            exit();
+        if ($cron === false) {
+            $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `last_update` FROM `towerLightning`"));
+            if (!isset($lastUpdate)) {
+                if ($source === 'json') {
+                    $json_output = ['Status' => 'error', 'message' => 'No Tower Lightning Data Reported'];
+                    echo json_encode($json_output);
+                    exit();
+                } else {
+                    echo '<div class="col text-center alert alert-danger"><strong>No Tower Lightning Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
+                    exit();
+                }
+            }
         }
 
         $this->source = $source;
@@ -121,6 +129,21 @@ class getCurrentLightningData
             'interference' => $this->interferenceText($this->interference),
             'last_strike_ts' => $this->last_strike_ts,
             'last_update' => $this->lastUpdate($this->last_strike_ts, $this->last_strike_display, $this->source),
+            'last_strike_distance_KM' => $this->last_strike_distance_KM,
+            'last_strike_distance_M' => $this->last_strike_distance_M
+        );
+    }
+
+    // Get JSON Data
+    public function getJSONData(): object
+    {
+        return (object)array(
+            'dailystrikes' => $this->dailystrikes,
+            'currentstrikes' => $this->currentstrikes,
+            'interference' => $this->interference,
+            'interference_text' => $this->interferenceText($this->interference),
+            'last_strike_ts' => $this->last_strike_ts_json,
+            'last_update' => $this->lastUpdate($this->last_strike_ts, $this->last_strike_display, $this->source, $this->json_date),
             'last_strike_distance_KM' => $this->last_strike_distance_KM,
             'last_strike_distance_M' => $this->last_strike_distance_M
         );

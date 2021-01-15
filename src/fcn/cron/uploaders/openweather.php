@@ -37,7 +37,7 @@
  * @var object $atlas Atlas Data
  */
 
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
+if ($config->station->device === 0) {
     $data = array("station_id" => $config->upload->openweather->id, "dt" => time(), "temperature" => $data->tempC, "wind_speed" => round($data->windSpeedKMH / 3.6, 1), "wind_gust" => round($atlas->windGustKMH / 3.6, 1), "wind_deg" => $data->windDEG, "pressure" => round($data->pressure_kPa * 10, 1), "humidity" => $data->relH, "rain_1h" => $data->rainMM, "rain_24h" => $data->rainTotalMM_today);
 } else {
     $data = array("station_id" => $config->upload->openweather->id, "dt" => time(), "temperature" => $data->tempC, "wind_speed" => round($data->windSpeedKMH / 3.6, 1), "wind_deg" => $data->windDEG, "pressure" => round($data->pressure_kPa * 10, 1), "humidity" => $data->relH, "rain_1h" => $data->rainMM, "rain_24h" => $data->rainTotalMM_today);

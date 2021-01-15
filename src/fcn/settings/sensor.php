@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
  * @copyright Copyright (C) 2015-2021 Maxwell Power
@@ -48,7 +48,7 @@
                         <input class="form-check-input" type="radio"
                                name="station[device]"
                                id="station-device-atlas"
-                               onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-hub-mac").disabled=true;document.getElementById("station-primary-sensor-0").disabled=false;document.getElementById("station-access-mac").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false'
+                               onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-hub-mac").disabled=true;document.getElementById("station-primary-sensor-0").disabled=false;document.getElementById("station-access-mac").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;<?= ($config->station->towers === true) ? 'document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false' : false; ?>'
                                value="0"
                             <?= ($config->station->device === 0) ? 'checked="checked"' : false; ?>>
                         <label class="form-check-label alert bg-dark"
@@ -97,7 +97,7 @@
                             <input class="form-check-input" type="radio"
                                    name="station[primary_sensor]"
                                    id="station-primary-sensor-0"
-                                   onclick='document.getElementById("station-sensor-iris").disabled=true;document.getElementById("station-sensor-atlas").disabled=false;'
+                                   onclick='document.getElementById("station-sensor-iris").disabled=true;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;document.getElementById("station-lightning-source-3").disabled=false;'
                                    value="0"
                                 <?= ($config->station->primary_sensor === 0) ? 'checked="checked"' : false; ?>
                                 <?= ($config->station->device === 1) ? 'disabled="disabled"' : false; ?>>
@@ -108,7 +108,7 @@
                             <input class="form-check-input" type="radio"
                                    name="station[primary_sensor]"
                                    id="station-primary-sensor-1"
-                                   onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;'
+                                   onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;document.getElementById("station-lightning-source-1").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;document.getElementById("station-lightning-source-0").checked=true;'
                                    value="1"
                                 <?= ($config->station->primary_sensor === 1) ? 'checked="checked"' : false; ?>>
                             <label class="form-check-label alert bg-dark"
@@ -122,7 +122,7 @@
                                id="station-sensor-atlas" placeholder="00000000"
                                maxlength="8" pattern="[0-9]{8}"
                                title="8 Digits including leading 0's"
-                            <?= $config->station->primary_sensor === 1 ? 'disabled="disabled"' : false; ?>
+                                <?= $config->station->primary_sensor === 1 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->primary_sensor) ? 'disabled="disabled"' : false; ?>
                                value="<?= $config->station->sensor_atlas; ?>">
                         <small id="station-sensor-atlas-help" class="form-text text-muted">8
@@ -136,7 +136,7 @@
                                id="station-sensor-iris" placeholder="00000000"
                                maxlength="8" pattern="[0-9]{8}"
                                title="8 Digits including leading 0's"
-                            <?= $config->station->primary_sensor === 0 ? 'disabled="disabled"' : false; ?>
+                                <?= $config->station->primary_sensor === 0 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->primary_sensor) ? 'disabled="disabled"' : false; ?>
                                value="<?= $config->station->sensor_iris; ?>">
                         <small id="station-sensor-iris-help" class="form-text text-muted">8
@@ -172,7 +172,8 @@
                                 <input class="form-check-input" type="radio"
                                        name="station[towers]"
                                        id="station-towers-0" value="0"
-                                    <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
+                                       onclick='document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;'
+                                        <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
                                 <label class="form-check-label alert alert-danger"
                                        for="station-towers-0">Disabled</label>
                             </div>
@@ -180,7 +181,8 @@
                                 <input class="form-check-input" type="radio"
                                        name="station[towers]"
                                        id="station-towers-1" value="1"
-                                    <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
+                                       onclick='document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false;'
+                                        <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
                                 <label class="form-check-label alert alert-success"
                                        for="station-towers-1">Enabled</label>
                             </div>
@@ -243,7 +245,8 @@
                                        id="station-lightning-source-2"
                                        value="2"
                                     <?= $config->station->device === 1 ? 'disabled="disabled"' : false; ?>
-                                    <?= ($config->station->lightning_source === 2) ? 'checked="checked"' : false; ?>>
+                                    <?= ($config->station->lightning_source === 2) ? 'checked="checked"' : false; ?>
+                                    <?= ($config->station->towers === false) ? 'disabled="disabled"' : false; ?>>
                                 <label class="form-check-label alert alert-warning"
                                        for="station-lightning-source-2">Tower</label>
                             </div>
@@ -253,7 +256,8 @@
                                        id="station-lightning-source-3"
                                        value="3"
                                     <?= $config->station->device === 1 ? 'disabled="disabled"' : false; ?>
-                                    <?= ($config->station->lightning_source === 3) ? 'checked="checked"' : false; ?>>
+                                    <?= ($config->station->lightning_source === 3) ? 'checked="checked"' : false; ?>
+                                    <?= ($config->station->towers === false) ? 'disabled="disabled"' : false; ?>>
                                 <label class="form-check-label alert alert-warning"
                                        for="station-lightning-source-3">Both</label>
                             </div>

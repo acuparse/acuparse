@@ -67,8 +67,8 @@ function getArchiveHTML()
             <div class="row">
                 <!-- Yesterday -->
                 <section id="archive-weather-data-yesterday" class="col-md-4 col-12">
-                    <h2>Yesterday:</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
+                    <h2>Yesterday</h2>
+                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -93,7 +93,7 @@ function getArchiveHTML()
                             $wind_high_yesterday = ($config->site->imperial === true) ? "$yesterday->windS_mph_high mph" : "$yesterday->windS_kmh_high km/h";
                         }
                         echo 'From ' . $yesterday->windDIR . ' at ' . $wind_high_yesterday . ' @ ' . $yesterday->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
+                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -111,13 +111,13 @@ function getArchiveHTML()
                             }
                             echo $pressure_low_yesterday . ' @ ' . $yesterday->pressure_inHg_low_recorded; ?></li>
                     </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
+                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?= "$yesterday->relH_high% @ " . $yesterday->relH_high_recorded; ?></li>
                         <li><h4>Low:</h4> <?= "$yesterday->relH_low% @ " . $yesterday->relH_low_recorded; ?></li>
                     </ul>
                     <?php if ($yesterday->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
+                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                         <ul class="list-unstyled">
                             <li><h4>Total Rain:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -129,14 +129,14 @@ function getArchiveHTML()
                         </ul>
                     <?php }
                     if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
                                     High:</h4> <?= "$atlasYesterday->uvindex_high @ " . $atlasYesterday->uvindex_high_recorded; ?>
                             </li>
                         </ul>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
                                     High:</h4> <?= "$atlasYesterday->light_high @ " . $atlasYesterday->light_high_recorded; ?>
@@ -146,7 +146,7 @@ function getArchiveHTML()
                             </li>
                         </ul>
                         <?php if ($atlasYesterday->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
                                         Strikes:</h4> <?= "$atlasYesterday->lightning @ " . $atlasYesterday->lightning_recorded; ?>
@@ -158,8 +158,8 @@ function getArchiveHTML()
 
                 <!-- This Week -->
                 <section id="archive-weather-data-week" class="col-md-4 col-12">
-                    <h2>This Week:</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
+                    <h2>This Week</h2>
+                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -184,7 +184,7 @@ function getArchiveHTML()
                             $wind_high_week = ($config->site->imperial === true) ? "$week->windS_mph_high mph" : "$week->windS_kmh_high km/h";
                         }
                         echo 'From ' . $week->windDIR . ' at ' . $wind_high_week . ' on ' . $week->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
+                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -201,13 +201,13 @@ function getArchiveHTML()
                             }
                             echo $pressure_low_week . ' on ' . $week->pressure_inHg_low_recorded; ?></li>
                     </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
+                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?= "$week->relH_high% on " . $week->relH_high_recorded; ?></li>
                         <li><h4>Low:</h4> <?= "$week->relH_low% on " . $week->relH_low_recorded; ?></li>
                     </ul>
                     <?php if ($week->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
+                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                         <ul class="list-unstyled">
                             <li><h4>Most Rain:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -226,14 +226,14 @@ function getArchiveHTML()
                         </ul>
                     <?php }
                     if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
                                     High:</h4> <?= "$atlasWeek->uvindex_high on " . $atlasWeek->uvindex_high_recorded; ?>
                             </li>
                         </ul>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
                                     High:</h4> <?= "$atlasWeek->light_high on " . $atlasWeek->light_high_recorded; ?>
@@ -243,7 +243,7 @@ function getArchiveHTML()
                             </li>
                         </ul>
                         <?php if ($atlasWeek->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
                                         Strikes:</h4> <?= "$atlasWeek->lightning on " . $atlasWeek->lightning_recorded; ?>
@@ -255,8 +255,8 @@ function getArchiveHTML()
 
                 <!-- This Month -->
                 <section id="archive-weather-data-month" class="col-md-4 col-12">
-                    <h2>This Month:</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
+                    <h2>This Month</h2>
+                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -281,7 +281,7 @@ function getArchiveHTML()
                             $wind_high_month = ($config->site->imperial === true) ? "$month->windS_mph_high mph" : "$month->windS_kmh_high km/h";
                         }
                         echo 'From ' . $month->windDIR . ' at ' . $wind_high_month . ' on ' . $month->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
+                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -298,13 +298,13 @@ function getArchiveHTML()
                             }
                             echo $pressure_low_month . ' on ' . $month->pressure_inHg_low_recorded; ?></li>
                     </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
+                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?= "$month->relH_high% on " . $month->relH_high_recorded; ?></li>
                         <li><h4>Low:</h4> <?= "$month->relH_low% on " . $month->relH_low_recorded; ?></li>
                     </ul>
                     <?php if ($month->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
+                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                         <ul class="list-unstyled">
                             <li><h4>Most Rain:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -323,14 +323,14 @@ function getArchiveHTML()
                         </ul>
                     <?php }
                     if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
                                     High:</h4> <?= "$atlasMonth->uvindex_high on " . $atlasMonth->uvindex_high_recorded; ?>
                             </li>
                         </ul>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
                                     High:</h4> <?= "$atlasMonth->light_high on " . $atlasWeek->light_high_recorded; ?>
@@ -340,7 +340,7 @@ function getArchiveHTML()
                             </li>
                         </ul>
                         <?php if ($atlasMonth->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
                                         Strikes:</h4> <?= "$atlasMonth->lightning on " . $atlasMonth->lightning_recorded; ?>
@@ -356,8 +356,8 @@ function getArchiveHTML()
             <div class="row">
                 <!-- Last Month -->
                 <section id="archive-weather-data-last-month" class="col-md-4 col-12">
-                    <h2>Last Month:</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
+                    <h2>Last Month</h2>
+                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -382,7 +382,7 @@ function getArchiveHTML()
                             $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph" : "$last_month->windS_kmh_high km/h";
                         }
                         echo 'From ' . $last_month->windDIR . ' at ' . $wind_high_last_month . ' on ' . $last_month->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
+                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -399,14 +399,14 @@ function getArchiveHTML()
                             }
                             echo $pressure_low_last_month . ' on ' . $last_month->pressure_inHg_low_recorded; ?></li>
                     </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
+                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?= "$last_month->relH_high% on " . $last_month->relH_high_recorded; ?>
                         </li>
                         <li><h4>Low:</h4> <?= "$last_month->relH_low% on " . $last_month->relH_low_recorded; ?></li>
                     </ul>
                     <?php if ($last_month->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
+                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                         <ul class="list-unstyled">
                             <li><h4>Most Rain:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -425,14 +425,14 @@ function getArchiveHTML()
                         </ul>
                     <?php }
                     if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
                                     High:</h4> <?= "$atlasLastMonth->uvindex_high on " . $atlasLastMonth->uvindex_high_recorded; ?>
                             </li>
                         </ul>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
                                     High:</h4> <?= "$atlasLastMonth->light_high on " . $atlasWeek->light_high_recorded; ?>
@@ -442,7 +442,7 @@ function getArchiveHTML()
                             </li>
                         </ul>
                         <?php if ($atlasLastMonth->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
                                         Strikes:</h4> <?= "$atlasLastMonth->lightning on " . $atlasLastMonth->lightning_recorded; ?>
@@ -454,8 +454,8 @@ function getArchiveHTML()
 
                 <!-- This Year -->
                 <section id="archive-weather-data-year" class="col-md-4 col-12">
-                    <h2>This Year:</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
+                    <h2>This Year</h2>
+                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -480,7 +480,7 @@ function getArchiveHTML()
                             $wind_high_year = ($config->site->imperial === true) ? "$year->windS_mph_high mph" : "$year->windS_kmh_high km/h";
                         }
                         echo 'From ' . $year->windDIR . ' at ' . $wind_high_year . ' on ' . $year->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
+                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -497,13 +497,13 @@ function getArchiveHTML()
                             }
                             echo $pressure_low_year . ' on ' . $year->pressure_inHg_low_recorded; ?></li>
                     </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
+                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?= "$year->relH_high% on " . $year->relH_high_recorded; ?></li>
                         <li><h4>Low:</h4> <?= "$year->relH_low% on " . $year->relH_low_recorded; ?></li>
                     </ul>
                     <?php if ($year->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
+                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                         <ul class="list-unstyled">
                             <li><h4>Most Rain:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -522,14 +522,14 @@ function getArchiveHTML()
                         </ul>
                     <?php }
                     if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
                                     High:</h4> <?= "$atlasYear->uvindex_high on " . $atlasYear->uvindex_high_recorded; ?>
                             </li>
                         </ul>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
                                     High:</h4> <?= "$atlasYear->light_high on " . $atlasWeek->light_high_recorded; ?>
@@ -539,7 +539,7 @@ function getArchiveHTML()
                             </li>
                         </ul>
                         <?php if ($atlasYear->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
                                         Strikes:</h4> <?= "$atlasYear->lightning on " . $atlasYear->lightning_recorded; ?>
@@ -551,8 +551,8 @@ function getArchiveHTML()
 
                 <!-- All Time -->
                 <section id="archive-weather-data-all" class="col-md-4 col-12">
-                    <h2 class="panel-heading">All Time:</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature:</h3>
+                    <h2 class="panel-heading">All Time</h2>
+                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -577,7 +577,7 @@ function getArchiveHTML()
                             $wind_high_ever = ($config->site->imperial === true) ? "$ever->windS_mph_high mph" : "$ever->windS_kmh_high km/h";
                         }
                         echo 'From ' . $ever->windDIR . ' at ' . $wind_high_ever . ' on ' . $ever->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure:</h3>
+                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?php
                             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -594,13 +594,13 @@ function getArchiveHTML()
                             }
                             echo $pressure_low_ever . ' on ' . $ever->pressure_inHg_low_recorded; ?></li>
                     </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity:</h3>
+                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
                     <ul class="list-unstyled">
                         <li><h4>High:</h4> <?= "$ever->relH_high% on " . $ever->relH_high_recorded; ?></li>
                         <li><h4>Low:</h4> <?= "$ever->relH_low% on " . $ever->relH_low_recorded; ?></li>
                     </ul>
                     <?php if ($ever->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall:</h3>
+                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                         <ul class="list-unstyled">
                             <li><h4>Most Rain:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
@@ -619,14 +619,14 @@ function getArchiveHTML()
                         </ul>
                     <?php }
                     if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index:</h3>
+                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
                                     High:</h4> <?= "$atlasEver->uvindex_high on " . $atlasEver->uvindex_high_recorded; ?>
                             </li>
                         </ul>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light:</h3>
+                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
                         <ul class="list-unstyled">
                             <li><h4>Illuminance
                                     High:</h4> <?= "$atlasEver->light_high on " . $atlasEver->light_high_recorded; ?>
@@ -636,7 +636,7 @@ function getArchiveHTML()
                             </li>
                         </ul>
                         <?php if ($atlasEver->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning:</h3>
+                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
                                         Strikes:</h4> <?= "$atlasEver->lightning on " . $atlasEver->lightning_recorded; ?>

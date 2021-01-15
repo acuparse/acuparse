@@ -77,12 +77,12 @@ else {
             <div class="col-8 col-md-6 mx-auto">
                 <form class="form" action="/admin/tower?add&do" method="POST">
                     <div class="form-group">
-                        <label for="tower-id">Tower ID:</label>
+                        <label for="tower-id">Tower ID</label>
                         <input type="text" class="form-control" name="id" id="tower-id"
                                placeholder="00000000" maxlength="8" required>
                     </div>
                     <div class="form-group">
-                        <label for="tower-name">Display Name:</label>
+                        <label for="tower-name">Display Name</label>
                         <input type="text" class="form-control" name="name" id="tower-name"
                                placeholder="Ground Level" maxlength="32" required>
                     </div>

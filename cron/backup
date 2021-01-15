@@ -41,13 +41,13 @@ ACUPARSE_DIR=/opt/acuparse
 
 ### END: Variables ###
 
-function backup() {
+function _backup() {
   # Grab the date
   DATE=$(date -I)
 
-  # Remove Old Backups (7 days)
-  echo "Removing backup files older than "$KEEP_BACKUPS_FOR" days"
-  find "$BACKUP_DIR" -type f -mtime +"$KEEP_BACKUPS_FOR" -exec rm -f {} \;
+  # Remove Old Backups (Controlled by "KEEP_BACKUPS_FOR")
+  echo "Removing backup files older than $KEEP_BACKUPS_FOR days"
+  find "$BACKUP_DIR" -maxdepth 1 -name "*.tar.gz" -type f -mtime +"$KEEP_BACKUPS_FOR" -exec rm -f {} \;
 
   # Create TMP Folder
   mkdir -p "$BACKUP_TMP_DIR"
@@ -74,7 +74,7 @@ function backup() {
   rm -rf "$BACKUP_TMP_DIR"
 }
 
-function restore() {
+function _restore() {
   TAR_FILE=$(find . -maxdepth 1 -name '*.tar.gz' -type f -printf '%P\n' | sort -r | head -n 1 | cut -d' ' -f2)
   mkdir -p "$BACKUP_TMP_DIR"
   tar -zxf "$BACKUP_DIR"/"$TAR_FILE" --directory "$BACKUP_TMP_DIR" >/dev/null 2>&1
@@ -87,12 +87,12 @@ function restore() {
 
 if [ "$1" == 'restore' ]; then
   echo "Restoring Backup"
-  restore
+  _restore
   echo "Done: Restoring Backup"
 else
   # Let's Go!
   echo "Beginning Backup ... this might take a while!"
-  backup
+  _backup
   # All Done
   echo "Backup Complete!"
 fi

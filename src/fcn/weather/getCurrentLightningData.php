@@ -55,11 +55,19 @@ class getCurrentLightningData
          */
 
         // Check for recent readings
-        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `last_update` FROM `atlasLightning`"));
-        if (!isset($lastUpdate)) {
-            echo '<div class="col text-center alert alert-danger"><strong>No Lightning Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
-            exit();
+        if ($cron === false) {
+            $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `last_update` FROM `atlasLightning`"));
+            if (!isset($lastUpdate)) {
+                if ($source === 'json') {
+                    $json_output = ['Status' => 'error', 'message' => 'No Lightning Data Reported'];
+                    echo json_encode($json_output);
+                    exit();
+                } else {
+                    echo '<div class="col text-center alert alert-danger"><strong>No Lightning Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
+                    exit();
+                }
+            }
         }
 
         $this->source = $source;
@@ -141,7 +149,7 @@ class getCurrentLightningData
         );
     }
 
-    // Get JSON Data
+    // Get CRON Data
     public function getCRONData(): object
     {
         return (object)array(

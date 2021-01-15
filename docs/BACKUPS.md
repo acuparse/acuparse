@@ -12,6 +12,7 @@ will need to enable this manually.
     ```
 
 - Update the script with your Acuparse SQL Password.
+- Optionally edit `KEEP_BACKUPS_FOR` and `BACKUP_CAM_IMAGES` with your custom values.
 - Add the backup script to your system Cron
 
     ```bash

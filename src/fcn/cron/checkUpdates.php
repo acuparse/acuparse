@@ -40,7 +40,7 @@ require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 function getTelemetry()
 {
     if (shell_exec('hostnamectl')) {
-        $input = shell_exec('hostnamectl');
+        @$input = shell_exec('hostnamectl');
         preg_match_all('/[^\s].*:\s.*/', $input, $input);
         $input = str_replace(': ', '=', $input[0]);
         $output = array();

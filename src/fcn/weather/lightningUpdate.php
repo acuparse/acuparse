@@ -54,10 +54,9 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
 
         // Get the last update data
         $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `strikecount`, `last_strike_ts` FROM `lightningData` WHERE `source`='$source';")) or syslog(LOG_WARNING,
-            "(ACCESS){LIGHTNING}<$device>[SQL WARN]: Failed getting last update. Details: " . mysqli_error($conn));
-        $lastStrikecount = (float)$result['strikecount'];
-        $lastStrikeTime = $result['last_strike_ts'];
+            "SELECT `strikecount`, `last_strike_ts` FROM `lightningData` WHERE `source`='$source';"));
+        @$lastStrikecount = (float)$result['strikecount'];
+        @$lastStrikeTime = $result['last_strike_ts'];
 
         // If there is no existing data, let's add this one
         if (!$lastStrikeTime) {
@@ -67,6 +66,10 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
                 "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
             while (mysqli_next_result($conn)) {
                 null;
+            }
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG,
+                    "(ACCESS){LIGHTNING}<$device>: No Lightning Detected | Count: $strikecount | Last: $lastStrikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
             }
         } // Existing data, process an update
         else {
@@ -133,9 +136,29 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
             }
         }
     } else {
-        if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG,
-                "(ACCESS){LIGHTNING}<$device>: No Lightning Detected | Count: $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+        // Get the last update data
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `last_strike_ts` FROM `lightningData` WHERE `source`='$source';"));
+        @$lastStrikeTime = $result['last_strike_ts'];
+
+        // If there is no existing data, let's add this one
+        if (!$lastStrikeTime) {
+            $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
+            INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
+            $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
+                "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
+            while (mysqli_next_result($conn)) {
+                null;
+            }
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG,
+                    "(ACCESS){LIGHTNING}<$device>: No Lightning Detected | Count: $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+            }
+        } else {
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG,
+                    "(ACCESS){LIGHTNING}<$device>: No Lightning Detected | Count: $strikecount | Interference = $interference | Last Strike = $last_strike_ts | Distance = $last_strike_distance");
+            }
         }
     }
 }

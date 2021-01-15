@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.2.1]](https://www.acuparse.com/releases/v3-2-1/) - 2021-01-17
+
+### Added
+
+- Last Update to Sensor Status.
+- Iris Wind Gust when using an Access.
+
+### Fixed
+
+- Bring back missing Iris Wind Average.
+- Typos in some JSON endpoints.
+- JSON Archive attempting to load Atlas data.
+- Lightning to properly handle a `0` strike count.
+- Ignore warnings for Last Month's Archive data that does not yet exist.
+
+### Changed
+
+- Use a more efficient SQL query when calculating Access Wind Peak.
+- `FeelsF` and `FeelsC` now report `NULL` instead of `0`, if unset.
+- FontAwesome to v5.15.2.
+
 ## [[3.2.0]](https://www.acuparse.com/releases/v3-2-0/) - 2021-01-07
 
 ### Fixed

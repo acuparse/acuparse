@@ -46,7 +46,7 @@
         <!-- END: Current -->
 
         <!-- BEGIN: Feels Like -->
-        <?php if ($wx->feelsF != 0) {
+        <?php if ($wx->feelsF !== NULL) {
             if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
                 $feels = ($config->site->imperial === true) ? "$wx->feelsF&#8457; ($wx->feelsC&#8451;)" : "$wx->feelsC&#8451; ($wx->feelsF&#8457;)";
             } else {

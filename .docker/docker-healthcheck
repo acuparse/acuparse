@@ -26,21 +26,21 @@
 # Script to check services in a container
 ##
 
-function healthCheckFailed() {
+function _healthcheck_failed() {
   echo "$1"
   exit 1
 }
 
-function healthCheck() {
-  pgrep -x cron >/dev/null || healthCheckFailed "CRON HEALTHCHECK FAILED"
-  pgrep -x rsyslogd >/dev/null || healthCheckFailed "SYSLOG HEALTHCHECK FAILED"
-  pgrep -x apache2 >/dev/null || healthCheckFailed "APACHE2 HEALTHCHECK FAILED"
-  mysqladmin ping -h"${MYSQL_HOSTNAME}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent >/dev/null || healthCheckFailed "SQL HEALTHCHECK FAILED"
+function _healthcheck() {
+  pgrep -x cron >/dev/null || _healthcheck_failed "CRON HEALTHCHECK FAILED"
+  pgrep -x rsyslogd >/dev/null || _healthcheck_failed "SYSLOG HEALTHCHECK FAILED"
+  pgrep -x apache2 >/dev/null || _healthcheck_failed "APACHE2 HEALTHCHECK FAILED"
+  mysqladmin ping -h"${MYSQL_HOSTNAME}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent >/dev/null || _healthcheck_failed "SQL HEALTHCHECK FAILED"
   echo ""$(date +'%b %d %H:%M:%S')" ""${HOSTNAME}"" HEALTHCHECK[$$]: OK"
 }
 
-echo "Starting Acuparse Service HEALTHCHECK ..."
+echo "Starting Acuparse HEALTHCHECK ..."
 while true; do
-  healthCheck
+  _healthcheck
   sleep 120
 done

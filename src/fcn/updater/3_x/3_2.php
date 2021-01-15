@@ -60,4 +60,13 @@ switch ($config->version->app) {
             echo "Oops, Something went wrong updating Schema";
             exit();
         }
+
+    // Update from 3.2.0 to 3.2.1
+    case '3.2.0':
+        syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.2.1");
+        $config->version->app = '3.2.1';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug/Doc Fixes.';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . '<strong>Important</strong>: Feels temp now reports "NULL" not "0" when unset!';
+
+
 }

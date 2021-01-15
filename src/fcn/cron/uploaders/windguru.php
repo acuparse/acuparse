@@ -40,9 +40,9 @@
 $windguruSalt = date('YmdHis');
 $windguruHash = md5($windguruSalt . $config->upload->windguru->uid . $config->upload->windguru->password);
 $windguruQueryUrl = $config->upload->windguru->url . '?uid=' . $config->upload->windguru->uid . '&salt=' . $windguruSalt . '&hash=' . $windguruHash;
-$windguruQuery = '&temperature=' . $data->tempC . '&wind_direction=' . $data->windDEG . '&wind_avg=' . round($data->windSpeedMPH / 1.15078, 1) . '&mslp=' . round($data->pressure_kPa * 10, 1) . '&rh=' . $data->relH . '&precip=' . $data->rainMM;
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $windguruQuery = $windguruQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH / 1.15078 . '&wind_max=' . $atlas->windGustMPH / 1.15078;
+$windguruQuery = '&temperature=' . $data->tempC . '&wind_direction=' . $data->windDEG . '&wind_avg=' . round($data->windSpeedMPH / 1.15078, 1) . '&windspdmph_avg2m=' . $data->windAvgMPH / 1.15078 . '&mslp=' . round($data->pressure_kPa * 10, 1) . '&rh=' . $data->relH . '&precip=' . $data->rainMM;
+if ($config->station->device === 0) {
+    $windguruQuery = $windguruQuery . '&wind_max=' . $data->windGustMPH / 1.15078;
 }
 $windguruQueryResult = file_get_contents($windguruQueryUrl . $windguruQuery);
 // Save to DB
