@@ -41,10 +41,14 @@
  */
 
 $genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;
-$genericQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $genericQuery = $genericQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH . '&windgustmph' . $atlas->windGust . '&windgustdir' . $atlas->windGustDEG . '&UV=' . $atlas->uvIndex;
+$genericQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today . '&windspdmph_avg2m=' . $data->windAvgMPH;
+if ($config->station->device === 0) {
+    $genericQuery = $genericQuery . '&windgustmph=' . $data->windGustMPH . '&windgustdir=' . $data->windGustDEG;
+    if ($config->station->primary_sensor === 0) {
+        $genericQuery = $genericQuery . '&UV=' . $atlas->uvIndex;
+    }
 }
+
 $genericQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
 $genericQueryResult = file_get_contents(htmlentities($genericQueryUrl . $genericQuery . $genericQueryStatic));
 // Save to DB

@@ -58,7 +58,7 @@ function getMainWeatherData()
             } // Load Tower Lightning Data:
             elseif ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
                 require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                $getTowerLightningData = new tower\getCurrentLightningData;
+                $getTowerLightningData = new tower\getCurrentLightningData('json');
                 $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getJSONData());
                 $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportTowerLightning);
             } else {
@@ -67,7 +67,7 @@ function getMainWeatherData()
         } else if ($config->station->primary_sensor === 1) {
             if ($config->station->lightning_source === 2) {
                 require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                $getTowerLightningData = new tower\getCurrentLightningData;
+                $getTowerLightningData = new tower\getCurrentLightningData('json');
                 $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getJSONData());
                 $result = array_merge($jsonExportMain, $jsonExportTowerLightning);
             } else {

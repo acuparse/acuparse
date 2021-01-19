@@ -287,25 +287,25 @@ class getArchiveWeatherData
             "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE())) AND YEAR(CURDATE()) AND MONTH(`reported`) = MONTH(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
         $this->windS_mph_high_recorded_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->windS_mph_high_recorded_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->windDIR_month = $this->windDirection($result['windDEG']); // Wind from
+        $this->windDIR_month = $result['windDEG']; // Wind from
         $this->windS_mph_high_month = (int)round($result['windSpeedMPH']); // Miles per hour
         $this->windS_kmh_high_month = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
 
         // Last Month
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->windS_mph_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->windS_mph_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->windDIR_last_month = $this->windDirection($result['windDEG']); // Wind from
-        $this->windS_mph_high_last_month = (int)round($result['windSpeedMPH']); // Miles per hour
-        $this->windS_kmh_high_last_month = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+        @$this->windS_mph_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->windS_mph_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->windDIR_last_month = $result['windDEG']; // Wind from
+        @$this->windS_mph_high_last_month = (int)round($result['windSpeedMPH']); // Miles per hour
+        @$this->windS_kmh_high_last_month = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
 
         // This Year
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE())) AND YEAR(`reported`) = YEAR(CURDATE()) ORDER BY `reported` DESC LIMIT 1"));
         $this->windS_mph_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->windS_mph_high_recorded_year_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->windDIR_year = $this->windDirection($result['windDEG']); // Wind from
+        $this->windDIR_year = $result['windDEG']; // Wind from
         $this->windS_mph_high_year = (int)round($result['windSpeedMPH']); // Miles per hour
         $this->windS_kmh_high_year = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
 
@@ -314,7 +314,7 @@ class getArchiveWeatherData
             "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->windS_mph_high_recorded_ever = date($config->site->dashboard_display_date_full, strtotime($result['reported'])); // Recorded at
         $this->windS_mph_high_recorded_ever_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->windDIR_ever = $this->windDirection($result['windDEG']); // Wind from
+        $this->windDIR_ever = $result['windDEG']; // Wind from
         $this->windS_mph_high_ever = (int)round($result['windSpeedMPH']); // Miles per hour
         $this->windS_kmh_high_ever = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
 
@@ -347,10 +347,10 @@ class getArchiveWeatherData
         // Last Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MAX(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->tempF_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->tempF_high_last_month = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC_high_last_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+        @$this->tempF_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->tempF_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->tempF_high_last_month = (float)round($result['tempF'], 1); // Fahrenheit
+        @$this->tempC_high_last_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
         // This Year High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -395,10 +395,10 @@ class getArchiveWeatherData
         // Last Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `tempF` FROM `archive` WHERE `tempF` = (SELECT MIN(`tempF`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->tempF_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->tempF_low_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->tempF_low_last_month = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC_low_last_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+        @$this->tempF_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->tempF_low_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->tempF_low_last_month = (float)round($result['tempF'], 1); // Fahrenheit
+        @$this->tempC_low_last_month = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
         // This Year Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -448,10 +448,10 @@ class getArchiveWeatherData
         // Last Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MAX(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->pressure_inHg_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->pressure_inHg_high_last_month = (float)$result['pressureinHg']; // Inches of Mercury
-        $this->pressure_kPa_high_last_month = (float)round($result['pressureinHg'] * 3.38638866667,
+        @$this->pressure_inHg_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->pressure_inHg_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->pressure_inHg_high_last_month = (float)$result['pressureinHg']; // Inches of Mercury
+        @$this->pressure_kPa_high_last_month = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
 
         // This Year High
@@ -502,10 +502,10 @@ class getArchiveWeatherData
         // Last Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `pressureinHg` FROM `archive` WHERE `pressureinHg` = (SELECT MIN(`pressureinHg`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->pressure_inHg_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->pressure_inHg_low_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->pressure_inHg_low_last_month = (float)$result['pressureinHg']; // Inches of Mercury
-        $this->pressure_kPa_low_last_month = (float)round($result['pressureinHg'] * 3.38638866667,
+        @$this->pressure_inHg_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->pressure_inHg_low_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->pressure_inHg_low_last_month = (float)$result['pressureinHg']; // Inches of Mercury
+        @$this->pressure_kPa_low_last_month = (float)round($result['pressureinHg'] * 3.38638866667,
             2); // Convert to Kilopascals
 
         // This Year Low
@@ -552,9 +552,9 @@ class getArchiveWeatherData
         // Last Month High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MAX(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at        $this->relH_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->relH_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->relH_high_last_month = (int)$result['relH']; // Percent
+        @$this->relH_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at        $this->relH_high_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->relH_high_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->relH_high_last_month = (int)$result['relH']; // Percent
 
         // This Year High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -594,9 +594,9 @@ class getArchiveWeatherData
         // Last Month Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `relH` FROM `archive` WHERE `relH` = (SELECT MIN(`relH`) FROM `archive` WHERE YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`reported`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`reported`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `reported` DESC LIMIT 1"));
-        $this->relH_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
-        $this->relH_low_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-        $this->relH_low_last_month = (int)$result['relH']; // Percent
+        @$this->relH_low_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
+        @$this->relH_low_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+        @$this->relH_low_last_month = (int)$result['relH']; // Percent
 
         // This Year Low
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -647,15 +647,15 @@ class getArchiveWeatherData
         // Last Month Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT SUM(`dailyrainin`) AS `rainfall_last_month_total` FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`date`) = MONTH(CURDATE() - INTERVAL 1 MONTH)"));
-        $this->rainfall_IN_total_last_month = (float)$result['rainfall_last_month_total']; // Inches
-        $this->rainfall_MM_total_last_month = (float)round($result['rainfall_last_month_total'] * 25.4,
+        @$this->rainfall_IN_total_last_month = (float)$result['rainfall_last_month_total']; // Inches
+        @$this->rainfall_MM_total_last_month = (float)round($result['rainfall_last_month_total'] * 25.4,
             2); // Millimeters
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_update`, `dailyrainin` FROM `dailyrain` WHERE `dailyrainin` = (SELECT MAX(`dailyrainin`) FROM `dailyrain` WHERE YEAR(`date`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`date`) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND YEAR(`date`) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(`date`) = MONTH(CURDATE() - INTERVAL 1 MONTH) ORDER BY `date` DESC LIMIT 1"));
-        $this->rainfall_IN_most_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['last_update'])); // Recorded at
-        $this->rainfall_IN_most_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['last_update'])); // Recorded at
-        $this->rainfall_IN_most_last_month = (float)$result['dailyrainin']; // Inches
-        $this->rainfall_MM_most_last_month = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
+        @$this->rainfall_IN_most_recorded_last_month = date($config->site->dashboard_display_date, strtotime($result['last_update'])); // Recorded at
+        @$this->rainfall_IN_most_recorded_last_month_JSON = date($config->site->date_api_json, strtotime($result['last_update'])); // Recorded at
+        @$this->rainfall_IN_most_last_month = (float)$result['dailyrainin']; // Inches
+        @$this->rainfall_MM_most_last_month = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
 
         // Yearly Rainfall:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -741,12 +741,8 @@ class getArchiveWeatherData
                 $windDIR = 'N';
                 break;
         }
+        return (string)$windDIR;
 
-        if (isset($windDIR)) {
-            return (string)$windDIR;
-        } else {
-            return 'ERROR';
-        }
     }
     // Public Functions
 
@@ -763,7 +759,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_yesterday,
             'windS_kmh_high' => $this->windS_kmh_high_yesterday,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_yesterday,
-            'windDIR' => $this->windDIR_yesterday,
+            'windDIR' => $this->windDirection($this->windDIR_yesterday),
             'pressure_inHg_high' => $this->pressure_inHg_high_yesterday,
             'pressure_kPa_high' => $this->pressure_kPa_high_yesterday,
             'pressure_inHg_low' => $this->pressure_inHg_low_yesterday,
@@ -792,7 +788,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_yesterday,
             'windS_kmh_high' => $this->windS_kmh_high_yesterday,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_yesterday_JSON,
-            'windDIR' => $this->windDIR_yesterday,
+            'windDIR' => $this->windDirection($this->windDIR_yesterday),
             'pressure_inHg_high' => $this->pressure_inHg_high_yesterday,
             'pressure_kPa_high' => $this->pressure_kPa_high_yesterday,
             'pressure_inHg_low' => $this->pressure_inHg_low_yesterday,
@@ -821,7 +817,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_week,
             'windS_kmh_high' => $this->windS_kmh_high_week,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_week,
-            'windDIR' => $this->windDIR_week,
+            'windDIR' => $this->windDirection($this->windDIR_week),
             'pressure_inHg_high' => $this->pressure_inHg_high_week,
             'pressure_kPa_high' => $this->pressure_kPa_high_week,
             'pressure_inHg_low' => $this->pressure_inHg_low_week,
@@ -853,7 +849,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_week,
             'windS_kmh_high' => $this->windS_kmh_high_week,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_week_JSON,
-            'windDIR' => $this->windDIR_week,
+            'windDIR' => $this->windDirection($this->windDIR_week),
             'pressure_inHg_high' => $this->pressure_inHg_high_week,
             'pressure_kPa_high' => $this->pressure_kPa_high_week,
             'pressure_inHg_low' => $this->pressure_inHg_low_week,
@@ -885,7 +881,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_month,
             'windS_kmh_high' => $this->windS_kmh_high_month,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_month,
-            'windDIR' => $this->windDIR_month,
+            'windDIR' => $this->windDirection($this->windDIR_month),
             'pressure_inHg_high' => $this->pressure_inHg_high_month,
             'pressure_kPa_high' => $this->pressure_kPa_high_month,
             'pressure_inHg_low' => $this->pressure_inHg_low_month,
@@ -917,7 +913,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_month,
             'windS_kmh_high' => $this->windS_kmh_high_month,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_month_JSON,
-            'windDIR' => $this->windDIR_month,
+            'windDIR' => $this->windDirection($this->windDIR_month),
             'pressure_inHg_high' => $this->pressure_inHg_high_month,
             'pressure_kPa_high' => $this->pressure_kPa_high_month,
             'pressure_inHg_low' => $this->pressure_inHg_low_month,
@@ -949,7 +945,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_last_month,
             'windS_kmh_high' => $this->windS_kmh_high_last_month,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_last_month,
-            'windDIR' => $this->windDIR_last_month,
+            'windDIR' => $this->windDirection($this->windDIR_last_month),
             'pressure_inHg_high' => $this->pressure_inHg_high_last_month,
             'pressure_kPa_high' => $this->pressure_kPa_high_last_month,
             'pressure_inHg_low' => $this->pressure_inHg_low_last_month,
@@ -981,7 +977,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_last_month,
             'windS_kmh_high' => $this->windS_kmh_high_last_month,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_last_month_JSON,
-            'windDIR' => $this->windDIR_last_month,
+            'windDIR' => $this->windDirection($this->windDIR_last_month),
             'pressure_inHg_high' => $this->pressure_inHg_high_last_month,
             'pressure_kPa_high' => $this->pressure_kPa_high_last_month,
             'pressure_inHg_low' => $this->pressure_inHg_low_last_month,
@@ -1013,7 +1009,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_year,
             'windS_kmh_high' => $this->windS_kmh_high_year,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_year,
-            'windDIR' => $this->windDIR_year,
+            'windDIR' => $this->windDirection($this->windDIR_year),
             'pressure_inHg_high' => $this->pressure_inHg_high_year,
             'pressure_kPa_high' => $this->pressure_kPa_high_year,
             'pressure_inHg_low' => $this->pressure_inHg_low_year,
@@ -1045,7 +1041,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_year,
             'windS_kmh_high' => $this->windS_kmh_high_year,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_year_JSON,
-            'windDIR' => $this->windDIR_year,
+            'windDIR' => $this->windDirection($this->windDIR_year),
             'pressure_inHg_high' => $this->pressure_inHg_high_year,
             'pressure_kPa_high' => $this->pressure_kPa_high_year,
             'pressure_inHg_low' => $this->pressure_inHg_low_year,
@@ -1077,7 +1073,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_ever,
             'windS_kmh_high' => $this->windS_kmh_high_ever,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_ever,
-            'windDIR' => $this->windDIR_ever,
+            'windDIR' => $this->windDirection($this->windDIR_ever),
             'pressure_inHg_high' => $this->pressure_inHg_high_ever,
             'pressure_kPa_high' => $this->pressure_kPa_high_ever,
             'pressure_inHg_low' => $this->pressure_inHg_low_ever,
@@ -1110,7 +1106,7 @@ class getArchiveWeatherData
             'windS_mph_high' => $this->windS_mph_high_ever,
             'windS_kmh_high' => $this->windS_kmh_high_ever,
             'windS_mph_high_recorded' => $this->windS_mph_high_recorded_ever_JSON,
-            'windDIR' => $this->windDIR_ever,
+            'windDIR' => $this->windDirection($this->windDIR_ever),
             'pressure_inHg_high' => $this->pressure_inHg_high_ever,
             'pressure_kPa_high' => $this->pressure_kPa_high_ever,
             'pressure_inHg_low' => $this->pressure_inHg_low_ever,

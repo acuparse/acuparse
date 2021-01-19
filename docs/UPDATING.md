@@ -3,6 +3,10 @@
 Detailed upgrade instructions for significant releases will be published in
 the [docs/updates](https://docs.acuparse.com/#version-updates) folder, when required.
 
+## UPDATING TO VERSION 3
+
+See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detailed instructions.
+
 ## Local Install
 
 - Pull the changes from Version Management.

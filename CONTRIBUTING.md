@@ -2,7 +2,7 @@
 
 If you're interested in contributing to Acuparse, the first step is joining the development mailing list.
 
-Join the [mailing lists](https://lists.acuparse.com).
+Join the [mailing list](https://lists.acuparse.com).
 
 ## Branches
 

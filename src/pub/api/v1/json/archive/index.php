@@ -61,37 +61,34 @@ function getArchiveWeatherData()
     );
 
 // Load Atlas Data:
-    if ($config->station->device === 0) {
-        if ($config->station->primary_sensor === 0) {
-            // Load weather Data:
-            require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
-            $getAtlasData = new getArchiveAtlasWeatherData();
-            $atlasYesterday = $getAtlasData->getJSONYesterday();
-            $atlasWeek = $getAtlasData->getJSONWeek();
-            $atlasMonth = $getAtlasData->getJSONMonth();
-            $atlasLastMonth = $getAtlasData->getJSONLastMonth();
-            $atlasYear = $getAtlasData->getJSONYear();
-            $atlasEver = $getAtlasData->getJSONAllTime();
+    if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
+        // Load Atlas Archive Data:
+        require(APP_BASE_PATH . '/fcn/weather/getArchiveAtlasWeatherData.php');
+        $getAtlasData = new getArchiveAtlasWeatherData();
+        $atlasYesterday = $getAtlasData->getJSONYesterday();
+        $atlasWeek = $getAtlasData->getJSONWeek();
+        $atlasMonth = $getAtlasData->getJSONMonth();
+        $atlasLastMonth = $getAtlasData->getJSONLastMonth();
+        $atlasYear = $getAtlasData->getJSONYear();
+        $atlasEver = $getAtlasData->getJSONAllTime();
 
-            $jsonExportAtlasArchive = array(
-                "atlas" => array(
-                    "yesterday" => $atlasYesterday,
-                    "week" => $atlasWeek,
-                    "month" => $atlasMonth,
-                    "lastMonth" => $atlasLastMonth,
-                    "year" => $atlasYear,
-                    "ever" => $atlasEver
-                )
-            );
-
-            $result = array_merge($jsonExportArchive, $jsonExportAtlasArchive);
-        }
+        $jsonExportAtlasArchive = array(
+            "atlas" => array(
+                "yesterday" => $atlasYesterday,
+                "week" => $atlasWeek,
+                "month" => $atlasMonth,
+                "lastMonth" => $atlasLastMonth,
+                "year" => $atlasYear,
+                "ever" => $atlasEver
+            )
+        );
+        $result = array_merge($jsonExportArchive, $jsonExportAtlasArchive);
     } else {
         $result = $jsonExportArchive;
     }
 
     if (empty($result)) {
-        return json_encode(['Error' => "Atlas Data Unavailable"]);
+        return json_encode(['status' => 'Error', 'message' => "Archive Data Unavailable"]);
     } else {
         return json_encode($result);
     }

@@ -1,9 +1,5 @@
 # [Acuparse Documentation](https://docs.acuparse.com)
 
-## UPDATING TO VERSION 3
-
-See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detailed instructions.
-
 ## Project Pipeline Status
 
 | Acuparse Main | Installer | Website |
@@ -62,7 +58,7 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 
 ## Updating
 
-- [Updating Guide](UPDATING)
+- [Update Guide](UPDATING)
 
 ## Troubleshooting
 
@@ -103,3 +99,12 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 - [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
 - [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
 - [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)
+
+## Community Support
+
+- [Slack](https://communityinviter.com/apps/acuparse/acuparse)
+- [Users Mailing List](https://groups.google.com/a/lists.acuparse.com/forum/#!forum/users).
+
+- Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
+    - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com).
+If you require advanced or commercial support, send mail to [hello@acuparse.com](mailto:hello@acuparse.com).

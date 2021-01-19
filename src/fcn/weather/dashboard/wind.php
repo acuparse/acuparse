@@ -49,35 +49,30 @@
         }
         echo '<h2>from <i class="wi wi-wind wi-from-' . strtolower($wx->windDIR) . '" aria-hidden="true"></i> ' . $windSpeed . '</h2>'; ?>
         <ul class="list-unstyled">
-            <?php if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-                if ($atlas->windGustMPH !== $wx->windSpeedMPH) {
+            <?php if ($config->station->device === 0) {
+                if ($wx->windGustMPH !== $wx->windSpeedMPH) {
                     if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate ===
                         'archive') {
-                        $windGust = ($config->site->imperial === true) ? "$atlas->windGustDIR @ $atlas->windGustMPH mph
-                ($atlas->windGustKMH km/h)" : "$atlas->windGustDIR @ $atlas->windGustKMH km/h ($atlas->windGustMPH mph)";
+                        $windGust = ($config->site->imperial === true) ? "$wx->windGustDIR @ $wx->windGustMPH mph
+                ($wx->windGustKMH km/h)" : "$wx->windGustDIR @ $wx->windGustKMH km/h ($wx->windGustMPH mph)";
                     } else {
-                        $windGust = ($config->site->imperial === true) ? "$atlas->windGustDIR @ $atlas->windGustMPH mph" :
-                            "$atlas->windGustDIR @ $atlas->windGustKMH km/h";
+                        $windGust = ($config->site->imperial === true) ? "$wx->windGustDIR @ $wx->windGustMPH mph" :
+                            "$wx->windGustDIR @ $wx->windGustKMH km/h";
                     }
                     echo "<li><h3>Gust:</h3> $windGust</li>";
                 }
-                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate ===
-                    'archive') {
-                    $windAvg = ($config->site->imperial === true) ? "$atlas->windAvgMPH mph
-                ($atlas->windAvgKMH km/h)" : "$atlas->windAvgKMH km/h ($atlas->windAvgMPH mph)";
-                } else {
-                    $windAvg = ($config->site->imperial === true) ? "$atlas->windAvgMPH mph" :
-                        "$atlas->windAvgKMH km/h";
-                }
-                echo "<li><h3>Average:</h3> $windAvg</li>";
             }
-            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate ===
-                'archive') {
-                $windPeak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSpeedMPH_peak mph
-                ($wx->windSpeedKMH_peak km/h)" : "$wx->windDIR_peak @ $wx->windSpeedKMH_peak km/h ($wx->windSpeedMPH_peak mph)";
+            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                $windAvg = ($config->site->imperial === true) ? "$wx->windAvgMPH mph ($wx->windAvgKMH km/h)" : "$wx->windAvgKMH km/h ($wx->windAvgMPH mph)";
             } else {
-                $windPeak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSpeedMPH_peak mph" :
-                    "$wx->windDIR_peak @ $wx->windSpeedKMH_peak km/h";
+                $windAvg = ($config->site->imperial === true) ? "$wx->windAvgMPH mph" : "$wx->windAvgKMH km/h";
+            }
+            echo "<li><h3>Average:</h3> $windAvg</li>";
+
+            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                $windPeak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSpeedMPH_peak mph ($wx->windSpeedKMH_peak km/h)" : "$wx->windDIR_peak @ $wx->windSpeedKMH_peak km/h ($wx->windSpeedMPH_peak mph)";
+            } else {
+                $windPeak = ($config->site->imperial === true) ? "$wx->windDIR_peak @ $wx->windSpeedMPH_peak mph" : "$wx->windDIR_peak @ $wx->windSpeedKMH_peak km/h";
             }
             echo "<li><h3>Peak:</h3> $windPeak @ $wx->windSpeed_peak_recorded</li>"; ?>
         </ul>

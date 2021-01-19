@@ -30,16 +30,6 @@ class getCurrentAtlasData
     private $uvIndex;
     private $lightIntensity;
     private $lightSeconds;
-    private $windGustMPH;
-    private $windGustKMH;
-    private $windGustDEG;
-    private $windSpeedMPH_avg;
-    private $windSpeedKMH_avg;
-    private $windGust_peak_recorded;
-    private $windGust_peak_recorded_JSON;
-    private $windGustMPH_peak;
-    private $windGustKMH_peak;
-    private $windGustDEG_peak;
     private $lastUpdate;
     private $lastUpdate_json;
 
@@ -71,32 +61,7 @@ class getCurrentAtlasData
         $this->lightIntensity = (int)$result['lightintensity'];
         $this->lightSeconds = (int)$result['measured_light_seconds'];
 
-        // Get Wind Data
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `gust` FROM `winddirection` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->windGustDEG = (int)$result['gust'];
-
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `gustMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->windGustMPH = (int)$result['gustMPH'];
-        $this->windGustKMH = (int)round($result['gustMPH'] * 1.60934);
-
-
-        // 2 Min Average Windspeed:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `averageMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->windSpeedMPH_avg = (int)$result['averageMPH']; // Miles per hour
-        $this->windSpeedKMH_avg = (int)round($result['averageMPH'] * 1.60934); // Convert to Kilometers per hour
-
         if ($cron === false) {
-            // Today's Peak Gust:
-            $result = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-            $this->windGust_peak_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
-            $this->windGust_peak_recorded_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-            $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
-            $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
-            $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
 
             // Get last Update
             $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -152,62 +117,6 @@ class getCurrentAtlasData
         return round($seconds / 3600, 2);
     }
 
-    // Calculate human readable wind direction from a range of values:
-    private function windGustDirection($windDEG): string
-    {
-        switch ($windDEG) {
-            case ($windDEG >= 11.25 && $windDEG < 33.75):
-                $windDIR = 'NNE';
-                break;
-            case ($windDEG >= 33.75 && $windDEG < 56.25):
-                $windDIR = 'NE';
-                break;
-            case ($windDEG >= 56.25 && $windDEG < 78.75):
-                $windDIR = 'ENE';
-                break;
-            case ($windDEG >= 78.75 && $windDEG < 101.25):
-                $windDIR = 'E';
-                break;
-            case ($windDEG >= 101.25 && $windDEG < 123.75):
-                $windDIR = 'ESE';
-                break;
-            case ($windDEG >= 123.75 && $windDEG < 146.25):
-                $windDIR = 'SE';
-                break;
-            case ($windDEG >= 146.25 && $windDEG < 168.75):
-                $windDIR = 'SSE';
-                break;
-            case ($windDEG >= 168.75 && $windDEG < 191.25):
-                $windDIR = 'S';
-                break;
-            case ($windDEG >= 191.25 && $windDEG < 213.75):
-                $windDIR = 'SSW';
-                break;
-            case ($windDEG >= 213.75 && $windDEG < 236.25):
-                $windDIR = 'SW';
-                break;
-            case ($windDEG >= 236.25 && $windDEG < 258.75):
-                $windDIR = 'WSW';
-                break;
-            case ($windDEG >= 258.75 && $windDEG < 281.25):
-                $windDIR = 'W';
-                break;
-            case ($windDEG >= 281.25 && $windDEG < 303.75):
-                $windDIR = 'WNW';
-                break;
-            case ($windDEG >= 303.75 && $windDEG < 326.25):
-                $windDIR = 'NW';
-                break;
-            case ($windDEG >= 326.25 && $windDEG < 348.75):
-                $windDIR = 'NNW';
-                break;
-            default:
-                $windDIR = 'N';
-                break;
-        }
-        return (string)$windDIR;
-    }
-
     // Get Dashboard Data
     public function getData(): object
     {
@@ -218,17 +127,6 @@ class getCurrentAtlasData
             'lightHours' => $this->calculateLightHours($this->lightSeconds),
             'uvIndex' => $this->uvIndex,
             'uvIndex_text' => $this->calculateUV($this->uvIndex),
-            'windGustDEG' => $this->windGustDEG,
-            'windGustDIR' => $this->windGustDirection($this->windGustDEG),
-            'windGustMPH' => $this->windGustMPH,
-            'windGustKMH' => $this->windGustKMH,
-            'windGustPeakMPH' => $this->windGustMPH_peak,
-            'windGustPeakKMH' => $this->windGustKMH_peak,
-            'windGustDEGPeak' => $this->windGustDEG_peak,
-            'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
-            'windGustPeakRecorded' => $this->windGust_peak_recorded,
-            'windAvgMPH' => $this->windSpeedMPH_avg,
-            'windAvgKMH' => $this->windSpeedKMH_avg,
             'lastUpdate' => $this->lastUpdate,
         );
     }
@@ -243,17 +141,6 @@ class getCurrentAtlasData
             'lightHours' => $this->calculateLightHours($this->lightSeconds),
             'uvIndex' => $this->uvIndex,
             'uvIndex_text' => $this->calculateUV($this->uvIndex),
-            'windGustDEG' => $this->windGustDEG,
-            'windGustDIR' => $this->windGustDirection($this->windGustDEG),
-            'windGustMPH' => $this->windGustMPH,
-            'windGustKMH' => $this->windGustKMH,
-            'windGustPeakMPH' => $this->windGustMPH_peak,
-            'windGustPeakKMH' => $this->windGustKMH_peak,
-            'windGustDEGPeak' => $this->windGustDEG_peak,
-            'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
-            'windGustPeakRecorded' => $this->windGust_peak_recorded_JSON,
-            'windAvgMPH' => $this->windSpeedMPH_avg,
-            'windAvgKMH' => $this->windSpeedKMH_avg,
             'lastUpdate' => $this->lastUpdate_json,
         );
     }
@@ -264,9 +151,6 @@ class getCurrentAtlasData
             'lightIntensity' => $this->lightIntensity,
             'lightSeconds' => $this->lightSeconds,
             'uvIndex' => $this->uvIndex,
-            'windAvgMPH' => $this->windSpeedMPH_avg,
-            'windGustDEG' => $this->windGustDEG,
-            'windGustMPH' => $this->windGustMPH
         );
     }
 }

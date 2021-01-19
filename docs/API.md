@@ -110,6 +110,17 @@ $windSpeedMPH_peak = $weather->main->windSpeedMPH_peak;
 $windSpeedKMH_peak = $weather->main->windSpeedKMH_peak;
 $windSpeed_peak_recorded = $weather->main->windSpeed_peak_recorded;
 $windBeaufort = $weather->main->windBeaufort;
+$windGustDEG = $weather->main->windGustDEG;
+$windGustDIR = $weather->main->windGustDIR;
+$windGustMPH = $weather->main->windGustMPH;
+$windGustKMH = $weather->main->windGustKMH;
+$windGustPeakMPH = $weather->main->windGustPeakMPH;
+$windGustPeakKMH = $weather->main->windGustPeakKMH;
+$windGustDEGPeak = $weather->main->windGustDEGPeak;
+$windGustDIRPeak = $weather->main->windGustDIRPeak;
+$windGustPeakRecorded = $weather->main->windGustPeakRecorded;
+$windAvgMPH = $weather->main->windAvgMPH;
+$windAvgKMH = $weather->main->windAvgKMH;
 $rainIN = $weather->main->rainIN;
 $rainMM = $weather->main->rainMM;
 $rainTotalIN_today = $weather->main->rainTotalIN_today;
@@ -137,17 +148,6 @@ $lightSeconds = $weather->atlas->lightSeconds;
 $lightHours = $weather->atlas->lightHours;
 $uvIndex = $weather->atlas->uvIndex;
 $uvIndex_text = $weather->atlas->uvIndex_text;
-$windGustDEG = $weather->atlas->windGustDEG;
-$windGustDIR = $weather->atlas->windGustDIR;
-$windGustMPH = $weather->atlas->windGustMPH;
-$windGustKMH = $weather->atlas->windGustKMH;
-$windGustPeakMPH = $weather->atlas->windGustPeakMPH;
-$windGustPeakKMH = $weather->atlas->windGustPeakKMH;
-$windGustDEGPeak = $weather->atlas->windGustDEGPeak;
-$windGustDIRPeak = $weather->atlas->windGustDIRPeak;
-$windGustPeakRecorded = $weather->atlas->windGustPeakRecorded;
-$windAvgMPH = $weather->atlas->windAvgMPH;
-$windAvgKMH = $weather->atlas->windAvgKMH;
 $battery = $weather->atlas->battery;
 $signal = $weather->atlas->signal;
 $lastUpdate = $weather->atlas->lastUpdate;
@@ -162,6 +162,11 @@ $last_strike_distance_KM = $weather->lightning->last_strike_distance_KM;
 $last_strike_distance_M = $weather->lightning->last_strike_distance_M;
 $last_update = $weather->lightning->last_update;
 ```
+
+Note: The following values will be `null` if you are not using an Access.
+
+`$windGustDEG`, `$windGustDIR`, `$windGustMPH`, `$windGustKMH`, `$windGustPeakMPH`, `$windGustPeakKMH`
+, `$windGustDEGPeak`, `$windGustDIRPeak`.
 
 #### Tower Readings
 

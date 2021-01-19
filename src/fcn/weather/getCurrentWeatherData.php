@@ -28,13 +28,23 @@ class getCurrentWeatherData
 {
     // Set variables
     private $windSpeedMPH;
-    private $windSkmh;
+    private $windSpeedKMH;
     private $windDEG;
     private $windDEG_peak;
     private $wind_recorded_peak;
     private $wind_recorded_peak_json;
     private $windSpeedMPH_peak;
-    private $windSkmh_peak;
+    private $windSpeedKMH_peak;
+    private $windGustMPH;
+    private $windGustKMH;
+    private $windGustDEG;
+    private $windSpeedMPH_avg;
+    private $windSpeedKMH_avg;
+    private $windGust_peak_recorded;
+    private $windGust_peak_recorded_JSON;
+    private $windGustMPH_peak;
+    private $windGustKMH_peak;
+    private $windGustDEG_peak;
     private $pressure_inHg;
     private $pressure_kPa;
     private $tempF;
@@ -121,7 +131,7 @@ class getCurrentWeatherData
             $this->last_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('full_moon'));
             $this->last_full_moon_json = date($config->site->date_api_json, $moon->get_phase('full_moon'));
 
-            // Moon rise/set
+            // Calculate Moontime
             if (file_exists(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php')) {
                 require(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php');
                 $moon_time = Moon::calculateMoonTimes($config->site->lat, $config->site->long);
@@ -145,37 +155,87 @@ class getCurrentWeatherData
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `speedMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->windSpeedMPH = (int)round($result['speedMPH']); // Miles per hour
-        $this->windSkmh = (int)round($result['speedMPH'] * 1.60934); // Convert to Kilometers per hour
+        $this->windSpeedKMH = (int)round($result['speedMPH'] * 1.60934); // Convert to Kilometers per hour
+
+        // Average Windspeed:
+        if ($config->station->device === 0) {
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `averageMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
+            $this->windSpeedMPH_avg = (int)$result['averageMPH']; // Miles per hour
+            $this->windSpeedKMH_avg = (int)round($result['averageMPH'] * 1.60934); // Convert to Kilometers per hour
+
+            // Get Gust Data
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `gust` FROM `winddirection` ORDER BY `timestamp` DESC LIMIT 1"));
+            $this->windGustDEG = (int)$result['gust'];
+
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `gustMPH` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
+            $this->windGustMPH = (int)$result['gustMPH'];
+            $this->windGustKMH = (int)round($result['gustMPH'] * 1.60934);
+
+        } else {
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT AVG(speedMPH) AS `avg_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)"));
+            $this->windSpeedMPH_avg = (int)round($result['avg_speedMPH']); // Miles per hour
+            $this->windSpeedKMH_avg = (int)round($result['avg_speedMPH'] * 1.60934); // Convert to Kilometers per hour
+        }
+
+        // Today's Peak Windspeed:
+        if ($config->station->device === 0) {
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT windspeed.timestamp, windspeed.speedMPH, winddirection.degrees FROM `windspeed` INNER JOIN `winddirection` ON windspeed.timestamp=winddirection.timestamp WHERE windspeed.speedMPH = (SELECT MAX(windspeed.speedMPH) FROM `windspeed` WHERE DATE(windspeed.timestamp) = CURDATE()) AND DATE(windspeed.timestamp) = CURDATE() ORDER BY `timestamp` DESC LIMIT 1"));
+            $this->wind_recorded_peak = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
+            $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
+            $this->windSpeedMPH_peak = (int)round($result['speedMPH']); // Miles per hour
+            $this->windSpeedKMH_peak = (int)round($result['speedMPH'] * 1.60934); // Convert to Kilometers per hour
+            $this->windDEG_peak = (int)$result['degrees']; // Degrees
+        } else {
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+            $this->wind_recorded_peak = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
+            $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+            $this->windSpeedMPH_peak = (int)round($result['windSpeedMPH']); // Miles per hour
+            $this->windSpeedKMH_peak = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+            $this->windDEG_peak = (int)$result['windDEG']; // Degrees
+        }
 
         // Process Wind Direction:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `degrees` FROM `winddirection` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->windDEG = (int)$result['degrees']; // Degrees
 
-        // Today's Peak Windspeed:
-        if ($cron === false) {
-            $result = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-            $this->wind_recorded_peak = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
-            $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-            $this->windSpeedMPH_peak = (int)round($result['windSpeedMPH']); // Miles per hour
-            $this->windSkmh_peak = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
-            $this->windDEG_peak = (int)$result['windDEG']; // Degrees
-        }
-
-// Process Pressure:
+        // Process Pressure:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `inhg` FROM `pressure` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->pressure_inHg = (float)$result['inhg']; // Inches of Mercury
         $this->pressure_kPa = (float)round($result['inhg'] * 3.38638866667, 2); // Convert to Kilopascals
 
-// Process Temp:
+        // Process Temp:
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `tempF` FROM `temperature` ORDER BY `timestamp` DESC LIMIT 1"));
         $this->tempF = (float)round($result['tempF'], 1); // Fahrenheit
         $this->tempC = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
+        // Process Humidity:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `relH` FROM `humidity` ORDER BY `timestamp` DESC LIMIT 1"));
+        $this->relH = (int)$result['relH']; // Percentage
+
+        // Process Rainfall:
+        $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `rainin` FROM `rainfall`"));
+        $this->rainIN = (float)$result['rainin']; // Inches
+        $this->rainMM = (float)round($result['rainin'] * 25.4, 2); // Millimeters
+
+        // Today's Rainfall:
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `dailyrainin` FROM `dailyrain` WHERE DATE(`date`) = CURDATE()"));
+        $this->rainTotalIN_today = (float)$result['dailyrainin']; // Inches
+        $this->rainTotalMM_today = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
+
+        // Disable some readings when running in Cron
         if ($cron === false) {
+
             // High Temp:
             $result = mysqli_fetch_assoc(mysqli_query($conn,
                 "SELECT `timestamp`, `tempF` FROM `temperature` WHERE `tempF` = (SELECT MAX(tempF) FROM `temperature` WHERE DATE(`timestamp`) = CURDATE())
@@ -199,25 +259,28 @@ class getCurrentWeatherData
                 "SELECT AVG(tempF) AS `avg_tempF` FROM `temperature` WHERE DATE(`timestamp`) = CURDATE()"));
             $this->tempF_avg = (float)round($result['avg_tempF'], 1); // Fahrenheit
             $this->tempC_avg = (float)round(($result['avg_tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
-        }
 
-// Process Humidity:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `relH` FROM `humidity` ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->relH = (int)$result['relH']; // Percentage
+            if ($config->station->device === 0) {
+                // Today's Peak Gust:
+                $result = mysqli_fetch_assoc(mysqli_query($conn,
+                    "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+                $this->windGust_peak_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
+                $this->windGust_peak_recorded_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+                $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
+                $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
+                $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
+            } else if ($config->station->device === 1) {
+                // Gust:
+                $this->windGust_peak_recorded = NULL;
+                $this->windGust_peak_recorded_JSON = NULL;
+                $this->windGustMPH_peak = NULL;
+                $this->windGustKMH_peak = NULL;
+                $this->windGustDEG_peak = NULL;
+                $this->windGustDEG = NULL;
+                $this->windGustMPH = NULL;
+                $this->windGustKMH = NULL;
+            }
 
-// Process Rainfall:
-        $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `rainin` FROM `rainfall`"));
-        $this->rainIN = (float)$result['rainin']; // Inches
-        $this->rainMM = (float)round($result['rainin'] * 25.4, 2); // Millimeters
-
-// Today's Rainfall:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `dailyrainin` FROM `dailyrain` WHERE DATE(`date`) = CURDATE()"));
-        $this->rainTotalIN_today = (float)$result['dailyrainin']; // Inches
-        $this->rainTotalMM_today = (float)round($result['dailyrainin'] * 25.4, 2); // Millimeters
-
-        if ($cron === false) {
             // Last Update
             $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`"));
             $this->lastUpdate = $result['timestamp'];
@@ -225,11 +288,10 @@ class getCurrentWeatherData
         }
     }
 
-//Private Functions
+// Private Functions
 
 // Calculate human readable wind direction from a range of values:
-    private
-    function windDirection($windDEG): string
+    private function windDirection($windDEG): string
     {
         switch ($windDEG) {
             case ($windDEG >= 11.25 && $windDEG < 33.75):
@@ -284,15 +346,78 @@ class getCurrentWeatherData
         return (string)$windDIR;
     }
 
-// Calculate feels like temp
-    private
-    function feelsLike(): object
+    // Calculate human readable wind direction from a range of values:
+    private function windGustDirection($windDEG): ?string
     {
-        $feelsF = 0;
-        $feelsC = 0;
+        if ($windDEG === NULL) {
+            $windDIR = NULL;
+        } else {
+            switch ($windDEG) {
+                case ($windDEG >= 11.25 && $windDEG < 33.75):
+                    $windDIR = 'NNE';
+                    break;
+                case ($windDEG >= 33.75 && $windDEG < 56.25):
+                    $windDIR = 'NE';
+                    break;
+                case ($windDEG >= 56.25 && $windDEG < 78.75):
+                    $windDIR = 'ENE';
+                    break;
+                case ($windDEG >= 78.75 && $windDEG < 101.25):
+                    $windDIR = 'E';
+                    break;
+                case ($windDEG >= 101.25 && $windDEG < 123.75):
+                    $windDIR = 'ESE';
+                    break;
+                case ($windDEG >= 123.75 && $windDEG < 146.25):
+                    $windDIR = 'SE';
+                    break;
+                case ($windDEG >= 146.25 && $windDEG < 168.75):
+                    $windDIR = 'SSE';
+                    break;
+                case ($windDEG >= 168.75 && $windDEG < 191.25):
+                    $windDIR = 'S';
+                    break;
+                case ($windDEG >= 191.25 && $windDEG < 213.75):
+                    $windDIR = 'SSW';
+                    break;
+                case ($windDEG >= 213.75 && $windDEG < 236.25):
+                    $windDIR = 'SW';
+                    break;
+                case ($windDEG >= 236.25 && $windDEG < 258.75):
+                    $windDIR = 'WSW';
+                    break;
+                case ($windDEG >= 258.75 && $windDEG < 281.25):
+                    $windDIR = 'W';
+                    break;
+                case ($windDEG >= 281.25 && $windDEG < 303.75):
+                    $windDIR = 'WNW';
+                    break;
+                case ($windDEG >= 303.75 && $windDEG < 326.25):
+                    $windDIR = 'NW';
+                    break;
+                case ($windDEG >= 326.25 && $windDEG < 348.75):
+                    $windDIR = 'NNW';
+                    break;
+                default:
+                    $windDIR = 'N';
+                    break;
+            }
+        }
+        if ($windDEG === NULL) {
+            return NULL;
+        } else {
+            return (string)$windDIR;
+        }
+    }
+
+    // Calculate feels like temp
+    private function feelsLike(): object
+    {
+        $feelsF = NULL;
+        $feelsC = NULL;
 
         // Wind Chill:
-        if ($this->tempC <= 5 && $this->windSkmh >= 3) {
+        if ($this->tempC <= 5 && $this->windSpeedKMH >= 3) {
             $feelsC = 13.12 + (0.6215 * (($this->tempF - 32) * 5 / 9)) - (11.37 * (($this->windSpeedMPH * 1.60934) ** 0.16)) + ((0.3965 * (($this->tempF - 32) * 5 / 9)) * (($this->windSpeedMPH * 1.60934) ** 0.16));
             $feelsF = $feelsC * 9 / 5 + 32;
         } // Heat Index:
@@ -307,9 +432,8 @@ class getCurrentWeatherData
         );
     }
 
-// Calculate dew point
-    private
-    function dewPoint(): object
+    // Calculate dew point
+    private function dewPoint(): object
     {
         $dewptC = ((pow(($this->relH / 100), 0.125)) * (112 + 0.9 * $this->tempC) + (0.1 * $this->tempC) - 112);
         $dewptF = ($dewptC * 9 / 5) + 32;
@@ -320,8 +444,8 @@ class getCurrentWeatherData
         );
     }
 
-    private
-    function windBeaufort($windSpeedMPH): int
+    // Calculate Beaufort
+    private function windBeaufort($windSpeedMPH): int
     {
         $windSpeed = $windSpeedMPH;
 
@@ -372,8 +496,7 @@ class getCurrentWeatherData
 // Public Functions
 
 // Calculate the trending value
-    public
-    function calculateTrend($unit, $table, $sensor = null): string
+    public function calculateTrend($unit, $table, $sensor = null): string
     {
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
@@ -404,8 +527,7 @@ class getCurrentWeatherData
     }
 
 // Get current conditions
-    public
-    function getConditions(): object
+    public function getConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
@@ -426,15 +548,26 @@ class getCurrentWeatherData
             'relH' => $this->relH,
             'relH_trend' => $this->calculateTrend('inhg', 'pressure'),
             'windSpeedMPH' => $this->windSpeedMPH,
-            'windSpeedKMH' => $this->windSkmh,
+            'windSpeedKMH' => $this->windSpeedKMH,
             'windDEG' => $this->windDEG,
             'windDIR' => $this->windDirection($this->windDEG),
             'windDEG_peak' => $this->windDEG_peak,
             'windDIR_peak' => $this->windDirection($this->windDEG_peak),
             'windSpeedMPH_peak' => $this->windSpeedMPH_peak,
-            'windSpeedKMH_peak' => $this->windSkmh_peak,
+            'windSpeedKMH_peak' => $this->windSpeedKMH_peak,
             'windSpeed_peak_recorded' => $this->wind_recorded_peak,
             'windBeaufort' => $this->windBeaufort($this->windSpeedMPH),
+            'windGustDEG' => $this->windGustDEG,
+            'windGustDIR' => $this->windGustDirection($this->windGustDEG),
+            'windGustMPH' => $this->windGustMPH,
+            'windGustKMH' => $this->windGustKMH,
+            'windGustPeakMPH' => $this->windGustMPH_peak,
+            'windGustPeakKMH' => $this->windGustKMH_peak,
+            'windGustDEGPeak' => $this->windGustDEG_peak,
+            'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
+            'windGustPeakRecorded' => $this->windGust_peak_recorded,
+            'windAvgMPH' => $this->windSpeedMPH_avg,
+            'windAvgKMH' => $this->windSpeedKMH_avg,
             'rainIN' => $this->rainIN,
             'rainMM' => $this->rainMM,
             'rainTotalIN_today' => $this->rainTotalIN_today,
@@ -458,8 +591,7 @@ class getCurrentWeatherData
     }
 
 // Get current JSON conditions
-    public
-    function getJSONConditions(): object
+    public function getJSONConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
@@ -480,15 +612,26 @@ class getCurrentWeatherData
             'relH' => $this->relH,
             'relH_trend' => lcfirst($this->calculateTrend('inhg', 'pressure')),
             'windSpeedMPH' => $this->windSpeedMPH,
-            'windSpeedKMH' => $this->windSkmh,
+            'windSpeedKMH' => $this->windSpeedKMH,
             'windDEG' => $this->windDEG,
             'windDIR' => $this->windDirection($this->windDEG),
             'windDEG_peak' => $this->windDEG_peak,
             'windDIR_peak' => $this->windDirection($this->windDEG_peak),
             'windSpeedMPH_peak' => $this->windSpeedMPH_peak,
-            'windSpeedKMH_peak' => $this->windSkmh_peak,
+            'windSpeedKMH_peak' => $this->windSpeedKMH_peak,
             'windSpeed_peak_recorded' => $this->wind_recorded_peak_json,
             'windBeaufort' => $this->windBeaufort($this->windSpeedMPH),
+            'windGustDEG' => $this->windGustDEG,
+            'windGustDIR' => $this->windGustDirection($this->windGustDEG),
+            'windGustMPH' => $this->windGustMPH,
+            'windGustKMH' => $this->windGustKMH,
+            'windGustPeakMPH' => $this->windGustMPH_peak,
+            'windGustPeakKMH' => $this->windGustKMH_peak,
+            'windGustDEGPeak' => $this->windGustDEG_peak,
+            'windGustDIRPeak' => $this->windGustDirection($this->windGustDEG_peak),
+            'windGustPeakRecorded' => $this->windGust_peak_recorded_JSON,
+            'windAvgMPH' => $this->windSpeedMPH_avg,
+            'windAvgKMH' => $this->windSpeedKMH_avg,
             'rainIN' => $this->rainIN,
             'rainMM' => $this->rainMM,
             'rainTotalIN_today' => $this->rainTotalIN_today,
@@ -512,19 +655,30 @@ class getCurrentWeatherData
     }
 
 // Get current JSON conditions
-    public
-    function getCRONConditions(): object
+    public function getCRONConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
+            'tempC' => $this->tempF,
             'feelsF' => $this->feelsLike()->feelsF,
+            'feelsC' => $this->feelsLike()->feelsC,
             'dewptF' => $this->dewPoint()->dewptF,
+            'dewptC' => $this->dewPoint()->dewptF,
             'relH' => $this->relH,
             'windSpeedMPH' => $this->windSpeedMPH,
+            'windSpeedKMH' => $this->windSpeedKMH,
             'windDEG' => $this->windDEG,
+            'pressure_inHg' => $this->pressure_inHg,
+            'pressure_kPa' => $this->pressure_kPa,
+            'windAvgMPH' => $this->windSpeedMPH_avg,
+            'windAvgKMH' => $this->windSpeedKMH_avg,
+            'windGustDEG' => $this->windGustDEG,
+            'windGustMPH' => $this->windGustMPH,
+            'windGustKMH' => $this->windGustKMH,
             'rainIN' => $this->rainIN,
+            'rainMM' => $this->rainMM,
             'rainTotalIN_today' => $this->rainTotalIN_today,
-            'pressure_inHg' => $this->pressure_inHg
+            'rainTotalMM_today' => $this->rainTotalMM_today
         );
     }
 }

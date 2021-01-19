@@ -51,7 +51,7 @@ if ($installed === true) {
         }
         /* @var object $data */
 
-        // Load Atlas Data
+        // Load Atlas/Lightning Data
         if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
             if (!class_exists('getCurrentAtlasData')) {
                 require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
@@ -67,6 +67,15 @@ if ($installed === true) {
                     $lightning = $getLightningData->getCRONData();
                 }
             }
+        } else if ($config->station->device === 0 && $config->station->primary_sensor === 1) {
+            // Load Tower Lightning
+            if ($config->station->lightning_source === 2) {
+                if (!class_exists('tower\getCurrentLightningData')) {
+                    require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                    $getLightningData = new tower\getCurrentLightningData(NULL, true);
+                    $lightning = $getLightningData->getCRONData();
+                }
+            }
         }
 
         /* @var object $atlas */
@@ -74,14 +83,6 @@ if ($installed === true) {
 
         // If using tower data for archiving, set it now
         if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === true) {
-            // Load Tower Lightning
-            if (($config->station->device === 0 && ($config->station->primary_sensor === 0 || $config->station->primary_sensor === 1)) && ($config->station->lightning_source === 2 || $config->station->lightning_source === 3)) {
-                if (!class_exists('tower\getCurrentLightningData')) {
-                    require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                    $getLightningData = new tower\getCurrentLightningData(NULL, true);
-                    $lightning = $getLightningData->getCRONData();
-                }
-            }
             // Load Tower Data
             require(APP_BASE_PATH . '/fcn/cron/towerData.php');
             /* @var string $sensor */
@@ -96,12 +97,20 @@ if ($installed === true) {
         if (($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) {
             // New Data, proceed
 
-            if ($config->station->device === 0 && $config->station->primary_sensor === 0 && $config->station->lightning_source !== 0) {
-                $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`, `lightning`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$atlas->windAvgMPH', '$atlas->windGustMPH', '$data->windDEG', '$atlas->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds', '$lightning->dailystrikes')";
-            } elseif ($config->station->device === 0 && $config->station->primary_sensor === 0 && $config->station->lightning_source === 0) {
-                $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$atlas->windAvgMPH', '$atlas->windGustMPH', '$data->windDEG', '$atlas->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds')";
-            } else {
-                $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH','$data->windDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
+            // Access Update
+            if ($config->station->device === 0) {
+                if ($config->station->primary_sensor === 0 && $config->station->lightning_source !== 0) {
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`, `lightning`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds', '$lightning->dailystrikes')";
+                } elseif ($config->station->primary_sensor === 0) {
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds')";
+                } elseif ($config->station->primary_sensor === 1 && $config->station->lightning_source === 2) {
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `lightning`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$lightning->dailystrikes')";
+                } else {
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
+                }
+            } //Hub Update
+            else {
+                $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH','$data->windAvgMPH','$data->windDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
             }
 
             // Save to DB

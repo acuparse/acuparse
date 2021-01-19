@@ -72,12 +72,12 @@ else {
             <div class="col-8 col-md-6 mx-auto">
                 <form class="form" action="/admin/tower?edit&do" method="POST">
                     <div class="form-group">
-                        <label for="tower-id">Tower ID:</label>
+                        <label for="tower-id">Tower ID</label>
                         <input type="text" class="form-control" name="id" id="tower-id"
                                value="<?= $row['sensor']; ?>" maxlength="8" required>
                     </div>
                     <div class="form-group">
-                        <label for="tower-name">Display Name:</label>
+                        <label for="tower-name">Display Name</label>
                         <input type="text" class="form-control" name="name" id="tower-name"
                                value="<?= $row['name']; ?>" maxlength="32" required>
                     </div>
@@ -108,13 +108,13 @@ else {
 
         <div class="row">
             <div class="col">
-                <h2 class="page-header">Delete Tower?</h2>
+                <h2 class="page-header">Delete Sensor</h2>
             </div>
         </div>
         <div class="row">
             <div class="col-md-8 col mx-auto">
                 <div class="alert alert-danger">
-                    <p>Click below to remove <?= $row['name']; ?>.</p>
+                    <p>Click below to remove this Tower Sensor.</p>
                     <button type="button" id="delete" class="btn btn-danger"
                             onClick="confirmDelete('/admin/tower?delete&sensor_id=<?= $row['sensor']; ?>')"><i
                                 class="far fa-trash-alt" aria-hidden="true"></i> Delete Tower

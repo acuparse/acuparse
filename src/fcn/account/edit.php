@@ -174,13 +174,13 @@ else {
                         <div class="col-8 col-md-6 mx-auto">
                             <form class="form" role="form" action="/admin/account?edit&do" method="POST">
                                 <div class="form-group">
-                                    <label for="username">Username:</label>
+                                    <label for="username">Username</label>
                                     <input type="text" class="form-control" name="username" id="username"
                                            placeholder="Username" maxlength="255"
                                            value="<?= $row['username']; ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="user_email">Email:</label>
+                                    <label for="user_email">Email</label>
                                     <input type="text" class="form-control" name="email" id="email"
                                            placeholder="Email" maxlength="255"
                                            value="<?= $row['email']; ?>" required>
@@ -249,7 +249,7 @@ else {
 
             <div class="row">
                 <div class="col">
-                    <h2 class="panel-heading">Change User Password?</h2>
+                    <h2 class="panel-heading">Change Password</h2>
                 </div>
             </div>
 
@@ -268,7 +268,7 @@ else {
 
             <div class="row">
                 <div class="col">
-                    <h2 class="panel-heading">Delete User?</h2>
+                    <h2 class="panel-heading">Delete User</h2>
                 </div>
             </div>
 

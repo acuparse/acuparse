@@ -41,9 +41,12 @@
  */
 
 $wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
-$wuQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $wuQuery = $wuQuery . '&windspdmph_avg2m=' . $atlas->windAvgMPH . '&windgustmph' . $atlas->windGust . '&windgustdir' . $atlas->windGustDEG . '&UV=' . $atlas->uvIndex;
+$wuQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today . '&windspdmph_avg2m=' . $data->windAvgMPH;
+if ($config->station->device === 0) {
+    $wuQuery = $wuQuery . '&windgustmph=' . $data->windGustMPH . '&windgustdir=' . $data->windGustDEG;
+    if ($config->station->primary_sensor === 0) {
+        $wuQuery = $wuQuery . '&UV=' . $atlas->uvIndex;
+    }
 }
 $wuQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
 $wuQueryResult = file_get_contents(htmlentities($wuQueryUrl . $wuQuery . $wuQueryStatic));
