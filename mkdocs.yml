@@ -10,7 +10,7 @@ theme:
     - navigation.expand
   palette:
     scheme: preference
-    primary: amber
+    primary: black
   icon:
     repo: fontawesome/brands/github
 site_dir: public
@@ -46,6 +46,9 @@ nav:
 copyright: "Copyright © 2015-2021 <a href='https://www.acuparse.com'>Acuparse Project</a><br />Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3</a>"
 extra:
   social:
+    - type: 'slack'
+      link: 'https://communityinviter.com/apps/acuparse/acuparse'
+      icon: 'fontawesome/brands/slack'
     - type: 'gitlab'
       link: 'https://gitlab.com/acuparse'
       icon: 'fontawesome/brands/gitlab'
@@ -66,10 +69,11 @@ markdown_extensions:
       permalink: true
   - pymdownx.highlight:
       linenums_style: pymdownx.inline
-  - pymdownx.superfences
   - admonition
+  - pymdownx.details
+  - pymdownx.superfences
 plugins:
   - search:
-      -lang: en
+      lang: en
   - minify:
       minify_html: true

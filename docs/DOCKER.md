@@ -56,6 +56,10 @@ Use Docker Compose to run Acuparse in production. A script is available to set u
     sudo usermod -a -G docker $USER
     ```
 
+!!! info
+    The installer attempts to configure your environment variables automatically. Confirm your configuration
+    variables are set properly in `/opt/acuparse/acuparse.env`. Also, ensure your `TZ` variable is set.
+
 ### Manual Installation
 
 **Install Docker and Docker Compose** on your system before continuing.
@@ -64,6 +68,8 @@ Use Docker Compose to run Acuparse in production. A script is available to set u
 - [Get Docker Compose](https://docs.docker.com/compose/install/)
 
 - Download and install the Acuparse compose files to `/opt/acuparse/`.
+    - Supporting files for Docker Compose can also be found in
+      the [Acuparse Installer Repository](https://gitlab.com/acuparse/installer/-/tree/master/docker).
 
     ```bash
     curl 'https://gitlab.com/acuparse/installer/-/archive/master/installer-master.zip?path=docker' -o acuparse_docker.zip`
@@ -71,7 +77,8 @@ Use Docker Compose to run Acuparse in production. A script is available to set u
 
 **You MUST edit the `acuparse.env` file to set your SQL password and Timezone before use!**
 
-If you are using a custom environment, ensure at the very least, you set the below template variables in your config:
+If you are using a custom environment, ensure at the very least, you set the variables from `acuparse.env` in your
+config:
 
 - [Acuparse Environment Template](https://gitlab.com/acuparse/installer/-/blob/master/docker/acuparse.env)
 
@@ -173,7 +180,7 @@ The following mounts are created in `/opt/acuparse/volumes`
     - Also, mounted to the Database and App containers; if you need to perform a restore.
     - This directory should not be used to store user files; aside from the backup tasks.
         - The backup task will clear all files in this directory.
-  
+
 ### [Docker Volumes](https://docs.docker.com/storage/volumes)
 
 - `acuparse_config`
@@ -227,9 +234,8 @@ Example using [namshi/smtp](https://hub.docker.com/r/namshi/smtp).
 
 The automated backup script will run once daily and save backups to `/opt/acuparse/volumes/backups` on your host.
 
-Backup files are kept for 7 days by default and can be changed by modifying `KEEP_BACKUPS_FOR` in your container.
-
-- `nano /opt/acuparse/cron/backup`.
+Backup files are kept for 7 days by default and can be changed by modifying `KEEP_BACKUPS_FOR` in your `acuparse.env`
+file. You can also disable backups by setting `BACKUPS_ENABLED=0` in `acuparse.env`.
 
 ### Restore Database
 

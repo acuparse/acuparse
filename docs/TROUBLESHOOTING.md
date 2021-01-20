@@ -96,9 +96,9 @@ can end up with a never ending cycle of readings.
 See [MyAcuRite Upload URL's](https://docs.acuparse.com/DNS/#myacurite-upload-urls) for more details!
 
 There is also
-a [Community provided guide in the Wiki](https://gitlab.com/acuparse/acuparse/-/wikis/Installation-on-Raspberry-Pi) to
-configure RasberryPi's for direct connection to an Access. This guide is ***NOT supported*** by the project directly and
-may be out of date. A tested and supported process is currently being developed.
+a [Community provided guide in the Wiki](https://gitlab.com/acuparse/acuparse/-/wikis/Installation-of-Acuparse-on-Raspberry-Pi-with-Bridged-Networking)
+to configure RaspberryPi's for direct connection to an Access. This guide is ***NOT supported*** by the project directly
+and may be out of date. A tested and supported process is currently being developed.
 
 ## Installation Errors
 

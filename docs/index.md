@@ -2,35 +2,37 @@
 
 ## Project Pipeline Status
 
-| Acuparse Main | Installer | Website |
-| ---- | ---- | --- |
-| [![Acuparse Status](https://gitlab.com/acuparse/acuparse/badges/stable/pipeline.svg "Acuparse Status")](https://gitlab.com/acuparse/acuparse/pipelines) | [![Installer Status](https://gitlab.com/acuparse/installer/badges/master/pipeline.svg "Installer Status")](https://gitlab.com/acuparse/installer/pipelines) | [![Website Status](https://gitlab.com/acuparse/website/badges/master/pipeline.svg "Website Status")](https://gitlab.com/acuparse/website/pipelines) |
+| Acuparse Main | Installer | Website | DNS Sync |
+| --- | --- | --- | --- |
+| [![Acuparse Status](https://gitlab.com/acuparse/acuparse/badges/stable/pipeline.svg "Acuparse Pipeline")](https://gitlab.com/acuparse/acuparse/pipelines) | [![Installer Status](https://gitlab.com/acuparse/installer/badges/master/pipeline.svg "Installer Pipeline")](https://gitlab.com/acuparse/installer/pipelines) | [![Website Status](https://gitlab.com/acuparse/website/badges/master/pipeline.svg "Website Pipeline")](https://gitlab.com/acuparse/website/pipelines) | [![DNS Status](https://gitlab.com/acuparse/dns_sync/badges/master/pipeline.svg "DNS Pipeline")](https://gitlab.com/acuparse/dns_sync/pipelines) |
 
-Welcome to the [Acuparse](https://www.acuparse.com) Documentation.
-Use the resources below to assist in your installation and configuration of Acuparse.
+Welcome to the [Acuparse](https://www.acuparse.com) Documentation. Use the resources below to assist in your
+installation and configuration of Acuparse.
 
-Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
-not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
+Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on
+data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
 
 !!! attention
     This program is open source 3rd party software. It is neither written nor supported by AcuRite.
 
 ## How it Works
 
-[Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an AcuRite
-Iris (5-in-1) or Atlas (7-in-1) weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
-[Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com), [Weathercloud](https://weathercloud.net),
+[Acuparse](https://www.acuparse.com) is a PHP/MySQL program that captures, stores, and displays weather data from an
+AcuRite Iris (5-in-1) or Atlas (7-in-1) weather station and tower sensors, via your Access/smartHUB. It uploads weather
+data to
+[Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com)
+, [Weathercloud](https://weathercloud.net),
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
-and [OpenWeather](https://openweathermap.org/).
-It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+and [OpenWeather](https://openweathermap.org/). It also processes and stores images from a local network camera for
+display and uploads to Weather Underground.
 
-Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
-not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
+Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on
+data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
 
-Acuparse requires a working AcuRite Access/smartHUB. You redirect weather data from your Access/smartHUB to your Acuparse
-server. It is captured, stored, and then passed along to MyAcuRite untouched.
-The response received from MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or
-when using a smartHUB, Acuparse creates the response.
+Acuparse requires a working AcuRite Access/smartHUB. You redirect weather data from your Access/smartHUB to your
+Acuparse server. It is captured, stored, and then passed along to MyAcuRite untouched. The response received from
+MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or when using a smartHUB,
+Acuparse creates the response.
 
 ## Main Installation Guide
 
@@ -106,5 +108,5 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 - [Users Mailing List](https://groups.google.com/a/lists.acuparse.com/forum/#!forum/users).
 
 - Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
-    - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com).
-If you require advanced or commercial support, send mail to [hello@acuparse.com](mailto:hello@acuparse.com).
+    - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com). If you require
+      advanced or commercial support, send mail to [hello@acuparse.com](mailto:hello@acuparse.com).
