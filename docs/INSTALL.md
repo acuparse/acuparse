@@ -3,9 +3,25 @@
 This guide is designed to walk through the steps required to install Acuparse on a freshly installed Debian based
 server.
 
-!!! note Installation only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
+You can install Acuparse locally on bare-metal or a VM, or you can use a Docker Containter based installation.
+
+!!! note
+    Installation only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
+
+## Raspberry Pi
+
+!!! warning
+    **DO NOT** use the automated install if you are **directly** connecting an Access/SmartHub to your Pi. If you **ARE NOT**
+    directly connecting to a Pi, follow the Automated, Docker, or Manual install process.
+
+- If you're connecting an Access/SmartHub **directly** to your PI, see the community provided installation guide for
+  Raspbian in this [Wiki Doc](https://gitlab.com/acuparse/acuparse/-/wikis/Installation-of-Acuparse-on-Raspberry-Pi-with-Bridged-Networking).
+    - This guide is not directly supported by the Acuparse project.
+    - See also: [Troubleshooting](https://docs.acuparse.com/TROUBLESHOOTING/#raspberrypis)
 
 ## Automated Acuparse Installation
+
+### Bare-metal or Virtual
 
 - Install your base operating system and update.
 - Then run the installer.
@@ -14,21 +30,13 @@ server.
 curl -O https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
 ```
 
-### Docker Compose
+### Docker Container Based
 
 ```bash
 curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
 ```
 
 - See the [Docker Install Guide](https://docs.acuparse.com/DOCKER) for more details
-
-### Raspberry Pi
-
-!!! warning Only follow the below guide if you are **directly** connecting an Access/SmartHub to your Pi. If you are not
-directly connecting to a Pi, follow the automated, Docker, or manual install process described in this doc.
-
-- If you're connecting an Access/SmartHub **directly** to your PI, see the detailed direct installation guide for
-  Raspbian in this [Wiki Doc](https://gitlab.com/acuparse/acuparse/wikis/Installation-on-Raspberry-Pi).
 
 ## Manual Acuparse Installation
 
@@ -492,7 +500,8 @@ cp cam/templates/combined cam/
 crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/combined > /dev/null 2>&1
 ```
 
-!!! info Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
+!!! info
+    Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
 
 ## Invisible reCAPTCHA
 

@@ -65,8 +65,13 @@ switch ($config->version->app) {
     case '3.2.0':
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.2.1");
         $config->version->app = '3.2.1';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Bug/Doc Fixes.';
+
+    // Update from 3.2.1 to 3.2.2
+    case '3.2.1':
+        syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.2.2");
+        $config->version->app = '3.2.2';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug/Doc Fixes.';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . '<strong>Important</strong>: Feels temp now reports "NULL" not "0" when unset!';
-
 
 }

@@ -26,20 +26,26 @@
 # Acuparse Backup Script
 ##
 
-### USER VARIABLES ###
+##########################
+### REQUIRED VARIABLES ###
+##########################
 
 #MYSQL_USER=acuparse
 #MYSQL_PASSWORD=STRONG_PASSWORD
 #MYSQL_HOSTNAME=localhost
-KEEP_BACKUPS_FOR=7  # Days
-BACKUP_CAM_IMAGES=1 # Set to 0 to skip backing up images. Can slow down and increase backup size substantially.
+KEEP_BACKUPS_FOR=${KEEP_BACKUPS_FOR:-7}   # Days. Default = 7.
+BACKUP_CAM_IMAGES=${BACKUP_CAM_IMAGES:-1} # Set to 0 to skip backing up images. Can slow down and increase backup size substantially.
 
 ### Other Variables ###
+
+BACKUPS_ENABLED=${BACKUPS_ENABLED:-1}     # Set to 0 to disable.
 BACKUP_TMP_DIR=/var/opt/acuparse/backups/tmp
 BACKUP_DIR=/var/opt/acuparse/backups
 ACUPARSE_DIR=/opt/acuparse
 
-### END: Variables ###
+########################
+#### END: Variables ####
+########################
 
 function _backup() {
   # Grab the date
@@ -90,9 +96,9 @@ if [ "$1" == 'restore' ]; then
   _restore
   echo "Done: Restoring Backup"
 else
-  # Let's Go!
-  echo "Beginning Backup ... this might take a while!"
-  _backup
-  # All Done
-  echo "Backup Complete!"
+  if [ "$BACKUPS_ENABLED" == 1 ]; then
+    echo "Beginning Backup ... this can take a while!"
+    _backup
+    echo "Backup Complete!"
+  fi
 fi

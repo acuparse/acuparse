@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [[3.2.1]](https://www.acuparse.com/releases/v3-2-1/) - 2021-01-17
+## [[3.2.2]](https://www.acuparse.com/releases/v3-2-2/) - 2021-01-19
+
+### Fixed
+
+- Properly set `feelsF` and `feelsC` to `null`.
+- Docker Container Backup job, not able to set `KEEP_BACKUPS_FOR` in environment.
+    - Added additional details to docs.
+
+## [[3.2.1]](https://www.acuparse.com/releases/v3-2-1/) - 2021-01-18
 
 ### Added
 

@@ -271,14 +271,14 @@ class getCurrentWeatherData
                 $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
             } else if ($config->station->device === 1) {
                 // Gust:
-                $this->windGust_peak_recorded = NULL;
-                $this->windGust_peak_recorded_JSON = NULL;
-                $this->windGustMPH_peak = NULL;
-                $this->windGustKMH_peak = NULL;
-                $this->windGustDEG_peak = NULL;
-                $this->windGustDEG = NULL;
-                $this->windGustMPH = NULL;
-                $this->windGustKMH = NULL;
+                $this->windGust_peak_recorded = null;
+                $this->windGust_peak_recorded_JSON = null;
+                $this->windGustMPH_peak = null;
+                $this->windGustKMH_peak = null;
+                $this->windGustDEG_peak = null;
+                $this->windGustDEG = null;
+                $this->windGustMPH = null;
+                $this->windGustKMH = null;
             }
 
             // Last Update
@@ -349,8 +349,8 @@ class getCurrentWeatherData
     // Calculate human readable wind direction from a range of values:
     private function windGustDirection($windDEG): ?string
     {
-        if ($windDEG === NULL) {
-            $windDIR = NULL;
+        if ($windDEG === null) {
+            $windDIR = null;
         } else {
             switch ($windDEG) {
                 case ($windDEG >= 11.25 && $windDEG < 33.75):
@@ -403,8 +403,8 @@ class getCurrentWeatherData
                     break;
             }
         }
-        if ($windDEG === NULL) {
-            return NULL;
+        if ($windDEG === null) {
+            return null;
         } else {
             return (string)$windDIR;
         }
@@ -413,8 +413,8 @@ class getCurrentWeatherData
     // Calculate feels like temp
     private function feelsLike(): object
     {
-        $feelsF = NULL;
-        $feelsC = NULL;
+        $feelsF = null;
+        $feelsC = null;
 
         // Wind Chill:
         if ($this->tempC <= 5 && $this->windSpeedKMH >= 3) {
@@ -426,10 +426,17 @@ class getCurrentWeatherData
             $feelsC = ($feelsF - 32) / 1.8;
         }
 
-        return (object)array(
-            'feelsF' => (float)round($feelsF, 1),
-            'feelsC' => (float)round($feelsC, 1)
-        );
+        if ($feelsF === null) {
+            return (object)array(
+                'feelsF' => null,
+                'feelsC' => null
+            );
+        } else {
+            return (object)array(
+                'feelsF' => (float)round($feelsF, 1),
+                'feelsC' => (float)round($feelsC, 1)
+            );
+        }
     }
 
     // Calculate dew point
