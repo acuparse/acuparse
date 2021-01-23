@@ -82,7 +82,7 @@ function getTelemetry()
 
 $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name` = 'lastUpdateCheck'"));
 if ($result) {
-    syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: Checking for updates");
+    syslog(LOG_DEBUG, "(SYSTEM){UPDATER}: Checking for updates ...");
     // Make sure update interval has passed since last update
     if ((strtotime($result['value']) < strtotime("-" . '23 hours 20 min')) || isset($updateComplete)) {
         $telemetry = getTelemetry();

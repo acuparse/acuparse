@@ -40,13 +40,13 @@ switch ($config->version->app) {
         $config->version->schema = '2.2';
         mysqli_query($conn,
             "UPDATE `system` SET `value` = '2.2' WHERE `system`.`name` = 'schema';"); //Update Schema Version
-        $config->station->access_mac = '000000000000'; // Add Access MAC
+        @$config->station->access_mac = '000000000000'; // Add Access MAC
 
         // Fix MyAcuRite upload variables
-        $config->upload->myacurite->enabled === true ? $config->upload->myacurite->hub_enabled = true : $config->upload->myacurite->hub_enabled = false;
-        $config->upload->myacurite->enabled === true ? $config->upload->myacurite->access_enabled = true : $config->upload->myacurite->access_enabled = false;
-        $config->upload->myacurite->url === 'http://hubapi.myacurite.com' ? $config->upload->myacurite->hub_url = 'http://hubapi.myacurite.com' : $config->upload->myacurite->hub_url = 'http://hubapi.acuparse.com';
-        $config->upload->myacurite->url === 'http://hubapi.myacurite.com' ? $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com' : $config->upload->myacurite->hub_url = 'https://atlasapi.acuparse.com';
+        @$config->upload->myacurite->enabled === true ? $config->upload->myacurite->hub_enabled = true : $config->upload->myacurite->hub_enabled = false;
+        @$config->upload->myacurite->enabled === true ? $config->upload->myacurite->access_enabled = true : $config->upload->myacurite->access_enabled = false;
+        @$config->upload->myacurite->url === 'http://hubapi.myacurite.com' ? $config->upload->myacurite->hub_url = 'http://hubapi.myacurite.com' : $config->upload->myacurite->hub_url = 'http://hubapi.acuparse.com';
+        @$config->upload->myacurite->url === 'http://hubapi.myacurite.com' ? $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com' : $config->upload->myacurite->hub_url = 'https://atlasapi.acuparse.com';
         unset($config->upload->myacurite->enabled);
         unset($config->upload->myacurite->url);
 
@@ -55,7 +55,7 @@ switch ($config->version->app) {
     // Update from 2.2.0
     case '2.2.0':
         $config->version->app = '2.2.1';
-        $config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com';
+        @$config->upload->myacurite->access_url = 'https://atlasapi.myacurite.com';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Blocks AcuRite response from affecting the HUB.<br>Resolves broken Access updates to MyAcuRite.</li>';
 
     // Update from 2.2.1

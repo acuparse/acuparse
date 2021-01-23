@@ -38,12 +38,12 @@ switch ($config->version->app) {
     case '2.4.0-release':
         $config->version->app = '2.5.0-release';
         $config->version->schema = '2.5';
-        $config->upload->wc = (object)array();
-        $config->upload->wc->enabled = false;
-        $config->upload->wc->id = '';
-        $config->upload->wc->key = '';
-        $config->upload->wc->device = '';
-        $config->upload->wc->url = 'http://api.weathercloud.net/v01/set';
+        @$config->upload->wc = (object)array();
+        @$config->upload->wc->enabled = false;
+        @$config->upload->wc->id = '';
+        @$config->upload->wc->key = '';
+        @$config->upload->wc->device = '';
+        @$config->upload->wc->url = 'http://api.weathercloud.net/v01/set';
         mysqli_query($conn,
             "UPDATE `system` SET `value` = '2.5' WHERE `system`.`name` = 'schema';"); // Update Schema Version
         mysqli_query($conn,

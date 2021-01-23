@@ -39,6 +39,6 @@ switch ($config->version->app) {
     case '2.3.2':
     case '2.4.0-beta':
         $config->version->app = '2.4.0-release';
-        $config->station->baro_source = 0;
+        @$config->station->baro_source = 0;
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Added ability to select which barometer values are retained.</li>';
 }

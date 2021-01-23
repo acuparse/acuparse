@@ -33,7 +33,7 @@
  * @param $source
  */
 
-function updateLightning($strikecount, $interference, $last_strike_ts, $last_strike_distance, $source)
+function updateLightning(int $strikecount, int $interference, ?string $last_strike_ts, ?float $last_strike_distance, string $source)
 {
     global $timestamp;
     global $config;
@@ -50,16 +50,16 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
     }
     $timestampDate = date('Y-m-d', strtotime($timestamp));
 
-    if ($strikecount != 0) {
+    if ($strikecount !== 0) {
 
         // Get the last update data
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `strikecount`, `last_strike_ts` FROM `lightningData` WHERE `source`='$source';"));
-        @$lastStrikecount = (float)$result['strikecount'];
-        @$lastStrikeTime = $result['last_strike_ts'];
+        @$lastStrikecount = (int)$result['strikecount'];
+        @$lastStrikeTime = (string)$result['last_strike_ts'];
 
         // If there is no existing data, let's add this one
-        if (!$lastStrikeTime) {
+        if (empty($lastStrikeTime)) {
             $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
             INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
             $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
@@ -74,17 +74,15 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
         } // Existing data, process an update
         else {
             // Is the strikecount different?
-            if ($strikecount != $lastStrikecount) {
+            if ($strikecount !== $lastStrikecount) {
                 // Is the recent last strike time greater than existing last strike time?
                 if (strtotime($last_strike_ts) > strtotime($lastStrikeTime)) {
                     // Count the current strikes and update the daily total
-                    // NOTE: Lighting strikeCount needs to be divided by 2.18 to be anywhere close to console values.
                     $currentStrikes = $strikecount - $lastStrikecount;
-                    if ($currentStrikes == $strikecount) {
+                    if ($currentStrikes === $strikecount) {
                         $currentStrikes = 0;
                     } // Negative currentStrikes means the count was reset. So we'll use the total strikeCount to create the currentStrikes.
                     elseif ($currentStrikes < 0) {
-                        //$currentStrikes = round($strikecount / 2.18, 1);
                         $currentStrikes = $strikecount;
                     }
 
@@ -135,14 +133,15 @@ function updateLightning($strikecount, $interference, $last_strike_ts, $last_str
                 }
             }
         }
-    } else {
-        // Get the last update data
+    } // Zero Strike Count
+    else {
+        // Get the last update date
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `last_strike_ts` FROM `lightningData` WHERE `source`='$source';"));
         @$lastStrikeTime = $result['last_strike_ts'];
 
-        // If there is no existing data, let's add this one
-        if (!$lastStrikeTime) {
+        // If there is no existing data, let's start with this one
+        if (empty($lastStrikeTime)) {
             $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
             INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
             $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,

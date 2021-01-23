@@ -218,6 +218,9 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
             syslog(LOG_DEBUG, "(HUB){TOWER}<$towerName>: tempF = $tempF | relH = $humidity");
             syslog(LOG_DEBUG, "(HUB){TOWER}<$towerName>: Battery = $battery | Signal = $rssi");
         }
+
+        // Update the time the data was received
+        last_updated_at();
     } // This tower has not been added
     else {
         syslog(LOG_ERR, "(HUB){TOWER}[ERROR]: Unknown ID $towerID. Raw: $myacuriteQuery");

@@ -70,6 +70,10 @@ See [docs/INSTALL.md](https://docs.acuparse.com/INSTALL) for detailed installati
 
 Installing on a fresh instance of a Debian/Rasbian Buster(10) or Ubuntu 18.04/20.04 is the only officially supported and tested install method.
 
+After installing and adding your sensors, you will may receive a "No Data Received!" message on your dashboard.
+Acuparse will need to receive readings from your Access/Hub before weather data can be displayed.
+See [Initial Readings](https://docs.acuparse.com/INSTALL/#initial-readings) for more details.
+
 ### Quick Install
 
 - Install the base Debian/Ubuntu operating system and update.

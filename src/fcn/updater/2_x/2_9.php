@@ -38,11 +38,11 @@ switch ($config->version->app) {
     case '2.8.0-release':
         $config->version->app = '2.9.0-release';
         $config->version->schema = '2.9';
-        $config->upload->windy = (object)array();
-        $config->upload->windy->enabled = false;
-        $config->upload->windy->id = '';
-        $config->upload->windy->key = '';
-        $config->upload->windy->url = 'http://stations.windy.com/pws/update';
+        @$config->upload->windy = (object)array();
+        @$config->upload->windy->enabled = false;
+        @$config->upload->windy->id = '';
+        @$config->upload->windy->key = '';
+        @$config->upload->windy->url = 'http://stations.windy.com/pws/update';
         mysqli_query($conn,
             "UPDATE `system` SET `value` = '2.9' WHERE `system`.`name` = 'schema';"); // Update Schema Version
         mysqli_query($conn,

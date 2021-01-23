@@ -101,17 +101,33 @@ class getCurrentWeatherData
          * @var object $config Global Config
          */
 
+        $defaultLastUpdate = '2000-01-01 00:00:00';
+
+        // Check Last Update Time
+        if ($config->station->primary_sensor === 0) {
+            $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `last_update` FROM `atlas_status` ORDER BY `last_update` DESC LIMIT 1"));
+            $checkLastUpdate = $result['last_update'];
+        } else if ($config->station->primary_sensor === 1) {
+            $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `last_update` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
+            $checkLastUpdate = $result['last_update'];
+        } else {
+            $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`ORDER BY `timestamp` DESC LIMIT 1"));
+            $checkLastUpdate = $result['timestamp'];
+        }
+
+        // Check Archive Update Time
+        $lastArchiveUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
+
         // Check for recent readings
         if ($cron === false) {
-            $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `reported` FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
-            if (!isset($lastUpdate)) {
+            if ($checkLastUpdate === $defaultLastUpdate) {
                 if ($json === true) {
-                    $json_output = ['Status' => 'error', 'message' => 'No Archive Data Reported'];
+                    $json_output = ['Status' => 'error', 'message' => 'No Data Received'];
                     echo json_encode($json_output);
                     exit();
                 } else {
-                    echo '<div class="col text-center alert alert-danger"><p><strong>No Archive Data Reported!</strong><br>Check that your Cron tasks are running! See your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</p></div>';
+                    echo '<div class="col text-center alert alert-danger"><p><strong>No Data Received!</strong><br>Readings will display once data is received!<br>See <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">Troubleshooting Logs</a> for details.</p></div>';
                     exit();
                 }
             }
@@ -149,6 +165,13 @@ class getCurrentWeatherData
             $this->sunrise_json = date($config->site->date_api_json, strtotime(date_sunrise(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset)));
             $this->sunset = date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset);
             $this->sunset_json = date($config->site->date_api_json, strtotime(date_sunset(time(), SUNFUNCS_RET_STRING, $config->site->lat, $config->site->long, $zenith, $offset)));
+        } else {
+            if ($checkLastUpdate === $defaultLastUpdate) {
+                // Log it
+                syslog(LOG_INFO,
+                    "(SYSTEM){CRON}: No Data Received");
+                exit();
+            }
         }
 
         // Process Wind Speed:
@@ -191,13 +214,21 @@ class getCurrentWeatherData
             $this->windSpeedKMH_peak = (int)round($result['speedMPH'] * 1.60934); // Convert to Kilometers per hour
             $this->windDEG_peak = (int)$result['degrees']; // Degrees
         } else {
-            $result = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-            $this->wind_recorded_peak = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
-            $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-            $this->windSpeedMPH_peak = (int)round($result['windSpeedMPH']); // Miles per hour
-            $this->windSpeedKMH_peak = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
-            $this->windDEG_peak = (int)$result['windDEG']; // Degrees
+            if (empty($lastArchiveUpdate)) {
+                $this->wind_recorded_peak = null;
+                $this->wind_recorded_peak_json = null;
+                $this->windSpeedMPH_peak = null;
+                $this->windSpeedKMH_peak = null;
+                $this->windDEG_peak = null;
+            } else {
+                $result = mysqli_fetch_assoc(mysqli_query($conn,
+                    "SELECT `reported`, `windSpeedMPH`, `windDEG` FROM `archive` WHERE `windSpeedMPH` = (SELECT MAX(`windSpeedMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+                $this->wind_recorded_peak = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
+                $this->wind_recorded_peak_json = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+                $this->windSpeedMPH_peak = (int)round($result['windSpeedMPH']); // Miles per hour
+                $this->windSpeedKMH_peak = (int)round($result['windSpeedMPH'] * 1.60934); // Convert to Kilometers per hour
+                $this->windDEG_peak = (int)$result['windDEG']; // Degrees
+            }
         }
 
         // Process Wind Direction:
@@ -261,14 +292,25 @@ class getCurrentWeatherData
             $this->tempC_avg = (float)round(($result['avg_tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
             if ($config->station->device === 0) {
-                // Today's Peak Gust:
-                $result = mysqli_fetch_assoc(mysqli_query($conn,
-                    "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
-                $this->windGust_peak_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
-                $this->windGust_peak_recorded_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
-                $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
-                $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
-                $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
+                if (isset($lastArchiveUpdate)) {
+                    // Today's Peak Gust:
+                    $result = mysqli_fetch_assoc(mysqli_query($conn,
+                        "SELECT `reported`, `windGustMPH`, `windGustDEG` FROM `archive` WHERE `windGustMPH` = (SELECT MAX(`windGustMPH`) FROM `archive` WHERE DATE(`reported`) = CURDATE()) AND DATE(`reported`) = CURDATE() ORDER BY `reported` DESC LIMIT 1"));
+                    $this->windGust_peak_recorded = date($config->site->dashboard_display_time, strtotime($result['reported'])); // Recorded at
+                    $this->windGust_peak_recorded_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
+                    $this->windGustMPH_peak = (int)round($result['windGustMPH']); // Miles per hour
+                    $this->windGustKMH_peak = (int)round($result['windGustMPH'] * 1.60934); // Convert to Kilometers per hour
+                    $this->windGustDEG_peak = (int)$result['windGustDEG']; // Degrees
+                } else {
+                    $this->windGust_peak_recorded = null;
+                    $this->windGust_peak_recorded_JSON = null;
+                    $this->windGustMPH_peak = null;
+                    $this->windGustKMH_peak = null;
+                    $this->windGustDEG_peak = null;
+                    $this->windGustDEG = null;
+                    $this->windGustMPH = null;
+                    $this->windGustKMH = null;
+                }
             } else if ($config->station->device === 1) {
                 // Gust:
                 $this->windGust_peak_recorded = null;
@@ -282,16 +324,16 @@ class getCurrentWeatherData
             }
 
             // Last Update
-            $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`"));
-            $this->lastUpdate = $result['timestamp'];
-            $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['timestamp']));
+            $this->lastUpdate = $checkLastUpdate;
+            $this->lastUpdate_json = date($config->site->date_api_json, strtotime($checkLastUpdate));
         }
     }
 
 // Private Functions
 
 // Calculate human readable wind direction from a range of values:
-    private function windDirection($windDEG): string
+    private
+    function windDirection($windDEG): string
     {
         switch ($windDEG) {
             case ($windDEG >= 11.25 && $windDEG < 33.75):
@@ -347,7 +389,8 @@ class getCurrentWeatherData
     }
 
     // Calculate human readable wind direction from a range of values:
-    private function windGustDirection($windDEG): ?string
+    private
+    function windGustDirection($windDEG): ?string
     {
         if ($windDEG === null) {
             $windDIR = null;
@@ -411,7 +454,8 @@ class getCurrentWeatherData
     }
 
     // Calculate feels like temp
-    private function feelsLike(): object
+    private
+    function feelsLike(): object
     {
         $feelsF = null;
         $feelsC = null;
@@ -440,7 +484,8 @@ class getCurrentWeatherData
     }
 
     // Calculate dew point
-    private function dewPoint(): object
+    private
+    function dewPoint(): object
     {
         $dewptC = ((pow(($this->relH / 100), 0.125)) * (112 + 0.9 * $this->tempC) + (0.1 * $this->tempC) - 112);
         $dewptF = ($dewptC * 9 / 5) + 32;
@@ -452,7 +497,8 @@ class getCurrentWeatherData
     }
 
     // Calculate Beaufort
-    private function windBeaufort($windSpeedMPH): int
+    private
+    function windBeaufort($windSpeedMPH): int
     {
         $windSpeed = $windSpeedMPH;
 
@@ -503,7 +549,8 @@ class getCurrentWeatherData
 // Public Functions
 
 // Calculate the trending value
-    public function calculateTrend($unit, $table, $sensor = null): string
+    public
+    function calculateTrend($unit, $table, $sensor = null): string
     {
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
@@ -534,7 +581,8 @@ class getCurrentWeatherData
     }
 
 // Get current conditions
-    public function getConditions(): object
+    public
+    function getConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
@@ -598,7 +646,8 @@ class getCurrentWeatherData
     }
 
 // Get current JSON conditions
-    public function getJSONConditions(): object
+    public
+    function getJSONConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,
@@ -662,7 +711,8 @@ class getCurrentWeatherData
     }
 
 // Get current JSON conditions
-    public function getCRONConditions(): object
+    public
+    function getCRONConditions(): object
     {
         return (object)array(
             'tempF' => $this->tempF,

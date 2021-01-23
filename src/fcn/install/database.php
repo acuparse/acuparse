@@ -95,8 +95,20 @@ if ($saveConfig) {
                 exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Please try again."));
             }
         } else {
-            $updateComplete = true;
-            require(APP_BASE_PATH . '/fcn/trim.php');
+            if ($config->mysql->trim !== 0) {
+                if ($config->mysql->trim === 1) {
+                    $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable.sql';
+                } elseif ($config->mysql->trim === 2) {
+                    $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable_xtower.sql';
+                }
+                $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+                $schema = exec($schema, $schemaOutput, $schemaReturn);
+                if ($schemaReturn !== 0) {
+                    syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming | Result: $schemaReturn  | SQL: " . printf($schemaOutput));
+                } else {
+                    syslog(LOG_INFO, "(SYSTEM){TRIM}: Successfully Enabled Database Trimming");
+                }
+            }
         }
     } else {
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Connecting to Database!</div>';

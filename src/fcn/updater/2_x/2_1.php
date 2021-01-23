@@ -50,10 +50,8 @@ switch ($config->version->app) {
 
         // Update from 2.1.5
     case '2.1.5':
-        $config->version->app = '2.1.6';
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor changes and bug fixes. See CHANGELOG for details.</li>';
 
-    // Update from 2.1.6
+        // Update from 2.1.6
     case '2.1.6':
 
         // Update from 2.1.7

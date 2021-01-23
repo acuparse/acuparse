@@ -7,7 +7,6 @@ theme:
   name: material
   features:
     - navigation.instant
-    - navigation.expand
   palette:
     scheme: preference
     primary: black
@@ -22,17 +21,18 @@ nav:
   - Installing:
       - Local Install: 'INSTALL.md'
       - Docker Install: 'DOCKER.md'
-      - Extras:
-          - DNS Redirect: 'DNS.md'
-          - NGINX Proxy: 'NGINX.md'
+      - Suplimental Guides:
+          - DNS Redirect: 'other/DNS.md'
+          - NGINX Proxy: 'other/NGINX.md'
+          - RaspberryPi Direct Connect: 'other/RPI_DIRECT_CONNECT.md'
+          - Backups: 'other/BACKUPS.md'
+          - Telemetry: 'other/TELEMETRY.md'
   - Updating:
       - Update Guide: 'UPDATING.md'
       - Version 3.0: 'updates/v3.md'
       - Version 2.3: 'updates/v2_3.md'
   - API: 'API.md'
   - Troubleshooting: 'TROUBLESHOOTING.md'
-  - Backups: 'BACKUPS.md'
-  - Telemetry: 'TELEMETRY.md'
   - External Updaters:
       - Weather Underground: 'external/WU.md'
       - CWOP: 'external/CWOP.md'

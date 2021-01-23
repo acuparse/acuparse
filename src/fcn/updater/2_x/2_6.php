@@ -35,8 +35,8 @@
 switch ($config->version->app) {
     // Update from 2.5.2-release
     case '2.5.2-release':
-        $config->station->primary_sensor = 1;
-        $config->station->sensor_atlas = '';
+        @$config->station->primary_sensor = 1;
+        @$config->station->sensor_atlas = '';
         $config->version->app = '2.6.0-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Implement basic Atlas Support.</li>';
 

@@ -61,98 +61,100 @@ function getArchiveHTML()
     ?>
 
     <div id="archive-weather-data" class="row archive-weather-data">
-
         <div class="col">
-
             <div class="row">
                 <!-- Yesterday -->
                 <section id="archive-weather-data-yesterday" class="col-md-4 col-12">
                     <h2>Yesterday</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
-                    <ul class="list-unstyled">
-                        <li><h4>High:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $temp_high_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_high&#8457; ($yesterday->tempC_high&#8451;)" : "$yesterday->tempC_high&#8451; ($yesterday->tempF_high&#8457;)";
-                            } else {
-                                $temp_high_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_high&#8457;" : "$yesterday->tempC_high&#8451;";
-                            }
-                            echo $temp_high_yesterday . ' @ ' . $yesterday->tempF_high_recorded; ?></li>
-                        <li><h4>Low:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $temp_low_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_low&#8457; ($yesterday->tempC_low&#8451;)" : "$yesterday->tempC_low&#8451; ($yesterday->tempF_low&#8457;)";
-                            } else {
-                                $temp_low_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_low&#8457;" : "$yesterday->tempC_low&#8451;";
-                            }
-                            echo $temp_low_yesterday . ' @ ' . $yesterday->tempF_low_recorded; ?></li>
-                    </ul>
-                    <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
-                    <p><?php
-                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                            $wind_high_yesterday = ($config->site->imperial === true) ? "$yesterday->windS_mph_high mph ($yesterday->windS_kmh_high km/h)" : "$yesterday->windS_kmh_high km/h ($yesterday->windS_mph_high mph)";
-                        } else {
-                            $wind_high_yesterday = ($config->site->imperial === true) ? "$yesterday->windS_mph_high mph" : "$yesterday->windS_kmh_high km/h";
-                        }
-                        echo 'From ' . $yesterday->windDIR . ' at ' . $wind_high_yesterday . ' @ ' . $yesterday->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
-                    <ul class="list-unstyled">
-                        <li><h4>High:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $pressure_high_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_high inHg ($yesterday->pressure_kPa_high kPa)" : "$yesterday->pressure_kPa_high kPa ($yesterday->pressure_inHg_high inHg)";
-                            } else {
-                                $pressure_high_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_high inHg" : "$yesterday->pressure_kPa_high kPa";
-                            }
-                            echo $pressure_high_yesterday . ' @ ' . $yesterday->pressure_inHg_high_recorded; ?></li>
-                        <li><h4>Low:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $pressure_low_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_low inHg ($yesterday->pressure_kPa_low kPa)" : "$yesterday->pressure_kPa_low kPa ($yesterday->pressure_inHg_low inHg)";
-                            } else {
-                                $pressure_low_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_low inHg" : "$yesterday->pressure_kPa_low kPa";
-
-                            }
-                            echo $pressure_low_yesterday . ' @ ' . $yesterday->pressure_inHg_low_recorded; ?></li>
-                    </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
-                    <ul class="list-unstyled">
-                        <li><h4>High:</h4> <?= "$yesterday->relH_high% @ " . $yesterday->relH_high_recorded; ?></li>
-                        <li><h4>Low:</h4> <?= "$yesterday->relH_low% @ " . $yesterday->relH_low_recorded; ?></li>
-                    </ul>
-                    <?php if ($yesterday->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
+                    <?php if (isset($yesterday->tempF_high)) { ?>
+                        <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                         <ul class="list-unstyled">
-                            <li><h4>Total Rain:</h4> <?php
+                            <li><h4>High:</h4> <?php
                                 if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                    $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in ($yesterday->rainfall_MM_total mm)" : "$yesterday->rainfall_MM_total mm ($yesterday->rainfall_IN_total in)";
+                                    $temp_high_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_high&#8457; ($yesterday->tempC_high&#8451;)" : "$yesterday->tempC_high&#8451; ($yesterday->tempF_high&#8457;)";
                                 } else {
-                                    $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in" : "$yesterday->rainfall_MM_total mm";
+                                    $temp_high_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_high&#8457;" : "$yesterday->tempC_high&#8451;";
                                 }
-                                echo $rain_total_yesterday; ?></li>
+                                echo $temp_high_yesterday . ' @ ' . $yesterday->tempF_high_recorded; ?></li>
+                            <li><h4>Low:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $temp_low_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_low&#8457; ($yesterday->tempC_low&#8451;)" : "$yesterday->tempC_low&#8451; ($yesterday->tempF_low&#8457;)";
+                                } else {
+                                    $temp_low_yesterday = ($config->site->imperial === true) ? "$yesterday->tempF_low&#8457;" : "$yesterday->tempC_low&#8451;";
+                                }
+                                echo $temp_low_yesterday . ' @ ' . $yesterday->tempF_low_recorded; ?></li>
                         </ul>
-                    <?php }
-                    if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
+                        <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
+                        <p><?php
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                $wind_high_yesterday = ($config->site->imperial === true) ? "$yesterday->windS_mph_high mph ($yesterday->windS_kmh_high km/h)" : "$yesterday->windS_kmh_high km/h ($yesterday->windS_mph_high mph)";
+                            } else {
+                                $wind_high_yesterday = ($config->site->imperial === true) ? "$yesterday->windS_mph_high mph" : "$yesterday->windS_kmh_high km/h";
+                            }
+                            echo 'From ' . $yesterday->windDIR . ' at ' . $wind_high_yesterday . ' @ ' . $yesterday->windS_mph_high_recorded; ?></p>
+                        <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
                         <ul class="list-unstyled">
-                            <li><h4>
-                                    High:</h4> <?= "$atlasYesterday->uvindex_high @ " . $atlasYesterday->uvindex_high_recorded; ?>
-                            </li>
-                        </ul>
+                            <li><h4>High:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $pressure_high_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_high inHg ($yesterday->pressure_kPa_high kPa)" : "$yesterday->pressure_kPa_high kPa ($yesterday->pressure_inHg_high inHg)";
+                                } else {
+                                    $pressure_high_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_high inHg" : "$yesterday->pressure_kPa_high kPa";
+                                }
+                                echo $pressure_high_yesterday . ' @ ' . $yesterday->pressure_inHg_high_recorded; ?></li>
+                            <li><h4>Low:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $pressure_low_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_low inHg ($yesterday->pressure_kPa_low kPa)" : "$yesterday->pressure_kPa_low kPa ($yesterday->pressure_inHg_low inHg)";
+                                } else {
+                                    $pressure_low_yesterday = ($config->site->imperial === true) ? "$yesterday->pressure_inHg_low inHg" : "$yesterday->pressure_kPa_low kPa";
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
-                        <ul class="list-unstyled">
-                            <li><h4>Illuminance
-                                    High:</h4> <?= "$atlasYesterday->light_high @ " . $atlasYesterday->light_high_recorded; ?>
-                            </li>
-                            <li><h4>Measured
-                                    High:</h4> <?= "$atlasYesterday->lightHours_high hours @ " . $atlasYesterday->lightHours_high_recorded; ?>
-                            </li>
+                                }
+                                echo $pressure_low_yesterday . ' @ ' . $yesterday->pressure_inHg_low_recorded; ?></li>
                         </ul>
-                        <?php if ($atlasYesterday->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
+                        <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>High:</h4> <?= "$yesterday->relH_high% @ " . $yesterday->relH_high_recorded; ?></li>
+                            <li><h4>Low:</h4> <?= "$yesterday->relH_low% @ " . $yesterday->relH_low_recorded; ?></li>
+                        </ul>
+                        <?php if ($yesterday->rainfall_IN_total !== 0.) { ?>
+                            <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                             <ul class="list-unstyled">
-                                <li><h4>
-                                        Strikes:</h4> <?= "$atlasYesterday->lightning @ " . $atlasYesterday->lightning_recorded; ?>
-                                </li>
+                                <li><h4>Total Rain:</h4> <?php
+                                    if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                        $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in ($yesterday->rainfall_MM_total mm)" : "$yesterday->rainfall_MM_total mm ($yesterday->rainfall_IN_total in)";
+                                    } else {
+                                        $rain_total_yesterday = ($config->site->imperial === true) ? "$yesterday->rainfall_IN_total in" : "$yesterday->rainfall_MM_total mm";
+                                    }
+                                    echo $rain_total_yesterday; ?></li>
                             </ul>
                         <?php }
+                        if ($config->station->primary_sensor === 0) { ?>
+                            <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        High:</h4> <?= "$atlasYesterday->uvindex_high @ " . $atlasYesterday->uvindex_high_recorded; ?>
+                                </li>
+                            </ul>
+
+                            <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>Illuminance
+                                        High:</h4> <?= "$atlasYesterday->light_high @ " . $atlasYesterday->light_high_recorded; ?>
+                                </li>
+                                <li><h4>Measured
+                                        High:</h4> <?= "$atlasYesterday->lightHours_high hours @ " . $atlasYesterday->lightHours_high_recorded; ?>
+                                </li>
+                            </ul>
+                            <?php if ($atlasYesterday->lightning !== 0) { ?>
+                                <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
+                                <ul class="list-unstyled">
+                                    <li><h4>
+                                            Strikes:</h4> <?= "$atlasYesterday->lightning @ " . $atlasYesterday->lightning_recorded; ?>
+                                    </li>
+                                </ul>
+                            <?php }
+                        }
+                    } else {
+                        echo '<h3>No Data</h3>';
                     } ?>
                 </section>
 
@@ -357,98 +359,106 @@ function getArchiveHTML()
                 <!-- Last Month -->
                 <section id="archive-weather-data-last-month" class="col-md-4 col-12">
                     <h2>Last Month</h2>
-                    <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
-                    <ul class="list-unstyled">
-                        <li><h4>High:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $temp_high_last_month = ($config->site->imperial === true) ? "$last_month->tempF_high&#8457; ($last_month->tempC_high&#8451;)" : "$last_month->tempC_high&#8451; ($last_month->tempF_high&#8457;)";
-                            } else {
-                                $temp_high_last_month = ($config->site->imperial === true) ? "$last_month->tempF_high&#8457;" : "$last_month->tempC_high&#8451;";
-                            }
-                            echo $temp_high_last_month . ' on ' . $last_month->tempF_high_recorded; ?></li>
-                        <li><h4>Low:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $temp_low_last_month = ($config->site->imperial === true) ? "$last_month->tempF_low&#8457; ($last_month->tempC_low&#8451;)" : "$last_month->tempC_low&#8451; ($last_month->tempF_low&#8457;)";
-                            } else {
-                                $temp_low_last_month = ($config->site->imperial === true) ? "$last_month->tempF_low&#8457;" : "$last_month->tempC_low&#8451;";
-                            }
-                            echo $temp_low_last_month . ' on ' . $last_month->tempF_low_recorded; ?></li>
-                    </ul>
-                    <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
-                    <p><?php
-                        if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                            $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph ($last_month->windS_kmh_high km/h)" : "$last_month->windS_kmh_high km/h ($last_month->windS_mph_high mph)";
-                        } else {
-                            $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph" : "$last_month->windS_kmh_high km/h";
-                        }
-                        echo 'From ' . $last_month->windDIR . ' at ' . $wind_high_last_month . ' on ' . $last_month->windS_mph_high_recorded; ?></p>
-                    <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
-                    <ul class="list-unstyled">
-                        <li><h4>High:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $pressure_high_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_high inHg ($last_month->pressure_kPa_high kPa)" : "$last_month->pressure_kPa_high kPa ($last_month->pressure_inHg_high inHg)";
-                            } else {
-                                $pressure_high_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_high inHg" : "$last_month->pressure_kPa_high kPa";
-                            }
-                            echo $pressure_high_last_month . ' on ' . $last_month->pressure_inHg_high_recorded; ?></li>
-                        <li><h4>Low:</h4> <?php
-                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                $pressure_low_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_low inHg ($last_month->pressure_kPa_low kPa)" : "$last_month->pressure_kPa_low kPa ($last_month->pressure_inHg_low inHg)";
-                            } else {
-                                $pressure_low_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_low inHg" : "$last_month->pressure_kPa_low kPa";
-                            }
-                            echo $pressure_low_last_month . ' on ' . $last_month->pressure_inHg_low_recorded; ?></li>
-                    </ul>
-                    <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
-                    <ul class="list-unstyled">
-                        <li><h4>High:</h4> <?= "$last_month->relH_high% on " . $last_month->relH_high_recorded; ?>
-                        </li>
-                        <li><h4>Low:</h4> <?= "$last_month->relH_low% on " . $last_month->relH_low_recorded; ?></li>
-                    </ul>
-                    <?php if ($last_month->rainfall_IN_total !== 0.) { ?>
-                        <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
-                        <ul class="list-unstyled">
-                            <li><h4>Most Rain:</h4> <?php
-                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                    $most_rain_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_most in ($last_month->rainfall_MM_most mm)" : "$last_month->rainfall_MM_most mm ($last_month->rainfall_IN_most in)";
-                                } else {
-                                    $most_rain_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_most in" : "$last_month->rainfall_MM_most mm";
-                                }
-                                echo $most_rain_last_month . ' on ' . $last_month->rainfall_IN_most_recorded; ?></li>
-                            <li><h4>Total Rain:</h4> <?php
-                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
-                                    $rain_total_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_total in ($last_month->rainfall_MM_total mm)" : "$last_month->rainfall_MM_total mm ($last_month->rainfall_IN_total in)";
-                                } else {
-                                    $rain_total_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_total in" : "$last_month->rainfall_MM_total mm";
-                                }
-                                echo $rain_total_last_month; ?></li>
-                        </ul>
-                    <?php }
-                    if ($config->station->primary_sensor === 0) { ?>
-                        <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
-                        <ul class="list-unstyled">
-                            <li><h4>
-                                    High:</h4> <?= "$atlasLastMonth->uvindex_high on " . $atlasLastMonth->uvindex_high_recorded; ?>
-                            </li>
-                        </ul>
+                    <?php if (isset($last_month->tempF_high)) { ?>
 
-                        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
+                        <h3><i class="fas fa-thermometer-half" aria-hidden="true"></i> Temperature</h3>
                         <ul class="list-unstyled">
-                            <li><h4>Illuminance
-                                    High:</h4> <?= "$atlasLastMonth->light_high on " . $atlasWeek->light_high_recorded; ?>
+                            <li><h4>High:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $temp_high_last_month = ($config->site->imperial === true) ? "$last_month->tempF_high&#8457; ($last_month->tempC_high&#8451;)" : "$last_month->tempC_high&#8451; ($last_month->tempF_high&#8457;)";
+                                } else {
+                                    $temp_high_last_month = ($config->site->imperial === true) ? "$last_month->tempF_high&#8457;" : "$last_month->tempC_high&#8451;";
+                                }
+                                echo $temp_high_last_month . ' on ' . $last_month->tempF_high_recorded; ?></li>
+                            <li><h4>Low:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $temp_low_last_month = ($config->site->imperial === true) ? "$last_month->tempF_low&#8457; ($last_month->tempC_low&#8451;)" : "$last_month->tempC_low&#8451; ($last_month->tempF_low&#8457;)";
+                                } else {
+                                    $temp_low_last_month = ($config->site->imperial === true) ? "$last_month->tempF_low&#8457;" : "$last_month->tempC_low&#8451;";
+                                }
+                                echo $temp_low_last_month . ' on ' . $last_month->tempF_low_recorded; ?></li>
+                        </ul>
+                        <h3><i class="wi wi-windy" aria-hidden="true"></i> Wind</h3>
+                        <p><?php
+                            if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph ($last_month->windS_kmh_high km/h)" : "$last_month->windS_kmh_high km/h ($last_month->windS_mph_high mph)";
+                            } else {
+                                $wind_high_last_month = ($config->site->imperial === true) ? "$last_month->windS_mph_high mph" : "$last_month->windS_kmh_high km/h";
+                            }
+                            echo 'From ' . $last_month->windDIR . ' at ' . $wind_high_last_month . ' on ' . $last_month->windS_mph_high_recorded; ?></p>
+                        <h3 class="margin-top-05"><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>High:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $pressure_high_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_high inHg ($last_month->pressure_kPa_high kPa)" : "$last_month->pressure_kPa_high kPa ($last_month->pressure_inHg_high inHg)";
+                                } else {
+                                    $pressure_high_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_high inHg" : "$last_month->pressure_kPa_high kPa";
+                                }
+                                echo $pressure_high_last_month . ' on ' . $last_month->pressure_inHg_high_recorded; ?>
                             </li>
-                            <li><h4>Measured
-                                    High:</h4> <?= "$atlasLastMonth->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                            <li><h4>Low:</h4> <?php
+                                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                    $pressure_low_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_low inHg ($last_month->pressure_kPa_low kPa)" : "$last_month->pressure_kPa_low kPa ($last_month->pressure_inHg_low inHg)";
+                                } else {
+                                    $pressure_low_last_month = ($config->site->imperial === true) ? "$last_month->pressure_inHg_low inHg" : "$last_month->pressure_kPa_low kPa";
+                                }
+                                echo $pressure_low_last_month . ' on ' . $last_month->pressure_inHg_low_recorded; ?>
                             </li>
                         </ul>
-                        <?php if ($atlasLastMonth->lightning !== 0) { ?>
-                            <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
+                        <h3><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h3>
+                        <ul class="list-unstyled">
+                            <li><h4>High:</h4> <?= "$last_month->relH_high% on " . $last_month->relH_high_recorded; ?>
+                            </li>
+                            <li><h4>Low:</h4> <?= "$last_month->relH_low% on " . $last_month->relH_low_recorded; ?></li>
+                        </ul>
+                        <?php if ($last_month->rainfall_IN_total !== 0.) { ?>
+                            <h3><i class="wi wi-raindrops" aria-hidden="true"></i> Rainfall</h3>
                             <ul class="list-unstyled">
-                                <li><h4>
-                                        Strikes:</h4> <?= "$atlasLastMonth->lightning on " . $atlasLastMonth->lightning_recorded; ?>
+                                <li><h4>Most Rain:</h4> <?php
+                                    if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                        $most_rain_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_most in ($last_month->rainfall_MM_most mm)" : "$last_month->rainfall_MM_most mm ($last_month->rainfall_IN_most in)";
+                                    } else {
+                                        $most_rain_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_most in" : "$last_month->rainfall_MM_most mm";
+                                    }
+                                    echo $most_rain_last_month . ' on ' . $last_month->rainfall_IN_most_recorded; ?>
                                 </li>
+                                <li><h4>Total Rain:</h4> <?php
+                                    if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'live') {
+                                        $rain_total_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_total in ($last_month->rainfall_MM_total mm)" : "$last_month->rainfall_MM_total mm ($last_month->rainfall_IN_total in)";
+                                    } else {
+                                        $rain_total_last_month = ($config->site->imperial === true) ? "$last_month->rainfall_IN_total in" : "$last_month->rainfall_MM_total mm";
+                                    }
+                                    echo $rain_total_last_month; ?></li>
                             </ul>
                         <?php }
+                        if ($config->station->primary_sensor === 0) { ?>
+                            <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>
+                                        High:</h4> <?= "$atlasLastMonth->uvindex_high on " . $atlasLastMonth->uvindex_high_recorded; ?>
+                                </li>
+                            </ul>
+
+                            <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h3>
+                            <ul class="list-unstyled">
+                                <li><h4>Illuminance
+                                        High:</h4> <?= "$atlasLastMonth->light_high on " . $atlasWeek->light_high_recorded; ?>
+                                </li>
+                                <li><h4>Measured
+                                        High:</h4> <?= "$atlasLastMonth->lightHours_high hours on " . $atlasWeek->lightHours_high_recorded; ?>
+                                </li>
+                            </ul>
+                            <?php if ($atlasLastMonth->lightning !== 0) { ?>
+                                <h3><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h3>
+                                <ul class="list-unstyled">
+                                    <li><h4>
+                                            Strikes:</h4> <?= "$atlasLastMonth->lightning on " . $atlasLastMonth->lightning_recorded; ?>
+                                    </li>
+                                </ul>
+                            <?php }
+                        }
+                    } else {
+                        echo '<h3>No Data</h3>';
                     } ?>
                 </section>
 

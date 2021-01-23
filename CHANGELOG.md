@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.3.0]](https://www.acuparse.com/releases/v3-3-0/) - 2021-02-02
+
+### Fixed
+
+- Modified DB Schema to support `feelsF` being null.
+    - Resolves Archive update errors.
+- Tower sensors now update Access last update time.
+- Minor errors with trimming and first user on new installations.
+- Stability Updates.
+
+## Added
+
+- Option in settings to filter erroneous Atlas readings.
+
+## Changed
+
+- Boostrap to v4.6.0.
+
+## Removed
+
+- Last Update Time in footer for logged in as an administrator.
+    - Didn't update and was misleading.
+
 ## [[3.2.2]](https://www.acuparse.com/releases/v3-2-2/) - 2021-01-19
 
 ### Fixed
@@ -167,7 +190,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 - Major Code refactoring.
 - Update checking moved to cron.
     - Now sends some basic telemetry data.
-        - See [docs/TELEMETRY.md](docs/TELEMETRY.md) for more details.
+        - See [docs/other/TELEMETRY.md](docs/other/TELEMETRY.md) for more details.
 
 ## [[2.10.0]](https://www.acuparse.com/releases/v2-10-0/) - 2019-10-06
 

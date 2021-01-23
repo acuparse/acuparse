@@ -1,4 +1,4 @@
-    <?php
+<?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
  * @copyright Copyright (C) 2015-2021 Maxwell Power
@@ -48,7 +48,7 @@
                         <input class="form-check-input" type="radio"
                                name="station[device]"
                                id="station-device-atlas"
-                               onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-hub-mac").disabled=true;document.getElementById("station-primary-sensor-0").disabled=false;document.getElementById("station-access-mac").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;<?= ($config->station->towers === true) ? 'document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false' : false; ?>'
+                               onclick='document.getElementById("station-filter-access-0").disabled=false;document.getElementById("station-filter-access-1").disabled=false;document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=false;document.getElementById("station-hub-mac").disabled=true;document.getElementById("station-primary-sensor-0").disabled=false;document.getElementById("station-access-mac").disabled=false;document.getElementById("station-lightning-source-1").disabled=false;<?= ($config->station->towers === true) ? 'document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false' : false; ?>'
                                value="0"
                             <?= ($config->station->device === 0) ? 'checked="checked"' : false; ?>>
                         <label class="form-check-label alert bg-dark"
@@ -58,7 +58,7 @@
                         <input class="form-check-input" type="radio"
                                name="station[device]"
                                id="station-device-smarthub"
-                               onclick='document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;document.getElementById("station-primary-sensor-0").disabled=true;document.getElementById("station-primary-sensor-1").checked=true;document.getElementById("station-access-mac").disabled=true;document.getElementById("station-hub-mac").disabled=false;document.getElementById("station-lightning-source-0").checked="checked";document.getElementById("station-lightning-source-1").disabled=true;document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;document.getElementById("myacurite-access-enabled-1").disabled=true;document.getElementById("myacurite-access-enabled-0").checked="checked"'
+                               onclick='document.getElementById("station-filter-access-0").disabled=true;document.getElementById("station-filter-access-1").disabled=true;document.getElementById("station-sensor-iris").disabled=false;document.getElementById("station-sensor-atlas").disabled=true;document.getElementById("station-primary-sensor-0").disabled=true;document.getElementById("station-primary-sensor-1").checked=true;document.getElementById("station-access-mac").disabled=true;document.getElementById("station-hub-mac").disabled=false;document.getElementById("station-lightning-source-0").checked="checked";document.getElementById("station-lightning-source-1").disabled=true;document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;document.getElementById("myacurite-access-enabled-1").disabled=true;document.getElementById("myacurite-access-enabled-0").checked="checked"'
                                value="1"
                             <?= ($config->station->device === 1) ? 'checked="checked"' : false; ?>>
                         <label class="form-check-label alert bg-dark"
@@ -122,7 +122,7 @@
                                id="station-sensor-atlas" placeholder="00000000"
                                maxlength="8" pattern="[0-9]{8}"
                                title="8 Digits including leading 0's"
-                                <?= $config->station->primary_sensor === 1 ? 'disabled="disabled"' : false; ?>
+                            <?= $config->station->primary_sensor === 1 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->primary_sensor) ? 'disabled="disabled"' : false; ?>
                                value="<?= $config->station->sensor_atlas; ?>">
                         <small id="station-sensor-atlas-help" class="form-text text-muted">8
@@ -136,7 +136,7 @@
                                id="station-sensor-iris" placeholder="00000000"
                                maxlength="8" pattern="[0-9]{8}"
                                title="8 Digits including leading 0's"
-                                <?= $config->station->primary_sensor === 0 ? 'disabled="disabled"' : false; ?>
+                            <?= $config->station->primary_sensor === 0 ? 'disabled="disabled"' : false; ?>
                             <?= !isset($config->station->primary_sensor) ? 'disabled="disabled"' : false; ?>
                                value="<?= $config->station->sensor_iris; ?>">
                         <small id="station-sensor-iris-help" class="form-text text-muted">8
@@ -145,7 +145,6 @@
                     </div>
                 </div>
                 <div class="col-md-8 col-12 mx-auto">
-                    <hr>
                     <div class="col-md-8 col-12 mx-auto">
                         <div class="form-group">
                             <label class="col-form-label" for="station-baro-offset"><strong>Barometer
@@ -163,8 +162,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8 col-12 mx-auto">
-                    <hr>
+                <div class="col-md-8 col-12 mx-auto alert alert-secondary">
                     <div class="col-md-8 col-12 mx-auto">
                         <div class="form-group">
                             <h2>Tower Sensors</h2>
@@ -172,8 +170,8 @@
                                 <input class="form-check-input" type="radio"
                                        name="station[towers]"
                                        id="station-towers-0" value="0"
-                                       onclick='document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;'
-                                        <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
+                                       onclick='document.getElementById("station-towers-additional-0").disabled=true;document.getElementById("station-towers-additional-1").disabled=true;document.getElementById("station-lightning-source-2").disabled=true;document.getElementById("station-lightning-source-3").disabled=true;'
+                                    <?= ($config->station->towers === false) ? 'checked="checked"' : false; ?>>
                                 <label class="form-check-label alert alert-danger"
                                        for="station-towers-0">Disabled</label>
                             </div>
@@ -181,8 +179,8 @@
                                 <input class="form-check-input" type="radio"
                                        name="station[towers]"
                                        id="station-towers-1" value="1"
-                                       onclick='document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false;'
-                                        <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
+                                       onclick='document.getElementById("station-towers-additional-0").disabled=false;document.getElementById("station-towers-additional-1").disabled=false;document.getElementById("station-towers-additional-1").checked=true;document.getElementById("station-lightning-source-2").disabled=false;document.getElementById("station-lightning-source-3").disabled=false;'
+                                    <?= ($config->station->towers === true) ? 'checked="checked"' : false; ?>>
                                 <label class="form-check-label alert alert-success"
                                        for="station-towers-1">Enabled</label>
                             </div>
@@ -196,7 +194,8 @@
                                 <input class="form-check-input" type="radio"
                                        name="station[towers_additional]"
                                        id="station-towers-additional-0" value="0"
-                                    <?= ($config->station->towers_additional === false) ? 'checked="checked"' : false; ?>>
+                                    <?= ($config->station->towers_additional === false) ? 'checked="checked"' : false; ?>
+                                    <?= ($config->station->towers === false) ? 'disabled="disabled"' : false; ?>>
                                 <label class="form-check-label alert alert-danger"
                                        for="station-towers-additional-0">Disabled</label>
                             </div>
@@ -204,22 +203,20 @@
                                 <input class="form-check-input" type="radio"
                                        name="station[towers_additional]"
                                        id="station-towers-additional-1" value="1"
-                                    <?= ($config->station->towers_additional === true) ? 'checked="checked"' : false; ?>>
+                                    <?= ($config->station->towers_additional === true) ? 'checked="checked"' : false; ?>
+                                    <?= ($config->station->towers === false) ? 'disabled="disabled"' : false; ?>>
                                 <label class="form-check-label alert alert-success"
                                        for="station-towers-additional-1">Enabled</label>
                             </div>
-                            <small id="station-towers-help"
-                                   class="form-text text-muted">Show High/Low Readings?
-                            </small>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8 col-12 mx-auto">
-                    <hr>
+                <div class="col-md-8 col-12 mx-auto alert alert-secondary">
                     <div class="col-auto mx-auto">
                         <div class="form-group">
-                            <h2>Lightning Sensor</strong></h2>
+                            <h2>Access Specific Settings</h2>
                             <p><small><strong>(AcuRite Access Required)</strong></small></p>
+                            <h3>Lightning Sensor</strong></h3>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio"
                                        name="station[lightning_source]"
@@ -261,6 +258,34 @@
                                 <label class="form-check-label alert alert-warning"
                                        for="station-lightning-source-3">Both</label>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-auto mx-auto">
+                        <div class="form-group">
+                            <h3>Filter Access Readings</strong></h3>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="station[filter_access]"
+                                       id="station-filter-access-0"
+                                       value="0"
+                                    <?= $config->station->device === 1 ? 'disabled="disabled"' : false; ?>
+                                    <?= ($config->station->filter_access === false) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label alert alert-danger"
+                                       for="station-filter-access-0">Disabled</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="station[filter_access]"
+                                       id="station-filter-access-1"
+                                       value="1"
+                                    <?= $config->station->device === 1 ? 'disabled="disabled"' : false; ?>
+                                    <?= ($config->station->filter_access === true) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label alert alert-success"
+                                       for="station-filter-access-1">Enabled</label>
+                            </div>
+                            <small id="station-filter-access-help"
+                                   class="form-text text-muted">Ignores erroneous Access readings
+                            </small>
                         </div>
                     </div>
                 </div>

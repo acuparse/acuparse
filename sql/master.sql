@@ -28,7 +28,6 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
-SET time_zone = "+00:00";
 
 CREATE TABLE `iris_status`
 (
@@ -52,7 +51,7 @@ CREATE TABLE `archive`
 (
     `reported`         timestamp            NOT NULL DEFAULT current_timestamp(),
     `tempF`            float(5, 2)          NOT NULL,
-    `feelsF`           float(5, 2)          NOT NULL,
+    `feelsF`           float(5, 2)                   DEFAULT NULL,
     `windSpeedMPH`     float(5, 2)          NOT NULL,
     `windSpeedMPH_avg` float(5, 2)                   DEFAULT NULL,
     `windDEG`          smallint(5) UNSIGNED NOT NULL,
@@ -494,14 +493,14 @@ INSERT INTO `access_status` (`battery`, `last_update`)
 VALUES ('normal', '2000-01-01 00:00:00');
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('latestRelease', '3.2.0');
-
-INSERT INTO `system` (`name`, `value`)
 VALUES ('lastUpdateCheck', '2000-01-01 00:00:00');
 
-# Schema Version
+# Versions
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('schema', '3.2');
+VALUES ('schema', '3.3');
+
+INSERT INTO `system` (`name`, `value`)
+VALUES ('latestRelease', '3.3.0');
 
 COMMIT;

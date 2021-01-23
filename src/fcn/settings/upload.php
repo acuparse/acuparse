@@ -160,7 +160,7 @@
                 <div class="col">
                     <p class="alert-info">If installed on the same network as your device,
                         use secondary. See <a class="text-danger"
-                                              href="https://docs.acuparse.com/DNS/#direct-connection-to-acuparse">docs/DNS.md</a>
+                                              href="https://docs.acuparse.com/other/DNS/#direct-connection-to-acuparse">docs/other/DNS.md</a>
                     </p>
                 </div>
             </div>

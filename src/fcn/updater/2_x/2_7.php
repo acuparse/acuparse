@@ -35,11 +35,11 @@
 switch ($config->version->app) {
 // Update from 2.6.1-release
     case '2.6.1-release':
-        $config->debug->server->show = false;
-        $config->upload->generic->enabled = false;
-        $config->upload->generic->id = '';
-        $config->upload->generic->password = '';
-        $config->upload->generic->url = '';
+        @$config->debug->server->show = false;
+        @$config->upload->generic->enabled = false;
+        @$config->upload->generic->id = '';
+        @$config->upload->generic->password = '';
+        @$config->upload->generic->url = '';
         $config->version->app = '2.7.0-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Numerous changes, see CHANGELOG.md for details.</li>';
 

@@ -82,9 +82,9 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             $_POST['station']['sensor_atlas']) : null;
         $config->station->baro_offset = (isset($_POST['station']['baro_offset'])) ? (float)$_POST['station']['baro_offset'] : 0;
         $config->station->towers = (bool)$_POST['station']['towers'];
-        $config->station->towers = (bool)$_POST['station']['towers'];
-        $config->station->towers_additional = (bool)$_POST['station']['towers_additional'];
+        $config->station->towers_additional = (isset($_POST['station']['towers_additional'])) ? (bool)$_POST['station']['towers_additional'] : false;
         $config->station->lightning_source = (int)$_POST['station']['lightning_source'];
+        $config->station->filter_access = (isset($_POST['station']['filter_access'])) ? (bool)$_POST['station']['filter_access'] : false;
 
         // Site
         $config->site->name = $_POST['site']['name'];

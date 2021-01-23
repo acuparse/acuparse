@@ -6,16 +6,18 @@ via [Community Support](https://docs.acuparse.com/#community-support)
 
 ## Initial Readings
 
-When you first install Acuparse, you may receive errors on your dashboard. Acuparse needs to receive and process it's
-initial updates from your sensors, before the dashboard can be rendered.
+When you first install Acuparse, you may receive a `No Data Received!` message on your dashboard.
+Acuparse needs to receive and process it's initial updates from your sensors, before the dashboard can be rendered.
 
-Some dashboard features require Archive data. It's critical that your Cron is running the Archive job. Look for the
-message `(SYSTEM){CRON}: Archive Updated` in your syslog. When the Archive job has not yet completed successfully, you
-will see an error on your dashboard and no data will be displayed.
+After your initial readings are received, Cron will process them into `archive` readings. If you see a
+`No Archive Data!` message, there may be a problem archiving your readings. Some dashboard features require Archive
+data. It's critical that your Cron is running the Archive job. Look for the
+message `(SYSTEM){CRON}: Archive Updated` in your [syslog](#syslog). When the Archive job has not yet completed
+successfully, you'll see an error on your dashboard and no data will be displayed.
 
-If your dashboard does not update after 5-10 mins. Check your logs to ensure data is flowing. Additionally, check and
-ensure your DNS is redirected OR you have set your hostname on the Access directly. See
-also [DNS Redirect](https://docs.acuparse.com/DNS).
+If your dashboard does not update after 5-10 minutes, check your [syslog](#syslog) to ensure data is flowing.
+Additionally, check and ensure your DNS is redirected, OR you have set your hostname on the Access directly. See
+also [DNS Redirect](https://docs.acuparse.com/other/DNS).
 
 ## Logs
 
@@ -89,16 +91,14 @@ To check for Cron errors, see [Cron Logs](#cron-log) above.
 
 ## RaspberryPi's
 
+See [RaspberryPi Direct Connect](https://docs.acuparse.com/INSTALL/#raspberry-pi) in the install guide to configure
+your RaspberryPi for direct connection to an Access.
+
 When you are directly connecting your Access/Hub to a RaspberryPi, you must change your upload servers to the secondary
 ones. This is due to the fact that the Pi is redirecting your DNS locally and without changing the upload server, you
 can end up with a never ending cycle of readings.
 
-See [MyAcuRite Upload URL's](https://docs.acuparse.com/DNS/#myacurite-upload-urls) for more details!
-
-There is also
-a [Community provided guide in the Wiki](https://gitlab.com/acuparse/acuparse/-/wikis/Installation-of-Acuparse-on-Raspberry-Pi-with-Bridged-Networking)
-to configure RaspberryPi's for direct connection to an Access. This guide is ***NOT supported*** by the project directly
-and may be out of date. A tested and supported process is currently being developed.
+See [MyAcuRite Upload URL's](https://docs.acuparse.com/other/DNS/#myacurite-upload-urls) for more details!
 
 ## Installation Errors
 
@@ -174,9 +174,12 @@ external providers.
 
 ## Inaccurate Readings
 
-There are times when the sensors report inaccurate readings. You can clean them from your archive table using MySQL.
+Acuparse filters Access readings for erroneous readings by default.
+See [Filter Access Readings](https://docs.acuparse.com/INSTALL/#filter-access-readings) for more details.
 
-Modify the query below to fit your requirements.
+If you have old erroneous readings in your archive table, you can clean them using MySQL commands.
+
+Modify the below queries to fit your requirements.
 
 ### Local Install
 
@@ -207,3 +210,12 @@ Towers:
 acuparse console
 mysql -h$MYSQL_HOSTNAME -u$MYSQL_USER -p$MYSQL_PASSWORD acuparse -e "DELETE FROM tower_data WHERE sensor='<SENSOR_ID>' AND tempF='-40' AND (relH='0' OR relH='1')";
 ```
+
+## Git Repository
+
+If you make changes to the source code locally, your changes will break `git pull` unless you `commit` or `stash` them.
+If you receive errors while doing a `git pull`, you can remove your changes and reset your code back to release state by
+running `git reset --hard`.
+
+If you're interested in learning Git, this is an excellent resource:
+[Git Exercises](https://gitexercises.fracz.com).

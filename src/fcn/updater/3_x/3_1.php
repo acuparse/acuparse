@@ -39,11 +39,11 @@ switch ($config->version->app) {
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.1.0");
         $config->version->app = '3.1.0';
         $config->version->schema = '3.1';
-        $config->upload->openweather = (object)array();
-        $config->upload->openweather->enabled = false;
-        $config->upload->openweather->id = '';
-        $config->upload->openweather->key = '';
-        $config->upload->openweather->url = 'http://api.openweathermap.org/data/3.0/measurements';
+        @$config->upload->openweather = (object)array();
+        @$config->upload->openweather->enabled = false;
+        @$config->upload->openweather->id = '';
+        @$config->upload->openweather->key = '';
+        @$config->upload->openweather->url = 'http://api.openweathermap.org/data/3.0/measurements';
         mysqli_query($conn,
             "UPDATE `system` SET `value` = '3.1' WHERE `system`.`name` = 'schema';"); // Update Schema Version
         mysqli_query($conn,
@@ -69,9 +69,9 @@ switch ($config->version->app) {
     case '3.1.1':
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.1.2");
         $config->version->app = '3.1.2';
-        $config->site->dashboard_display_date_full = 'j M Y @ H:i';
-        $config->site->dashboard_display_time = 'H:i';
-        $config->site->date_api_json = 'c';
+        @$config->site->dashboard_display_date_full = 'j M Y @ H:i';
+        @$config->site->dashboard_display_time = 'H:i';
+        @$config->site->date_api_json = 'c';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'API, Doc, and Bug Fixes.';
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.2");
 }
