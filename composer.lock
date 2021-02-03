@@ -153,16 +153,16 @@
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v4.5.3",
+            "version": "v4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "a716fb03f965dc0846df479e14388b1b4b93d7ce"
+                "reference": "6ffb0b48e455430f8a5359ed689ad64c1143fac2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/a716fb03f965dc0846df479e14388b1b4b93d7ce",
-                "reference": "a716fb03f965dc0846df479e14388b1b4b93d7ce",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/6ffb0b48e455430f8a5359ed689ad64c1143fac2",
+                "reference": "6ffb0b48e455430f8a5359ed689ad64c1143fac2",
                 "shasum": ""
             },
             "replace": {
@@ -202,7 +202,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twbs/bootstrap/issues",
-                "source": "https://github.com/twbs/bootstrap/tree/v4.5.3"
+                "source": "https://github.com/twbs/bootstrap/tree/v4.6.0"
             },
             "funding": [
                 {
@@ -210,7 +210,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2020-10-13T15:38:30+00:00"
+            "time": "2021-01-19T16:16:38+00:00"
         }
     ],
     "packages-dev": [

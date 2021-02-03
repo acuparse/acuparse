@@ -50,14 +50,14 @@ switch ($config->version->app) {
             syslog(LOG_INFO, "(SYSTEM){UPDATER}: Updating System Configuration");
             $config->version->app = '3.2.0';
             $config->version->schema = '3.2';
-            $config->station->sensor_iris = $config->station->sensor_5n1;
+            @$config->station->sensor_iris = $config->station->sensor_5n1;
             unset ($config->station->sensor_5n1);
             $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug/Doc Fixes.';
             $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . '<strong>Important</strong>: References to <strong>5-in-1</strong> updated to <strong>Iris<strong>!';
-            syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.1.3");
+            syslog(LOG_INFO, "(SYSTEM){UPDATER}: DONE 3.2.0");
         } else {
             syslog(LOG_INFO, "(SYSTEM){UPDATER}: FAILED updating schema to 3.2!");
-            echo "Oops, Something went wrong updating Schema";
+            echo "Something went wrong updating Schema";
             exit();
         }
 
@@ -72,6 +72,5 @@ switch ($config->version->app) {
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.2.2");
         $config->version->app = '3.2.2';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Bug/Doc Fixes.';
-        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . '<strong>Important</strong>: Feels temp now reports "NULL" not "0" when unset!';
 
 }

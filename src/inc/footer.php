@@ -47,14 +47,12 @@
                 <?php
                 /** @var string $installed */
                 if ($installed === true) {
-                if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
-                    ?>
-                    <span class="small">(Version <a target="_blank"
-                                                    href="https://github.com/acuparse/acuparse/tree/v<?= $config->version->app; ?>"><?= $config->version->app; ?></a>)</span>
-                <?php }
-                $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `timestamp` FROM `last_update`")); ?>
-                <br><span class="small">Last update: <?= $lastUpdate['timestamp']; ?></span></p>
-            <?php } ?>
+                    if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
+                        ?>
+                        <span class="small">(Version <a target="_blank"
+                                                        href="https://github.com/acuparse/acuparse/tree/v<?= $config->version->app; ?>"><?= $config->version->app; ?></a>)</span>
+                    <?php }
+                } ?>
         </div>
     </div>
 </footer>

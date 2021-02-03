@@ -42,7 +42,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         "INSERT INTO `users` (`username`, `password`, `email`, `admin`) VALUES ('$username', '$password', '$email', '1')");
 
     // If adding the account was successful
-    if (!$result && mysqli_affected_rows($conn) === 1) {
+    if (mysqli_affected_rows($conn) === 1) {
         $createdUserID = (int)mysqli_insert_id($conn);
         $installHash = $config->version->installHash;
         mysqli_query($conn, "INSERT INTO `system` (`name`, `value`) VALUES ('installHash', '$installHash')");
@@ -83,7 +83,6 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
     }
 } // There is already an account in the DB
 else {
-    // Bailout
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /");
     exit(syslog(LOG_WARNING, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));

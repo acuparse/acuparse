@@ -40,9 +40,9 @@ switch ($config->version->app) {
         $config->version->schema = '2.3';
         mysqli_query($conn,
             "UPDATE `system` SET `value` = '2.3' WHERE `system`.`name` = 'schema';"); //Update Schema Version
-        $config->upload->sensor->external = 'default';
-        $config->upload->sensor->id = null;
-        $config->upload->sensor->archive = false;
+        @$config->upload->sensor->external = 'default';
+        @$config->upload->sensor->id = null;
+        @$config->upload->sensor->archive = false;
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Added ability to choose master sensor for external upload.</li>';
 
     // Update from 2.3.0

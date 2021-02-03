@@ -1,10 +1,12 @@
 stages:
   - lint
+  - quality
   - build
   - test
-  - deploy
-  - quality
   - release
+  - post-release
+  - notify
+  - docs
 
 workflow:
   rules:
@@ -13,7 +15,7 @@ workflow:
 
 #### Templates ####
 .TEMPLATE:PHP:CLI:
-  image: php:7.4-cli
+  image: php:8.0-cli
   stage: lint
   script:
     - find . -name \*.php -exec php -l "{}" \;
@@ -51,11 +53,11 @@ workflow:
     - apk add --no-cache git
     - go get -u github.com/VKCOM/noverify
   script:
-    - noverify -cache-dir=/tmp/cache/noverify src/ | tee noverify.txt
+    - noverify check src/ | tee noverify.txt
   dependencies: [ ]
 
 .TEMPLATE:DOCS:mkdocs:
-  stage: deploy
+  stage: docs
   image: python:3.9-alpine
   before_script:
     - apk add --no-cache --virtual .build gcc musl-dev
@@ -64,12 +66,12 @@ workflow:
   dependencies: [ ]
 
 .TEMPLATE:DOCKER:build:
-  image: docker:stable
+  image: docker:latest
   stage: build
   variables:
     DOCKER_CLI_EXPERIMENTAL: enabled
   services:
-    - name: docker:stable-dind
+    - name: docker:dind
       command: [ "--experimental" ]
   before_script:
     - mkdir -p $HOME/.docker/cli-plugins/
@@ -81,8 +83,8 @@ workflow:
     - docker buildx create --use --driver docker-container --name custom --platform=$BUILDX_PLATFORM
     - docker buildx inspect --bootstrap
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
-    - docker login -u $GITHUB_REGISTRY_USER -p $GITHUB_REGISTRY_PASSWORD $GITHUB_REGISTRY
+    - docker login -u $DOCKER_USER -p $DOCKER_REGISTRY_TOKEN
+    - docker login -u $GITHUB_USER -p $GITHUB_REGISTRY_TOKEN $GITHUB_REGISTRY
   script:
     - >
       if [ "$LATEST_RELEASE" = "true" ]; then
@@ -117,6 +119,7 @@ workflow:
         .
       fi
   dependencies: [ ]
+  retry: 2
 
 #### END: Templates ####
 
@@ -132,7 +135,6 @@ PHP:CLI:
 
 DEV:PHP:CLI:
   extends: .TEMPLATE:PHP:CLI
-  image: php:8.0-rc-cli
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -294,35 +296,71 @@ DEV:DOCS:mkdocs:
 #### END: Project Documentation ####
 
 #### Tag Release ####
-RELEASE:tag:
+RELEASE:GITLAB:tag:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
+  before_script:
+    - apk add curl jq sed --no-cache
+    - export VERSION=$(cat .version | jq -r '.VERSION')
+    - export RELEASE_NOTES=$(sed '1,/'$VERSION'/d;/## \[\[/Q' CHANGELOG.md)
+  script:
+    - release-cli create --name "Version $VERSION" --description "$RELEASE_NOTES" --tag-name "v$VERSION" --ref "$CI_COMMIT_SHA"
+  dependencies: [ ]
+  needs: [ "INSTALLER" ]
+
+RELEASE:GITHUB:tag:
+  stage: post-release
+  image: alpine
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
+  before_script:
+    - apk add curl jq sed --no-cache
+    - export VERSION=$(cat .version | jq -r '.VERSION')
+    - export RELEASE_NOTES=$(sed '1,/'$VERSION'/d;/## \[\[/Q' CHANGELOG.md)
+    - export GHE_NOTES=$(echo "$RELEASE_NOTES" | sed '1{/^[[:space:]]*$/d}' | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
+  script:
+    - >
+      curl -X POST -u $GITHUB_USER:$GITHUB_RELEASE_TOKEN -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/acuparse/acuparse/releases -d '{"tag_name":"TEST","name":"TEST","body":"'"$GHE_NOTES"'","target_commitish":"'"$CI_COMMIT_SHA"'"}'
+  dependencies: [ ]
+  needs: [ "RELEASE:GITLAB:tag" ]
+
+#### Update RMS ####
+RELEASE:RMS:
+  stage: post-release
+  image: alpine
   before_script:
     - apk add curl jq --no-cache
     - export VERSION=$(cat .version | jq -r '.VERSION')
   script:
-    - release-cli create --name "Version $VERSION" --description "Release Version $VERSION" --tag-name "v$VERSION" --ref "$CI_COMMIT_SHA"
+    - >
+      curl -H "Authorization: Bearer $RMS_TOKEN" -X POST -d "version=$VERSION" "$RMS_HOST/releases" | jq
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
-  needs: [ "INSTALLER" ]
+  needs: [ "RELEASE:GITLAB:tag" ]
 
-#### Update RMS ####
-RELEASE:RMS:version:
-  stage: release
+#### Announce Release ####
+RELEASE:Announce:
+  stage: notify
   image: alpine
   before_script:
     - apk add curl jq --no-cache
     - export VERSION=$(cat .version | jq -r '.VERSION')
     - export RELEASE_VERSION="${VERSION//./-}"
   script:
-    - >
-      curl -H "Authorization: Bearer $RMS_TOKEN" -X POST -d "version=$VERSION" "$RMS_HOST/releases" | jq
+    - echo "Sending Slack Notification ..."
     - >
       curl -X POST --data-urlencode 'payload={"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"Acuparse Version `'"$VERSION"'` is now available!\nSee the <https://www.acuparse.com/releases/v'"$RELEASE_VERSION"'|Release Notes> for more details!\n\nFor update instructions, see the <https://docs.acuparse.com/UPDATING|Update Guide>."},"accessory":{"type":"image","image_url":"https://www.acuparse.com/assets/img/release.jpg","alt_text":"Ship Image"}}]}' "$SLACK_RELEASE_HOOK_URL"
+    - echo "Sending mail to users list ..."
+    - curl -s --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" -F from='Acuparse Release Management Service <no_reply@'$MAILGUN_DOMAIN'>' -F to='Acuparse Users Mailing List <users@lists.'$MAILGUN_DOMAIN'>' -F subject='Acuparse '$VERSION' is now available' --form-string html='<h2>Acuparse Version '$VERSION' is now available!</h2><p>See the <a href="https://www.acuparse.com/releases/v'$RELEASE_VERSION'">Release Notes</a> for more details!<br>For update instructions, see the <a href="https://docs.acuparse.com/UPDATING">Update Guide</a>.</p>'
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
+  needs: [ "RELEASE:RMS" ]
 
 #### End Release ####
 

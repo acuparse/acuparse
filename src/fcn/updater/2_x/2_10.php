@@ -36,7 +36,7 @@ switch ($config->version->app) {
 
     // Update from 2.9.4
     case '2.9.4-release':
-        $config->upload->myacurite->pass_unknown = false;
+        @$config->upload->myacurite->pass_unknown = false;
         $config->version->app = '2.10.0-release';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Support Lightning Tower & Upload Unknown Sensors';
 }

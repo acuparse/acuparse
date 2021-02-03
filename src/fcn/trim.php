@@ -31,12 +31,12 @@
  * @var object $config Global Config
  */
 
-syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Checking Database Trimming");
+syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Checking Database Trimming ...");
 
 if ($config->mysql->trim !== 0) {
     $result = mysqli_fetch_assoc(mysqli_query($conn, "SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
     $scheduler = $result['Value'];
-    if ($scheduler === 'OFF' || isset($updateComplete)) {
+    if ($scheduler === 'OFF') {
         if ($config->mysql->trim === 1) {
             $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable.sql';
         } elseif ($config->mysql->trim === 2) {

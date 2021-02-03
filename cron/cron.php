@@ -35,7 +35,7 @@ require(dirname(__DIR__) . '/src/inc/loader.php');
  * @var string $installed
  */
 
-syslog(LOG_DEBUG, "(SYSTEM){CRON}: Running System Tasks");
+syslog(LOG_DEBUG, "(SYSTEM){CRON}: Running System Tasks ...");
 
 if ($installed === true) {
     // Not Configured
@@ -92,33 +92,41 @@ if ($installed === true) {
         // Set the UTC date for the update
         $utcDate = gmdate("Y-m-d+H:i:s");
 
+        if ($config->debug->logging === true) {
+            syslog(LOG_INFO, "(SYSTEM){CRON}: Processing Archive ...");
+        }
+
         // Make sure new data is being sent
         $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
-        if (($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) {
+        if ((($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) || empty($result)) {
             // New Data, proceed
 
             // Access Update
             if ($config->station->device === 0) {
                 if ($config->station->primary_sensor === 0 && $config->station->lightning_source !== 0) {
-                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`, `lightning`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds', '$lightning->dailystrikes')";
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`, `lightning`) VALUES ('$data->tempF', NULLIF('$data->feelsF', ''), '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds', '$lightning->dailystrikes')";
                 } elseif ($config->station->primary_sensor === 0) {
-                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds')";
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `uvindex`, `light`, `lightSeconds`) VALUES ('$data->tempF', NULLIF('$data->feelsF', ''), '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$atlas->uvIndex', '$atlas->lightIntensity', '$atlas->lightSeconds')";
                 } elseif ($config->station->primary_sensor === 1 && $config->station->lightning_source === 2) {
-                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `lightning`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$lightning->dailystrikes')";
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`, `lightning`) VALUES ('$data->tempF', NULLIF('$data->feelsF', ''), '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today', '$lightning->dailystrikes')";
                 } else {
-                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
+                    $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windGustMPH`, `windDEG`, `windGustDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', NULLIF('$data->feelsF', ''), '$data->windSpeedMPH', '$data->windAvgMPH', '$data->windGustMPH', '$data->windDEG', '$data->windGustDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
                 }
             } //Hub Update
             else {
-                $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', '$data->feelsF', '$data->windSpeedMPH','$data->windAvgMPH','$data->windDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
+                $archiveQuery = "INSERT INTO `archive` (`tempF`, `feelsF`, `windSpeedMPH`, `windSpeedMPH_avg`, `windDEG`, `relH`, `pressureinHg`, `dewptF`, `rainin`,`total_rainin`) VALUES ('$data->tempF', NULLIF('$data->feelsF', ''), '$data->windSpeedMPH','$data->windAvgMPH','$data->windDEG', '$data->relH', '$data->pressure_inHg', '$data->dewptF', '$data->rainIN', '$data->rainTotalIN_today')";
             }
 
             // Save to DB
-            mysqli_query($conn, $archiveQuery) or syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ")");
-            if ($config->debug->logging === true) {
-                // Log it
-                syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Updated");
+            $result = mysqli_query($conn, $archiveQuery);
+            if (mysqli_affected_rows($conn) === 1) {
+                if ($config->debug->logging === true) {
+                    syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Updated Successfully");
+                }
+            } else {
+                syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ")");
             }
+
 
             // Check if this is the first update after an outage
             $status = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
@@ -202,6 +210,10 @@ if ($installed === true) {
 
         } // Nothing has changed
         else {
+            if ($config->debug->logging === true) {
+                // Log it
+                syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Update Skipped");
+            }
             require(APP_BASE_PATH . '/fcn/cron/noChange.php');
         }
 

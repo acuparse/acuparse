@@ -121,6 +121,21 @@ if ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
         $batteryAccess = (string)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'hubbattery', FILTER_SANITIZE_STRING));
 
+        // Check for erroneous readings
+        if ($config->station->filter_access === 1) {
+            if (($tempF === -40 || $tempF === 0) && ($humidity === 0 || $humidity === 1) && $windSpeedMPH === 0 && $windGustMPH === 0 && $windSpeedAvgMPH === 0) {
+                // Log it
+                if ($config->debug->logging === true) {
+                    syslog(LOG_WARNING, "(ACCESS){IRIS}[WARNING]: Dropped erroneous readings");
+                }
+                // Update the time the data was received
+                last_updated_at();
+
+                // Send response to Access
+                goto myacurite_upload_disabled;
+            }
+        }
+
         // Insert Iris Readings into DB
         $sql = "INSERT INTO `windspeed` (`speedMPH`, `gustMPH`, `averageMPH`, `timestamp`, `device`, `source`) VALUES ('$windSpeedMPH', '$windGustMPH', '$windSpeedAvgMPH', '$timestamp', '$device', '$source');
             INSERT INTO `temperature` (`tempF`, `heatindex`, `feelslike`, `windchill`, `dewptf`, `timestamp`, `device`, `source`) VALUES ('$tempF', '$heatIndex', '$feelsLike', '$windChill', '$dewptF', '$timestamp', '$device', '$source');
@@ -139,7 +154,7 @@ if ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
         // Log it
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG, "(ACCESS): Pressure = $baromin");
-            syslog(LOG_DEBUG, "(ACCESS){IRIS}: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
+            syslog(LOG_DEBUG, "(ACCESS){IRIS}: TempF = $tempF | relH = $humidity | Wind = $windDirection @ $windSpeedMPH | Gust = $windGustDirection @ $windGustMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
             syslog(LOG_DEBUG, "(ACCESS){IRIS}: Battery = $battery | Signal = $rssi");
             syslog(LOG_DEBUG, "(ACCESS): Battery = $batteryAccess");
         }
@@ -205,18 +220,25 @@ elseif ($_GET['mt'] === 'Atlas') {
             filter_input(INPUT_GET, 'measured_light_seconds', FILTER_SANITIZE_STRING));
 
         // Lightning
-        $strikecount = (float)mysqli_real_escape_string($conn,
+        $strikecount = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'strikecount', FILTER_SANITIZE_STRING));
         $interference = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
         $last_strike_distance = (float)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
+        if (empty($last_strike_distance)){
+            $last_strike_distance = null;
+        }
         // Process Last Strike timestamp
         $last_strike_ts = (string)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
-        $last_strike_ts = str_replace('T', ' ', $last_strike_ts);
-        $last_strike_ts = strtotime($last_strike_ts . ' UTC');
-        $last_strike_ts = date("Y-m-d H:i:s", $last_strike_ts);
+        if (empty($last_strike_ts)) {
+            $last_strike_ts = null;
+        } else {
+            $last_strike_ts = str_replace('T', ' ', $last_strike_ts);
+            $last_strike_ts = strtotime($last_strike_ts . ' UTC');
+            $last_strike_ts = date("Y-m-d H:i:s", $last_strike_ts);
+        }
 
         //Other
         $battery = (string)mysqli_real_escape_string($conn,
@@ -225,6 +247,21 @@ elseif ($_GET['mt'] === 'Atlas') {
             filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
         $batteryAccess = (string)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'hubbattery', FILTER_SANITIZE_STRING));
+
+        // Check for erroneous readings
+        if ($config->station->filter_access === 1) {
+            if (($tempF === -40 || $tempF === 0) && ($humidity === 0 || $humidity === 1) && $windSpeedMPH === 0 && $windGustMPH === 0 && $windSpeedAvgMPH === 0 && $uvindex === 0 && $lightintensity === 0 && $measured_light_seconds === 0) {
+                // Log it
+                if ($config->debug->logging === true) {
+                    syslog(LOG_WARNING, "(ACCESS){ATLAS}[WARNING]: Dropped erroneous readings");
+                }
+                // Update the time the data was received
+                last_updated_at();
+
+                // Send response to Access
+                goto myacurite_upload_disabled;
+            }
+        }
 
         // Insert Atlas readings into DB
         $sql = "INSERT INTO `windspeed` (`speedMPH`, `gustMPH`, `averageMPH`, `timestamp`, `device`, `source`) VALUES ('$windSpeedMPH', '$windGustMPH', '$windSpeedAvgMPH', '$timestamp', '$device', '$source');
@@ -244,14 +281,13 @@ elseif ($_GET['mt'] === 'Atlas') {
         }
 
         // Lightning
-
         updateLightning($strikecount, $interference, $last_strike_ts, $last_strike_distance, 'A');
 
         // Log it
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG, "(ACCESS): Pressure = $baromin");
             syslog(LOG_DEBUG,
-                "(ACCESS){ATLAS}: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN | UV = $uvindex | Light = $lightintensity / $measured_light_seconds");
+                "(ACCESS){ATLAS}: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH | Wind = $windDirection @ $windSpeedMPH | Gust = $windGustDirection @ $windGustMPH | Rain = $rainIN | DailyRain = $dailyRainIN | UV = $uvindex | Light = $lightintensity / $measured_light_seconds");
             syslog(LOG_DEBUG, "(ACCESS){ATLAS}: Battery = $battery | Signal = $rssi");
             syslog(LOG_DEBUG, "(ACCESS): Battery = $batteryAccess");
         }
@@ -293,18 +329,25 @@ elseif ($config->station->towers === true) {
 
             // Lightning
             if ($_GET['mt'] === 'light') {
-                $strikecount = (float)mysqli_real_escape_string($conn,
+                $strikecount = (int)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'strikecount', FILTER_SANITIZE_STRING));
                 $interference = (int)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
                 $last_strike_distance = (float)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
+                if (empty($last_strike_distance)){
+                    $last_strike_distance = null;
+                }
                 // Process Last Strike timestamp
                 $last_strike_ts = (string)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'last_strike_ts', FILTER_SANITIZE_STRING));
-                $last_strike_ts = str_replace('T', ' ', $last_strike_ts);
-                $last_strike_ts = strtotime($last_strike_ts . ' UTC');
-                $last_strike_ts = date("Y-m-d H:i:s", $last_strike_ts);
+                if (empty($last_strike_ts)) {
+                    $last_strike_ts = null;
+                } else {
+                    $last_strike_ts = str_replace('T', ' ', $last_strike_ts);
+                    $last_strike_ts = strtotime($last_strike_ts . ' UTC');
+                    $last_strike_ts = date("Y-m-d H:i:s", $last_strike_ts);
+                }
             }
 
             //Other
@@ -312,6 +355,8 @@ elseif ($config->station->towers === true) {
                 filter_input(INPUT_GET, 'sensorbattery', FILTER_SANITIZE_STRING));
             $rssi = (int)mysqli_real_escape_string($conn,
                 filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
+            $batteryAccess = (string)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'hubbattery', FILTER_SANITIZE_STRING));
 
             // Insert into DB
             $sql = "INSERT INTO `tower_data` (`tempF`, `relH`, `sensor`, `battery`, `rssi`, `timestamp`, `device`) VALUES ('$tempF', '$humidity', '$towerID', '$battery', '$rssi', '$timestamp', '$device');";
@@ -342,11 +387,23 @@ elseif ($config->station->towers === true) {
                 updateLightning($strikecount, $interference, $last_strike_ts, $last_strike_distance, 'T');
             }
 
+            // Access Status
+            $sql = "SELECT `last_update` FROM `access_status`;";
+            $accessStatus = mysqli_fetch_assoc(mysqli_query($conn, $sql)) or syslog(LOG_ERR, "(ACCESS){TOWER}[SQL ERROR]:" . mysqli_error($conn));
+
+            if ($accessStatus['last_update'] !== $timestamp) {
+                $sql = "UPDATE `access_status` SET `battery`='$batteryAccess',`last_update`='$timestamp';";
+                mysqli_query($conn, $sql) or syslog(LOG_ERR, "(ACCESS){TOWER}[SQL ERROR]:" . mysqli_error($conn));
+            }
+
             // Log it
             if ($config->debug->logging === true) {
                 syslog(LOG_DEBUG, "(ACCESS){TOWER}<$towerName>: tempF = $tempF | relH = $humidity");
                 syslog(LOG_DEBUG, "(ACCESS){TOWER}<$towerName>: Battery = $battery | Signal = $rssi");
             }
+
+            // Update the time the data was received
+            last_updated_at();
         } // This tower has not been added
         else {
             syslog(LOG_ERR, "(ACCESS){TOWER}[ERROR]: Unknown Sensor ID $towerID . Raw = $myacuriteQuery");

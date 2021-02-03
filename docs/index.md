@@ -34,12 +34,13 @@ Acuparse server. It is captured, stored, and then passed along to MyAcuRite unto
 MyAcuRite is sent back to your Access/smartHUB. If sending data to MyAcuRite is disabled or when using a smartHUB,
 Acuparse creates the response.
 
-## Main Installation Guide
+## Main Installation Guides
 
 > **Info:** Installation supported on Debian/Rasbian Buster(10) or Ubuntu 18.04/20.04.
 
 - ***[Main Install Guide](INSTALL)***
 - ***[Docker Install Guide](DOCKER)***
+- ***[RaspberryPi Direct Connect](other/RPI_DIRECT_CONNECT)***
 
 ### Quick Install
 
@@ -56,25 +57,27 @@ Acuparse creates the response.
 curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
 ```
 
-- See [docs/DOCKER.md](https://docs.acuparse.com/DOCKER) for more details
+- See the [DOCKER Install Guide](DOCKER) for more details.
+
+## API
+
+- [API Guide](API)
 
 ## Updating
 
 - [Update Guide](UPDATING)
 
-## Troubleshooting
-
-- [Troubleshooting Guide](TROUBLESHOOTING)
-
-### Version Updates
+### Version Specific Guides
 
 - [Version 3](updates/v3)
 - [Version 2.3](updates/v2_3)
 
 ## Optional Configuration
 
-- [DNS Redirect Configuration](DNS)
-- [NGINX Configuration](NGINX)
+- [DNS Redirect Configuration](other/DNS)
+- [NGINX Configuration](other/NGINX)
+- [Backups](other/BACKUPS)
+- [Telemetry](other/TELEMETRY)
 
 ## External Updater Configuration
 
@@ -90,17 +93,9 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 
 - [WeatherPoly](external/generic/WEATHERPOLY)
 
-## Other Guides
+## Troubleshooting
 
-- [API](API)
-- [Backups](BACKUPS)
-- [Telemetry](TELEMETRY)
-
-## Git Repositories
-
-- [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
-- [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
-- [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)
+- [Troubleshooting Guide](TROUBLESHOOTING)
 
 ## Community Support
 
@@ -110,3 +105,9 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 - Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
     - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com). If you require
       advanced or commercial support, send mail to [hello@acuparse.com](mailto:hello@acuparse.com).
+
+## Git Repositories
+
+- [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
+- [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
+- [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)

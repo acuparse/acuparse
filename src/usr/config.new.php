@@ -48,6 +48,7 @@ return (object)array(
         'towers_additional' => false, // Show additional High/Low values
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
         'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower/3-both)
+        'filter_access' => true, // Filter out of range Access readings
     ),
 
     // Site specific config variables
@@ -229,8 +230,8 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.2.2',
-        'schema' => '3.2',
+        'app' => '3.3.0',
+        'schema' => '3.3',
         'installHash' => null,
     ),
 );

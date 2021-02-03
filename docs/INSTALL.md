@@ -8,15 +8,17 @@ You can install Acuparse locally on bare-metal or a VM, or you can use a Docker 
 !!! note
     Installation only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
 
-## Raspberry Pi
+## RaspberryPi
 
 !!! warning
-    **DO NOT** use the automated install if you are **directly** connecting an Access/SmartHub to your Pi. If you **ARE NOT**
-    directly connecting to a Pi, follow the Automated, Docker, or Manual install process.
+    **DO NOT** use the automated install if you are **directly** connecting an Access/SmartHub to your Pi. If you **ARE
+    NOT** directly connecting to a Pi, follow the Automated, Docker, or Manual install process.
 
-- If you're connecting an Access/SmartHub **directly** to your PI, see the community provided installation guide for
-  Raspbian in this [Wiki Doc](https://gitlab.com/acuparse/acuparse/-/wikis/Installation-of-Acuparse-on-Raspberry-Pi-with-Bridged-Networking).
-    - This guide is not directly supported by the Acuparse project.
+- If you're connecting an Access/SmartHub **directly** to your PI, see the community provided
+  [RaspberryPi Direct Connect](https://docs.acuparse.com/other/RPI_DIRECT_CONNECT) installation guide.
+    - This guide is not yet officially supported by the Acuparse project but was moved to the main docs for ease of use.
+      It may be out of date and has not yet been re-vailidated. If you have success/problems with this guide, please
+      report them on the users mailing list or, in Slack.
     - See also: [Troubleshooting](https://docs.acuparse.com/TROUBLESHOOTING/#raspberrypis)
 
 ## Automated Acuparse Installation
@@ -166,7 +168,7 @@ Db='test' OR Db='test\\_%'; FLUSH PRIVILEGES;"
 
 ```bash
 mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS acuparse; GRANT ALL PRIVILEGES ON acuparse.*
-TO 'acuparse' IDENTIFIED BY '$ACUPARSE_DATABASE_PASSWORD'; GRANT SUPER, EVENT ON *.* TO 'acuparse'; FLUSH PRIVILEGES;"
+TO 'acuparse' IDENTIFIED BY '$ACUPARSE_DATABASE_PASSWORD'; GRANT EVENT ON acuparse.* TO 'acuparse'; GRANT RELOAD ON *.* TO 'acuparse'; GRANT SUPER ON *.* TO 'acuparse'; FLUSH PRIVILEGES;"
 ```
 
 ### Finish Up
@@ -179,7 +181,7 @@ crontab -e`, `* * * * * php /opt/acuparse/cron/cron.php > /dev/null 2>&1
 
 - Visit `http://{IP_ADDRESS/HOSTNAME}` to populate the database, create an account, and finish configuration.
 
-#### Initial Configuration
+## Initial Configuration
 
 - After setting the database configuration, you will need to add your Access/SmartHUB MAC address and sensor ID's.
     - Visit `/admin/settings` and click on the `Sensor` tab.
@@ -190,12 +192,10 @@ crontab -e`, `* * * * * php /opt/acuparse/cron/cron.php > /dev/null 2>&1
 
 ### Initial Readings
 
-It can take some time for your readings to fill the dashboard.
+It can take some time for your initial readings to populate the dashboard. You'll receive a `No Data Received!` message
+on your dashboard, until the initial readings are processed and stored.
 
-After your readings are received, Cron will process them into `archive` readings. You may receive a `No Data` message on
-your dashboard, until initial archive readings are processed and stored.
-
-See the Syslog details below to verify your data is being captured and processed.
+See [Initial Readings Troubleshooting](https://docs.acuparse.com/TROUBLESHOOTING#initial-readings)
 
 ### Syslog
 
@@ -206,7 +206,9 @@ more detailed view.
 tail -f /var/log/syslog
 ```
 
-- See the [Troubleshooting Guide](https://docs.acuparse.com/TROUBLESHOOTING) for more details
+- See the [Syslog Troubleshooting Guide](https://docs.acuparse.com/TROUBLESHOOTING#syslog) for more details
+
+---
 
 ## DNS Redirect
 
@@ -215,9 +217,8 @@ tail -f /var/log/syslog
 > See [/admin/access](/admin/access) once logged into your site.
 
 If you are connecting your Access/smartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally.
-Otherwise, you will need a DNS server installed on your network. See
-the ***[DNS Redirect Guide](https://docs.acuparse.com/DNS)***
-for more details.
+Otherwise, you will need a DNS server installed on your network. See the
+***[DNS Redirect Guide](https://docs.acuparse.com/other/DNS)*** for more details.
 
 ### Manually Update Access Server
 
@@ -245,15 +246,6 @@ curl -d 'ser=atlasapi.myacurite.com' http://<ACCESS IP>/config.cgi
 
 If your having trouble getting your Access readings sent to Acuparse, you might be running into trouble with
 the [hardcoded DNS servers](https://docs.acuparse.com/TROUBLESHOOTING/#hardcoded-dns-servers).
-
-### Git Repository
-
-If you make changes to the source code locally, your changes will break `git pull` unless you `commit` or `stash` them.
-If you receive errors while doing a `git pull`. You can remove your changes and reset your code back to release state by
-running `git reset --hard`.
-
-If you're interested in learning Git, there is an excellent resource here:
-[Git Exercises](https://gitexercises.fracz.com/).
 
 ---
 
@@ -410,7 +402,7 @@ interval.
 ## Tower Sensors
 
 Acuparse allows for the addition of as many Tower sensors as the Access/smartHUB will pass along. You can choose which
-sensors are shown publicly or only to logged in users. Towers are configured and arranged using the admin settings.
+sensors are shown publicly or only to logged-in users. Towers are configured and arranged using the admin settings.
 
 - Acuparse also supports Indoor/Outdoor Temp and Humidity monitors, as well as lightning towers.
 
@@ -418,6 +410,21 @@ sensors are shown publicly or only to logged in users. Towers are configured and
 
 You can have a main Lightning sensor on your Atlas, as well as one Tower sensor. Configure the Lightning sensor settings
 in your admin site settings inorder to display those readings.
+
+## Filter Access Readings
+
+The Access can send unwanted erroneous readings. Filtering is enabled by default. You can disable the filtering of these
+readings in the Admin -> System Settings -> Sensor tab.
+
+Acuparse will check the incoming Access readings and drop any that meet ALL the conditions below. Dropped readings will
+not flow through to MyAcuRite and will not be saved to the database.
+
+The dropped readings will be reported in your logs and Acuparse will still send a response to your Access.
+
+### Filtered Readings
+
+Readings that have a `tempF` of `-40` OR `0`, `relH` of `0` OR `1`, and `0` wind speeds. As well as, `0` light and UV
+readings from the Atlas.
 
 ## Additional Outputs
 
@@ -524,4 +531,4 @@ The debug tab will now appear in your system settings.
 A script is included in `cron` to run daily backups. It will run automatically on Docker installs, but local installs
 will need to enable this manually.
 
-- See the [Backup Guide](https://docs.acuparse.com/BACKUPS) for details.
+- See the [Backup Guide](https://docs.acuparse.com/other/BACKUPS) for details.
