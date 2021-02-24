@@ -533,8 +533,20 @@
                         <?= ($config->upload->windy->enabled === false) ? 'disabled="disabled"' : false; ?>
                            value="<?= $config->upload->windy->id; ?>">
                     <small id="wc-updates-id-help" class="form-text text-muted">Your <a
-                                href="https://stations.windy.com/stations">Windy</a>
-                        Station ID
+                                href="https://stations.windy.com/stations">Windy</a> ID</small>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-form-label" for="windy-updates-station">Station ID:</label>
+                <div class="col form-group">
+                    <input type="text" class="form-control"
+                           name="upload[windy][station]"
+                           id="windy-updates-station"
+                           maxlength="1"
+                        <?= ($config->upload->windy->enabled === false) ? 'disabled="disabled"' : false; ?>
+                           value="<?= $config->upload->windy->station; ?>">
+                    <small id="windy-updates-key-help" class="form-text text-muted">Your
+                        Windy Station ID. Default 0.
                     </small>
                 </div>
             </div>

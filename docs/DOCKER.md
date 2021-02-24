@@ -128,7 +128,9 @@ To **REMOVE ALL DATA** and start over
 acuparse destroy
 ```
 
-### Updating (**MUST BE RUN AS ROOT/SUDO**)
+### Updating
+
+(**MUST BE RUN AS ROOT/SUDO**)
 
 Also updates the run script and the docker-compose config.
 

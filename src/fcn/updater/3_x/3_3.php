@@ -59,4 +59,10 @@ switch ($config->version->app) {
             exit();
         }
 
+    // Update from 3.3.0 to 3.3.1
+    case '3.3.0':
+        $config->version->app = '3.3.1';
+        $config->upload->windy->station = '0';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Add Windy StationID, Fix Uploaders using wrong Temp.';
+
 }

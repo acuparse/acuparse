@@ -164,6 +164,7 @@ return (object)array(
             'enabled' => false, // true or false
             'id' => '', // ID
             'key' => '', // Station API Key
+            'station' => '0', // Station ID
             'url' => 'http://stations.windy.com/pws/update', // Windy API path
         ),
 
@@ -230,7 +231,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.3.0',
+        'app' => '3.3.1',
         'schema' => '3.3',
         'installHash' => null,
     ),

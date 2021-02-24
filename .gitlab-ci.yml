@@ -326,7 +326,6 @@ RELEASE:GITHUB:tag:
     - >
       curl -X POST -u $GITHUB_USER:$GITHUB_RELEASE_TOKEN -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/acuparse/acuparse/releases -d '{"tag_name":"TEST","name":"TEST","body":"'"$GHE_NOTES"'","target_commitish":"'"$CI_COMMIT_SHA"'"}'
   dependencies: [ ]
-  needs: [ "RELEASE:GITLAB:tag" ]
 
 #### Update RMS ####
 RELEASE:RMS:
@@ -341,7 +340,6 @@ RELEASE:RMS:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
-  needs: [ "RELEASE:GITLAB:tag" ]
 
 #### Announce Release ####
 RELEASE:Announce:
@@ -355,8 +353,8 @@ RELEASE:Announce:
     - echo "Sending Slack Notification ..."
     - >
       curl -X POST --data-urlencode 'payload={"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"Acuparse Version `'"$VERSION"'` is now available!\nSee the <https://www.acuparse.com/releases/v'"$RELEASE_VERSION"'|Release Notes> for more details!\n\nFor update instructions, see the <https://docs.acuparse.com/UPDATING|Update Guide>."},"accessory":{"type":"image","image_url":"https://www.acuparse.com/assets/img/release.jpg","alt_text":"Ship Image"}}]}' "$SLACK_RELEASE_HOOK_URL"
-    - echo "Sending mail to users list ..."
-    - curl -s --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" -F from='Acuparse Release Management Service <no_reply@'$MAILGUN_DOMAIN'>' -F to='Acuparse Users Mailing List <users@lists.'$MAILGUN_DOMAIN'>' -F subject='Acuparse '$VERSION' is now available' --form-string html='<h2>Acuparse Version '$VERSION' is now available!</h2><p>See the <a href="https://www.acuparse.com/releases/v'$RELEASE_VERSION'">Release Notes</a> for more details!<br>For update instructions, see the <a href="https://docs.acuparse.com/UPDATING">Update Guide</a>.</p>'
+    #- echo "Sending mail to users list ..."
+    #- curl -s --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" -F from='Acuparse Release Management Service <no_reply@'$MAILGUN_DOMAIN'>' -F to='Acuparse Users Mailing List <users@lists.'$MAILGUN_DOMAIN'>' -F subject='Acuparse '$VERSION' is now available' --form-string html='<h2>Acuparse Version '$VERSION' is now available!</h2><p>See the <a href="https://www.acuparse.com/releases/v'$RELEASE_VERSION'">Release Notes</a> for more details!<br>For update instructions, see the <a href="https://docs.acuparse.com/UPDATING">Update Guide</a>.</p>'
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
