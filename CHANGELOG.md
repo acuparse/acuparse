@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.3.1]](https://www.acuparse.com/releases/v3-3-1/) - 2021-02-28
+
+### Added
+
+- Windy Station ID.
+    - Required when using multiple stations with Windy.
+  
+### Fixed
+
+- Weathercloud/WindGuru/OpenWeather uploading data using F not C as expected.
+
 ## [[3.3.0]](https://www.acuparse.com/releases/v3-3-0/) - 2021-02-02
 
 ### Fixed

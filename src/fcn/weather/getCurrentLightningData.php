@@ -100,7 +100,7 @@ class getCurrentLightningData
     private function lastUpdate($last_strike_ts, $last_strike_display, $source, $json_date = 'c'): string
     {
 
-        function between($number, $from, $to)
+        function between($number, $from, $to): bool
         {
             return $number > $from && $number < $to;
         }

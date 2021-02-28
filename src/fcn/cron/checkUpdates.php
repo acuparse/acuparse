@@ -37,7 +37,7 @@ require(dirname(dirname(__DIR__)) . '/inc/loader.php');
  * @var object $appInfo Global Application Info
  */
 
-function getTelemetry()
+function getTelemetry(): array
 {
     if (shell_exec('hostnamectl')) {
         @$input = shell_exec('hostnamectl');

@@ -78,6 +78,8 @@ if (isset($_GET['do'])) {
             } else {
                 $message = '<h2>Password Changed Successfully!</h2><p>You can now use it when logging in.</p>';
             }
+        } else {
+            $message = '<h2>Password Changed Successfully!</h2><p>You can now use it when logging in.</p>';
         }
 
         // Mail it

@@ -36,7 +36,7 @@
  * @return bool|mixed
  */
 
-function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgDomain, $mgSecret)
+function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgDomain, $mgSecret): array
 {
     $array_data = array(
         'from' => $siteName . ' <' . $siteEmail . '>',
@@ -60,7 +60,7 @@ function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgD
     return json_decode($response, true);
 }
 
-function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = false, $disclaimer = true)
+function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = false, $disclaimer = true): array
 {
     // Get the loader
     require(dirname(__DIR__) . '/inc/loader.php');

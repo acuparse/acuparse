@@ -100,7 +100,7 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 ## Community Support
 
 - [Slack](https://communityinviter.com/apps/acuparse/acuparse)
-- [Users Mailing List](https://groups.google.com/a/lists.acuparse.com/forum/#!forum/users).
+- [Users Mailing List](https://groups.google.com/a/lists.acuparse.com/forum/#!forum/users)
 
 - Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
     - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com). If you require

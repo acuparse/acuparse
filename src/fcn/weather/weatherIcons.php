@@ -31,7 +31,7 @@
  */
 
 // Find the right moon icon to show:
-function moonIcon($moonStage)
+function moonIcon($moonStage): string
 {
     switch ($moonStage) {
         case 'New Moon':
@@ -65,7 +65,7 @@ function moonIcon($moonStage)
 }
 
 // Show the right icon based on current temp
-function tempIcon($tempC)
+function tempIcon($tempC): string
 {
     if ($tempC < -30) {
         $tempIcon = 'fa-thermometer-empty';
@@ -84,7 +84,7 @@ function tempIcon($tempC)
 }
 
 // Convert Trend to icon
-function trendIcon($trend)
+function trendIcon($trend): string
 {
     switch ($trend) {
         case 'Rising':

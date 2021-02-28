@@ -716,11 +716,11 @@ class getCurrentWeatherData
     {
         return (object)array(
             'tempF' => $this->tempF,
-            'tempC' => $this->tempF,
+            'tempC' => $this->tempC,
             'feelsF' => $this->feelsLike()->feelsF,
             'feelsC' => $this->feelsLike()->feelsC,
             'dewptF' => $this->dewPoint()->dewptF,
-            'dewptC' => $this->dewPoint()->dewptF,
+            'dewptC' => $this->dewPoint()->dewptC,
             'relH' => $this->relH,
             'windSpeedMPH' => $this->windSpeedMPH,
             'windSpeedKMH' => $this->windSpeedKMH,
