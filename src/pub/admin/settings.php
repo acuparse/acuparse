@@ -29,7 +29,6 @@
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
 /**
- * @return array
  * @var object $config Global Config
  */
 
@@ -58,14 +57,14 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->mysql->password = $_POST['mysql']['password'];
         // Check and adjust database trim level
         if ($config->mysql->trim != $_POST['mysql']['trim']) {
-            if ($_POST['mysql']['trim'] === '0') {
-                $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/disable.sql';
-            } elseif ($_POST['mysql']['trim'] === '1') {
+            if ($_POST['mysql']['trim'] === '1') {
                 $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable.sql';
             } elseif ($_POST['mysql']['trim'] === '2') {
                 $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable_xtower.sql';
+            } else {
+                $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/disable.sql';
             }
-            $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+            $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
             $schema = exec($schema, $schemaOutput, $schemaReturn);
             syslog(LOG_INFO, "(SYSTEM){CONFIG}: Database Trimming Updated");
             $config->mysql->trim = (int)$_POST['mysql']['trim'];
@@ -82,9 +81,9 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             $_POST['station']['sensor_atlas']) : null;
         $config->station->baro_offset = (isset($_POST['station']['baro_offset'])) ? (float)$_POST['station']['baro_offset'] : 0;
         $config->station->towers = (bool)$_POST['station']['towers'];
-        $config->station->towers_additional = (isset($_POST['station']['towers_additional'])) ? (bool)$_POST['station']['towers_additional'] : false;
+        $config->station->towers_additional = isset($_POST['station']['towers_additional']) && (bool)$_POST['station']['towers_additional'];
         $config->station->lightning_source = (int)$_POST['station']['lightning_source'];
-        $config->station->filter_access = (isset($_POST['station']['filter_access'])) ? (bool)$_POST['station']['filter_access'] : false;
+        $config->station->filter_access = isset($_POST['station']['filter_access']) && (bool)$_POST['station']['filter_access'];
 
         // Site
         $config->site->name = $_POST['site']['name'];
@@ -143,19 +142,19 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Master Sensor
         $config->upload->sensor->external = $_POST['upload']['sensor']['external'];
         $config->upload->sensor->id = (isset($_POST['upload']['sensor']['id'])) ? $_POST['upload']['sensor']['id'] : null;
-        $config->upload->sensor->archive = (isset($_POST['upload']['sensor']['archive'])) ? (bool)$_POST['upload']['sensor']['archive'] : false;
+        $config->upload->sensor->archive = isset($_POST['upload']['sensor']['archive']) && (bool)$_POST['upload']['sensor']['archive'];
 
         // WU
         $config->upload->wu->enabled = (bool)$_POST['upload']['wu']['enabled'];
         $config->upload->wu->id = (isset($_POST['upload']['wu']['id'])) ? $_POST['upload']['wu']['id'] : null;
         $config->upload->wu->password = (isset($_POST['upload']['wu']['password'])) ? $_POST['upload']['wu']['password'] : null;
-        $config->upload->wu->url = (isset($_POST['upload']['wu']['url'])) ? $_POST['upload']['wu']['url'] : 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php';
+        $config->upload->wu->url = (isset($_POST['upload']['wu']['url'])) ? $_POST['upload']['wu']['url'] : 'https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php';
 
         // PWS
         $config->upload->pws->enabled = (bool)$_POST['upload']['pws']['enabled'];
         $config->upload->pws->id = (isset($_POST['upload']['pws']['id'])) ? $_POST['upload']['pws']['id'] : null;
-        $config->upload->pws->password = (isset($_POST['upload']['pws']['password'])) ? $_POST['upload']['pws']['password'] : null;
-        $config->upload->pws->url = (isset($_POST['upload']['pws']['url'])) ? $_POST['upload']['pws']['url'] : 'http://www.pwsweather.com/pwsupdate/pwsupdate.php';
+        $config->upload->pws->key = (isset($_POST['upload']['pws']['key'])) ? $_POST['upload']['pws']['key'] : null;
+        $config->upload->pws->url = (isset($_POST['upload']['pws']['url'])) ? $_POST['upload']['pws']['url'] : 'https://pwsupdate.pwsweather.com/api/v1/submitwx';
 
         // CWOP
         $config->upload->cwop->enabled = (bool)$_POST['upload']['cwop']['enabled'];
@@ -169,27 +168,27 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->wc->id = (isset($_POST['upload']['wc']['id'])) ? $_POST['upload']['wc']['id'] : null;
         $config->upload->wc->key = (isset($_POST['upload']['wc']['key'])) ? $_POST['upload']['wc']['key'] : null;
         $config->upload->wc->device = (isset($_POST['upload']['wc']['device'])) ? $_POST['upload']['wc']['device'] : null;
-        $config->upload->wc->url = (isset($_POST['upload']['wc']['url'])) ? $_POST['upload']['wc']['url'] : 'http://api.weathercloud.net/v01/set';
+        $config->upload->wc->url = (isset($_POST['upload']['wc']['url'])) ? $_POST['upload']['wc']['url'] : 'https://api.weathercloud.net/v01/set';
 
         // Windy
         $config->upload->windy->enabled = (bool)$_POST['upload']['windy']['enabled'];
         $config->upload->windy->id = (isset($_POST['upload']['windy']['id'])) ? $_POST['upload']['windy']['id'] : null;
         $config->upload->windy->key = (isset($_POST['upload']['windy']['key'])) ? $_POST['upload']['windy']['key'] : null;
         $config->upload->windy->station = (isset($_POST['upload']['windy']['station'])) ? $_POST['upload']['windy']['station'] : '0';
-        $config->upload->windguru->url = (isset($_POST['upload']['windy']['url'])) ? $_POST['upload']['windy']['url'] : 'http://stations.windy.com/pws/update';
+        $config->upload->windguru->url = (isset($_POST['upload']['windy']['url'])) ? $_POST['upload']['windy']['url'] : 'https://stations.windy.com/pws/update';
 
         // Windguru
         $config->upload->windguru->enabled = (bool)$_POST['upload']['windguru']['enabled'];
         $config->upload->windguru->uid = (isset($_POST['upload']['windguru']['uid'])) ? $_POST['upload']['windguru']['uid'] : null;
         $config->upload->windguru->id = (isset($_POST['upload']['windguru']['id'])) ? $_POST['upload']['windguru']['id'] : null;
         $config->upload->windguru->password = (isset($_POST['upload']['windguru']['password'])) ? $_POST['upload']['windguru']['password'] : null;
-        $config->upload->windguru->url = (isset($_POST['upload']['windguru']['url'])) ? $_POST['upload']['windguru']['url'] : 'http://www.windguru.cz/upload/api.php';
+        $config->upload->windguru->url = (isset($_POST['upload']['windguru']['url'])) ? $_POST['upload']['windguru']['url'] : 'https://www.windguru.cz/upload/api.php';
 
         // OpenWeather
         $config->upload->openweather->enabled = (bool)$_POST['upload']['openweather']['enabled'];
         $config->upload->openweather->id = (isset($_POST['upload']['openweather']['id'])) ? $_POST['upload']['openweather']['id'] : null;
         $config->upload->openweather->key = (isset($_POST['upload']['openweather']['key'])) ? $_POST['upload']['openweather']['key'] : null;
-        $config->upload->openweather->url = (isset($_POST['upload']['openweather']['url'])) ? $_POST['upload']['openweather']['url'] : 'http://api.openweathermap.org/data/3.0/measurements';
+        $config->upload->openweather->url = (isset($_POST['upload']['openweather']['url'])) ? $_POST['upload']['openweather']['url'] : 'https://api.openweathermap.org/data/3.0/measurements';
 
         // Generic
         $config->upload->generic->enabled = (bool)$_POST['upload']['generic']['enabled'];
@@ -215,15 +214,13 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             // Log it
             syslog(LOG_INFO, "(SYSTEM){CONFIG}: Site configuration saved successfully");
             $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Configuration saved successfully!</div>';
-            header("Location: /admin");
-            exit();
         } else {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){CONFIG}[ERROR]: Saving configuration failed");
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving configuration failed!</div>';
-            header("Location: /admin");
-            exit();
         }
+        header("Location: /admin");
+        exit();
     } // Show the change form
     else {
         $pageTitle = 'Global System Configuration';

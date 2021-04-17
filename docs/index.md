@@ -111,3 +111,4 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 - [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
 - [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
 - [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)
+- [Azure Repo](https://dev.azure.com/acuparse/acuparse)

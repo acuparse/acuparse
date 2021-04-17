@@ -25,13 +25,9 @@
  * Use Tower Readings
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
  * @var object $data Weather Data
  */
 

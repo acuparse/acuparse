@@ -28,9 +28,8 @@
 // Get the loader
 require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -70,7 +69,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
     }
     // Tower Data
     if ($config->station->towers === true) {
-        $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");
+        $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange`");
         $towers = ['towers' => []];
         while ($row = mysqli_fetch_assoc($result)) {
             $name = $row['name'];

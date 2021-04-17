@@ -4,10 +4,6 @@ AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 
 > **Notice:** This program is open source 3rd party software. It is neither written nor supported by AcuRite.
 
-## UPDATING TO VERSION 3
-
-See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detailed instructions.
-
 ## Live Example Station
 
 ***See Acuparse in action via [ghwx.ca](https://www.ghwx.ca)***
@@ -73,6 +69,10 @@ Installing on a fresh instance of a Debian/Rasbian Buster(10) or Ubuntu 18.04/20
 After installing and adding your sensors, you will may receive a "No Data Received!" message on your dashboard.
 Acuparse will need to receive readings from your Access/Hub before weather data can be displayed.
 See [Initial Readings](https://docs.acuparse.com/INSTALL/#initial-readings) for more details.
+
+### UPDATING TO VERSION 3
+
+See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detailed instructions.
 
 ### Quick Install
 

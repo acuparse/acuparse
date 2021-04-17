@@ -25,27 +25,25 @@
  * PWS Weather Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
- * @return array
  * @var object $atlas Atlas Data
  * @var object $data Weather Data
  * @var object $appInfo Global Application Info
- * @var string $utcDate Atlas Data
+ * @var string $utcDate Date
  */
 
-$pwsQueryUrl = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->password;
+// Build and send update
+$pwsQueryUrl = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->key;
 $pwsQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today;
-if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-    $pwsQuery = $pwsQuery . '&UV=' . $atlas->uvIndex;
+if ($config->station->device === 0) {
+    $pwsQuery = $pwsQuery . '&windgustmph=' . $data->windGustMPH;
+    if ($config->station->primary_sensor === 0) {
+        $pwsQuery = $pwsQuery . '&UV=' . $atlas->uvIndex;
+    }
 }
-$pwsQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw';
+$pwsQueryStatic = '&softwaretype=' . $appInfo->name . '_v' . $config->version->app . '&action=updateraw';
 $pwsQueryResult = file_get_contents($pwsQueryUrl . $pwsQuery . $pwsQueryStatic);
 // Save to DB
 mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pwsQuery', '$pwsQueryResult')");

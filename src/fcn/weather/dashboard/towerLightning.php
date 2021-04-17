@@ -26,9 +26,6 @@
  */
 
 /**
- * @return array
- * @return array
- * @return array
  * @var object $towerLightning Tower Lightning Values
  * @var object $config Global Config
  * @var object $lightning Lightning Values

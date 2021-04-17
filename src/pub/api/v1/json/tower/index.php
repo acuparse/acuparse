@@ -22,20 +22,18 @@
 
 /**
  * File: src/pub/api/v1/json/tower/index.php
- * Get weather JSON data
+ * Get JSON tower data
  */
 
 // Get the loader
 require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
 header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
-
 function getTowerLightningData()
 {
     require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
@@ -45,7 +43,7 @@ function getTowerLightningData()
 
     if (empty($result)) {
         header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
-        echo json_encode(['Error' => "Lightning Data Unavailable"]);
+        return json_encode(['Error' => "Lightning Data Unavailable"]);
     } else {
         return json_encode($result);
     }
@@ -59,13 +57,18 @@ if (isset($_GET['lightning'])) {
         if ($config->station->primary_sensor === 0) {
             if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
                 getTowerLightningData();
+            } else {
+                goto not_enabled;
             }
         } else if ($config->station->primary_sensor === 1) {
             if ($config->station->lightning_source === 2) {
                 getTowerLightningData();
+            } else {
+                goto not_enabled;
             }
         }
     } else {
+        not_enabled:
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         echo json_encode(array("message" => "Bad Request - Tower lightning not enabled"));
     }

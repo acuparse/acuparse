@@ -29,10 +29,8 @@
 // Get the loader
 require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  * @var object $appInfo App Info
  */

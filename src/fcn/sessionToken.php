@@ -25,8 +25,10 @@
  * Create a session token
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
-/** @var string $uid User ID */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ * @var string $uid User ID
+ */
 
 // Generate the device key and token for this session
 $deviceKey = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',

@@ -25,12 +25,11 @@
  * 3.2 Site Update Tasks
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
+ * @var string $notes
  */
-/** @var string $notes */
 
 switch ($config->version->app) {
 

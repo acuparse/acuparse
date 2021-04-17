@@ -7,13 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.4.0]](https://www.acuparse.com/releases/v3-4-0/) - 2021-05-18
+
+### Changed
+
+- FontAwesome to v5.15.3.
+- Weathercloud API updates.
+- General Code Formatting and Cleanup.
+- PWSweather now uses API key instead of a password, added `windgustmph`.
+- External Upload URLS migrated to HTTPS.
+- Camera scripts combined into one main script and variables file.
+    - Changes do not affect existing scripts or configurations.
+    - See the [install guide](https://docs.acuparse.com/INSTALL/#webcam-installation-optional) for update details.
+
+### Fixed
+
+- Outage notifications sent too often or failing to send.
+- Moon rise/set times not using system timezone as expected.
+
 ## [[3.3.1]](https://www.acuparse.com/releases/v3-3-1/) - 2021-02-28
 
 ### Added
 
 - Windy Station ID.
     - Required when using multiple stations with Windy.
-  
+
 ### Fixed
 
 - Weathercloud/WindGuru/OpenWeather uploading data using F not C as expected.
@@ -556,8 +574,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 
 ### Added
 
-- Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the
-  roadmap.)
+- Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the roadmap.)
 - Google Captcha added to contact form.
 - MyAcuRite is terrible keeping time. They send the hour for the min and sec in their response.
     - Modify the response to the HUB and send server time instead.

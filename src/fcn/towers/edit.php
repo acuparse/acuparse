@@ -25,7 +25,9 @@
  * Edit a Tower
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 // Process the update
 if (isset($_GET['do'])) {

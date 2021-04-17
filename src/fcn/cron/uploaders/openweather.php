@@ -25,18 +25,14 @@
  * Open Weather Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
 
+// Build and send update
 if ($config->station->device === 0) {
     $data = array("station_id" => $config->upload->openweather->id, "dt" => time(), "temperature" => $data->tempC, "wind_speed" => round($data->windSpeedKMH / 3.6, 1), "wind_gust" => round($atlas->windGustKMH / 3.6, 1), "wind_deg" => $data->windDEG, "pressure" => round($data->pressure_kPa * 10, 1), "humidity" => $data->relH, "rain_1h" => $data->rainMM, "rain_24h" => $data->rainTotalMM_today);
 } else {

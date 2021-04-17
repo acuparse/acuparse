@@ -28,9 +28,8 @@
 $pageTitle = 'View User Accounts';
 include(APP_BASE_PATH . '/inc/header.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 ?>

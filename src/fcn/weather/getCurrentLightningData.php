@@ -48,9 +48,8 @@ class getCurrentLightningData
         $todaysDate = date('Y-m-d');
         // Get the loader
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
-        /** @var mysqli $conn Global MYSQL Connection */
         /**
-         * @return array
+         * @var mysqli $conn Global MYSQL Connection
          * @var object $config Global Config
          */
 
@@ -62,11 +61,10 @@ class getCurrentLightningData
                 if ($source === 'json') {
                     $json_output = ['Status' => 'error', 'message' => 'No Lightning Data Reported'];
                     echo json_encode($json_output);
-                    exit();
                 } else {
                     echo '<div class="col text-center alert alert-danger"><strong>No Lightning Data Reported!</strong><br>Check your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</div>';
-                    exit();
                 }
+                exit();
             }
         }
 

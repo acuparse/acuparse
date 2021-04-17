@@ -28,13 +28,12 @@
 // Get the loader
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
-function rssiConvert($rssi)
+function rssiConvert($rssi): array
 {
     $result = array();
     switch ($rssi) {
@@ -134,7 +133,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                         </tr>
                     <?php }
                     if ($config->station->towers === true) {
-                        $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange` ASC");
+                        $result = mysqli_query($conn, "SELECT `name`,`sensor` FROM `towers` ORDER BY `arrange`");
                         while ($row = mysqli_fetch_assoc($result)) {
                             $name = $row['name'];
                             $sensor = $row['sensor'];

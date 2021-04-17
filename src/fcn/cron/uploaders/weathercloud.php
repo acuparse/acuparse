@@ -25,16 +25,12 @@
  * Weathercloud Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
+ * @var object $appInfo Global Application Info
  */
 
 $sql = "SELECT `timestamp` FROM `wc_updates` ORDER BY `timestamp` DESC LIMIT 1";
@@ -43,12 +39,13 @@ $count = mysqli_num_rows(mysqli_query($conn, $sql));
 
 // Make sure update interval has passed since last update
 if ((strtotime($result['timestamp']) < strtotime('-10 minutes')) or ($count == 0)) {
+    // Build and send update
     $wcQueryUrl = $config->upload->wc->url . '?wid=' . $config->upload->wc->id . '&key=' . $config->upload->wc->key;
     $wcQuery = '&temp=' . ($data->tempC * 10) . '&wdir=' . $data->windDEG . '&wspd=' . (($data->windSpeedKMH * 0.277778) * 10) . '&bar=' . ($data->pressure_kPa * 100) . '&hum=' . $data->relH . '&dew=' . ($data->dewptC * 10) . '&rainrate=' . ($data->rainMM * 10) . '&rain=' . ($data->rainTotalMM_today * 10);
     if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
         $wcQuery = $wcQuery . '&uvi=' . $atlas->uvIndex;
     }
-    $wcQueryStatic = '&type=555e1df0d6eb' . '&version=' . $config->version->app;
+    $wcQueryStatic = '&softwareid=555e1df0d6eb' . '&software=' . $appInfo->name . '_v' . $config->version->app;
     $wcQueryResult = file_get_contents($wcQueryUrl . $wcQuery . $wcQueryStatic);
     // Save to DB
     mysqli_query($conn, "INSERT INTO `wc_updates` (`query`,`result`) VALUES ('$wcQuery', '$wcQueryResult')");

@@ -25,18 +25,14 @@
  * Wind Guru Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
 
+// Build and send update
 $windguruSalt = date('YmdHis');
 $windguruHash = md5($windguruSalt . $config->upload->windguru->uid . $config->upload->windguru->password);
 $windguruQueryUrl = $config->upload->windguru->url . '?uid=' . $config->upload->windguru->uid . '&salt=' . $windguruSalt . '&hash=' . $windguruHash;

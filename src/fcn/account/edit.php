@@ -25,9 +25,8 @@
  * Edit a user
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -180,7 +179,7 @@ else {
                                            value="<?= $row['username']; ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="user_email">Email</label>
+                                    <label for="email">Email</label>
                                     <input type="text" class="form-control" name="email" id="email"
                                            placeholder="Email" maxlength="255"
                                            value="<?= $row['email']; ?>" required>

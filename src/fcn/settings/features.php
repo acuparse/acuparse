@@ -26,7 +26,6 @@
  */
 
 /**
- * @return array
  * @var object $config Global Config
  */
 ?>
@@ -96,7 +95,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <label class="col-form-label" for="camera_sort_today">Archive Sort Order:</label>
+                        <label class="col-form-label" for="camera_sort_archive">Archive Sort Order:</label>
                         <div class="col form-group">
                             <div class="form-group">
                                 <input type="hidden" name="archive">

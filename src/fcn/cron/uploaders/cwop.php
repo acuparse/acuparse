@@ -25,15 +25,9 @@
  * CWOP Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
- * @return array
  * @var object $atlas Atlas Data
  * @var object $data Weather Data
  * @var object $appInfo Global Application Info
@@ -45,7 +39,7 @@ $count = mysqli_num_rows(mysqli_query($conn, $sql));
 
 // Make sure update interval has passed since last update
 if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->interval)) or ($count == 0)) {
-    // Process and send update
+    // Build and send update
     $cwopDate = gmdate("dHi", time());
 
     $relH = $data->relH;

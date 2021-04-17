@@ -22,14 +22,13 @@
 
 /**
  * File: src/pub/api/v1/json/archive/index.php
- * Get archive weather JSON data
+ * Get JSON archive data
  */
 
 // Get the loader
 require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
 
 /**
- * @return array
  * @var object $config Global Config
  */
 

@@ -29,7 +29,6 @@ function getCurrentHTML()
 {
     require(APP_BASE_PATH . '/fcn/weather/inc/currentHTML.inc.php');
     /**
-     * @return array
      * @var object $config Global Config
      */
 

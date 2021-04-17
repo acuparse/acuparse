@@ -29,9 +29,8 @@
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 require(APP_BASE_PATH . '/fcn/mailer.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 

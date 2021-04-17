@@ -59,10 +59,6 @@ class getCurrentWeatherData
     private $tempF_low;
     private $tempC_avg;
     private $tempF_avg;
-    private $feelsF;
-    private $feelsC;
-    private $dewptF;
-    private $dewptC;
     private $relH;
     private $rainIN;
     private $rainMM;
@@ -72,10 +68,10 @@ class getCurrentWeatherData
     private $sunrise_json;
     private $sunset;
     private $sunset_json;
-    private $moonrise;
-    private $moonrise_json;
-    private $moonset;
-    private $moonset_json;
+    private $moonRise;
+    private $moonRise_json;
+    private $moonSet;
+    private $moonSet_json;
     private $moon_age;
     private $moon_stage;
     private $next_new_moon;
@@ -125,19 +121,18 @@ class getCurrentWeatherData
                 if ($json === true) {
                     $json_output = ['Status' => 'error', 'message' => 'No Data Received'];
                     echo json_encode($json_output);
-                    exit();
                 } else {
                     echo '<div class="col text-center alert alert-danger"><p><strong>No Data Received!</strong><br>Readings will display once data is received!<br>See <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">Troubleshooting Logs</a> for details.</p></div>';
-                    exit();
                 }
+                exit();
             }
 
             // Get Moon Data:
             require(APP_BASE_PATH . '/pub/lib/mit/moon/moonPhase.php');
             $moon = new Solaris\MoonPhase();
-            $this->moon_age = round($moon->get('age'));
+            $this->moon_age = round($moon->get('age'), 1);
             $this->moon_stage = $moon->phase_name();
-            $this->moon_illumination = round($moon->get('illumination'), 1) * 100 . '%';
+            $this->moon_illumination = round($moon->get('illumination'), 2) * 100 . '%';
             $this->next_new_moon = date($config->site->dashboard_display_date, $moon->get_phase('next_new_moon'));
             $this->next_new_moon_json = date($config->site->date_api_json, $moon->get_phase('next_new_moon'));
             $this->next_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('next_full_moon'));
@@ -147,15 +142,24 @@ class getCurrentWeatherData
             $this->last_full_moon = date($config->site->dashboard_display_date, $moon->get_phase('full_moon'));
             $this->last_full_moon_json = date($config->site->date_api_json, $moon->get_phase('full_moon'));
 
-            // Calculate Moontime
-            if (file_exists(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php')) {
-                require(APP_BASE_PATH . '/pub/lib/gpl/moon/moontime.php');
-                $moon_time = Moon::calculateMoonTimes($config->site->lat, $config->site->long);
-                $this->moonrise = date($config->site->dashboard_display_date, $moon_time->moonrise);
-                $this->moonset = date($config->site->dashboard_display_date, $moon_time->moonset);
+            // Calculate Moon Rise and Set
+            require('getMoonDate.php');
+            $moonTime = moonDate::moonRiseSet(date("n"), date("j"), date("Y"), $config->site->lat, $config->site->long, date('Z') / 3600);
+            $this->moonRise = date($config->site->dashboard_display_date, $moonTime->rise);
+            $this->moonRise_json = date($config->site->date_api_json, $moonTime->rise);
 
-                $this->moonrise_json = date($config->site->date_api_json, $moon_time->moonrise);
-                $this->moonset_json = date($config->site->date_api_json, $moon_time->moonset);
+            if ($moonTime->set <= $moonTime->rise) {
+                if ($moonTime->set >= time()) {
+                    $this->moonSet = date($config->site->dashboard_display_date, $moonTime->set);
+                    $this->moonSet_json = date($config->site->date_api_json, $moonTime->set);
+                } else {
+                    $moonTime_tomorrow = moonDate::moonRiseSet(date("n"), date("j") + 1, date("Y"), $config->site->lat, $config->site->long, date('Z') / 3600);
+                    $this->moonSet = date($config->site->dashboard_display_date, $moonTime_tomorrow->set);
+                    $this->moonSet_json = date($config->site->date_api_json, $moonTime_tomorrow->set);
+                }
+            } else {
+                $this->moonSet = date($config->site->dashboard_display_date, $moonTime->set);
+                $this->moonSet_json = date($config->site->date_api_json, $moonTime->set);
             }
 
             // Get Sun Data
@@ -543,7 +547,7 @@ class getCurrentWeatherData
                 $beaufort = 0;
                 break;
         }
-        return (int)$beaufort;
+        return $beaufort;
     }
 
 // Public Functions
@@ -553,7 +557,9 @@ class getCurrentWeatherData
     function calculateTrend($unit, $table, $sensor = null): string
     {
         require(dirname(dirname(__DIR__)) . '/inc/loader.php');
-        /** @var mysqli $conn Global MYSQL Connection */
+        /**
+         * @var mysqli $conn Global MYSQL Connection
+         */
 
         if ($sensor !== null) {
             $sensor = "AND `sensor` = '$sensor'";
@@ -632,8 +638,8 @@ class getCurrentWeatherData
             'pressure_trend' => $this->calculateTrend('inhg', 'pressure'),
             'sunrise' => $this->sunrise,
             'sunset' => $this->sunset,
-            'moonrise' => $this->moonrise,
-            'moonset' => $this->moonset,
+            'moonrise' => $this->moonRise,
+            'moonset' => $this->moonSet,
             'moon_age' => $this->moon_age,
             'moon_stage' => $this->moon_stage,
             'moon_illumination' => $this->moon_illumination,
@@ -697,8 +703,8 @@ class getCurrentWeatherData
             'pressure_trend' => lcfirst($this->calculateTrend('inhg', 'pressure')),
             'sunrise' => $this->sunrise_json,
             'sunset' => $this->sunset_json,
-            'moonrise' => $this->moonrise_json,
-            'moonset' => $this->moonset_json,
+            'moonrise' => $this->moonRise_json,
+            'moonset' => $this->moonSet_json,
             'moon_age' => $this->moon_age,
             'moon_stage' => $this->moon_stage,
             'moon_illumination' => $this->moon_illumination,

@@ -36,7 +36,7 @@ function _healthcheck() {
   pgrep -x rsyslogd >/dev/null || _healthcheck_failed "SYSLOG HEALTHCHECK FAILED"
   pgrep -x apache2 >/dev/null || _healthcheck_failed "APACHE2 HEALTHCHECK FAILED"
   mysqladmin ping -h"${MYSQL_HOSTNAME}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent >/dev/null || _healthcheck_failed "SQL HEALTHCHECK FAILED"
-  echo ""$(date +'%b %d %H:%M:%S')" ""${HOSTNAME}"" HEALTHCHECK[$$]: OK"
+  echo "$(date +'%b %d %H:%M:%S') ""${HOSTNAME}"" HEALTHCHECK[$$]: OK"
 }
 
 echo "Starting Acuparse HEALTHCHECK ..."

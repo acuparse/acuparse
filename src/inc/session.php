@@ -25,13 +25,17 @@
  * Builds and starts the session
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 if (!isset($_SESSION)) {
     session_start();
 
 // Process Login Cookie
-    /** @var string $installed */
+    /**
+     * @var boolean $installed
+     */
     if (!isset($_SESSION['authenticated']) && $installed === true) {
         if (isset($_COOKIE['device'])) {
             $deviceKey = (string)$_COOKIE['device'];

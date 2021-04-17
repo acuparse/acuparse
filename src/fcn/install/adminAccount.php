@@ -25,9 +25,8 @@
  * Add the initial administrator account
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -71,7 +70,6 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
 
         // Redirect user after successful authentication
         header("Location: /admin/settings");
-        exit();
     } // Something went wrong ...
     else {
         // Log it
@@ -79,8 +77,8 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
         header("Location: /admin");
-        exit();
     }
+    exit();
 } // There is already an account in the DB
 else {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");

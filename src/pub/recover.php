@@ -28,9 +28,8 @@
 // Get the loader
 require(dirname(__DIR__) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -137,7 +136,7 @@ if (!isset($_SESSION['authenticated'])) {
                 <div class="col-md-6 col-12 mx-auto">
                     <form class="form" role="form" action="recover?password" method="POST">
                         <div class="form-group">
-                            <label for="password" class="col-form-label">New Password</label>
+                            <label for="pass" class="col-form-label">New Password</label>
                             <input type="password" class="form-control" name="pass" id="pass" placeholder="Password"
                                    maxlength="32" required>
                         </div>
@@ -207,16 +206,14 @@ if (!isset($_SESSION['authenticated'])) {
                 // Display message
                 $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
                 header("Location: /admin/account");
-                exit();
 
             } else {
                 // Log it
                 syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Password recovery for UID $uid failed");
                 $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Something went wrong while completing your request. Please try again.</div>';
                 header("Location: /recover&do?hash=$hash");
-                exit();
             }
-
+            exit();
         }
 
     } // Display the initial request form
