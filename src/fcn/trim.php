@@ -25,9 +25,8 @@
  * Check Database Trim
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -42,7 +41,7 @@ if ($config->mysql->trim !== 0) {
         } elseif ($config->mysql->trim === 2) {
             $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable_xtower.sql';
         }
-        $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+        $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
         $schema = exec($schema, $schemaOutput, $schemaReturn);
         if ($schemaReturn !== 0) {
             syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming");

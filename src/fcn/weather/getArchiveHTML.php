@@ -31,7 +31,6 @@ function getArchiveHTML()
     require(APP_BASE_PATH . '/fcn/weather/getArchiveWeatherData.php');
 
     /**
-     * @return array
      * @var object $config Global Config
      */
 

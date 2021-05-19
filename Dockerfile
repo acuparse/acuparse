@@ -44,7 +44,7 @@ org.label-schema.version=$BUILD_VERSION \
 org.label-schema.usage="https://docs.acuparse.com/DOCKER" \
 org.label-schema.vendor="Acuparse"
 
-RUN echo "Process Updates and Install PACKAGES" \
+RUN echo "Install and Configure PACKAGES" \
 && export DEBIAN_FRONTEND=noninteractive \
 && apt-get update -qq && apt-get install -yqq --no-install-recommends \
 mariadb-client \
@@ -54,12 +54,14 @@ cron \
 && docker-php-ext-install mysqli \
 && docker-php-ext-enable mysqli \
 && apt-get autoremove --purge -yqq \
-&& rm -rf /var/lib/apt/lists/*
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* \
+&& unset DEBIAN_FRONTEND
 
 COPY .. "${ACUPARSE_DIR}"
 WORKDIR "${ACUPARSE_DIR}"
 
-RUN echo "Copy and then run Acuparse BUILD" \
+RUN echo "Copy and run Acuparse BUILD" \
 && mv .docker/* /usr/local/bin/ \
 && rm -rf .docker \
 && chmod +x /usr/local/bin/docker-build \

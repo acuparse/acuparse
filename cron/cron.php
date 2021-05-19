@@ -32,7 +32,7 @@ require(dirname(__DIR__) . '/src/inc/loader.php');
  * @return array
  * @var object $config Global Config
  * @var mysqli $conn Global MYSQL Connection
- * @var string $installed
+ * @var boolean $installed
  */
 
 syslog(LOG_DEBUG, "(SYSTEM){CRON}: Running System Tasks ...");

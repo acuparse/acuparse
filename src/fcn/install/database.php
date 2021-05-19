@@ -26,7 +26,6 @@
  */
 
 /**
- * @return array
  * @var object $config Global Config
  */
 
@@ -82,7 +81,7 @@ if ($saveConfig) {
     if ($testDBReturn === 0) {
         // Load the database with the default schema
         $schema = $sqlPath . '/master.sql';
-        $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+        $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
         $schema = exec($schema, $schemaOutput, $schemaReturn);
         if ($schemaReturn !== 0) {
             if (!unlink($configFilePath)) {
@@ -101,7 +100,7 @@ if ($saveConfig) {
                 } elseif ($config->mysql->trim === 2) {
                     $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable_xtower.sql';
                 }
-                $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema}";
+                $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
                 $schema = exec($schema, $schemaOutput, $schemaReturn);
                 if ($schemaReturn !== 0) {
                     syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming | Result: $schemaReturn  | SQL: " . printf($schemaOutput));

@@ -22,15 +22,14 @@
 
 /**
  * File: src/pub/api/v1/json/dashboard/index.php
- * Get weather JSON data
+ * Get JSON dashboard data
  */
 
 // Get the loader
 require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 

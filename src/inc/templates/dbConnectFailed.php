@@ -63,7 +63,6 @@
     <div>
         <p><Strong>Error Details:</Strong></p>
         <pre><?= mysqli_connect_error() ?></pre>
-        </p>
     </div>
 </article>
 </body>

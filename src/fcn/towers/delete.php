@@ -25,7 +25,9 @@
  * Delete a Tower
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 $towerSensorID = mysqli_real_escape_string($conn,
     filter_input(INPUT_GET, 'sensor_id', FILTER_SANITIZE_STRING));

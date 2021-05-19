@@ -29,7 +29,6 @@
 require(dirname(__DIR__) . '/inc/loader.php');
 
 /**
- * @return array
  * @var object $config Global Config
  */
 
@@ -99,6 +98,7 @@ if ($config->camera->enabled === true) {
                           method="GET">
                         <div class="form-group">
                             <input type="hidden" name="archive">
+                            <label hidden class="col-form-label" for="date">Date</label>
                             <input class="form-control form-cam-archive-date" type="date" name="date" id="date"
                                    onchange="this.form.submit()" value="<?= $date; ?>"
                                    min="<?= $cam_dir; ?>" max="<?= date('Y-m-d'); ?>">

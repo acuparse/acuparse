@@ -26,9 +26,6 @@
  */
 
 /**
- * @return array
- * @return array
- * @return array
  * @var object $wx Weather Values
  * @var object $config Global Config
  * @var object $atlas Atlas Values

@@ -26,7 +26,6 @@
  */
 
 /**
- * @return array
  * @var object $config Global Config
  */
 ?>
@@ -87,7 +86,7 @@
                                 class="form-control" required>
                             <option value="" disabled>Select Timezone</option>
                             <?php
-                            $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+                            $tzlist = DateTimeZone::listIdentifiers();
                             foreach ($tzlist as $tz) {
                                 ?>
                                 <option value="<?= $tz; ?>" <?= ($config->site->timezone === $tz) ? 'selected="selected"' : false; ?>><?= $tz; ?></option>

@@ -53,7 +53,9 @@ if (date_default_timezone_get() != $config->site->timezone) {
 
 // Open Database Connection
 if (!isset($conn)) {
-    /** @var string $installed */
+    /**
+     * @var boolean $installed
+     */
     if ($installed === true) {
         $conn = mysqli_connect($config->mysql->host, $config->mysql->username, $config->mysql->password,
             $config->mysql->database);

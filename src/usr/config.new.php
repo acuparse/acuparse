@@ -130,7 +130,7 @@ return (object)array(
             'enabled' => false, // true or false
             'id' => '', // Station ID
             'password' => '', // Password
-            'url' => 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php', // Server URL
+            'url' => 'https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php', // Server URL
         ),
 
         // PWS Weather Settings
@@ -138,7 +138,7 @@ return (object)array(
             'enabled' => false, // true or false
             'id' => '', // Station ID
             'password' => '', // Password
-            'url' => 'http://www.pwsweather.com/pwsupdate/pwsupdate.php', // Server URL
+            'url' => 'https://pwsupdate.pwsweather.com/api/v1/submitwx', // Server URL
         ),
 
         // CWOP Settings
@@ -156,7 +156,7 @@ return (object)array(
             'id' => '', // ID
             'key' => '', // Station Key
             'device' => '', // Device ID
-            'url' => 'http://api.weathercloud.net/v01/set', // Weathercloud API path
+            'url' => 'https://api.weathercloud.net/v01/set', // Weathercloud API path
         ),
 
         // Windy Settings
@@ -165,7 +165,7 @@ return (object)array(
             'id' => '', // ID
             'key' => '', // Station API Key
             'station' => '0', // Station ID
-            'url' => 'http://stations.windy.com/pws/update', // Windy API path
+            'url' => 'https://stations.windy.com/pws/update', // Windy API path
         ),
 
         // Windguru Settings
@@ -174,7 +174,7 @@ return (object)array(
             'uid' => '', // User ID
             'id' => '', // Station ID
             'password' => '', // Password
-            'url' => 'http://www.windguru.cz/upload/api.php', // Server URL
+            'url' => 'https://www.windguru.cz/upload/api.php', // Server URL
         ),
 
         // OpenWeather Settings
@@ -182,7 +182,7 @@ return (object)array(
             'enabled' => false, // true or false
             'id' => '', // Station ID
             'key' => '', // Password
-            'url' => 'http://api.openweathermap.org/data/3.0/measurements', // Server URL
+            'url' => 'https://api.openweathermap.org/data/3.0/measurements', // Server URL
         ),
 
         // Generic Settings
@@ -231,7 +231,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.3.1',
+        'app' => '3.4.0',
         'schema' => '3.3',
         'installHash' => null,
     ),

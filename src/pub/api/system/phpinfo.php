@@ -32,7 +32,9 @@ require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 // Access Token
 if (isset($_GET['token'])) {
     include(APP_BASE_PATH . '/fcn/api/auth/token.php');
-    /** @var $authToken */
+    /**
+     * @var $authToken
+     */
     $auth = checkToken($authToken);
     if ($auth === false) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 401 Unauthorized');

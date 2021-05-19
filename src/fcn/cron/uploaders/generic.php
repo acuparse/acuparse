@@ -25,21 +25,16 @@
  * Weather Underground Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
- * @return array
  * @var object $atlas Atlas Data
  * @var object $data Weather Data
  * @var object $appInfo Global Application Info
- * @var string $utcDate Atlas Data
+ * @var string $utcDate Date
  */
 
+// Build and send update
 $genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;
 $genericQuery = '&dateutc=' . $utcDate . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN . '&dailyrainin=' . $data->rainTotalIN_today . '&windspdmph_avg2m=' . $data->windAvgMPH;
 if ($config->station->device === 0) {

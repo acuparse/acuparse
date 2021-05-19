@@ -440,72 +440,95 @@ Additionally, you can request Bootstrap 4 formatted HTML, JSON array(s), or plai
 
 - See the [API Guide](https://docs.acuparse.com/API) for details.
 
-## Web Cam Installation (optional)
+## Webcam Installation (optional)
 
-Three scripts are included in the `cam/templates` directory. They are used to get and process images from an IP camera.
-You will need to be able to get a snapshot from the camera, or an RTSP stream.
+The script `webcam` is included in the `cam` directory. It's used to capture and process images from an IP camera.
+You will need to be able to get an image snapshot from your camera via http, or an RTSP stream.
 
-Images get stored in `src/pub/img/cam`. They should be backed up regularly to avoid loss.
+Images are stored in `src/pub/img/cam`. They should be backed up regularly to avoid loss.
 
-Script | Description
+The `webcam` script combines what was previously three template scripts into an all-in-one script. Allowing for it to be version controlled and no
+longer needs to be updated between releases. You will still need to manually update local systems not running Acuparse.
+
+> **Updating from `local`, `remote` or, `combined` scripts?**
+>
+> Copy `config.env` from `cam/templates` to `cam`, then copy your settings from the existing scripts into `config.env`.
+>
+> Update your crontab entry to use the new `webcam` script, ensure your using `bash` and not `sh`.
+>
+> `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/webcam > /dev/null 2>&1`
+
+The `webcam` script operates in three modes:
+
+Script Mode | Description
 --- | ---
-local | Runs on a host local to the camera (such as an NVR) and sends the image to the Acuparse server.
-remote | Processes an image on the Acuparse server.
-combined | Processes an image when the camera and Acuparse are both installed locally.
+`local` | Runs on a host local to the camera (such as an NVR) and sends the image to the Acuparse server.
+`remote` | Processes an image on the Acuparse server.
+`combined` | Processes an image when the camera and Acuparse are both available locally.
 
-### Cam Archive Sort Order
-
-The timestamp sort order can be changed in your admin features settings. You can sort today and archive by
-either `descending`
-or `ascending`. Default is `ascending`.
+The `combined` mode is the default and should be used when you can access your camera from your Acuparse system.
+For installs where your camera is not on the same local network as your Acuparse system, use the `local` and `remote` modes.
 
 ### Local/Remote Setup
 
-- On the system local to the camera:
-    - Copy the cam directory to the acuparse directory and go there:
+#### Local System
 
-      ```bash
-      cp cam/ /opt/acuparse/ && cd /opt/acuparse
-      ```
+!!! note
+    Local scripts will need to be updated if the `webcam` script changes.
 
-    - Copy `local` from `cam/templates` to the cam folder and modify the values:
+- On the system local to your camera, download the templates
 
-      ```bash
-      cp cam/templates/local cam/
-      ```
+    - [ZIP File](https://gitlab.com/acuparse/acuparse/-/archive/stable/acuparse-stable.zip?path=cam/templates)
+    - [TAR.GZ File](https://gitlab.com/acuparse/acuparse/-/archive/stable/acuparse-stable.tar.gz?path=cam/templates)
+    - [Text](https://gitlab.com/acuparse/acuparse/-/tree/stable/cam/templates)
 
-    - Setup a cron job to process the image:
+- Extract the templates and move them into a new Acuparse directory.
 
-      ```bash
-      crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/local > /dev/null 2>&1
-      ```
+  ```bash
+  mkdir -p /opt/acuparse && \
+  cp cam/ /opt/acuparse/ && \
+  cd /opt/acuparse
+  ```
 
-    - Setup SSH keys so you can log in to your remote host from the local host without a password:
+- Copy `config.env` from `cam/templates` to the `cam` folder and modify the variables in `config.env`, setting the mode to `local`.
 
-      ```bash
-      ssh-copy-id -i ~/.ssh/{YOUR_KEY} {USERNAME}@{HOSTNAME}
-      ```
-
-- On the Acuparse server:
-    - Copy `remote` from `cam/templates` to the cam folder and modify the values:
-
-      ```bash
-      cp cam/templates/remote cam/
-      ```
-
-### Combined Setup
-
-- Copy `combined` from `cam/templates` to the cam folder and modify the values:
-
-```bash
-cp cam/templates/combined cam/
-```
+  ```bash
+  cp cam/templates cam/
+  ```
 
 - Setup a cron job to process the image:
 
-```bash
-crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/combined > /dev/null 2>&1
-```
+  ```bash
+  crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/webcam > /dev/null 2>&1
+  ```
+
+- Setup SSH keys, so you can log in to your remote host from the local host without a password
+
+  ```bash
+  ssh-copy-id -i ~/.ssh/{YOUR_KEY} {USERNAME}@{HOSTNAME}
+  ```
+
+#### Remote Acuparse System
+
+- Copy `config.env` from `cam/templates` to the `cam` folder and modify the variables in `config.env`, setting the mode to `remote`.
+
+  ```bash
+  cp /opt/acuparse/cam/templates/config.env /opt/acuparse/cam
+  ```
+
+### Combined System Setup
+
+- Copy `config.env` from `cam/templates` to the cam folder and modify the variables in `config.env`, setting the mode to `combined`.
+
+  ```bash
+  cp /opt/acuparse/cam/templates/config.env cam/
+  ```
+
+- Setup a cron job to process the image:
+
+  ```bash
+  crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/webcam > /dev/null 2>&1
+  ```
 
 !!! info
     Ensure ImageMagick is installed and available. Otherwise, images will not get processed.

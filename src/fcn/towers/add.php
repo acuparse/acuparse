@@ -25,7 +25,9 @@
  * Add a Tower
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 // Insert the new tower into the database
 if (isset($_GET['do'])) {

@@ -29,10 +29,9 @@
 require(dirname(__DIR__) . '/inc/loader.php');
 
 /**
- * @return array
  * @var object $config Global Config
+ * @var string $installed
  */
-/** @var string $installed */
 
 if ($installed == false) {
     header("Location: /admin/install");

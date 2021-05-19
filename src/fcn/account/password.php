@@ -25,7 +25,9 @@
  * Processes password changes
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 // Check if password change form was submitted
 if (isset($_GET['do'])) {

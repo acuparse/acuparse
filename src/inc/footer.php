@@ -25,16 +25,11 @@
  * Page Footer
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
  * @var object $appInfo Global Application Info
  */
-
 ?>
 <!-- Page Footer -->
 <hr>
@@ -45,7 +40,9 @@
             <p>Powered by <a href="<?= $appInfo->homepage; ?>"
                              target='_blank'><strong><?= ucfirst($appInfo->name); ?></strong></a>
                 <?php
-                /** @var string $installed */
+                /**
+                 * @var boolean $installed
+                 */
                 if ($installed === true) {
                     if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
                         ?>

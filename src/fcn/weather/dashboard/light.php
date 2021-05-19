@@ -26,7 +26,6 @@
  */
 
 /**
- * @return array
  * @var object $atlas Atlas Values
  */
 ?>

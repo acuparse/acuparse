@@ -28,9 +28,8 @@
 // Get the loader
 require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -49,15 +48,14 @@ if (isset($installed) && $installed === true) {
             "updated" => "$lastUpdate",
             "stats" => "$sqlStats"
         ];
-        echo json_encode($status);
     } else {
         header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
         $status = [
             "status" => "Error",
             "installed" => "Partial"
         ];
-        echo json_encode($status);
     }
+    echo json_encode($status);
 } elseif (isset($installed) && $installed === false) {
     header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
     $status = [

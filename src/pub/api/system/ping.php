@@ -24,3 +24,5 @@
  * File: src/api/system/ping.php
  * Ping
  */
+
+// This file intentionally blank

@@ -2,10 +2,11 @@
 
 ## Registration
 
-1. Register for a new account: [http://www.pwsweather.com/register.php](http://www.pwsweather.com/register.php)
-1. Add a station: [http://www.pwsweather.com/station.php](http://www.pwsweather.com/station.php)
+1. Register for a new account: [https://www.pwsweather.com/register](https://www.pwsweather.com/register)
+1. Add a station: [https://dashboard.pwsweather.com/stations/add](https://dashboard.pwsweather.com/stations/add)
 
 ## Configuration
 
 1. Change enabled to true.
-1. Input your station ID and PWS password.
+1. Input your station ID and PWS API Key.
+    1. API Key is found at the bottom of the edit station page, in the profile section.

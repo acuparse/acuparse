@@ -25,14 +25,9 @@
  * Windy Updater
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
- * @return array
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
@@ -43,6 +38,7 @@ $count = mysqli_num_rows(mysqli_query($conn, $sql));
 
 // Make sure update interval has passed since last update
 if ((strtotime($result['timestamp']) < strtotime('-5 minutes')) or ($count == 0)) {
+    // Build and send update
     $windyQueryUrl = $config->upload->windy->url . '/' . $config->upload->windy->key;
     $windyQuery = '?station=' . $config->upload->windy->station . '&tempf=' . $data->tempF . '&winddir=' . $data->windDEG . '&windspeedmph=' . $data->windSpeedMPH . '&baromin=' . $data->pressure_inHg . '&humidity=' . $data->relH . '&dewptf=' . $data->dewptF . '&rainin=' . $data->rainIN;
     if ($config->station->device === 0 && $config->station->primary_sensor === 0) {

@@ -25,17 +25,13 @@
  * Build the main site's header
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
- */
-/**
- * @return array
  * @var object $appInfo Global Application Info
+ * @var boolean $installed
+ * @var string $pageTitle Page Title
  */
-/** @var string $installed */
-/** @var string $pageTitle Page Title */
 $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . ' | ' . $config->site->location : $pageTitle;
 ?>
     <!DOCTYPE html>
@@ -43,7 +39,7 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="handheldfriendly" content="true">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="<?= $config->site->desc; ?>">
         <meta name="keywords" content="weather, <?= strtolower($config->site->location); ?>">
 
@@ -125,12 +121,14 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             <!-- Structured Data -->
             <script type="application/ld+json">
         {
-            "@context": "http://schema.org",
+            "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "<?= $config->site->name; ?>",
             "description": "<?= $config->site->desc; ?>",
             "url": "https://<?= $config->site->hostname; ?>/"
         }
+
+
             </script>
         <?php } ?>
     </head>

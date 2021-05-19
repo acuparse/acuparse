@@ -25,9 +25,8 @@
  * Upload Settings
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 ?>
@@ -74,7 +73,7 @@
                         <option value="">&nbsp;</option>
                         <?php
                         $result = mysqli_query($conn,
-                            "SELECT * FROM `towers` ORDER BY `arrange` ASC");
+                            "SELECT * FROM `towers` ORDER BY `arrange`");
                         while ($row = mysqli_fetch_assoc($result)) {
                             ?>
                             <option value="<?= $row['sensor']; ?>" <?= ($config->upload->sensor->id === $row['sensor']) ? 'selected="selected"' : false; ?>><?= $row['sensor'] . ' - ' . $row['name']; ?>
@@ -166,6 +165,7 @@
             </div>
             <div class="form-row">
                 <div class="col form-group">
+                    <label hidden class="col-form-label" for="myacurite-access-url">Server:</label>
                     <select name="upload[myacurite][access_url]"
                             id="myacurite-access-url"
                             class="form-control">
@@ -297,16 +297,16 @@
             </div>
             <div class="form-row">
                 <label class="col-form-label"
-                       for="pws-updates-password">Password:</label>
+                       for="pws-updates-key">API Key:</label>
                 <div class="col form-group">
                     <input type="text" class="form-control"
-                           name="upload[pws][password]"
-                           id="pws-updates-password"
-                           placeholder="PWS Password"
+                           name="upload[pws][key]"
+                           id="pws-updates-key"
+                           placeholder="PWS API Key"
                            maxlength="35"
                         <?= ($config->upload->pws->enabled === false) ? 'disabled="disabled"' : false; ?>
-                           value="<?= $config->upload->pws->password; ?>">
-                    <small id="pws-updates-password-help" class="form-text text-muted">
+                           value="<?= $config->upload->pws->key; ?>">
+                    <small id="pws-updates-key-help" class="form-text text-muted">
                         Your <a
                                 href="https://www.pwsweather.com">PWS</a>
                         Password
@@ -682,7 +682,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <label class="col-form-label" for="openweather-updates-uid">Station ID:</label>
+                <label class="col-form-label" for="openweather-updates-id">Station ID:</label>
                 <div class="col form-group">
                     <input type="text" class="form-control"
                            name="upload[openweather][id]"

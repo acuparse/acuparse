@@ -16,6 +16,14 @@
 
 ## Webcam
 
+### FTP Upload
+
+The `combined` and `remote` camera upload scripts include a section for uploading via FTP.
+
+### URL Upload
+
+(Currently Broken?)
+
 1. Add a new device: [https://www.wunderground.com/member/devices/new](https://www.wunderground.com/member/devices/new)
 1. Choose `Outdoor Webcam`
 1. Camera Type: Choose `URL`

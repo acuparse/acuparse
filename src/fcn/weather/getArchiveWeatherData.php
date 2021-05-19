@@ -256,11 +256,10 @@ class getArchiveWeatherData
             if ($json === true) {
                 $json_output = ['Status' => 'error', 'message' => 'No Archive Data Reported'];
                 echo json_encode($json_output);
-                exit();
             } else {
                 echo '<div class="col text-center alert alert-danger"><p><strong>No Archive Data Reported!</strong><br>Check that your Cron tasks are running! See your <a href="https://docs.acuparse.com/TROUBLESHOOTING/#logs">logs</a> for more details.</p></div>';
-                exit();
             }
+            exit();
         }
 
         // Check for Yesterday Readings

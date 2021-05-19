@@ -43,22 +43,27 @@ workflow:
   image: koalaman/shellcheck-alpine
   stage: lint
   script:
-    - shellcheck cam/templates/*
+    - shellcheck -x cam/webcam .docker/* cron/backup
   dependencies: [ ]
 
 .TEMPLATE:PHP:noverify:
   image: golang:alpine
   stage: lint
+  artifacts:
+    when: on_failure
+    paths:
+      - noverify.txt
+    expire_in: 2 weeks
   before_script:
     - apk add --no-cache git
     - go get -u github.com/VKCOM/noverify
   script:
-    - noverify check src/ | tee noverify.txt
+    - noverify check -exclude-checks undefined,caseBreak src/ | tee noverify.txt
   dependencies: [ ]
 
 .TEMPLATE:DOCS:mkdocs:
   stage: docs
-  image: python:3.9-alpine
+  image: python:3.8-alpine
   before_script:
     - apk add --no-cache --virtual .build gcc musl-dev
     - pip install mkdocs-material
@@ -138,6 +143,8 @@ DEV:PHP:CLI:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
@@ -156,20 +163,19 @@ DEV:PHP:phpstan:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
 
 #### noverify ####
 
 DEV:PHP:noverify:
   extends: .TEMPLATE:PHP:noverify
-  artifacts:
-    when: on_failure
-    paths:
-      - noverify.txt
-    expire_in: 2 weeks
   allow_failure: true
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
 
@@ -187,6 +193,8 @@ DEV:MD:markdownlint:
   extends: .TEMPLATE:MD:markdownlint
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
@@ -207,6 +215,8 @@ DEV:BASH:shellcheck:
   extends: .TEMPLATE:BASH:shellcheck
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
@@ -229,6 +239,8 @@ DEV:DOCKER:build:
   allow_failure: false
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
 
@@ -260,6 +272,8 @@ DEV:INSTALLER:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
   needs: [ "DEV:DOCKER:build" ]
 
@@ -286,6 +300,8 @@ DEV:DOCS:mkdocs:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
   artifacts:
@@ -302,6 +318,8 @@ RELEASE:GITLAB:tag:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
   before_script:
     - apk add curl jq sed --no-cache
@@ -316,6 +334,8 @@ RELEASE:GITHUB:tag:
   stage: post-release
   image: alpine
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   before_script:
     - apk add curl jq sed --no-cache
@@ -324,7 +344,7 @@ RELEASE:GITHUB:tag:
     - export GHE_NOTES=$(echo "$RELEASE_NOTES" | sed '1{/^[[:space:]]*$/d}' | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
   script:
     - >
-      curl -X POST -u $GITHUB_USER:$GITHUB_RELEASE_TOKEN -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/acuparse/acuparse/releases -d '{"tag_name":"TEST","name":"TEST","body":"'"$GHE_NOTES"'","target_commitish":"'"$CI_COMMIT_SHA"'"}'
+      curl -X POST -u $GITHUB_USER:$GITHUB_RELEASE_TOKEN -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/acuparse/acuparse/releases -d '{"tag_name":"v'"$VERSION"'","name":"Version '"$VERSION"'","body":"'"$GHE_NOTES"'","target_commitish":"'"$CI_COMMIT_SHA"'"}'
   dependencies: [ ]
 
 #### Update RMS ####
@@ -338,6 +358,8 @@ RELEASE:RMS:
     - >
       curl -H "Authorization: Bearer $RMS_TOKEN" -X POST -d "version=$VERSION" "$RMS_HOST/releases" | jq
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
 
@@ -356,6 +378,8 @@ RELEASE:Announce:
     #- echo "Sending mail to users list ..."
     #- curl -s --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" -F from='Acuparse Release Management Service <no_reply@'$MAILGUN_DOMAIN'>' -F to='Acuparse Users Mailing List <users@lists.'$MAILGUN_DOMAIN'>' -F subject='Acuparse '$VERSION' is now available' --form-string html='<h2>Acuparse Version '$VERSION' is now available!</h2><p>See the <a href="https://www.acuparse.com/releases/v'$RELEASE_VERSION'">Release Notes</a> for more details!<br>For update instructions, see the <a href="https://docs.acuparse.com/UPDATING">Update Guide</a>.</p>'
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - if: $CI_COMMIT_TAG =~ /^v[0-9](?:\.[0-9]){2,3}.*/
   dependencies: [ ]
   needs: [ "RELEASE:RMS" ]

@@ -28,7 +28,9 @@
 require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
 
 // Process an update
-/** @var string $installed */
+/**
+ * @var boolean $installed
+ */
 if (isset($_GET['update']) && $installed === true) {
     require(APP_BASE_PATH . '/fcn/install/update.php');
 } // Create initial administrator account

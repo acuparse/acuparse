@@ -25,7 +25,9 @@
  * Add the initial user
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 $sql = "SHOW TABLES FROM `acuparse`;";
 $result = mysqli_query($conn, $sql);
@@ -61,12 +63,12 @@ if (!$result) {
                                    maxlength="255" required>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password:</label>
+                            <label for="pass">Password:</label>
                             <input type="password" class="form-control" name="password" id="pass"
                                    placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
                         </div>
                         <div class="form-group">
-                            <label for="password2">Verify Password:</label>
+                            <label for="pass2">Verify Password:</label>
                             <input type="password" class="form-control" name="password2" id="pass2"
                                    placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
                         </div>

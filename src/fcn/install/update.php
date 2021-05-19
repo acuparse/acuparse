@@ -26,8 +26,6 @@
  */
 
 /**
- * @return array
- * @return array
  * @var object $config Global Config
  * @var object $appInfo Application Info
  */

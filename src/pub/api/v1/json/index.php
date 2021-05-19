@@ -21,10 +21,10 @@
  */
 
 /**
- * File: src/api/v1/weather/index.php
- * Weather API Index
+ * File: src/pub/api/v1/json/index.php
+ * JSON Weather API Index
  */
 
 header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-echo "Bad Request - Missing endpoint. Try `/api/v1/json/dashboard`, `/api/v1/json/tower`, or /api/v1/json/archive`.";
-echo "See API guide for more details - https://docs.acuparse.com/API/";
+header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
+echo '{"error":{"message":"Bad Request","details":"Missing endpoint. Try `/dashboard`, `/tower`, or /archive`"}}';

@@ -25,9 +25,8 @@
  * Authorize a User
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -68,7 +67,6 @@ if ($response['success'] === true) {
 
             // Redirect user after successful authentication
             header("Location: /");
-            exit();
         } // Invalid password entered
         else {
             // Log it
@@ -76,7 +74,6 @@ if ($response['success'] === true) {
             // Display message
             $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: You have entered an invalid username or password.</div>';
             header("Location: /admin/account");
-            exit();
         }
     } // No rows found, user not authorized
     else {
@@ -85,7 +82,6 @@ if ($response['success'] === true) {
         // Display message
         $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: You have entered an invalid username or password.</div>';
         header("Location: /admin/account");
-        exit();
     }
 } // Captcha Failed
 else {
@@ -94,5 +90,5 @@ else {
     // Display message
     $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: Could not verify Captcha.</div>';
     header("Location: /admin/account");
-    exit();
 }
+exit();

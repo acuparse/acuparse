@@ -28,7 +28,6 @@
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 
 /**
- * @return array
  * @var object $config Global Config
  */
 

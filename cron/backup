@@ -38,7 +38,7 @@ BACKUP_CAM_IMAGES=${BACKUP_CAM_IMAGES:-1} # Set to 0 to skip backing up images. 
 
 ### Other Variables ###
 
-BACKUPS_ENABLED=${BACKUPS_ENABLED:-1}     # Set to 0 to disable.
+BACKUPS_ENABLED=${BACKUPS_ENABLED:-1} # Set to 0 to disable.
 BACKUP_TMP_DIR=/var/opt/acuparse/backups/tmp
 BACKUP_DIR=/var/opt/acuparse/backups
 ACUPARSE_DIR=/opt/acuparse
@@ -68,7 +68,7 @@ function _backup() {
 
   # Combine Backup Files to Daily Package
   echo "Packaging and Compressing Archive"
-  tar -cvzf "$BACKUP_DIR"/"$DATE".tar.gz -C "$BACKUP_TMP_DIR" $(find "$BACKUP_TMP_DIR" -maxdepth 1 -type f -printf '%P\n')
+  tar -cvzf "$BACKUP_DIR"/"$DATE".tar.gz -C "$BACKUP_TMP_DIR" "$(find "$BACKUP_TMP_DIR" -maxdepth 1 -type f -printf '%P\n')"
   if [ "$BACKUP_CAM_IMAGES" == 1 ]; then
     echo "Backing up Webcam Images"
     tar -uvf "$BACKUP_DIR"/webcam.tar -C "$ACUPARSE_DIR"/src/pub/img/cam .

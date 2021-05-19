@@ -25,13 +25,11 @@
  * Processes an update from an Access
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
+ * @var string $myacuriteQuery
  */
-
-/** @var string $myacuriteQuery */
 
 require(APP_BASE_PATH . '/fcn/weather/lightningUpdate.php');
 
@@ -123,7 +121,7 @@ if ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
 
         // Check for erroneous readings
         if ($config->station->filter_access === 1) {
-            if (($tempF === -40 || $tempF === 0) && ($humidity === 0 || $humidity === 1) && $windSpeedMPH === 0 && $windGustMPH === 0 && $windSpeedAvgMPH === 0) {
+            if (($tempF == -40 || $tempF == 0) && ($humidity === 0 || $humidity === 1) && $windSpeedMPH === 0 && $windGustMPH === 0 && $windSpeedAvgMPH === 0) {
                 // Log it
                 if ($config->debug->logging === true) {
                     syslog(LOG_WARNING, "(ACCESS){IRIS}[WARNING]: Dropped erroneous readings");
@@ -213,10 +211,10 @@ elseif ($_GET['mt'] === 'Atlas') {
         $dewptF = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'dewptf', FILTER_SANITIZE_STRING));
 
         // Atlas Specific Sensors
-        $uvindex = (float)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'uvindex', FILTER_SANITIZE_STRING));
-        $lightintensity = (float)mysqli_real_escape_string($conn,
+        $uvindex = (int)mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'uvindex', FILTER_SANITIZE_STRING));
+        $lightintensity = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'lightintensity', FILTER_SANITIZE_STRING));
-        $measured_light_seconds = (float)mysqli_real_escape_string($conn,
+        $measured_light_seconds = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'measured_light_seconds', FILTER_SANITIZE_STRING));
 
         // Lightning
@@ -226,7 +224,7 @@ elseif ($_GET['mt'] === 'Atlas') {
             filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
         $last_strike_distance = (float)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
-        if (empty($last_strike_distance)){
+        if (empty($last_strike_distance)) {
             $last_strike_distance = null;
         }
         // Process Last Strike timestamp
@@ -250,7 +248,7 @@ elseif ($_GET['mt'] === 'Atlas') {
 
         // Check for erroneous readings
         if ($config->station->filter_access === 1) {
-            if (($tempF === -40 || $tempF === 0) && ($humidity === 0 || $humidity === 1) && $windSpeedMPH === 0 && $windGustMPH === 0 && $windSpeedAvgMPH === 0 && $uvindex === 0 && $lightintensity === 0 && $measured_light_seconds === 0) {
+            if (($tempF == -40 || $tempF == 0) && ($humidity === 0 || $humidity === 1) && $windSpeedMPH === 0 && $windGustMPH === 0 && $windSpeedAvgMPH === 0 && $uvindex === 0 && $lightintensity === 0 && $measured_light_seconds === 0) {
                 // Log it
                 if ($config->debug->logging === true) {
                     syslog(LOG_WARNING, "(ACCESS){ATLAS}[WARNING]: Dropped erroneous readings");
@@ -335,7 +333,7 @@ elseif ($config->station->towers === true) {
                     filter_input(INPUT_GET, 'interference', FILTER_SANITIZE_STRING));
                 $last_strike_distance = (float)mysqli_real_escape_string($conn,
                     filter_input(INPUT_GET, 'last_strike_distance', FILTER_SANITIZE_STRING));
-                if (empty($last_strike_distance)){
+                if (empty($last_strike_distance)) {
                     $last_strike_distance = null;
                 }
                 // Process Last Strike timestamp

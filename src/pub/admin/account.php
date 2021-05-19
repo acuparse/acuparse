@@ -28,7 +28,9 @@
 // Get the loader
 require(dirname(dirname(__DIR__)) . '/inc/loader.php');
 require(APP_BASE_PATH . '/fcn/mailer.php');
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 // Logged in user stuff
 if (isset($_SESSION['authenticated'])) {

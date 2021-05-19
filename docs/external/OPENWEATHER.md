@@ -1,13 +1,13 @@
 # Acuparse OpenWeather Updater Guide
 
-Open Weather Map is an API based service. You will need a basic understanding of API's to use OpenWaether Map data.
+Open Weather Map is an API based service. You will need a basic understanding of API's to use OpenWeather Map data.
 
 Acuparse will upload your data, but does not facilitate the viewing of that data. You will need to use the provided API
 to query your data. See the [Open Weather Map API Guide](https://openweathermap.org/api) for more details!
 
 ## Registration
 
-1. Create an account in the members area to generate your API key.
+1. Create an account in the members' area to generate your API key.
 1. Register your station and get a unique identifier.
     - See [OpenWeather](https://openweathermap.org/stations#steps) for more details.
 
@@ -32,7 +32,7 @@ curl -H 'Content-Type: application/json' -X POST -d '{"external_id": "<EXTERNAL_
 
 ## Reviewing Data
 
-You can use the below command to check your readings. Replace <STATION_ID> and <API_KEY> with your values.
+You can use the below command to check your readings. Replace `<STATION_ID>` and `<API_KEY>` with your values.
 
 ```bash
 curl 'http://api.openweathermap.org/data/3.0/measurements?appid=<API_KEY>&station_id=<STATION_ID>&type=d&limit=100&from=0&to=3000000000'

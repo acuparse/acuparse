@@ -25,7 +25,9 @@
  * Deatuh a User
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ */
 
 if (isset($_COOKIE['device'])) {
     $username = $_SESSION['username'];

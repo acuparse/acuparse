@@ -25,9 +25,8 @@
  * No Reading Changes
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -41,7 +40,7 @@ $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
  * The Access updates every 5 mins, so 5 min intervals is only 1 update missed and every 10 mins is only 2 updates missed.
 */
 
-if ($config->station->access_mac != 0) {
+if (isset($config->station->access_mac)) {
     if ($config->outage_alert->offline_for === '5 minutes') {
         $config->outage_alert->offline_for = '11 minutes';
     } elseif ($config->outage_alert->offline_for === '10 minutes') {

@@ -25,9 +25,8 @@
  * View Towers
  */
 
-/** @var mysqli $conn Global MYSQL Connection */
 /**
- * @return array
+ * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  */
 
@@ -60,7 +59,7 @@ if (isset($_GET['arrange'])) {
                     </thead>
                     <tbody>
                     <?php
-                    $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange` ASC");
+                    $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange`");
                     while ($row = mysqli_fetch_assoc($result)) {
                         $private = 'No';
                         if ($row['private'] === '1') {

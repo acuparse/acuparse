@@ -60,16 +60,15 @@ function sendViaMailgun($sendTo, $subject, $message, $siteName, $siteEmail, $mgD
     return json_decode($response, true);
 }
 
-function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = false, $disclaimer = true): array
+function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = false, $disclaimer = true)
 {
     // Get the loader
     require(dirname(__DIR__) . '/inc/loader.php');
 
     /**
      * @return array
-     * @return array
-     * @var object $config Global Config
      * @var object $appInfo Global Application Info
+     * @var object $config Global Config
      */
 
     if ($config->mailgun->enabled === false) {

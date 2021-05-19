@@ -192,17 +192,16 @@ The following mounts are created in `/opt/acuparse/volumes`
 
 ## Webcam
 
-When using a webcam with Acuparse, run the webcam scripts on the docker host. Then copy the images
-to `/opt/acuparse/volumes/webcam`
-instead of the default location `/opt/acuparse/src/img/cam`.
+When using a webcam with Acuparse, run the `webcam` script on the docker host. Then copy the images
+to `/opt/acuparse/volumes/webcam` and update the default location in your `config.env`.
 
 The container is not setup to run the webcam scripts directly or be accessed via SSH.
 
-You can download the webcam templates as a
+You can download the webcam scripts as a
 
-- [ZIP File](https://gitlab.com/acuparse/acuparse/-/archive/master/acuparse-master.zip?path=cam/templates)
-- [TAR.GZ File](https://gitlab.com/acuparse/acuparse/-/archive/master/acuparse-master.tar.gz?path=cam/templates)
-- [RAW Git](https://gitlab.com/acuparse/acuparse/-/tree/master/cam/templates)
+- [ZIP File](https://gitlab.com/acuparse/acuparse/-/archive/stable/acuparse-stable.zip?path=cam/templates)
+- [TAR.GZ File](https://gitlab.com/acuparse/acuparse/-/archive/stable/acuparse-stable.tar.gz?path=cam/templates)
+- [Text](https://gitlab.com/acuparse/acuparse/-/tree/stable/cam/templates)
 
 ## Email
 

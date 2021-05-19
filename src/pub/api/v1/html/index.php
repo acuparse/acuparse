@@ -26,5 +26,4 @@
  */
 
 header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-echo "Bad Request - Missing endpoint. Try `/api/v1/html/dashboard`, `/api/v1/html/tower`, or /api/v1/html/archive`.";
-echo "See API guide for more details - https://docs.acuparse.com/API/";
+echo "<p>Error: Bad Request</p><p>Details: Missing endpoint. Try <code>/dashboard</code>, <code>/tower</code>, or <code>/archive</code>.</p>";
