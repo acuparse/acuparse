@@ -72,7 +72,7 @@ if ($response['success'] === true) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Invalid password for $username");
             // Display message
-            $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: You have entered an invalid username or password.</div>';
+            $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error: You have entered an invalid username or password.</div>';
             header("Location: /admin/account");
         }
     } // No rows found, user not authorized
@@ -80,7 +80,7 @@ if ($response['success'] === true) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Invalid username $username");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: You have entered an invalid username or password.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error: You have entered an invalid username or password.</div>';
         header("Location: /admin/account");
     }
 } // Captcha Failed
@@ -88,7 +88,7 @@ else {
     // Log it
     syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Invalid captcha response");
     // Display message
-    $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: Could not verify Captcha.</div>';
+    $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error: Could not verify Captcha.</div>';
     header("Location: /admin/account");
 }
 exit();

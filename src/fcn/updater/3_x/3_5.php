@@ -21,10 +21,22 @@
  */
 
 /**
- * File: src/api/system/index.php
- * System API Index
+ * File: src/fcn/updater/3_x/3_5.php
+ * 3.5 Site Update Tasks
  */
 
-header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
-echo '{"error":"Bad Request - Missing Endpoint"}';
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ * @var object $config Global Config
+ * @var string $notes
+ */
+
+switch ($config->version->app) {
+
+    // Update from 3.4.0 to 3.5.0
+    case '3.4.0':
+        $config->version->app = '3.5.0';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Bootstrap to v5 (Clear any CSS Caches). Bug Fixes';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Webcam script switching to curl from wget. See CHANGELOG';
+
+}

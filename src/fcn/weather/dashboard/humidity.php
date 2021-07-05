@@ -29,9 +29,9 @@
  * @var object $wx Weather Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h1>
         <h2><?= $wx->relH, '%', trendIcon($wx->relH_trend); ?></h2>
     </div>
-</div>
+</section>

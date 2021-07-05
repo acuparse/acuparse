@@ -30,6 +30,7 @@
  */
 
 if (!isset($_SESSION)) {
+    session_name('session');
     session_start();
 
 // Process Login Cookie

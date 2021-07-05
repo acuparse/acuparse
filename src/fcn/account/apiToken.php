@@ -38,7 +38,7 @@ if ($_SESSION['admin'] !== true) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: No permissions to modify $user. $uid is not an admin");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>No permissions to edit this user!</div>';
         header("Location: /");
         exit();
     }
@@ -65,10 +65,10 @@ if (mysqli_affected_rows($conn) === 1) {
     // Log it
     syslog(LOG_INFO, "(SYSTEM){USER}: Successfully generated API Token for UID $user");
     // Display message
-    $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>API Token Generated Successfully. Token is <code>' . $token . '</code></div>';
+    $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>API Token Generated Successfully. Token is <code>' . $token . '</code></div>';
 } else {
     syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Generating API Token for UID $user failed: " . mysqli_error($conn));
-    $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Failed Generating API Token ' . $token . ' ...</div>';
+    $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Failed Generating API Token ' . $token . ' ...</div>';
 }
 header("Location: /");
 exit();

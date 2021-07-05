@@ -47,54 +47,64 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
         <hr>
 
         <div class="row">
-            <div class="col-md-4 col-12">
+            <div class="<?= ($config->station->towers === true) ? 'col-md-4 col-12' : 'col-md-6 col-12' ?>">
                 <h3>Users</h3>
-                <button type="button" id="add-user" class="btn btn-outline-secondary btn-block"
-                        onclick="location.href = '/admin/account?add'" data-instant><i class="fas fa-user-plus"
-                                                                                       aria-hidden="true"></i> Add New
-                    User
-                </button>
-                <button type="button" id="manage-users" class="btn btn-outline-secondary btn-block margin-top-10"
-                        onclick="location.href = '/admin/account?view'" data-instant><i class="far fa-list-alt"
-                                                                                        aria-hidden="true"></i>
-                    Manage Users
-                </button>
+                <div class="d-grid gap-2">
+                    <button id="user-add" class="btn btn-outline-secondary" type="button"
+                            onclick="location.href = '/admin/account?add'" data-instant><i class="fas fa-user-plus"
+                                                                                           aria-hidden="true"></i> Add
+                        New User
+                    </button>
+                    <button id="user-edit" class="btn btn-outline-secondary" type="button"
+                            onclick="location.href = '/admin/account?view'" data-instant><i class="far fa-list-alt"
+                                                                                            aria-hidden="true"></i>
+                        Manage Users
+                    </button>
+                </div>
             </div>
             <?php if ($config->station->towers === true) { ?>
                 <div class="col-md-4 col-12">
                     <h3>Tower Sensors</h3>
-                    <button type="button" id="add-tower" class="btn btn-outline-secondary btn-block"
-                            onclick="location.href = '/admin/tower?add'" data-instant><i class="far fa-plus-square"
-                                                                                         aria-hidden="true"></i> Add New
-                        Tower
-                    </button>
-                    <button type="button" id="view-towers" class="btn btn-outline-secondary btn-block margin-top-10"
-                            onclick="location.href = '/admin/tower?view'" data-instant><i class="far fa-list-alt"
-                                                                                          aria-hidden="true"></i>
-                        View/Edit Towers
-                    </button>
+                    <div class="d-grid gap-2">
+                        <button id="tower-add" class="btn btn-outline-secondary" type="button"
+                                onclick="location.href = '/admin/tower?add'" data-instant><i class="far fa-plus-square"
+                                                                                             aria-hidden="true"></i> Add
+                            New Tower
+                        </button>
+                        <button id="tower-edit" class="btn btn-outline-secondary" type="button"
+                                onclick="location.href = '/admin/tower?view'" data-instant><i class="far fa-list-alt"
+                                                                                              aria-hidden="true"></i>
+                            View/Edit Towers
+                        </button>
+                    </div>
                 </div>
             <?php } ?>
-            <div class="col-md-4 col-12">
+            <div class="<?= ($config->station->towers === true) ? 'col-md-4 col-12' : 'col-md-6 col-12' ?>">
                 <h3>Configuration</h3>
-                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
-                        onclick="location.href = '/admin/settings'"><i class="fas fa-cogs"
-                                                                       aria-hidden="true"></i> System Settings
-                </button>
-                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
-                        onclick="location.href = '/admin/mailer'"><i class="fas fa-envelope-open-text"
-                                                                     aria-hidden="true"></i> Send Test Email
-                </button>
-                <h4 class="margin-top-05">Sensors</h4>
-                <button type="button" id="system-settings" class="btn btn-outline-secondary btn-block"
-                        onclick="location.href = '/admin/status'"><i class="fas fa-question-circle"
-                                                                     aria-hidden="true"></i> Sensor Status
-                </button>
-                <h4 class="margin-top-05">Access Tools</h4>
-                <button type="button" id="access-server" class="btn btn-outline-secondary btn-block margin-top-10"
-                        onclick="location.href = '/admin/access'"><i class="fas fa-server"
-                                                                     aria-hidden="true"></i> Upload Server
-                </button>
+                <div class="d-grid gap-2">
+                    <button type="button" id="system-settings" class="btn btn-outline-secondary"
+                            onclick="location.href = '/admin/settings'"><i class="fas fa-cogs"
+                                                                           aria-hidden="true"></i> System Settings
+                    </button>
+                    <button type="button" id="test-email" class="btn btn-outline-secondary"
+                            onclick="location.href = '/admin/mailer'"><i class="fas fa-envelope-open-text"
+                                                                         aria-hidden="true"></i> Send Test Email
+                    </button>
+                </div>
+                <h4 class="mt-3">Sensors</h4>
+                <div class="d-grid gap-2">
+                    <button type="button" id="sensor-status" class="btn btn-outline-secondary"
+                            onclick="location.href = '/admin/status'"><i class="fas fa-question-circle"
+                                                                         aria-hidden="true"></i> Sensor Status
+                    </button>
+                </div>
+                <h4 class="mt-3">Access Tools</h4>
+                <div class="d-grid gap-2">
+                    <button type="button" id="access-server" class="btn btn-outline-secondary"
+                            onclick="location.href = '/admin/access'"><i class="fas fa-server"
+                                                                         aria-hidden="true"></i> Upload Server
+                    </button>
+                </div>
             </div>
         </div>
     </section>

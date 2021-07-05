@@ -160,7 +160,7 @@ if ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
         // Update the time the data was received
         last_updated_at();
     }
-} //Done Iris
+} // Done Iris
 
 // Process Atlas Update
 elseif ($_GET['mt'] === 'Atlas') {

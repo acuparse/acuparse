@@ -76,8 +76,7 @@ function getWeatherData($acuparseURL)
 {
     $w = file_get_contents($acuparseURL . '/api/v1/json/dashboard?main');
     $w = json_decode($w);
-    $w = $w->main;
-    return $w;
+    return $w->main;
 }
 
 $weather = getWeatherData('http(s)://<yourip/domain>');
@@ -153,6 +152,7 @@ $signal = $weather->atlas->signal;
 $lastUpdate = $weather->atlas->lastUpdate;
 
 // Lightning
+$strikecount = $weather->lightning->strikecount;
 $dailystrikes = $weather->lightning->dailystrikes;
 $currentstrikes = $weather->lightning->currentstrikes;
 $interference = $weather->lightning->interference;

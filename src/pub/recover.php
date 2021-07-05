@@ -133,17 +133,25 @@ if (!isset($_SESSION['authenticated'])) {
             </div>
             <hr>
             <section id="change-password" class="row change-password">
-                <div class="col-md-6 col-12 mx-auto">
+                <div class="col-md-8 col-12 mx-auto alert alert-secondary">
                     <form class="form" role="form" action="recover?password" method="POST">
-                        <div class="form-group">
-                            <label for="pass" class="col-form-label">New Password</label>
-                            <input type="password" class="form-control" name="pass" id="pass" placeholder="Password"
-                                   maxlength="32" required>
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="pass" class="col-form-label">New Password</label>
+                            </div>
+                            <div class="col">
+                                <input type="password" class="form-control" name="pass" id="pass" placeholder="Password"
+                                       maxlength="32" required>
+                            </div>
                         </div>
-                        <input type="hidden" name="hash" value="<?= $hash; ?>">
-                        <button type="submit" id="submit" value="submit" class="btn btn-primary"><i
-                                    class="fas fa-key" aria-hidden="true"></i> Submit
-                        </button>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <input type="hidden" name="hash" value="<?= $hash; ?>">
+                                <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                            class="fas fa-key" aria-hidden="true"></i> Submit
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </section>
@@ -153,7 +161,7 @@ if (!isset($_SESSION['authenticated'])) {
         else {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]:Invalid recovery hash received. $hash");
-            $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Your request cannot be processed. Try submitting your password reset request again.</div>';
+            $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Your request cannot be processed. Try submitting your password reset request again.</div>';
             header("Location: /");
             exit();
         }
@@ -183,7 +191,7 @@ if (!isset($_SESSION['authenticated'])) {
             mysqli_query($conn, "DELETE FROM `password_recover` WHERE `uid` = '$uid'");
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}: Password recovery for UID $uid failed");
-            $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password. Try logging in with that password.</div>';
+            $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Seems like you entered your current password. Try logging in with that password.</div>';
             header("Location: /admin/account");
             exit();
 
@@ -204,13 +212,13 @@ if (!isset($_SESSION['authenticated'])) {
                 // Log it
                 syslog(LOG_INFO, "(SYSTEM){USER}: Password recovery for UID $uid processed successfully");
                 // Display message
-                $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
+                $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Password Updated Successfully!</div>';
                 header("Location: /admin/account");
 
             } else {
                 // Log it
                 syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Password recovery for UID $uid failed");
-                $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Something went wrong while completing your request. Please try again.</div>';
+                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Something went wrong while completing your request. Please try again.</div>';
                 header("Location: /recover&do?hash=$hash");
             }
             exit();
@@ -226,27 +234,36 @@ if (!isset($_SESSION['authenticated'])) {
         </div>
         <hr>
         <section class="row change-password">
-            <div class="col-md-6 col-12 mx-auto">
-                <p>To reset your password, enter your email below:</p>
+            <div class="col-md-8 col-12 mx-auto alert alert-secondary">
+                <p>To reset your password, enter your email below.</p>
                 <form id="recaptcha-form" role="form" action="recover?start" method="POST">
-                    <div class="form-group">
-                        <label class="col-form-label" for="email">Email Address:</label>
-                        <input type="email" class="form-control" name="email" id="email" maxlength="64"
-                               placeholder="username@example.com" required>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="col-form-label" for="email">Email Address</label>
+                        </div>
+                        <div class="col">
+                            <input type="email" class="form-control" name="email" id="email" maxlength="64"
+                                   placeholder="username@example.com" required>
+                        </div>
                     </div>
-                    <?php
-                    if ($config->google->recaptcha->enabled === true) { ?>
-                        <button type="submit" class="margin-top-05 btn btn-primary g-recaptcha"
-                                data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
-                            <i class="fas fa-key" aria-hidden="true"></i> Submit
-                        </button>
-                        <?php
-                    } else { ?>
-                        <button type="submit" class="margin-top-05 btn btn-primary"><i
-                                    class="fas fa-key" aria-hidden="true"></i> Submit
-                        </button>
-                        <?php
-                    } ?>
+                    <div class="row">
+                        <div class="col">
+                            <?php
+                            if ($config->google->recaptcha->enabled === true) { ?>
+                                <button type="submit" class="mt-3 btn btn-success g-recaptcha"
+                                        data-sitekey="<?= $config->google->recaptcha->sitekey; ?>"
+                                        data-callback="onSubmit">
+                                    <i class="fas fa-key" aria-hidden="true"></i> Submit
+                                </button>
+                                <?php
+                            } else { ?>
+                                <button type="submit" class="mt-3 btn btn-success"><i
+                                            class="fas fa-key" aria-hidden="true"></i> Submit
+                                </button>
+                                <?php
+                            } ?>
+                        </div>
+                    </div>
                 </form>
             </div>
         </section>

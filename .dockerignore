@@ -13,3 +13,5 @@ composer.lock
 CONTRIBUTING.md
 Dockerfile
 mkdocs.yml
+README.md
+CHANGELOG.md

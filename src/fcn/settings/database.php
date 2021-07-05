@@ -29,8 +29,7 @@
  * @var object $config Global Config
  */
 ?>
-<div class="tab-pane fade" id="nav-database" role="tabpanel"
-     aria-labelledby="nav-database-tab">
+<section class="tab-pane fade" id="nav-database" role="tabpanel" aria-labelledby="nav-database-tab">
     <div class="row">
         <div class="col">
             <h2 class="panel-heading">Database Settings</h2>
@@ -38,78 +37,113 @@
     </div>
     <div class="row">
         <div class="col-md-8 col-12 mx-auto">
-            <div class="form-row">
-                <label class="col-form-label" for="mysql-host">Hostname:</label>
-                <div class="col form-group">
-                    <input type="text" class="form-control"
-                           name="mysql[host]"
-                           id="mysql-host"
-                           placeholder="localhost"
-                           maxlength="35"
-                           value="<?= $config->mysql->host; ?>">
+
+            <!-- Connection -->
+            <section class="row alert alert-secondary">
+                <div class="col mt-2 mb-2">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Connection Settings</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="col-form-label" for="mysql-host">Hostname</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control"
+                                   name="mysql[host]"
+                                   id="mysql-host"
+                                   placeholder="localhost"
+                                   maxlength="35"
+                                   value="<?= $config->mysql->host; ?>">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <label class="col-form-label" for="mysql-database">Database</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control"
+                                   name="mysql[database]"
+                                   id="mysql-database"
+                                   placeholder="acuparse"
+                                   maxlength="35"
+                                   value="<?= $config->mysql->database; ?>">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <label class="col-form-label" for="mysql-username">Username</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control"
+                                   name="mysql[username]"
+                                   id="mysql-username"
+                                   placeholder="acuparse.dbadmin"
+                                   maxlength="35"
+                                   value="<?= $config->mysql->username; ?>">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <label class="col-form-label" for="mysql-password">Password</label>
+                        </div>
+                        <div class="col form-group">
+                            <input type="text" class="form-control"
+                                   name="mysql[password]"
+                                   id="mysql-password"
+                                   placeholder="Password"
+                                   maxlength="32"
+                                   value="<?= $config->mysql->password; ?>">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-row">
-                <label class="col-form-label" for="mysql-database">Database:</label>
-                <div class="col form-group">
-                    <input type="text" class="form-control"
-                           name="mysql[database]"
-                           id="mysql-database"
-                           placeholder="acuparse"
-                           maxlength="35"
-                           value="<?= $config->mysql->database; ?>">
+            </section>
+
+            <hr class="hr-dotted">
+
+            <!-- Trimming -->
+            <section class="row alert alert-secondary">
+                <div class="col mt-2 mb-2">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Database Trimming</h3>
+                            <p><a href="https://docs.acuparse.com/INSTALL/#database-trimming">Database Trimming</a>
+                                keeps your database tables clean.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="mysql[trim]"
+                                       id="mysql-trim-enabled-1" value="1"
+                                    <?= ($config->mysql->trim === 1) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-success"
+                                       for="mysql-trim-enabled-1"><strong>Enabled</strong></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="mysql[trim]"
+                                       id="mysql-trim-enabled-2" value="2"
+                                    <?= ($config->mysql->trim === 2) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-warning"
+                                       for="mysql-trim-enabled-2">Enabled, <strong>EXCEPT</strong>
+                                    Towers</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="mysql[trim]"
+                                       id="mysql-trim-enabled-0" value="0"
+                                    <?= ($config->mysql->trim === 0) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-danger"
+                                       for="mysql-trim-enabled-0">Disabled</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-row">
-                <label class="col-form-label" for="mysql-username">Username:</label>
-                <div class="col form-group">
-                    <input type="text" class="form-control"
-                           name="mysql[username]"
-                           id="mysql-username"
-                           placeholder="acuparse.dbadmin"
-                           maxlength="35"
-                           value="<?= $config->mysql->username; ?>">
-                </div>
-            </div>
-            <div class="form-row">
-                <label class="col-form-label" for="mysql-password">Password:</label>
-                <div class="col form-group">
-                    <input type="text" class="form-control"
-                           name="mysql[password]"
-                           id="mysql-password"
-                           placeholder="Password"
-                           maxlength="32"
-                           value="<?= $config->mysql->password; ?>">
-                </div>
-            </div>
-            <div class="form-group">
-                <p><strong>Database Trimming?</strong></p>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio"
-                           name="mysql[trim]"
-                           id="mysql-trim-enabled-0" value="0"
-                        <?= ($config->mysql->trim === 0) ? 'checked="checked"' : false; ?>>
-                    <label class="form-check-label alert alert-danger"
-                           for="mysql-trim-enabled-0">Disabled</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio"
-                           name="mysql[trim]"
-                           id="mysql-trim-enabled-1" value="1"
-                        <?= ($config->mysql->trim === 1) ? 'checked="checked"' : false; ?>>
-                    <label class="form-check-label alert alert-success"
-                           for="mysql-trim-enabled-1">Enabled</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio"
-                           name="mysql[trim]"
-                           id="mysql-trim-enabled-2" value="2"
-                        <?= ($config->mysql->trim === 2) ? 'checked="checked"' : false; ?>>
-                    <label class="form-check-label alert alert-warning"
-                           for="mysql-trim-enabled-2">Enabled, <strong>EXCEPT</strong>
-                        Towers</label>
-                </div>
-            </div>
+            </section>
         </div>
     </div>
-</div>
+</section>

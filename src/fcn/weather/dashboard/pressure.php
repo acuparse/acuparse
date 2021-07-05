@@ -30,7 +30,7 @@
  * @var object $wx Weather Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="wi wi-barometer" aria-hidden="true"></i> Pressure</h1>
         <h2><?php
@@ -41,4 +41,4 @@
             }
             echo $pressure . trendIcon($wx->pressure_trend); ?></h2>
     </div>
-</div>
+</section>

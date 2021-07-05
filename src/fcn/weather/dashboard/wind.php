@@ -31,7 +31,7 @@
  * @var object $atlas Atlas Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1>
             <i class="wi wi-wind-beaufort-<?= $wx->windBeaufort; ?>" aria-hidden="true"
@@ -74,4 +74,4 @@
             echo "<li><h3>Peak:</h3> $windPeak @ $wx->windSpeed_peak_recorded</li>"; ?>
         </ul>
     </div>
-</div>
+</section>

@@ -31,7 +31,7 @@
  * @var object $atlas Atlas Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="wi wi-day-sunny" aria-hidden="true"></i> Sun</h1>
         <ul class="list-unstyled">
@@ -50,4 +50,4 @@
             ?>
         </ul>
     </div>
-</div>
+</section>

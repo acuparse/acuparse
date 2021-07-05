@@ -35,39 +35,60 @@ $welcome = ($welcome < '12') ? 'Morning' : (($welcome >= '12' && $welcome < '17'
 include(APP_BASE_PATH . '/inc/header.php');
 ?>
     <section id="user-authentication" class="user-authentication">
-        <div class="row">
-            <div class="col-md-5 col-12 mx-auto border">
-                <h1 class="page-header alert alert-heading alert-secondary">Good <?= $welcome; ?>!</h1>
-                <form id="recaptcha-form" action="/admin/account?auth" method="POST">
-
-                    <div class="form-group">
-                        <label class="col-form-label" for="username">Username/Email:</label>
-                        <input type="text" name="username" id="username" class="form-control border-primary"
-                               placeholder="username@example.com" aria-describedby="user-help" required autofocus>
+        <div class="row mt-5">
+            <div class="col-md-8 col-12 mx-auto alert alert-secondary">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="page-header alert alert-heading alert-dark">Good <?= $welcome; ?>!</h1>
                     </div>
-                    <div class="form-group">
-                        <label class="col-form-label" for="password">Password:</label>
-                        <input type="password" name="password" id="password" class="form-control"
-                               placeholder="Password" required>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <form id="recaptcha-form" action="/admin/account?auth" method="POST">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="col-form-label" for="username">Username/Email</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" name="username" id="username" class="form-control border-primary"
+                                           placeholder="username@example.com" aria-describedby="user-help" required
+                                           autofocus>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-4">
+                                    <label class="col-form-label" for="password">Password</label>
+                                </div>
+                                <div class="col">
+                                    <input type="password" name="password" id="password" class="form-control"
+                                           placeholder="Password" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <?php
+                                    if ($config->google->recaptcha->enabled === true) { ?>
+                                        <button class="mt-3 mb-3 btn btn-lg btn-success g-recaptcha"
+                                                data-sitekey="<?= $config->google->recaptcha->sitekey; ?>"
+                                                data-callback="onSubmit">
+                                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In
+                                        </button>
+                                        <?php
+                                    } else { ?>
+                                        <button class="mt-3 mb-3 btn btn-lg btn-success" type="submit"><i
+                                                    class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In
+                                        </button>
+                                        <?php
+                                    } ?>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <?php
-                    if ($config->google->recaptcha->enabled === true) { ?>
-                        <button class="margin-top-05 margin-bottom-05 btn btn-lg btn-success g-recaptcha"
-                                data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit">
-                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In
-                        </button>
-                        <?php
-                    } else { ?>
-                        <button class="margin-top-05 margin-bottom-05 btn btn-lg btn-success" type="submit"><i
-                                    class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In
-                        </button>
-                        <?php
-                    } ?>
-                </form>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-auto mx-auto margin-top-10">
+            <div class="col mx-auto mt-2">
                 <div><a href="/recover">Forgot your password?</a></div>
             </div>
         </div>

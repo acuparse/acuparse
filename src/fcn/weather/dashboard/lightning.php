@@ -30,7 +30,7 @@
  * @var object $lightning Lightning Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="fas fa-bolt" aria-hidden="true"></i> Lightning</h1>
         <ul class="list-unstyled">
@@ -58,4 +58,4 @@
             ?>
         </ul>
     </div>
-</div>
+</section>

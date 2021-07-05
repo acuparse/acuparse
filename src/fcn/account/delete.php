@@ -37,7 +37,7 @@ if ($user === $_SESSION['uid']) {
     // Log it
     syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: User $user cannot delete themselves");
     // Display message
-    $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Cannot delete your own account!</div>';
+    $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Cannot delete your own account!</div>';
 } else {
     $result = mysqli_query($conn, "DELETE FROM `users` WHERE `uid` = '$user'");
     // If the insert Query was successful.
@@ -45,12 +45,12 @@ if ($user === $_SESSION['uid']) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM){USER}: User $user deleted successfully");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Deleted Successfully!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>User Deleted Successfully!</div>';
     } else {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Deleting user $user failed!");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong deleting the user!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Oops, something went wrong deleting the user!</div>';
     }
 }
 // Redirect to view accounts

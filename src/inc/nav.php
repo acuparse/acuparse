@@ -35,7 +35,7 @@
         <a class="navbar-brand" href="/"><?= $config->site->name; ?><br>
             <small><?= $config->site->location; ?></small>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav-dropdown"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav-dropdown"
                 aria-controls="navbar-nav-dropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -58,10 +58,10 @@
                     $camArchiveActive = ($_SERVER['PHP_SELF'] === '/camera.php') && (isset($_GET['archive']));
                     ?>
                     <li class="<?= ($_SERVER['PHP_SELF'] === '/camera.php') ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                            aria-haspopup="true" aria-expanded="false"><i class="fas fa-camera" aria-hidden="true"></i>
                             Camera</a>
-                        <div class="dropdown-menu">
+                        <div class="<?= ($config->site->theme === 'twilight') ? 'dropdown-menu dropdown-menu-dark' : 'dropdown-menu'; ?>">
                             <a class="<?= ($liveCamActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
                                href="/camera"><i class="far fa-eye" aria-hidden="true"></i> Live View</a>
                             <a class="<?= ($camArchiveActive === true) ? 'dropdown-item active' : 'dropdown-item' ?>"
@@ -75,12 +75,12 @@
 
                 <?php if ($config->upload->wu->enabled === true || $config->upload->pws->enabled === true || $config->upload->cwop->enabled === true || $config->upload->wc->enabled === true || $config->upload->windy->enabled === true || $config->upload->windguru->enabled === true) { ?>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                            aria-haspopup="true" aria-expanded="false"><i
                                     class="fas fa-external-link-square-alt" aria-hidden="true"></i> External</a>
-                        <div class="dropdown-menu">
+                        <div class="<?= ($config->site->theme === 'twilight') ? 'dropdown-menu dropdown-menu-dark' : 'dropdown-menu'; ?>">
                             <?php if ($config->upload->wu->enabled === true) { ?>
-                                <a class="dropdown-item"
+                                <a class="dropdown-item pe-4"
                                    href="//www.wunderground.com/personal-weather-station/dashboard?ID=<?= $config->upload->wu->id; ?>"
                                    target="_blank"><img src="/img/external/wu.ico" width="16" height="16"
                                                         aria-hidden="true" alt="Wunderground Icon"> Weather Underground</a>
@@ -129,7 +129,7 @@
                 }
                 ?>
             </ul>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ms-auto">
                 <?php
 
                 // Member Account Functions
@@ -137,16 +137,16 @@
                     $userActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php');
                     ?>
                     <li class="<?= ($userActive === true) ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                            aria-haspopup="true" aria-expanded="false"><i
                                     class="fas <?= ($_SESSION['admin'] === true) ? 'fa-user-tie admin-authenticated' : 'fa-user user-authenticated'; ?>"
                                     aria-hidden="true"></i> <?= ($_SESSION['admin'] === true) ? '<span class="admin-authenticated">' . $_SESSION['username'] . '</span>' : '<span class="user-authenticated">' . $_SESSION['username'] . '</span>'; ?>
                         </a>
-                        <div class="dropdown-menu">
+                        <div class="<?= ($config->site->theme === 'twilight') ? 'dropdown-menu dropdown-menu-dark' : 'dropdown-menu'; ?>">
                             <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === true) {
-                                $adminActive = $_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || (isset($_GET['add'])) || (isset($_GET['view'])));
+                                $adminActive = $_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/access.php' || $_SERVER['PHP_SELF'] === '/admin/status.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || (isset($_GET['add'])) || (isset($_GET['view'])));
                                 ?>
-                                <a class="<?= ($adminActive === true) ? 'dropdown-item alert-danger active' : 'dropdown-item alert-danger'; ?>"
+                                <a class="<?= ($adminActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
                                    href="/admin"><i
                                             class="<?= ($adminActive === true) ? 'fas fa-cog fa-spin' : 'fas fa-cog'; ?>"
                                             aria-hidden="true"></i>

@@ -46,7 +46,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `battery`, `last_update` FROM `access_status` ORDER BY `last_update` DESC LIMIT 1"));
         $battery_access = $result['battery'];
-        $lastUpdate_access = $result['last_update'];
+        $lastUpdate_access = date($config->site->date_api_json, strtotime($result['last_update']));
         $access = array_push($sensors['sensors'], ['access' => ['mac' => $config->station->access_mac, 'battery' => $battery_access, 'last_update' => $lastUpdate_access]]);
     }
     // Atlas Data
@@ -55,7 +55,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
             "SELECT `battery`, `rssi`, `last_update` FROM `atlas_status` ORDER BY `last_update` DESC LIMIT 1"));
         $rssi_atlas = $result['rssi'];
         $battery_atlas = $result['battery'];
-        $lastUpdate_atlas = $result['last_update'];
+        $lastUpdate_atlas = date($config->site->date_api_json, strtotime($result['last_update']));
         $atlas = array_push($sensors['sensors'], ['atlas' => ['sensor' => $config->station->sensor_atlas, 'battery' => $battery_atlas, 'rssi' => $rssi_atlas, 'last_update' => $lastUpdate_atlas]]);
     }
     // Iris Data
@@ -64,7 +64,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
             "SELECT `battery`, `rssi`, `last_update` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
         $rssi_iris = $result['rssi'];
         $battery_iris = $result['battery'];
-        $lastUpdate_iris = $result['last_update'];
+        $lastUpdate_iris = date($config->site->date_api_json, strtotime($result['last_update']));
         $iris = array_push($sensors['sensors'], ['iris' => ['sensor' => $config->station->sensor_iris, 'battery' => $battery_iris, 'rssi' => $rssi_iris, 'last_update' => $lastUpdate_iris]]);
     }
     // Tower Data
@@ -78,7 +78,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
                 "SELECT `battery`, `rssi`, `timestamp` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
             $rssi = $result2['rssi'];
             $battery = $result2['battery'];
-            $last_update = $result2['timestamp'];
+            $last_update = date($config->site->date_api_json, strtotime($result2['timestamp']));
             $towers_output = array_push($towers['towers'], ['sensor' => $sensor, 'name' => $name, 'battery' => $battery, 'rssi' => $rssi, 'last_update' => $last_update]);
         }
         $towers_export = array_push($sensors['sensors'], $towers);
@@ -90,5 +90,5 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
 
 } else {
     header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
-    echo "Unauthorized";
+    echo '{"error":"Unauthorized"}';
 }

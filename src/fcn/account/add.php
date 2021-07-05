@@ -47,7 +47,7 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Adding user failed, username already exists");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed, username already exists.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Adding user failed, username already exists.</div>';
         header("Location: /admin/account?add_user");
         exit();
     }
@@ -57,7 +57,7 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Adding user failed, email already exists");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed, email already exists.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Adding user failed, email already exists.</div>';
         header("Location: /admin/account?add_user");
         exit();
     }
@@ -73,12 +73,12 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM){USER}: Account for $username added successfully");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Account added successfully.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Account added successfully.</div>';
     } else {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}: Adding user failed: " . mysqli_error($conn));
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Adding user failed.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Adding user failed.</div>';
     }
     header("Location: /admin");
     exit();
@@ -95,54 +95,88 @@ else {
         </div>
         <hr>
         <div class="row">
-            <div class="col-8 mx-auto">
-                <form class="form" action="/admin/account?add&do" method="POST">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" name="username" id="username"
-                               placeholder="Username" maxlength="32" required>
+            <div class="col-md-8 col-12 mx-auto alert alert-secondary">
+                <div class="row">
+                    <div class="col">
+                        <form class="form" action="/admin/account?add&do" method="POST">
+                            <div class="row">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="username">Username</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="username" id="username"
+                                           placeholder="Username" maxlength="32" required>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="email">Email Address</label>
+                                </div>
+                                <div class="col">
+                                    <input type="email" class="form-control" name="email" id="email"
+                                           placeholder="username@example.com"
+                                           maxlength="255" required>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="password">Password</label>
+                                </div>
+                                <div class="col">
+                                    <input type="password" class="form-control" name="password" id="password"
+                                           placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label for="password2">Verify Password</label>
+                                </div>
+                                <div class="col">
+                                    <input type="password" class="form-control" name="password2" id="password2"
+                                           placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-8 col-12 mx-auto">
+                                    <div class="row">
+                                        <div class="col">
+                                            <strong>Admin Access</strong><br>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="admin"
+                                                       id="admin-access-0"
+                                                       value="0" checked="checked">
+                                                <label class="form-check-label btn btn-success"
+                                                       for="admin-access-0"><strong>No</strong></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input <?= ($_SESSION['admin'] !== true) ? 'disabled="disabled"' : false; ?>
+                                                        class="form-check-input" type="radio" name="admin"
+                                                        id="admin-access-1"
+                                                        value="1">
+                                                <label class="form-check-label btn btn-danger"
+                                                       for="admin-access-1">Yes</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
+                                                class="fas fa-ban" aria-hidden="true"></i> Cancel
+                                    </button>
+                                    <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                                class="fas fa-save" aria-hidden="true"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" class="form-control" name="email" id="email"
-                               placeholder="username@example.com"
-                               maxlength="255" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" name="password" id="password"
-                               placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
-                    </div>
-                    <div class="form-group">
-                        <label for="password2">Verify Password</label>
-                        <input type="password" class="form-control" name="password2" id="password2"
-                               placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
-                    </div>
-                    <div class="form-group border">
-                        <strong>Admin Access?</strong><br>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="admin"
-                                   id="admin-access-0"
-                                   value="0" checked="checked">
-                            <label class="form-check-label alert alert-success"
-                                   for="admin-access-0">No</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input <?= ($_SESSION['admin'] !== true) ? 'disabled="disabled"' : false; ?>
-                                    class="form-check-input" type="radio" name="admin"
-                                    id="admin-access-1"
-                                    value="1">
-                            <label class="form-check-label alert alert-danger"
-                                   for="admin-access-1">Yes</label>
-                        </div>
-                    </div>
-                    <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                class="fas fa-save" aria-hidden="true"></i> Save
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
-                                class="fas fa-ban" aria-hidden="true"></i> Cancel
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </section>

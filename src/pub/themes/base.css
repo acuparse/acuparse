@@ -41,17 +41,7 @@ body {
 
 body {
     font-family: 'Open Sans', sans-serif;
-    padding-top: 65px; /* Required padding for navbar */
-}
-
-.row {
-    margin: 0;
-    padding: 0;
-}
-
-form {
-    margin: 0;
-    padding: 0;
+    padding-top: 4rem; /* Required padding for navbar */
 }
 
 img {
@@ -306,19 +296,6 @@ img {
 /* END: Admin Functions */
 /* ---------------------------- */
 
-/* Contact Form */
-
-.contact {
-    text-align: center;
-}
-
-.contact label {
-    font-weight: 600;
-}
-
-/* END: Contact Form */
-/* ---------------------------- */
-
 /* Users */
 
 .user-authenticated {
@@ -374,31 +351,3 @@ hr {
 
 /* END: Horizontal Rules */
 /* ---------------------------- */
-
-/* Custom Margins */
-
-.margin-top-05 {
-    margin-top: 0.5em;
-}
-
-.margin-top-10 {
-    margin-top: 1em;
-}
-
-.margin-top-15 {
-    margin-top: 1.5em;
-}
-
-.margin-bottom-05 {
-    margin-bottom: 0.5em;
-}
-
-.margin-bottom-10 {
-    margin-bottom: 1em;
-}
-
-.margin-bottom-15 {
-    margin-bottom: 1.5em;
-}
-
-/* END: Custom Margins */

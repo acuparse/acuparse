@@ -51,12 +51,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM)[ERROR]: Error sending test email to $email");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Sending Test Email Failed! ' . $mgStatus . '</div>';
+        $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Sending Test Email Failed! ' . $mgStatus . '</div>';
     } else {
         // Log it
         syslog(LOG_INFO, "(SYSTEM): Sent test email to $email");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Test Email Sent Successfully! ' . $mgStatus . '</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Test Email Sent Successfully! ' . $mgStatus . '</div>';
     }
 
     header("Location: /admin");

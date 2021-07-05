@@ -122,7 +122,7 @@ if [ "$1" = 'acuparse' ]; then
   function _check_database_permissions() {
     if [ -z "$(mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "use mysql; SELECT super_priv FROM user where user='acuparse' AND super_priv='Y';")" ]; then
       echo "Updating DB User Permissions"
-      mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'; GRANT SUPER, EVENT ON *.* TO '${MYSQL_USER}'; FLUSH PRIVILEGES;" || exit 1
+      mysql -h"${MYSQL_HOSTNAME}" -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'; GRANT ALL, RELOAD, SUPER, EVENT ON *.* TO '${MYSQL_USER}'; FLUSH PRIVILEGES;" || exit 1
     fi
   }
 

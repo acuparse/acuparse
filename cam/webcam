@@ -29,7 +29,7 @@
 function _getImage() {
   if [ "$USE_RTSP" == 0 ]; then
     # HTTP Snapshot
-    wget "${CAMERA_HOST}"/"${CAMERA_FILENAME}"
+    curl "${CAMERA_HOST}" --output "${CAMERA_FILENAME}"
   else
     # RTSP Snapshot
     ffmpeg -rtsp_transport tcp -loglevel fatal -i "$CAMERA_HOST" -vframes 1 -r 1 "$CAMERA_FILENAME"
@@ -39,7 +39,7 @@ function _getImage() {
 function _timestamp() {
   echo "Applying Timestamp and Copyright"
   convert "${CAMERA_FILENAME}" \
-    -resize "${RESIZE}" \
+    -resize "${RESIZE}"! \
     -font DejaVu-Sans-Bold -pointsize 20 \
     -draw "gravity south \
         fill black  text 0,36 '$TIMESTAMP' \

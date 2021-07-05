@@ -29,7 +29,7 @@
  * @var object $wx Weather Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="wi <?= moonIcon($wx->moon_stage); ?>" aria-hidden="true"></i> Moon</h1>
         <h2><?= "$wx->moon_stage"; ?></h2>
@@ -55,4 +55,4 @@
                     Full:</h3> <?= $wx->moon_nextFull; ?></li>
         </ul>
     </div>
-</div>
+</section>

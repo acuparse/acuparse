@@ -73,27 +73,22 @@ workflow:
 .TEMPLATE:DOCKER:build:
   image: docker:latest
   stage: build
-  variables:
-    DOCKER_CLI_EXPERIMENTAL: enabled
   services:
     - name: docker:dind
-      command: [ "--experimental" ]
   before_script:
     - mkdir -p $HOME/.docker/cli-plugins/
     - wget -O $HOME/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v$BUILDX_VERSION/buildx-v$BUILDX_VERSION.linux-amd64
     - chmod a+x $HOME/.docker/cli-plugins/docker-buildx
-    - apk add --no-cache jq
-    - export ACUPARSE_VERSION=$(cat .version | jq -r '.VERSION')
-    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-    - docker buildx create --use --driver docker-container --name custom --platform=$BUILDX_PLATFORM
-    - docker buildx inspect --bootstrap
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker login -u $DOCKER_USER -p $DOCKER_REGISTRY_TOKEN
-    - docker login -u $GITHUB_USER -p $GITHUB_REGISTRY_TOKEN $GITHUB_REGISTRY
+    - docker run --privileged --rm tonistiigi/binfmt --install $BUILDX_PLATFORM
+    - docker buildx create --use --driver docker-container --name binfmt --platform=$BUILDX_PLATFORM
+    - docker login -u $CI_REGISTRY_USER -p ${CI_REGISTRY_PASSWORD} $CI_REGISTRY
   script:
     - >
       if [ "$LATEST_RELEASE" = "true" ]; then
-        docker buildx build \
+        apk add --no-cache jq && export ACUPARSE_VERSION=$(cat .version | jq -r '.VERSION') \
+        && docker login -u $GITHUB_USER -p $GITHUB_REGISTRY_TOKEN $GITHUB_REGISTRY \
+        && docker login -u $DOCKERHUB_USER -p $DOCKERHUB_REGISTRY_TOKEN \
+        && docker buildx build \
         --build-arg BUILD_DATE=$DATE \
         --build-arg VCS_REF=$CI_COMMIT_SHA \
         --build-arg BUILD_VERSION=$ACUPARSE_VERSION \
@@ -114,10 +109,9 @@ workflow:
         docker buildx build \
         --build-arg BUILD_DATE=$DATE \
         --build-arg VCS_REF=$CI_COMMIT_SHA \
-        --build-arg BUILD_VERSION=$ACUPARSE_VERSION \
+        --build-arg BUILD_VERSION=$CI_COMMIT_SHA \
         --build-arg BUILD_BRANCH=$CI_COMMIT_REF_SLUG \
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA \
-        --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$ACUPARSE_VERSION \
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:latest \
         --platform $BUILDX_PLATFORM_DEV \
         --push \
@@ -225,7 +219,7 @@ DEV:BASH:shellcheck:
 
 #### Build and Release a Docker Container ####
 
-DOCKER:build:RELEASE:
+DOCKER:build:
   extends: .TEMPLATE:DOCKER:build
   variables:
     LATEST_RELEASE: 'true'
@@ -259,7 +253,7 @@ INSTALLER:
     - if: $CI_COMMIT_TAG
       when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
-  needs: [ "DOCKER:build:RELEASE" ]
+  needs: [ "DOCKER:build" ]
 
 DEV:INSTALLER:
   stage: test
@@ -372,11 +366,9 @@ RELEASE:Announce:
     - export VERSION=$(cat .version | jq -r '.VERSION')
     - export RELEASE_VERSION="${VERSION//./-}"
   script:
-    - echo "Sending Slack Notification ..."
     - >
       curl -X POST --data-urlencode 'payload={"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"Acuparse Version `'"$VERSION"'` is now available!\nSee the <https://www.acuparse.com/releases/v'"$RELEASE_VERSION"'|Release Notes> for more details!\n\nFor update instructions, see the <https://docs.acuparse.com/UPDATING|Update Guide>."},"accessory":{"type":"image","image_url":"https://www.acuparse.com/assets/img/release.jpg","alt_text":"Ship Image"}}]}' "$SLACK_RELEASE_HOOK_URL"
-    #- echo "Sending mail to users list ..."
-    #- curl -s --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" -F from='Acuparse Release Management Service <no_reply@'$MAILGUN_DOMAIN'>' -F to='Acuparse Users Mailing List <users@lists.'$MAILGUN_DOMAIN'>' -F subject='Acuparse '$VERSION' is now available' --form-string html='<h2>Acuparse Version '$VERSION' is now available!</h2><p>See the <a href="https://www.acuparse.com/releases/v'$RELEASE_VERSION'">Release Notes</a> for more details!<br>For update instructions, see the <a href="https://docs.acuparse.com/UPDATING">Update Guide</a>.</p>'
+    - curl -s --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" -F from='Acuparse Release Management Service <no_reply@'$MAILGUN_DOMAIN'>' -F to='Acuparse Users Mailing List <users@lists.'$MAILGUN_DOMAIN'>' -F subject='Acuparse '$VERSION' is now available' --form-string html='<h2>Acuparse Version '$VERSION' is now available!</h2><p>See the <a href="https://www.acuparse.com/releases/v'$RELEASE_VERSION'">Release Notes</a> for more details!<br>For update instructions, see the <a href="https://docs.acuparse.com/UPDATING">Update Guide</a>.</p>'
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never

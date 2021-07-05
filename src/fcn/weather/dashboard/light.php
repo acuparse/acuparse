@@ -29,7 +29,7 @@
  * @var object $atlas Atlas Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="fas fa-lightbulb" aria-hidden="true"></i> Light</h1>
         <ul class="list-unstyled">
@@ -38,4 +38,4 @@
             <li><h3>Measured Light:</h3> <?= $atlas->lightHours; ?> hours</li>
         </ul>
     </div>
-</div>
+</section>

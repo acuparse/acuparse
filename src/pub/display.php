@@ -37,11 +37,11 @@ if ($installed == false) {
     header("Location: /admin/install");
     exit();
 } elseif ((empty($config->station->access_mac) && empty($config->station->hub_mac)) && (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true)) {
-    $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Missing Access/Hub Mac. Please configure in sensor settings.</div>';
+    $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Missing Access/Hub Mac. Please configure in sensor settings.</div>';
     header("Location: /admin/settings");
     exit();
 } elseif (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
-    $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Setup Required! Please login as an admin to continue.</div>';
+    $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Setup Required! Please login as an admin to continue.</div>';
     header("Location: /admin/account");
     exit();
 } else {

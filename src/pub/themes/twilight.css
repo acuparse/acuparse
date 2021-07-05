@@ -31,14 +31,6 @@ body {
     background-color: rgba(0, 0, 0, .9);
 }
 
-a {
-    color: #eae733;
-}
-
-a:hover {
-    color: #fffc33;
-}
-
 /* Tables */
 .table thead th {
     background-color: rgba(43, 43, 43, 0.9);
@@ -53,14 +45,21 @@ a:hover {
 /* ---------------------------- */
 
 /* Forms */
-.form-control {
+.form-control,
+.form-select {
     color: rgb(255, 255, 255);
-    background-color: rgb(50, 50, 50);
+    background-color: rgb(85, 85, 85);
 }
 
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e")
+}
+
+
 .form-control:disabled,
+.form-select:disabled,
 .form-control[readonly] {
-    background-color: rgb(66, 39, 39);
+    background-color: rgb(30, 30, 30);
 }
 
 /* END - Forms */
@@ -76,18 +75,6 @@ a:hover {
     color: rgba(255, 255, 255, .7);
     background-color: #2b2b2b;
     border-color: #d6d8db;
-}
-
-.alert-danger a,
-.alert-warning a,
-.alert-info a {
-    color: #002ca7
-}
-
-.alert-danger a:hover,
-.alert-warning a:hover,
-.alert-info a:hover {
-    color: #2e58ce
 }
 
 /* END - Global Styles */
