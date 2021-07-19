@@ -65,5 +65,5 @@ if (isset($installed) && $installed === true) {
     echo json_encode($status);
 } else {
     header($_SERVER["SERVER_PROTOCOL"] . " 503 Service Unavailable");
-    echo "Unavailable";
+    echo '{"error":"Unavailable"}';
 }

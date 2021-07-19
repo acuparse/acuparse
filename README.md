@@ -97,6 +97,14 @@ On a newly installed Debian/Ubuntu System
     sudo bash install_docker full | tee ~/acuparse.log
     ```
 
+#### Updating
+
+To update Docker Compose, run
+
+```bash
+sudo acuparse update && sudo acuparse update_compose
+```
+
 ## Additional Outputs
 
 The primary user interface uses AJAX to pull the most recent HTML formatted data every minute.
@@ -107,7 +115,7 @@ Acuparse includes a Display mode for better viewing while in full-screen.
     - Force light theme: `http(s)://<yourip/domain>/display?light`
     - Force dark theme: `http(s)://<yourip/domain>/display?dark`
 
-Additionally, you can request Bootstrap 4 formatted HTML, JSON array(s), or plain text formatted for watermarking.
+Additionally, you can request Bootstrap 5 formatted HTML, JSON array(s), or plain text formatted for watermarking.
 
 - See the [API Guide](https://docs.acuparse.com/API) for details.
 

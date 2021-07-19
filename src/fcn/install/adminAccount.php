@@ -54,7 +54,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM){INSTALLER}: First account for $username added successfully");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Added Successfully!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>User Added Successfully!</div>';
 
         // Let's remember the user is logged in
         $_SESSION['authenticated'] = true;
@@ -75,7 +75,7 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Adding first admin $username failed");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Oops, something went wrong!</div>';
         header("Location: /admin");
     }
     exit();

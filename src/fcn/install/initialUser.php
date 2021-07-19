@@ -52,29 +52,56 @@ if (!$result) {
             <div class="row">
                 <div class="col-md-8 col-12 mx-auto">
                     <form class="form" role="form" action="?account&do" method="POST">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" class="form-control" name="username" id="username"
-                                   placeholder="Username" maxlength="32" required>
+                        <div class="row alert alert-secondary">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label class="col-form-label" for="username">Username</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" name="username" id="username"
+                                               placeholder="Username" maxlength="32" required>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-3">
+                                        <label class="col-form-label" for="email">Email</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="email" class="form-control" name="email" id="email"
+                                               placeholder="Email"
+                                               maxlength="255" required>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-3">
+                                        <label class="col-form-label" for="pass">Password</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="password" class="form-control" name="password" id="pass"
+                                               placeholder="Password" maxlength="32" required
+                                               onkeyup='verifyPassword();'>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-3">
+                                        <label class="col-form-label" for="pass2">Verify Password</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="password" class="form-control" name="password2" id="pass2"
+                                               placeholder="Password" maxlength="32" required
+                                               onkeyup='verifyPassword();'>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Email"
-                                   maxlength="255" required>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                            class="fas fa-save" aria-hidden="true"></i> Save
+                                </button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="pass">Password:</label>
-                            <input type="password" class="form-control" name="password" id="pass"
-                                   placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
-                        </div>
-                        <div class="form-group">
-                            <label for="pass2">Verify Password:</label>
-                            <input type="password" class="form-control" name="password2" id="pass2"
-                                   placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
-                        </div>
-                        <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                    class="fas fa-save" aria-hidden="true"></i> Save
-                        </button>
                     </form>
                 </div>
             </div>

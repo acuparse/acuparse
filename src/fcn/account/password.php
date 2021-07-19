@@ -40,7 +40,7 @@ if (isset($_GET['do'])) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: No permissions to modify $user. $uid is not an admin");
             // Display message
-            $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
+            $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>No permissions to edit this user!</div>';
             header("Location: /");
             exit();
         }
@@ -55,7 +55,7 @@ if (isset($_GET['do'])) {
         if (password_verify(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW), $userRow['password'])) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Password change request for UID $uid failed");
-            $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Seems like you entered your current password.</div>';
+            $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Seems like you entered your current password.</div>';
             header("Location: /admin/account?password");
             exit();
         }
@@ -89,10 +89,10 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM){USER}: Password change for UID $user successful");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Password Updated Successfully!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Password Updated Successfully!</div>';
     } else {
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Password change for UID $user failed: " . mysqli_error($conn));
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Nothing changed! Password was probably the same ...</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Nothing changed! Password was probably the same ...</div>';
     }
     header("Location: /");
     exit();
@@ -128,25 +128,37 @@ else {
         <div class="row">
             <div class="col-8 col-md-6 mx-auto">
                 <form class="form" action="/admin/account?password&do" method="POST">
-                    <div class="form-group">
-                        <label for="password">New Password:</label>
-                        <input type="password" class="form-control" name="password" id="password" maxlength="32"
-                               placeholder="Password" required onkeyup='verifyPassword();'>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="col-form-label" for="password">New Password</label>
+                        </div>
+                        <div class="col">
+                            <input type="password" class="form-control" name="password" id="password" maxlength="32"
+                                   placeholder="Password" required onkeyup='verifyPassword();'>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password2">Verify Password:</label>
-                        <input type="password" class="form-control" name="password2" id="password2"
-                               placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
+                    <div class="row mt-3">
+                        <div class="col-3">
+                            <label class="col-form-label" for="password2">Verify Password</label>
+                        </div>
+                        <div class="col">
+                            <input type="password" class="form-control" name="password2" id="password2"
+                                   placeholder="Password" maxlength="32" required onkeyup='verifyPassword();'>
+                        </div>
                     </div>
-                    <input type="hidden" name="uid" id="uid" value="<?= $user; ?>">
-                    <button type="submit" id="submit" value="submit"
-                            class="btn btn-success margin-top-05">
-                        <i class="fas fa-save" aria-hidden="true"></i> Save
-                    </button>
-                    <button type="button" class="btn btn-danger margin-top-05"
-                            onclick="location.href = '/admin'"><i
-                                class="fas fa-ban" aria-hidden="true"></i> Cancel
-                    </button>
+                    <div class="row">
+                        <div class="col">
+                            <input type="hidden" name="uid" id="uid" value="<?= $user; ?>">
+                            <button type="button" class="btn btn-danger mt-3"
+                                    onclick="location.href = '/admin'"><i
+                                        class="fas fa-ban" aria-hidden="true"></i> Cancel
+                            </button>
+                            <button type="submit" id="submit" value="submit"
+                                    class="btn btn-success mt-3">
+                                <i class="fas fa-save" aria-hidden="true"></i> Save
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

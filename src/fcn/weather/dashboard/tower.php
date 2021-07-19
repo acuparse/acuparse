@@ -50,7 +50,7 @@
  */
 ?>
 <!-- BEGIN: Tower <?= ltrim($sensor, '0'); ?> -->
-<div class="col">
+<section class="col">
     <h1><?= $sensorName; ?></h1>
     <h2><i class="fas <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature</h2>
     <h3><?php
@@ -79,5 +79,5 @@
     <?php } ?>
     <h2><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h2>
     <h3><?= "$relH% $relH_trend"; ?></h3>
-</div>
+</section>
 <!-- END: Tower <?= ltrim($sensor, '0'); ?> -->

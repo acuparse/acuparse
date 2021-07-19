@@ -45,59 +45,96 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && 
     </div>
     <hr>
     <div id="change-access-server" class="row change-access-server">
-        <div class="col-md-8 col-12 mx-auto">
+        <div class="col-md-8 col-12 mx-auto alert alert-secondary">
             <?php
             if (isset($_GET['ip'])) {
                 $ip = filter_input(INPUT_GET, 'ip', FILTER_SANITIZE_STRING);
                 ?>
 
                 <form name="access-server" id="access-server" action="http://<?= $ip; ?>/config.cgi" method="POST">
-                    <div class="form-group">
-                        <label for="server-hostname">New Server Hostname:</label>
-                        <input type="text" class="form-control" name="ser" id="server-hostname"
-                               placeholder="atlasapi.myacurite.com" value="<?= $config->site->hostname; ?>"
-                               required>
-                        <p class="alert alert-warning margin-top-05">Cannot be an IP address! Must be a DNS resolvable
-                            hostname.</p>
-                        <p class="alert alert-info margin-top-05">Default: <code>atlasapi.myacurite.com</code></p>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="alert alert-warning mb-3"><strong>Cannot be an IP address!</strong><br>Your
+                                        Access must be able to resolve this hostname using your local DNS server.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="col-form-label" for="server-hostname">Upload Hostname</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="ser" id="server-hostname"
+                                           placeholder="atlasapi.myacurite.com" value="<?= $config->site->hostname; ?>"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="alert alert-info mt-3">Default: <code>atlasapi.myacurite.com</code></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-power-off"></i> Reboot</button>
+                    <div class="row">
+                        <div class="col">
+                            <p class="mb-3">After clicking Reboot below, you'll be redirected to your Access. It will
+                                reboot with your new settings.</p>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-power-off"></i> Reboot
+                            </button>
+                        </div>
+                    </div>
                 </form>
-                <p class="margin-top-05">When you submit this form, you'll be redirected to your Access. It will then
-                    reboot with the new settings.</p>
                 <?php
             } else {
                 ?>
                 <div class="row">
                     <div class="col">
-                        <p>This script sets the hostname where your Access sends it's data; via a POST request from your
-                            browser to your Access.</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="alert alert-warning mx-auto">
-                        <p><strong>Warning: </strong>Use a browser located on the same network as your Access!</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="alert alert-info mx-auto">
-                        <p><strong>Having Trouble?</strong><br/>See the <a
-                                    href="https://docs.acuparse.com/TROUBLESHOOTING">Troubleshooting Guide</a> for
-                            more details or <a href="https://www.acuparse.com/#discussion">contact the project</a>.</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8 col-12 mx-auto">
-                        <form name="access-server" id="access-server" action="/admin/access" method="GET">
-                            <div class="form-group">
-                                <label for="access-ip">Access IP:</label>
-                                <input type="text" class="form-control" name="ip" id="access-ip"
-                                       placeholder="192.168.0.10">
+                        <div class="row">
+                            <div class="col">
+                                <p>This script sets the hostname where your Access sends it's data; via a POST request
+                                    from
+                                    your
+                                    browser to your Access.</p>
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="far fa-arrow-alt-circle-right"></i>
-                                Next
-                            </button>
-                        </form>
+                        </div>
+                        <div class="row">
+                            <div class="col alert alert-warning">
+                                <p><strong>Notice: </strong>Use a browser located on the same network as your Access!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <form name="access-server" id="access-server" action="/admin/access" method="GET">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label class="col-form-label" for="access-ip">Access IP</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control" name="ip" id="access-ip"
+                                                   placeholder="192.168.0.10">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <button type="submit" class="btn btn-primary"><i
+                                                        class="far fa-arrow-alt-circle-right"></i> Next
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col mx-auto alert alert-info">
+                                <p><strong>Having Trouble?</strong><br/>See the <a
+                                            href="https://docs.acuparse.com/TROUBLESHOOTING">Troubleshooting Guide</a>
+                                    for
+                                    more details.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <?php

@@ -54,7 +54,7 @@ if (isset($_GET['do'])) {
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $email = strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $_SESSION['messages'] = '<div class="alert alert-danger text-center"><a href="#" class="close" data-dismiss="alert">&times;</a>Error: ' . $email . ' is not a valid email</div>';
+            $_SESSION['messages'] = '<div class="alert alert-danger text-center alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error: ' . $email . ' is not a valid email</div>';
             header("Location: /contact");
             exit();
         }
@@ -82,7 +82,7 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM){CONTACT}: Mail sent to admin successfully");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Your message has been sent successfully.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Your message has been sent successfully.</div>';
         header("Location: /");
         exit();
     }
@@ -92,7 +92,6 @@ if (isset($_GET['do'])) {
         $pageTitle = 'Contact Owner';
         include(APP_BASE_PATH . '/inc/header.php');
         ?>
-
         <div class="row">
             <div class="col">
                 <h1 class="page-header">Contact Station Owner</h1>
@@ -100,54 +99,76 @@ if (isset($_GET['do'])) {
         </div>
         <hr>
         <div class="row">
-            <div class="col-8 mx-auto contact">
-                <form name="message" id="recaptcha-form" action="/contact?do" method="POST">
-                    <div class="form-group">
-                        <label for="name">Your Name:</label>
-                        <input type="text"
-                               class="form-control" <?= (isset($_SESSION['authenticated'])) ? 'value="' . $_SESSION['username'] . '"' : false; ?>
-                               name="name" id="name" placeholder="Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address:</label>
-                        <input type="email" <?php if (isset($_SESSION['authenticated'])) {
-                            $uid = $_SESSION['uid'];
-                            $email = mysqli_fetch_assoc(mysqli_query($conn,
-                                "SELECT `email` FROM `users` WHERE `uid`='$uid'"));
-                            echo 'value="', $email['email'], '"';
-                        } ?> class="form-control" name="email" id="email" placeholder="Email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject:</label>
-                        <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject"
-                               required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message:</label>
-                        <textarea rows="10" cols="100" class="form-control" name="message" id="message"
-                                  required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label hidden for="captcha">Captcha:</label>
-                        <input type="text" class="form-control" name="captcha" id="captcha" placeholder="captcha"
-                               hidden>
-                    </div>
-                    <?php
-                    if ($config->google->recaptcha->enabled === true && !isset($_SESSION['authenticated'])) { ?>
-                        <button type="submit" class="margin-top-05 btn btn-outline-success g-recaptcha"
-                                data-sitekey="<?= $config->google->recaptcha->sitekey; ?>" data-callback="onSubmit"><i
-                                    class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                        <?php
-                    } else { ?>
-                        <button type="submit" class="margin-top-05 btn btn-lg btn-success btn-block"><i
-                                    class="fas fa-paper-plane"></i>
-                            Send Message
-                        </button>
-                    <?php } ?>
-                </form>
-            </div>
+            <div class="col-8 mx-auto text-center">
+                <div class="row alert alert-secondary">
+                    <div class="col">
+                        <form name="message" id="recaptcha-form" action="/contact?do" method="POST">
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="name">Your Name</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text"
+                                           class="form-control" <?= (isset($_SESSION['authenticated'])) ? 'value="' . $_SESSION['username'] . '"' : false; ?>
+                                           name="name" id="name" placeholder="Name">
+                                </div>
+                            </div>
 
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="email">Email Address</label>
+                                </div>
+                                <div class="col">
+                                    <input type="email" <?php if (isset($_SESSION['authenticated'])) {
+                                        $uid = $_SESSION['uid'];
+                                        $email = mysqli_fetch_assoc(mysqli_query($conn,
+                                            "SELECT `email` FROM `users` WHERE `uid`='$uid'"));
+                                        echo 'value="', $email['email'], '"';
+                                    } ?> class="form-control" name="email" id="email" placeholder="Email" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="subject">Subject</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="subject" id="subject"
+                                           placeholder="Subject"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="message">Message</label>
+                                </div>
+                                <div class="col">
+                                    <textarea rows="10" cols="100" class="form-control" name="message" id="message"
+                                              required></textarea>
+                                    <label hidden for="captcha">Captcha</label>
+                                    <input type="text" class="form-control" name="captcha" id="captcha"
+                                           placeholder="captcha" hidden>
+                                </div>
+                            </div>
+                            <?php
+                            if ($config->google->recaptcha->enabled === true && !isset($_SESSION['authenticated'])) { ?>
+                                <button type="submit" class="mt-3 btn btn-outline-success g-recaptcha"
+                                        data-sitekey="<?= $config->google->recaptcha->sitekey; ?>"
+                                        data-callback="onSubmit"><i
+                                            class="fas fa-paper-plane"></i> Send Message
+                                </button>
+                                <?php
+                            } else { ?>
+                                <button type="submit" class="mt-3 btn btn-lg btn-success btn-block"><i
+                                            class="fas fa-paper-plane"></i>
+                                    Send Message
+                                </button>
+                            <?php } ?>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php
 

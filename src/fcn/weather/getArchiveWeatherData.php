@@ -812,6 +812,9 @@ class getArchiveWeatherData
     private
     function windDirection($windDEG): string
     {
+        if ($windDEG === 0) {
+            $windDEG = 0.1;
+        }
         switch ($windDEG) {
             case ($windDEG >= 11.25 && $windDEG < 33.75):
                 $windDIR = 'NNE';

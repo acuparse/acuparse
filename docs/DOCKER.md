@@ -138,6 +138,12 @@ Also updates the run script and the docker-compose config.
 sudo acuparse update
 ```
 
+To update Docker Compose, run the update above, then run
+
+```bash
+sudo acuparse update_compose
+```
+
 ### Logs
 
 ```bash

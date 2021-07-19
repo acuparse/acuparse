@@ -96,12 +96,14 @@ if ($config->camera->enabled === true) {
                 <div class="col-6">
                     <form role="form" class="form-horizontal form-inline justify-content-center" action="/camera"
                           method="GET">
-                        <div class="form-group">
-                            <input type="hidden" name="archive">
-                            <label hidden class="col-form-label" for="date">Date</label>
-                            <input class="form-control form-cam-archive-date" type="date" name="date" id="date"
-                                   onchange="this.form.submit()" value="<?= $date; ?>"
-                                   min="<?= $cam_dir; ?>" max="<?= date('Y-m-d'); ?>">
+                        <div class="row">
+                            <div class="col-auto mx-auto">
+                                <input type="hidden" name="archive">
+                                <label hidden class="col-form-label" for="date">Date</label>
+                                <input class="form-control form-cam-archive-date" type="date" name="date" id="date"
+                                       onchange="this.form.submit()" value="<?= $date; ?>"
+                                       min="<?= $cam_dir; ?>" max="<?= date('Y-m-d'); ?>">
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -139,13 +141,13 @@ if ($config->camera->enabled === true) {
             $ignore = array(".", "..", "daily.gif");
 
             if ($images == 0) { ?>
-                <div class="row margin-top-10">
+                <div class="row mt-3">
                     <div class="col">
                         <div class="alert alert-danger"><strong>No images found!</strong></div>
                     </div>
                 </div><?php
             } else { ?>
-                <div class="row margin-top-10">
+                <div class="row mt-3">
                     <div class="col camera-archive-timelapse">
                         <a href="<?= $dirname . 'daily.gif'; ?>"
                            data-lightbox="camera-archive-timelapse">
@@ -204,7 +206,7 @@ if ($config->camera->enabled === true) {
                 <div class="col">
                     <img class="img-fluid img-thumbnail" src="/img/cam/latest.jpg?<?= time(); ?>"
                          alt="Live Camera Image">
-                    <h4 class="margin-top-10 margin-bottom-10"><?= $config->camera->text; ?></h4>
+                    <h4 class="mt-3 mb-3"><?= $config->camera->text; ?></h4>
                     <button type="button" id="archive" class="btn btn-outline-secondary center-block"
                             onclick="location.href = '/camera?archive'"><i class="far fa-images"
                                                                            aria-hidden="true"></i>
@@ -214,10 +216,9 @@ if ($config->camera->enabled === true) {
                 <?php
             } else {
                 ?>
-                <div class="col-12 margin-top-10">
+                <div class="col-12 mt-3">
                     <div class=" alert alert-warning"><strong>Recent camera image not found!</strong>
                     </div>
-                </div>
                 </div>
                 <?php
             }

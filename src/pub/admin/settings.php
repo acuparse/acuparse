@@ -213,11 +213,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         if ($save !== false) {
             // Log it
             syslog(LOG_INFO, "(SYSTEM){CONFIG}: Site configuration saved successfully");
-            $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Configuration saved successfully!</div>';
+            $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Configuration saved successfully!</div>';
         } else {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){CONFIG}[ERROR]: Saving configuration failed");
-            $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving configuration failed!</div>';
+            $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Saving configuration failed!</div>';
         }
         header("Location: /admin");
         exit();
@@ -239,26 +239,34 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             <div class="col">
                 <nav>
                     <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-site-tab" data-toggle="tab" href="#nav-site"
-                           role="tab" aria-controls="nav-site" aria-selected="true">Site</a>
-                        <a class="nav-item nav-link" id="nav-sensor-tab" data-toggle="tab" href="#nav-sensor" role="tab"
-                           aria-controls="nav-sensor" aria-selected="false">Sensor</a>
-                        <a class="nav-item nav-link" id="nav-features-tab" data-toggle="tab" href="#nav-features"
-                           role="tab" aria-controls="nav-features" aria-selected="false">Features</a>
-                        <a class="nav-item nav-link" id="nav-upload-tab" data-toggle="tab" href="#nav-upload"
-                           role="tab" aria-controls="nav-upload" aria-selected="false">Upload</a>
-                        <a class="nav-item nav-link" id="nav-database-tab" data-toggle="tab" href="#nav-database"
-                           role="tab" aria-controls="nav-database" aria-selected="false">Database</a>
+                        <a class="nav-item nav-link active" id="nav-site-tab" data-bs-toggle="tab" href="#nav-site"
+                                role="tab" aria-controls="nav-site" aria-selected="true">Site
+                        </a>
+                        <a class="nav-item nav-link" id="nav-sensor-tab" data-bs-toggle="tab" href="#nav-sensor"
+                                role="tab" aria-controls="nav-sensor" aria-selected="false">Sensor
+                        </a>
+                        <a class="nav-item nav-link" id="nav-features-tab" data-bs-toggle="tab"
+                                href="#nav-features" role="tab" aria-controls="nav-features" aria-selected="false">
+                            Features
+                        </a>
+                        <a class="nav-item nav-link" id="nav-upload-tab" data-bs-toggle="tab" href="#nav-upload"
+                                role="tab" aria-controls="nav-upload" aria-selected="false">Upload
+                        </a>
+                        <a class="nav-item nav-link" id="nav-database-tab" data-bs-toggle="tab"
+                                href="#nav-database"
+                                role="tab" aria-controls="nav-database" aria-selected="false">Database
+                        </a>
                         <?php if ($config->debug->server->show === true) { ?>
-                            <a class="nav-item nav-link" id="nav-debug-tab" data-toggle="tab" href="#nav-debug"
-                               role="tab" aria-controls="nav-debug" aria-selected="false">Debug</a>
+                            <a class="nav-item nav-link" id="nav-debug-tab" data-bs-toggle="tab" href="#nav-debug"
+                                    role="tab" aria-controls="nav-debug" aria-selected="false">Debug
+                            </a>
                         <?php } ?>
                     </div>
                 </nav>
 
                 <form action="/admin/settings?do" method="POST">
                     <!-- Content Tabs-->
-                    <div class="tab-content margin-top-15" id="nav-tabContent">
+                    <div class="tab-content mt-3" id="nav-tabContent">
 
                         <!-- Site Settings -->
                         <?php require(APP_BASE_PATH . '/fcn/settings/site.php'); ?>

@@ -30,7 +30,7 @@
  * @var object $wx Weather Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <!-- BEGIN: Current -->
         <h1><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature</h1>
@@ -105,4 +105,4 @@
             <!-- END: Dew Point -->
         </ul>
     </div>
-</div>
+</section>

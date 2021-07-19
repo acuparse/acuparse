@@ -47,7 +47,7 @@
                     if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
                         ?>
                         <span class="small">(Version <a target="_blank"
-                                                        href="https://github.com/acuparse/acuparse/tree/v<?= $config->version->app; ?>"><?= $config->version->app; ?></a>)</span>
+                                                        href="https://www.acuparse.com/releases/v<?= str_replace('.', '-', $config->version->app); ?>"><?= $config->version->app; ?></a>)</span>
                     <?php }
                 } ?>
         </div>

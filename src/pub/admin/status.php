@@ -38,7 +38,7 @@ function rssiConvert($rssi): array
     $result = array();
     switch ($rssi) {
         case 0:
-            $signal = 'No Signal';
+            $signal = 'Low';
             $colour = 'red';
             break;
         case 1:
@@ -78,7 +78,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         <hr>
         <div class="row">
             <div class="col-md-8 col-12 mx-auto">
-                <table class="table table-hover table-responsive-sm table-bordered <?= ($config->site->theme === 'twilight') ? 'table-dark' : 'table-light'; ?>"
+                <table class="text-center table table-responsive table-bordered <?= ($config->site->theme === 'twilight') ? 'table-dark' : 'table-light'; ?>"
                        id="sensor-table">
                     <thead>
                     <tr>

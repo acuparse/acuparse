@@ -85,11 +85,11 @@ if ($saveConfig) {
         $schema = exec($schema, $schemaOutput, $schemaReturn);
         if ($schemaReturn !== 0) {
             if (!unlink($configFilePath)) {
-                $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Writing to Database. Could not remove config file. Please remove and try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
+                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Writing to Database. Could not remove config file. Please remove and try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
                 header("Location: /admin/install");
                 exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Could not remove config file. Please remove and try again."));
             } else {
-                $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Writing to Database. Please try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
+                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Writing to Database. Please try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
                 header("Location: /admin/install");
                 exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Please try again."));
             }
@@ -110,18 +110,18 @@ if ($saveConfig) {
             }
         }
     } else {
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Error Connecting to Database!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Connecting to Database!</div>';
         unlink(APP_BASE_PATH . '/usr/config.php');
         header("Location: /admin/install");
         exit(syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Database Ping Failed"));
     }
     // Log it
-    $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Database Configuration Saved Successfully!</div>';
+    $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Database Configuration Saved Successfully!</div>';
     header("Location: /admin/install/?account");
     exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}: Database configuration saved successfully"));
 } else {
     // Log it
-    $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Saving Config File Failed!</div>';
+    $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Saving Config File Failed!</div>';
     unlink(APP_BASE_PATH . '/usr/config.php');
     header("Location: /admin/install");
     exit(syslog(LOG_ERR, "(SYSTEM){INSTALLER}: Saving Config File Failed"));

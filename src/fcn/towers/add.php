@@ -49,10 +49,10 @@ if (isset($_GET['do'])) {
 
     // If the insert Query was successful.
     if (mysqli_affected_rows($conn) === 1) {
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>Tower Added Successfully!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Tower Added Successfully!</div>';
         syslog(LOG_INFO, "(SYSTEM){TOWER}: Tower $towerSensorID - $towerName added successfully");
     } else {
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong creating new tower!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Oops, something went wrong creating new tower!</div>';
         syslog(LOG_ERR, "(SYSTEM){TOWER}[ERROR]: Adding tower $towerSensorID - $towerName failed");
     }
     header("Location: /admin");
@@ -76,38 +76,52 @@ else {
         </div>
         <hr>
         <div class="row">
-            <div class="col-8 col-md-6 mx-auto">
+            <div class="col-md-8 col-12 mx-auto alert alert-secondary">
                 <form class="form" action="/admin/tower?add&do" method="POST">
-                    <div class="form-group">
-                        <label for="tower-id">Tower ID</label>
-                        <input type="text" class="form-control" name="id" id="tower-id"
-                               placeholder="00000000" maxlength="8" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tower-name">Display Name</label>
-                        <input type="text" class="form-control" name="name" id="tower-name"
-                               placeholder="Ground Level" maxlength="32" required>
-                    </div>
-                    <div class="form-group">
-                        <strong>Private Sensor?</strong><br>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="private" id="private-1"
-                                   value="1">
-                            <label class="form-check-label" for="private-1">Yes</label>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="col-form-label" for="tower-id">Tower ID</label>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="private" id="private-0"
-                                   value="0" checked="checked">
-                            <label class="form-check-label" for="private-0">No</label>
+                        <div class="col">
+                            <input type="text" class="form-control" name="id" id="tower-id"
+                                   placeholder="00000000" maxlength="8" required>
                         </div>
                     </div>
-                    <input type="hidden" name="display" id="display" value="<?= $arrange; ?>">
-                    <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                class="fas fa-save" aria-hidden="true"></i> Save
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
-                                class="fas fa-ban" aria-hidden="true"></i> Cancel
-                    </button>
+                    <div class="row mt-3">
+                        <div class="col-3">
+                            <label class="col-form-label" for="tower-name">Display Name</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" name="name" id="tower-name"
+                                   placeholder="Ground Level" maxlength="32" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <strong>Private Sensor?</strong><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="private" id="private-1"
+                                       value="1">
+                                <label class="form-check-label btn btn-primary" for="private-1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="private" id="private-0"
+                                       value="0" checked="checked">
+                                <label class="form-check-label btn btn-primary" for="private-0">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <input type="hidden" name="display" id="display" value="<?= $arrange; ?>">
+                            <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
+                                        class="fas fa-ban" aria-hidden="true"></i> Cancel
+                            </button>
+                            <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                        class="fas fa-save" aria-hidden="true"></i> Save
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

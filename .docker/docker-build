@@ -26,13 +26,14 @@
 # Setup Acuparse Docker Container
 ##
 
-function _build_acuparse() {
-
+function _permissions() {
   echo "Modifying start-up script PERMISSIONS"
   chmod +x /usr/local/bin/docker-entrypoint
   chmod +x /usr/local/bin/docker-healthcheck
   echo "END: PERMISSIONS"
+}
 
+function _logging() {
   echo "Setup LOGGING"
   sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
   ln -sf /proc/1/fd/1 /var/log/syslog
@@ -40,7 +41,9 @@ function _build_acuparse() {
   rm /var/log/apache2/access.log && touch /var/log/apache2/access.log
   touch /opt/acuparse/logs/cron.log
   echo "END: LOGGING"
+}
 
+function _http() {
   echo "Setting up HTTPD"
   openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
   -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
@@ -62,8 +65,18 @@ function _build_acuparse() {
   echo "END: HTTPD"
 }
 
+function _openSSL() {
+  echo "Configuring OpenSSL for TLS v1.1 support"
+  sed -i 's/MinProtocol = TLSv1.2/MinProtocol = TLSv1.1/' /etc/ssl/openssl.cnf
+  sed -i 's/SECLEVEL=2/SECLEVEL=1/' /etc/ssl/openssl.cnf
+  echo "END: OpenSSL Config"
+}
+
 echo "START: Acuparse Docker BUILD ..."
 echo "DOCKER=1" >>/etc/os-release
 echo "DOCKER=1" >>/etc/environment
-_build_acuparse
+_permissions
+_logging
+_http
+_openSSL
 echo "END: Acuparse BUILD"

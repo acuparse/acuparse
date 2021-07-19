@@ -96,7 +96,7 @@
   ],
   "require": {
     "php": "~7.3",
-    "twbs/bootstrap": "~4",
+    "twbs/bootstrap": "~5",
     "fortawesome/font-awesome": "~5",
     "components/jquery": "~3",
     "lokesh/lightbox2": "~2",

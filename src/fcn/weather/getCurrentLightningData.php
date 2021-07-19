@@ -32,6 +32,7 @@ use mysqli;
 class getCurrentLightningData
 {
     // Set variables
+    private $strikecount;
     private $dailystrikes;
     private $currentstrikes;
     private $interference;
@@ -78,6 +79,7 @@ class getCurrentLightningData
         $this->dailystrikes = (float)$currentData['dailystrikes'];
 
         if ($cron === false) {
+            $this->strikecount = (float)$currentData['strikecount'];
             $this->currentstrikes = (float)$currentData['currentstrikes'];
             $this->interference = (float)$atlasData['interference'];
             $this->last_strike_ts = $atlasData['last_strike_ts'];
@@ -136,6 +138,7 @@ class getCurrentLightningData
     public function getJSONData(): object
     {
         return (object)array(
+            'strikecount' => $this->strikecount,
             'dailystrikes' => $this->dailystrikes,
             'currentstrikes' => $this->currentstrikes,
             'interference' => $this->interference,

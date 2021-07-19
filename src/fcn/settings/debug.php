@@ -29,50 +29,65 @@
  * @var object $config Global Config
  */
 ?>
-<div class="tab-pane fade" id="nav-debug" role="tabpanel"
-     aria-labelledby="nav-debug-tab">
+<section class="tab-pane fade" id="nav-debug" role="tabpanel" aria-labelledby="nav-debug-tab">
     <div class="row">
         <div class="col">
             <h2 class="panel-heading">Debug Server</h2>
-            <p>Sends MyAcuRite data to a debug/testing server.</p>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 col-12 mx-auto border">
-            <div class="form-group">
-                <div class="form-check form-check-inline margin-top-10">
-                    <input class="form-check-input" type="radio"
-                           name="debug[server][enabled]"
-                           onclick='document.getElementById("debug-server-url").disabled=true;'
-                           id="debug-server-enabled-0" value="0"
-                        <?= ($config->debug->server->enabled === false) ? 'checked="checked"' : false; ?>>
-                    <label class="form-check-label alert alert-danger"
-                           for="debug-server-enabled-0">Disabled</label>
+        <div class="col-md-8 col-12 mx-auto">
+
+            <!-- Debug -->
+            <section class="row alert alert-secondary">
+                <div class="col mt-2 mb-2">
+                    <div class="row">
+                        <div class="col">
+                            <p>Sends MyAcuRite data to a debug/testing server.<br>
+                                See <a href="https://docs.acuparse.com/INSTALL/#debug-server">docs</a> for more details.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="debug[server][enabled]"
+                                       onclick='document.getElementById("debug-server-url").disabled=true;'
+                                       id="debug-server-enabled-0" value="0"
+                                    <?= ($config->debug->server->enabled === false) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-danger"
+                                       for="debug-server-enabled-0"><strong>Disabled</strong></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="debug[server][enabled]"
+                                       onclick='document.getElementById("debug-server-url").disabled=false;'
+                                       id="debug-server-enabled-1" value="1"
+                                    <?= ($config->debug->server->enabled === true) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-success"
+                                       for="debug-server-enabled-1">Enabled</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="col-form-label" for="debug-server-url">URL</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control"
+                                   name="debug[server][url]"
+                                   id="debug-server-url"
+                                   placeholder="www.example.com"
+                                <?= ($config->debug->server->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                   value="<?= $config->debug->server->url; ?>">
+                            <small id="debug-server-url-help" class="form-text text-muted">
+                                Hostname/IP only. No HTTP/HTTPS!
+                            </small>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio"
-                           name="debug[server][enabled]"
-                           onclick='document.getElementById("debug-server-url").disabled=false;'
-                           id="debug-server-enabled-1" value="1"
-                        <?= ($config->debug->server->enabled === true) ? 'checked="checked"' : false; ?>>
-                    <label class="form-check-label alert alert-success"
-                           for="debug-server-enabled-1">Enabled</label>
-                </div>
-            </div>
-            <div class="form-row">
-                <label class="col-form-label" for="debug-server-url">URL:</label>
-                <div class="col form-group">
-                    <input type="text" class="form-control"
-                           name="debug[server][url]"
-                           id="debug-server-url"
-                           placeholder="www.example.com"
-                        <?= ($config->debug->server->enabled === false) ? 'disabled="disabled"' : false; ?>
-                           value="<?= $config->debug->server->url; ?>">
-                    <small id="debug-server-url-help" class="form-text text-muted">
-                        Hostname/IP only. No HTTP/HTTPS!
-                    </small>
-                </div>
-            </div>
+            </section>
         </div>
     </div>
-</div>
+</section>

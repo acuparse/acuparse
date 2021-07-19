@@ -30,7 +30,7 @@
  * @var object $wx Weather Values
  */
 ?>
-<div class="row">
+<section class="row">
     <div class="col">
         <h1><i class="wi wi-raindrops" aria-hidden="true"></i> Rain</h1>
         <ul class="list-unstyled">
@@ -50,4 +50,4 @@
                 echo $rain_today; ?></li>
         </ul>
     </div>
-</div>
+</section>

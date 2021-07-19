@@ -72,12 +72,14 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             <p><strong>Double check your config settings before proceeding!</strong></p>
                         </div>
                         <div><h3>Notes:</h3>
-                            <ul class="list-unstyled"><?= $notes; ?></ul>
+                            <ul class="list-unstyled">
+                                <?= $notes; ?>
+                            </ul>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
+                    <div class="col mx-auto text-center">
                         <button type="button" class="btn btn-primary btn-block"
                                 onclick="location.href = '/admin/settings'">
                             <i class="fas fa-cogs" aria-hidden="true"></i> Edit Settings
@@ -135,7 +137,8 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                         onclick="location.href = '/admin/install?update&do'"><i
                             class="fas fa-play-circle"
                             aria-hidden="true"></i>
-                    <?= (version_compare($config->version->app, '2.10.0-release', '==')) ? 'I\'ve reviewed the update guide!<br>Begin Update' : 'Begin Update'; ?>
+                    <?= (version_compare($config->version->app, '2.10.0-release',
+                        '==')) ? 'I\'ve reviewed the update guide!<br>Begin Update' : 'Begin Update'; ?>
                 </button>
             </div>
         </section>

@@ -436,7 +436,7 @@ Acuparse includes a special display mode for better viewing while in full-screen
     - Force light theme: `http(s)://<yourip/domain>/display?light`
     - Force dark theme: `http(s)://<yourip/domain>/display?dark`
 
-Additionally, you can request Bootstrap 4 formatted HTML, JSON array(s), or plain text formatted for watermarking.
+Additionally, you can request Bootstrap 5 formatted HTML, JSON array(s), or plain text formatted for watermarking.
 
 - See the [API Guide](https://docs.acuparse.com/API) for details.
 

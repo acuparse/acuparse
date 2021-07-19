@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.5.0]](https://www.acuparse.com/releases/v3-5-0/) - 2021-07-18
+
+### Changed
+
+- Bootstrap to v5.0.2.
+    - Updates to UI formatting and structure.
+- Webcam script now uses curl instead of wget.
+    - Curl now saves the image as `$CAMERA_FILENAME`. Set `$CAMERA_HOST` to the full image path.
+
+### Fixed
+
+- Timestamps in `api/system/status` not using config date settings.
+- Beaufort and Wind Direction inaccuracies when readings are `0`.
+- Update Apache default SSL config to specifically allow TLSv1.1.
+    - Access uploads readings using TLSv1.1.
+
+### Added
+
+- Raw lightning sensor `strikecount` to JSON API.
+
 ## [[3.4.0]](https://www.acuparse.com/releases/v3-4-0/) - 2021-05-18
 
 ### Changed

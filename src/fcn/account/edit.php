@@ -43,7 +43,7 @@ if (isset($_GET['do'])) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: No permissions to modify $user. $uid is not an admin");
             // Display message
-            $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No permissions to edit this user!</div>';
+            $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>No permissions to edit this user!</div>';
             header("Location: /");
             exit();
         }
@@ -62,7 +62,7 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing user failed, nothing changed");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Nothing to change!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Edit User failed! Nothing to change!</div>';
         header("Location: /");
         exit();
     } elseif ($username !== $oldInfo['username']) {
@@ -72,7 +72,7 @@ if (isset($_GET['do'])) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing user failed, username already exists");
             // Display message
-            $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Duplicate Username</div>';
+            $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Edit User failed! Duplicate Username</div>';
             header("Location: /");
             exit();
         }
@@ -83,7 +83,7 @@ if (isset($_GET['do'])) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing user failed, email already exists");
             // Display message
-            $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit User failed! Duplicate Email</div>';
+            $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Edit User failed! Duplicate Email</div>';
             header("Location: /");
             exit();
         }
@@ -94,7 +94,7 @@ if (isset($_GET['do'])) {
             // Log it
             syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Editing a user failed! Can't demote only admin.");
             // Display message
-            $_SESSION['messages'] = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a>Edit user failed! Can\'t demote the only admin.</div>';
+            $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Edit user failed! Can\'t demote the only admin.</div>';
             header("Location: /");
             exit();
         }
@@ -112,7 +112,7 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_INFO, "(SYSTEM){USER}: User $user - $username updated successfully");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">&times;</a>User Updated Successfully!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>User Updated Successfully!</div>';
 
         if (($username !== $oldInfo['username']) && ($user === $uid)) {
             $_SESSION['username'] = $username;
@@ -121,7 +121,7 @@ if (isset($_GET['do'])) {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Updating user $user - $username failed: " . mysqli_error($conn));
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>Oops, something went wrong updating the user!</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Oops, something went wrong updating the user!</div>';
     }
     // Redirect home
     header("Location: /");
@@ -149,7 +149,7 @@ else {
         // Log it
         syslog(LOG_ERR, "(SYSTEM){USER}[ERROR]: Updating user $user failed. Does not exist");
         // Display message
-        $_SESSION['messages'] = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert">&times;</a>No User with that User ID.</div>';
+        $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>No User with that User ID.</div>';
         header("Location: /");
         exit();
     } // User exists
@@ -170,47 +170,65 @@ else {
             <section id="edit-user-data" class="row edit-user-data">
                 <div class="col">
                     <div class="row">
-                        <div class="col-8 col-md-6 mx-auto">
+                        <div class="col-md-8 col-12 mx-auto alert alert-secondary">
                             <form class="form" role="form" action="/admin/account?edit&do" method="POST">
-                                <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input type="text" class="form-control" name="username" id="username"
-                                           placeholder="Username" maxlength="255"
-                                           value="<?= $row['username']; ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="text" class="form-control" name="email" id="email"
-                                           placeholder="Email" maxlength="255"
-                                           value="<?= $row['email']; ?>" required>
-                                </div>
-                                <div class="form-group border">
-                                    <strong>Admin Access?</strong><br>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="admin"
-                                               id="admin-access-0"
-                                               value="0"
-                                            <?= ((bool)$row['admin'] === false) ? 'checked="checked"' : false; ?>>
-                                        <label class="form-check-label alert alert-success"
-                                               for="admin-access-0">No</label>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label class="col-form-label" for="username">Username</label>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input <?= ($_SESSION['admin'] !== true) ? 'disabled="disabled"' : false; ?>
-                                                class="form-check-input" type="radio" name="admin"
-                                                id="admin-access-1"
-                                                value="1"
-                                            <?= ((bool)$row['admin'] === true) ? 'checked="checked"' : false; ?>>
-                                        <label class="form-check-label alert alert-danger"
-                                               for="admin-access-1"><?= ((bool)$row['admin'] === true) ? '<strong>Yes</strong>' : 'Yes'; ?></label>
+                                    <div class="col">
+                                        <input type="text" class="form-control" name="username" id="username"
+                                               placeholder="Username" maxlength="255"
+                                               value="<?= $row['username']; ?>" required>
                                     </div>
                                 </div>
-                                <input type="hidden" value="<?= $user; ?>" name="uid">
-                                <button type="submit" id="submit" value="submit" class="btn btn-success"><i
-                                            class="fas fa-save" aria-hidden="true"></i> Save
-                                </button>
-                                <button type="button" class="btn btn-danger" onclick="location.href = '/admin'"><i
-                                            class="fas fa-ban" aria-hidden="true"></i> Cancel
-                                </button>
+                                <div class="row mt-3">
+                                    <div class="col-3">
+                                        <label class="col-form-label" for="email">Email</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" name="email" id="email"
+                                               placeholder="Email" maxlength="255"
+                                               value="<?= $row['email']; ?>" required>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <strong>Admin Access</strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="admin"
+                                                   id="admin-access-0"
+                                                   value="0"
+                                                <?= ((bool)$row['admin'] === false) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label btn btn-success"
+                                                   for="admin-access-0">No</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input <?= ($_SESSION['admin'] !== true) ? 'disabled="disabled"' : false; ?>
+                                                    class="form-check-input" type="radio" name="admin"
+                                                    id="admin-access-1"
+                                                    value="1"
+                                                <?= ((bool)$row['admin'] === true) ? 'checked="checked"' : false; ?>>
+                                            <label class="form-check-label btn btn-danger"
+                                                   for="admin-access-1"><?= ((bool)$row['admin'] === true) ? '<strong>Yes</strong>' : 'Yes'; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <input type="hidden" value="<?= $user; ?>" name="uid">
+                                        <button type="button" class="btn btn-danger" onclick="location.href = '/admin'">
+                                            <i class="fas fa-ban" aria-hidden="true"></i> Cancel
+                                        </button>
+                                        <button type="submit" id="submit" value="submit" class="btn btn-success"><i
+                                                    class="fas fa-save" aria-hidden="true"></i> Save
+                                        </button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -221,22 +239,22 @@ else {
 
             <div class="row">
                 <div class="col">
-                    <h2 class="panel-heading">API Token</h2>
+                    <h2>API Token</h2>
                 </div>
             </div>
 
             <section id="api-token" class="row">
-                <div class="col-8 col-md-6 mx-auto alert alert-secondary">
+                <div class="col-md-8 col-12 mx-auto alert alert-warning">
                     <?php
                     if (!empty($row['token'])) { ?>
                         <p>Click below to replace <?= $row['username']; ?>'s API Token.</p>
-                        <button type="button" id="token" class="btn btn-success margin-bottom-05"
+                        <button type="button" id="token" class="btn btn-success mb-3"
                                 onclick="location.href = '/admin/account?token&uid=<?= $user; ?>'">
                             <i class="fas fa-lock" aria-hidden="true"></i> Replace API Token
                         </button>
                     <?php } else { ?>
                         <p>Click below to add a new API Token for <?= $row['username']; ?>.</p>
-                        <button type="button" id="token" class="btn btn-success margin-bottom-05"
+                        <button type="button" id="token" class="btn btn-success mb-3"
                                 onclick="location.href = '/admin/account?token&uid=<?= $user; ?>'">
                             <i class="fas fa-lock" aria-hidden="true"></i> Add API Token
                         </button>
@@ -248,14 +266,14 @@ else {
 
             <div class="row">
                 <div class="col">
-                    <h2 class="panel-heading">Change Password</h2>
+                    <h2>Change Password</h2>
                 </div>
             </div>
 
             <section id="change-user-password" class="row change-user-password">
-                <div class="col-8 col-md-6 mx-auto alert alert-warning">
+                <div class="col-md-8 col-12 mx-auto alert alert-warning">
                     <p>Click below to change <?= $row['username']; ?>'s password.</p>
-                    <button type="button" id="password" class="btn btn-warning margin-bottom-05"
+                    <button type="button" id="password" class="btn btn-warning mb-3"
                             onclick="location.href = '/admin/account?password<?= ($user !== $_SESSION['uid']) ? '&uid=' . $user : false; ?>'">
                         <i class="fas fa-key" aria-hidden="true"></i> Change Password
                     </button>
@@ -267,16 +285,16 @@ else {
 
             <div class="row">
                 <div class="col">
-                    <h2 class="panel-heading">Delete User</h2>
+                    <h2>Delete User</h2>
                 </div>
             </div>
 
             <section id="delete-user" class="row delete-user">
-                <div class="col-8 col-md-6 mx-auto alert alert-danger">
+                <div class="col-md-8 col-12 mx-auto alert alert-danger">
                     <p>Click below to remove <?= $row['username']; ?>.
                     </p>
                     <button <?= ($user === $_SESSION['uid']) ? 'disabled="disabled"' : false; ?>
-                            type="button" id="delete" class="btn btn-danger margin-bottom-05"
+                            type="button" id="delete" class="btn btn-danger mb-3"
                             onClick="confirmDelete('/admin/account?delete&uid=<?= $user; ?>')"><i
                                 class="fas fa-user-times" aria-hidden="true"></i> Delete User
                     </button>
