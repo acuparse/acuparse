@@ -6,7 +6,7 @@ server.
 You can install Acuparse locally on bare-metal or a VM, or you can use a Docker Containter based installation.
 
 !!! note
-    Installation only supported on Debian/Rasbian Buster(10) and Ubuntu 18.04/20.04.
+    Installation only supported on Debian/Rasbian Buster(10)/Bullseye(11) and Ubuntu 18.04/20.04.
 
 ## RaspberryPi
 
@@ -62,7 +62,7 @@ curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 
 - Install the required packages:
 
-    - Debian/Rasbian Buster(10):
+    - Debian/Rasbian Buster(10)/Bullseye(11):
 
       ```bash
       apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-gd php7.3-curl php7.3-json php7.3-cli php7.3-common -y

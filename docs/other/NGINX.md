@@ -133,5 +133,5 @@ service apache2 restart && service nginx restart
 - Generate a Let's Encrypt Cert:
 
 ```bash
-apt install python-certbot-nginx -y && certbot --nginx --email <email> -d <domain> -d www.<domain>
+apt install python3-certbot-nginx -y && certbot --nginx --email <email> -d <domain> -d www.<domain>
 ```

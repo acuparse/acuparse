@@ -109,11 +109,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             "SELECT `battery`, `rssi`, `last_update` FROM `atlas_status` ORDER BY `last_update` DESC LIMIT 1"));
                         $rssi = rssiConvert($result['rssi']);
                         $batteryBackground = ($result['battery'] === 'normal') ? 'limegreen' : 'orangered';
+                        $batteryText = (!is_null($result['battery'])) ? ucfirst($result['battery']) : 'ERROR!';
                         ?>
                         <tr id="<?= $config->station->sensor_atlas; ?>">
                             <th scope="row"><?= ltrim($config->station->sensor_atlas, '0'); ?></th>
                             <td>Atlas</td>
-                            <td style="background-color: <?= $batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
+                            <td style="background-color: <?= $batteryBackground; ?>"><?= $batteryText; ?></td>
                             <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                             <td><?= ($result['last_update']); ?></td>
                         </tr>
@@ -123,11 +124,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             "SELECT `battery`, `rssi`, `last_update` FROM `iris_status` ORDER BY `last_update` DESC LIMIT 1"));
                         $rssi = rssiConvert($result['rssi']);
                         $batteryBackground = ($result['battery'] === 'normal') ? 'limegreen' : 'orangered';
+                        $batteryText = (!is_null($result['battery'])) ? ucfirst($result['battery']) : 'ERROR!';
                         ?>
                         <tr id="<?= $config->station->sensor_iris; ?>">
                             <th scope="row"><?= ltrim($config->station->sensor_iris, '0'); ?></th>
                             <td>Iris</td>
-                            <td style="background-color: <?= $batteryBackground; ?>"><?= ucfirst($result['battery']); ?></td>
+                            <td style="background-color: <?= $batteryBackground; ?>"><?= $batteryText; ?></td>
                             <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                             <td><?= ($result['last_update']); ?></td>
                         </tr>
@@ -141,11 +143,12 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                                 "SELECT `battery`, `rssi`, `timestamp` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
                             $rssi = rssiConvert($result2['rssi']);
                             $batteryBackground = ($result2['battery'] === 'normal') ? 'limegreen' : 'orangered';
+                            $batteryText = (!is_null($result2['battery'])) ? ucfirst($result2['battery']) : 'ERROR!';
                             ?>
                             <tr id="<?= $sensor; ?>">
                                 <th scope="row"><?= ltrim($sensor, '0'); ?></th>
                                 <td><?= $name; ?></td>
-                                <td style="background-color: <?= $batteryBackground ?>"><?= ucfirst($result2['battery']); ?></td>
+                                <td style="background-color: <?= $batteryBackground; ?>"><?= $batteryText; ?></td>
                                 <td style="background-color: <?= $rssi[1]; ?>;"><?= $rssi[0]; ?></td>
                                 <td><?= ($result2['timestamp']); ?></td>
                             </tr>

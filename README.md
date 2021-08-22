@@ -64,7 +64,8 @@ channels below. We'll work with you to grab a capture of the data they send, all
 
 See [docs/INSTALL.md](https://docs.acuparse.com/INSTALL) for detailed installation instructions.
 
-Installing on a fresh instance of a Debian/Rasbian Buster(10) or Ubuntu 18.04/20.04 is the only officially supported and tested install method.
+Installing on a fresh instance of a Debian/Rasbian Buster(10)/Bullseye(11) or Ubuntu 18.04/20.04 are the only officially
+supported and tested install method.
 
 After installing and adding your sensors, you will may receive a "No Data Received!" message on your dashboard.
 Acuparse will need to receive readings from your Access/Hub before weather data can be displayed.

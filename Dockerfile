@@ -24,7 +24,7 @@
 # Acuparse Dockerfile
 ##
 
-FROM php:apache
+FROM php:apache-bullseye
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -49,7 +49,7 @@ RUN echo "Install and Configure PACKAGES" \
 && apt-get update -qq && apt-get install -yqq --no-install-recommends \
 mariadb-client \
 rsyslog \
-python-certbot-apache \
+python3-certbot-apache \
 cron \
 && docker-php-ext-install mysqli \
 && docker-php-ext-enable mysqli \
