@@ -61,6 +61,15 @@ workflow:
     - noverify check -exclude-checks undefined,caseBreak src/ | tee noverify.txt
   dependencies: [ ]
 
+.TEMPLATE:DOCKER:lint:
+  image: node:latest
+  stage: lint
+  before_script:
+    - npm install -g dockerfilelint
+  script:
+    - dockerfilelint Dockerfile
+  dependencies: [ ]
+
 .TEMPLATE:DOCS:mkdocs:
   stage: docs
   image: python:3.8-alpine
@@ -217,8 +226,27 @@ DEV:BASH:shellcheck:
 
 #### END: Bash ####
 
-#### Build and Release a Docker Container ####
+#### Docker File ####
+DOCKER:lint:
+  extends: .TEMPLATE:DOCKER:lint
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "stable"'
 
+DEV:DOCKER:lint:
+  extends: .TEMPLATE:DOCKER:lint
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
+  allow_failure: true
+
+#### END: Docker File ####
+
+#### Build and Release a Docker Container ####
 DOCKER:build:
   extends: .TEMPLATE:DOCKER:build
   variables:
@@ -227,6 +255,7 @@ DOCKER:build:
     - if: $CI_COMMIT_TAG
       when: never
     - if: '$CI_COMMIT_BRANCH == "stable"'
+  needs: [ "DOCKER:lint" ]
 
 DEV:DOCKER:build:
   extends: .TEMPLATE:DOCKER:build
@@ -237,6 +266,7 @@ DEV:DOCKER:build:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH != "stable"'
+  needs: [ "DEV:DOCKER:lint" ]
 
 #### END: Docker Image ####
 

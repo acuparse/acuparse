@@ -11,7 +11,7 @@ the [Automated Installation Guide](https://docs.acuparse.com/INSTALL/#bare-metal
 ## What is a RaspberryPi
 
 RaspberryPi's are a small single-board microcomputer, that is fairly inexpensive (most kits are under 40USD) and are
-powerful enough to run Acuparse sufficiently. The OS used in this document will be Raspbian Buster (a version of Debian
+powerful enough to run Acuparse sufficiently. The OS used in this document will be Raspbian Bullseye (a version of Debian
 Linux).
 
 The two current versions of RaspberryPi that are available are the RaspberryPi Zero W (RPi0W) and the RaspberryPi 3 (
@@ -62,10 +62,12 @@ setup.
 ### Install Raspbian Buster onto the MicroSD
 
 Follow this guide for setting up your MicroSD
-card: [How to Install or Upgrade to Raspbian Buster](https://howchoo.com/g/ywmxmza2ndf/raspbian-buster-install-or-upgrade)
-. Use the [Light](https://downloads.raspberrypi.org/raspbian_lite_latest) image for your install. When completing your
-wpa_supplicant file, add a new line with `scan_ssid=1` that is between the `ssid=` and `psk=` lines. If you are going to
-connect your Pi directly with a wired network cable (not using WiFi), then you can skip the wpa_supplicant file creation
+card: [How to Install or Upgrade to Raspbian Bullseye](https://howchoo.com/pi/raspbian-buster-install-or-upgrade)
+. The Buster install directions are still valid for the Bullseye release. Use the [Light](https://downloads.raspberrypi.org/raspbian_lite_latest)
+image for your installation. When completing your wpa_supplicant file, add a new line with `scan_ssid=1` that is between the `ssid=` and `psk=` lines
+.
+
+If you are going to connect your Pi directly with a wired network cable (not using WiFi), then you can skip the wpa_supplicant file creation
 altogether. Also, if you are using a Windows computer to connect to your Pi, you will need
 to [Download PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) for the terminal program to access
 it via SSH. For most modern PC's you will choose the 64bit MSI Windows Installer, and then double click / run the

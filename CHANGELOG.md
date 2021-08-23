@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.6.0]](https://www.acuparse.com/releases/v3-6-0/) - 2021-08-22
+
+### Changed
+
+- Move container image to and add installer support for Debian Bullseye.
+    - A [Buster to Bullseye update script](https://docs.acuparse.com/UPDATING/#update-debian-buster-to-bullseye) is available.
+    - MariaDB container updated to Bullseye and MariaDB v10.5.
+- Bootstrap to v5.1.0.
+- FontAwesome to v5.15.4.
+
+### Fixed
+
+- `strikecount` always 0 / Undefined array warning.
+
 ## [[3.5.0]](https://www.acuparse.com/releases/v3-5-0/) - 2021-07-18
 
 ### Changed

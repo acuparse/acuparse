@@ -75,18 +75,18 @@ class getCurrentLightningData
         $currentData = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `dailystrikes`, `currentstrikes` FROM `atlasLightning` WHERE `date`='$todaysDate'"));
         $atlasData = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `last_strike_ts`, `interference`, `last_strike_distance` FROM `lightningData` WHERE `source` = 'A'"));
+            "SELECT `strikecount`, `last_strike_ts`, `interference`, `last_strike_distance` FROM `lightningData` WHERE `source` = 'A'"));
         $this->dailystrikes = (float)$currentData['dailystrikes'];
 
         if ($cron === false) {
-            $this->strikecount = (float)$currentData['strikecount'];
+            $this->strikecount = (float)$atlasData['strikecount'];
             $this->currentstrikes = (float)$currentData['currentstrikes'];
             $this->interference = (float)$atlasData['interference'];
             $this->last_strike_ts = $atlasData['last_strike_ts'];
             $this->last_strike_ts_json = date($this->json_date, strtotime($atlasData['last_strike_ts']));
             $this->last_strike_display = date($config->site->dashboard_display_date, strtotime($this->last_strike_ts));
-            $this->last_strike_distance_KM = (float)round($atlasData['last_strike_distance'] * 1.609, 1);
-            $this->last_strike_distance_M = (float)round($atlasData['last_strike_distance'], 1);
+            $this->last_strike_distance_KM = round($atlasData['last_strike_distance'] * 1.609, 1);
+            $this->last_strike_distance_M = round($atlasData['last_strike_distance'], 1);
         }
     }
 
