@@ -47,7 +47,7 @@ copyright: "Copyright © 2015-2021 <a href='https://www.acuparse.com'>Acuparse P
 extra:
   social:
     - type: 'slack'
-      link: 'https://communityinviter.com/apps/acuparse/acuparse'
+      link: 'https://communityinviter.com/apps/acuparse/docs'
       icon: 'fontawesome/brands/slack'
     - type: 'gitlab'
       link: 'https://gitlab.com/acuparse'

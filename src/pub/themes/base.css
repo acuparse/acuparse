@@ -93,6 +93,12 @@ img {
     font-weight: 600;
 }
 
+@media only screen and (max-width: 375px) {
+    .navbar-brand {
+        font-size: .9em;
+    }
+}
+
 .navbar-toggler {
     margin-right: .5em;
 }

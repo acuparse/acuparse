@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.6.1]](https://www.acuparse.com/releases/v3-6-1/) - 2021-10-03
+
+### Changed
+
+- Bootstrap to v5.1.1.
+- Jquery to v3.6.0.
+
+### Fixed
+
+- CWOP uploading `0` wind gust.
+- Navigation too big on some mobile.
+- Update Slack inviter link.
+
 ## [[3.6.0]](https://www.acuparse.com/releases/v3-6-0/) - 2021-08-22
 
 ### Changed
@@ -249,7 +262,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 - Update Copyright.
 - Documentation updates.
 - Chat moving from Keybase/Gitter to Slack.
-    - [Get Slack Invite](https://communityinviter.com/apps/acuparse/acuparse).
+    - [Get Slack Invite](https://communityinviter.com/apps/acuparse/docs).
 - Major Code refactoring.
 - Update checking moved to cron.
     - Now sends some basic telemetry data.

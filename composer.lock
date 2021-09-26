@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "components/jquery",
-            "version": "3.5.1",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/jquery.git",
-                "reference": "b33e8f0f9a1cb2ae390cf05d766a900b53d2125b"
+                "reference": "6cf38ee1fd04b6adf8e7dda161283aa35be818c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/jquery/zipball/b33e8f0f9a1cb2ae390cf05d766a900b53d2125b",
-                "reference": "b33e8f0f9a1cb2ae390cf05d766a900b53d2125b",
+                "url": "https://api.github.com/repos/components/jquery/zipball/6cf38ee1fd04b6adf8e7dda161283aa35be818c3",
+                "reference": "6cf38ee1fd04b6adf8e7dda161283aa35be818c3",
                 "shasum": ""
             },
             "type": "component",
@@ -53,7 +53,7 @@
                 "source": "https://github.com/jquery/jquery",
                 "wiki": "http://docs.jquery.com/"
             },
-            "time": "2020-05-05T13:21:02+00:00"
+            "time": "2021-03-20T19:13:42+00:00"
         },
         {
             "name": "erikflowers/weather-icons",
@@ -153,16 +153,16 @@
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "f20fece3a8cdd0e76a42c2737524b7652bf54d26"
+                "reference": "0d81d3cbc14dfcdca8a868e3f25189a4f1ab273c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/f20fece3a8cdd0e76a42c2737524b7652bf54d26",
-                "reference": "f20fece3a8cdd0e76a42c2737524b7652bf54d26",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/0d81d3cbc14dfcdca8a868e3f25189a4f1ab273c",
+                "reference": "0d81d3cbc14dfcdca8a868e3f25189a4f1ab273c",
                 "shasum": ""
             },
             "replace": {
@@ -197,9 +197,9 @@
             ],
             "support": {
                 "issues": "https://github.com/twbs/bootstrap/issues",
-                "source": "https://github.com/twbs/bootstrap/tree/v5.1.0"
+                "source": "https://github.com/twbs/bootstrap/tree/v5.1.1"
             },
-            "time": "2021-08-04T15:41:51+00:00"
+            "time": "2021-09-07T15:37:44+00:00"
         }
     ],
     "packages-dev": [

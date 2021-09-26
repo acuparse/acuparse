@@ -47,9 +47,9 @@ if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->in
         $relH = '00';
     }
 
-    if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-        $cwop_windGustMPH = $atlas->windGustMPH;
-    } elseif ($config->station->device === 1 && $config->station->primary_sensor === 1) {
+    if ($config->station->device === 0) {
+        $cwop_windGustMPH = $data->windGustMPH;
+    } elseif ($config->station->device === 1) {
         // Process Average Wind Speed over the last 5 minutes
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT MAX(speedMPH) AS `max_speedMPH` FROM `windspeed` WHERE `timestamp` >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)"));

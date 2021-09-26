@@ -151,7 +151,7 @@ See [LICENSE](LICENSE) for more details.
 
 ## Support and Discussion
 
-[Join the discussion on Slack](https://communityinviter.com/apps/acuparse/acuparse)
+[Join the discussion on Slack](https://communityinviter.com/apps/acuparse/docs)
 
 - Support for the core application/bugs is handled via [GitLab Issues](https://gitlab.com/acuparse/acuparse/issues).
     - You may also open a new issue by mailing [support@acuparse.com](mailto:support@acuparse.com).
