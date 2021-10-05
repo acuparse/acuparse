@@ -38,4 +38,9 @@ switch ($config->version->app) {
         $config->version->app = '3.6.0';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Debian Bullseye(11) support. See Changelog for OS update script.';
 
+    // Update from 3.6.0 to 3.6.1
+    case '3.6.0':
+        $config->version->app = '3.6.1';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Dependency updates and bug fixes.';
+
 }
