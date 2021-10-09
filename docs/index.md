@@ -24,7 +24,7 @@ data to
 , [Weathercloud](https://weathercloud.net),
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
 and [OpenWeather](https://openweathermap.org/). It also processes and stores images from a local network camera for
-display and uploads to Weather Underground.
+display and linking to external websites.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on
 data, not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.

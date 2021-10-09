@@ -92,7 +92,7 @@ To check for Cron errors, see [Cron Logs](#cron-log) above.
 ## RaspberryPi's
 
 See [RaspberryPi Direct Connect](https://docs.acuparse.com/INSTALL/#raspberry-pi) in the install guide to configure
-your RaspberryPi for direct connection to an Access.
+your RaspberryPi for direct connection to the Access.
 
 When you are directly connecting your Access/Hub to a RaspberryPi, you must change your upload servers to the secondary
 ones. This is due to the fact that the Pi is redirecting your DNS locally and without changing the upload server, you
@@ -113,13 +113,13 @@ and [reinitialize the Acuparse database](https://docs.acuparse.com/INSTALL/#setu
 
 ## Access Device
 
-If your not receiving data from your Access, ensure you have a DNS resolvable hostname set for the upload server and/or
+If you're not receiving data from your Access, ensure you have a DNS resolvable hostname set for the upload server and/or
 a DNS redirect in place. Then, reboot your Access. The Access can at times require multiple reboots to begin sending
 data.
 
 ### MyAcuRite Offline
 
-If MyAcuRite is offline, Acuparse will respond to your Accesss and store your readings but they will not be back filled
+If MyAcuRite is offline, Acuparse will respond to your Access and store your readings, but they will not be backfilled
 to MyAcuRite after their outage is over. The Access is capable of storing the data and sending it later but when used
 with Acuparse, the Access will continue to think MyAcuRite was online and the readings stored.
 
@@ -219,3 +219,19 @@ running `git reset --hard`.
 
 If you're interested in learning Git, this is an excellent resource:
 [Git Exercises](https://gitexercises.fracz.com).
+
+## Docker Container Won't Start
+
+Acuparse moved to Debian Bullseye as the primary container image. Some users running Acuparse on systems with an older Linux Kernel may experience
+an error similar to below when starting Apache
+
+```text
+acuparse_1  | Starting apache2 ...
+acuparse_1  | [DATE] [:crit] [pid 307] (38)Function not implemented: **AH00141: Could not initialize random number generator**
+acuparse_1  | Action 'start' failed.
+acuparse_1  | The Apache error log may have more information.
+```
+
+If you receive this error, update your docker files to use the legacy Buster image.
+
+- `acuparse\acuparse:buster` or `acuparse\acuparse:<VERSION>-buster`

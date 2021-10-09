@@ -64,6 +64,7 @@
 <?php
 if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
     ?>
+    <!-- Google reCAPTCHA -->
     <script defer src='https://www.google.com/recaptcha/api.js'></script>
     <script>
         function onSubmit(token) {
@@ -72,7 +73,6 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
     </script>
 <?php }
 if ($config->google->analytics->enabled === true) { ?>
-
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config->google->analytics->id; ?>"></script>
     <script>
@@ -84,6 +84,23 @@ if ($config->google->analytics->enabled === true) { ?>
 
         gtag('js', new Date());
         gtag('config', '<?= $config->google->analytics->id; ?>');
+    </script>
+<?php }
+if ($config->matomo->enabled === true) { ?>
+    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function () {
+            var u = "//<?= $config->matomo->domain; ?>/";
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '<?= $config->matomo->site; ?>']);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.async = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+        })();
     </script>
 <?php } ?>
 

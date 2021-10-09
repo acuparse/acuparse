@@ -84,6 +84,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->station->towers_additional = isset($_POST['station']['towers_additional']) && (bool)$_POST['station']['towers_additional'];
         $config->station->lightning_source = (int)$_POST['station']['lightning_source'];
         $config->station->filter_access = isset($_POST['station']['filter_access']) && (bool)$_POST['station']['filter_access'];
+        $config->station->reverse_wind = (bool)$_POST['station']['reverse_wind'];
 
         // Site
         $config->site->name = $_POST['site']['name'];
@@ -131,6 +132,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Analytics
         $config->google->analytics->enabled = (bool)$_POST['google']['analytics']['enabled'];
         $config->google->analytics->id = (isset($_POST['google']['analytics']['id'])) ? $_POST['google']['analytics']['id'] : null;
+
+        // Matomo
+        $config->matomo->enabled = (bool)$_POST['matomo']['enabled'];
+        $config->matomo->site = (isset($_POST['matomo']['site'])) ? $_POST['matomo']['site'] : null;
+        $config->matomo->domain = (isset($_POST['matomo']['domain'])) ? $_POST['matomo']['domain'] : null;
 
         // Mailgun
         $config->mailgun->enabled = (bool)$_POST['mailgun']['enabled'];

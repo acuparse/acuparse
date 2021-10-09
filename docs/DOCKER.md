@@ -1,7 +1,5 @@
 # Acuparse Docker Installation Guide
 
-**Running Acuparse in Docker is currently in early but stable support.**
-
 **The Acuparse container itself does NOT contain a local database.**
 Use `acuparse/mariadb` for best compatibility.
 
@@ -264,3 +262,11 @@ Connect to your `acuparse console` and extract the archive located
 in `tar -xvf /var/opt/acuparse/backups/<BACKUPDATE>.tar.gz`.
 
 Copy your config file back `cp config.php /opt/acuparse/src/usr/config.php`
+
+## Legacy Images
+
+Besides the latest image built on Debian Bullseye, Acuparse also ships a Debian Buster image for backwards compatability.
+
+To use this image, set your Acuparse Container image in your compose file to
+
+- `acuparse/acuparse:buster` or `acuparse/acuparse:<VERSION>-buster`

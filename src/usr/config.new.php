@@ -49,6 +49,7 @@ return (object)array(
         'baro_offset' => 0, // inHg. Adjust this as required to match the offset for your elevation
         'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower/3-both)
         'filter_access' => true, // Filter out of range Access readings
+        'reverse_wind' => false, // Reverse Wind direction readings for Southern Hemisphere
     ),
 
     // Site specific config variables
@@ -107,6 +108,13 @@ return (object)array(
             'enabled' => false, //true or false
             'id' => '', // Google Analytics ID
         ),
+    ),
+
+    // Matomo
+    'matomo' => (object)array(
+        'enabled' => false, // Use Matomo? True/False
+        'site' => '', // Matomo Site
+        'domain' => '', // Matomo Domain
     ),
 
     // Mailgun
@@ -231,7 +239,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.6.1',
+        'app' => '3.7.0',
         'schema' => '3.3',
         'installHash' => null,
     ),

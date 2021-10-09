@@ -24,7 +24,8 @@
 # Acuparse Dockerfile
 ##
 
-FROM php:apache-bullseye
+ARG OS_VERSION=bullseye
+FROM php:apache-${OS_VERSION}
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -34,13 +35,13 @@ ARG ACUPARSE_DIR='/opt/acuparse'
 
 LABEL MAINTAINER="hello@acuparse.com" \
 org.label-schema.schema-version="1.0" \
-org.label-schema.build-date=$BUILD_DATE \
+org.label-schema.build-date=${BUILD_DATE} \
 org.label-schema.name="acuparse/acuparse" \
 org.label-schema.description="Acuparse Weather Data Processing" \
 org.label-schema.url="https://www.acuarse.com/" \
 org.label-schema.vcs-url="https://gitlab.com/acuparse/acuparse" \
-org.label-schema.vcs-ref=$VCS_REF \
-org.label-schema.version=$BUILD_VERSION \
+org.label-schema.vcs-ref=${VCS_REF} \
+org.label-schema.version=${BUILD_VERSION} \
 org.label-schema.usage="https://docs.acuparse.com/DOCKER" \
 org.label-schema.vendor="Acuparse"
 

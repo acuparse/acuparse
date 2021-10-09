@@ -533,13 +533,27 @@ For installs where your camera is not on the same local network as your Acuparse
 !!! info
     Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
 
-## Invisible reCAPTCHA
+## Google Settings
+
+### Analytics
+
+You can add your Google Analytics tracking code to appear on your website.
+
+Enter your [Tracking ID](https://support.google.com/analytics/answer/7372977?hl=en) in your site settings.
+
+### Invisible reCAPTCHA
 
 Recaptcha loads on the authentication and contact forms, as well as, when requesting a password reset.
 
 - Sign up for a reCAPTCHA account at [google.com/recaptcha](https://www.google.com/recaptcha).
 - Select Invisible reCAPTCHA when registering your new site.
 - Enter your site key and secret in your site settings.
+
+## Matomo
+
+Acuparse also includes the ability to report tracking data to Matomo.
+
+Enter your [Site ID](https://matomo.org/faq/general/faq_19212) and Matomo install domain in your system settings.
 
 ## Debug Server
 
@@ -555,3 +569,14 @@ A script is included in `cron` to run daily backups. It will run automatically o
 will need to enable this manually.
 
 - See the [Backup Guide](https://docs.acuparse.com/other/BACKUPS) for details.
+
+## Southern Hemisphere Support
+
+Users in the Southern Hemisphere generally install their stations pointing North and not South for the solar panels to operate properly. This leads
+to an incorrect (opposite) wind direction reading. Acuparse includes a feature to switch your wind direction readings to support installations in the
+Southern Hemisphere.
+
+The raw wind degrees readings received by Acuparse will be reversed and used for all external uploaders and system readings.
+**Raw data forwarded to MyAcurite will not be modified**.
+
+- Available under Southern Hemisphere Settings on the system settings, sensor tab.

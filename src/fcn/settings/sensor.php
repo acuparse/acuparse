@@ -330,6 +330,50 @@
 
             <hr class="hr-dotted">
 
+            <!-- Wind Direction -->
+            <section class="row alert alert-secondary">
+                <div class="col mt-2 mb-2">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <h3>Southern Hemisphere Settings</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <p><strong>Reverse Wind Direction?</strong></p>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="station[reverse_wind]"
+                                                       id="station-reverse-wind-0" value="0"
+                                                    <?= ($config->station->reverse_wind === false) ? 'checked="checked"' : false; ?>
+                                                >
+                                                <label class="form-check-label btn btn-danger"
+                                                       for="station-reverse-wind-0"><strong>Disabled</strong></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="station[reverse_wind]"
+                                                       id="station-reverse-wind-1" value="1"
+                                                    <?= ($config->station->reverse_wind === true) ? 'checked="checked"' : false; ?>
+                                                >
+                                                <label class="form-check-label btn btn-success"
+                                                       for="station-reverse-wind-1">Enabled</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="hr-dotted">
+
             <!-- Towers -->
             <section class="row alert alert-secondary">
                 <div class="col mt-2 mb-2">

@@ -55,8 +55,16 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
             filter_input(INPUT_GET, 'windspeedmph', FILTER_SANITIZE_STRING));
 
         // Wind Direction
-        $windDirection = (int)mysqli_real_escape_string($conn,
-            filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
+
+        // Check for reversal
+        if ($config->sensor->reverse_wind === true) {
+            require(APP_BASE_PATH . '/fcn/weather/inc/reverseWindDirection.php');
+            $windDirection = (int)mysqli_real_escape_string($conn,
+                reverseWindDirection(filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING)));
+        } else {
+            $windDirection = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
+        }
 
         // Rainfall
         $rainIN = (float)mysqli_real_escape_string($conn,
