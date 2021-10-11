@@ -375,11 +375,11 @@
                             </div>
                         </div>
                     </div>
+                    <?php
+                    if ($config->site->updates === true) { ?>
                     <div class="row">
                         <div class="col">
                             <p>View your install data stored on Acuparse servers.</p>
-                            <?php
-                            if ($config->site->updates === true) { ?>
                                 <button type="button" id="telemetry"
                                         class="btn btn-outline-secondary center-block mb-2"
                                         onclick="window.open(
@@ -387,9 +387,9 @@
                                                 '_blank');">
                                     <i class="fas fa-database" aria-hidden="true"></i> View Telemetry Data
                                 </button>
-                            <?php } ?>
                         </div>
                     </div>
+                    <?php } ?>
                 </div>
             </section>
         </div>

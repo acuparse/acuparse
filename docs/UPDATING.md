@@ -20,6 +20,8 @@ sudo git pull
 
 ## Docker Install
 
+The Acuparse CI system rebuilds the latest images weekly to ensure the images include upstream updates.
+
 - If you installed using the installer and have the helper scripts available.
 
 ```bash

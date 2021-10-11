@@ -396,6 +396,73 @@
 
             <hr class="hr-dotted">
 
+            <!-- Matomo -->
+            <section class="row alert alert-secondary mt-2 mb-2">
+                <div class="col mt-2 mb-2">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Matomo Analytics</h3>
+                            <p>Google Analytics alternative that protects your data and your customers' privacy<br>
+                                <span class="small">See <a
+                                            href="https://matomo.org/">Matomo.org</a> for more details.</span></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="matomo[enabled]"
+                                       id="matomo-enabled-0" value="0"
+                                       onclick='document.getElementById("matomo-site").disabled=true;document.getElementById("matomo-domain").disabled=true;'
+                                    <?= ($config->matomo->enabled === false) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-danger"
+                                       for="matomo-enabled-0"><strong>Disabled</strong></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="matomo[enabled]"
+                                       id="matomo-enabled-1" value="1"
+                                       onclick='document.getElementById("matomo-site").disabled=false;document.getElementById("matomo-domain").disabled=false;'
+                                    <?= ($config->matomo->enabled === true) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-success"
+                                       for="matomo-enabled-1">Enabled</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="col-form-label" for="matomo-site">Site ID</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control"
+                                   name="matomo[site]"
+                                   id="matomo-site"
+                                   placeholder="Site ID"
+                                <?= ($config->matomo->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                   value="<?= $config->matomo->site; ?>">
+                            <small id="matomo-site-help" class="form-text text-muted">Your Matomo Site ID</small>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-3">
+                            <label class="col-form-label" for="matomo-domain">Domain</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control"
+                                   name="matomo[domain]"
+                                   id="matomo-domain"
+                                   placeholder="analytics.example.com"
+                                <?= ($config->matomo->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                   value="<?= $config->matomo->domain; ?>">
+                            <small id="matomo-domain-help" class="form-text text-muted">Your Matomo Install
+                                Domain</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="hr-dotted">
+
             <!-- Mailgun -->
             <section class="row alert alert-secondary mt-2 mb-2">
                 <div class="col mt-2 mb-2">

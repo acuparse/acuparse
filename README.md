@@ -16,7 +16,7 @@ Iris (5-in-1) or Atlas (7-in-1) weather station and tower sensors, via your Acce
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
 and [OpenWeather](https://openweathermap.org/).
 
-It also processes and stores images from a local network camera for display and uploads to Weather Underground.
+It also processes and stores images from a local network camera for display and external linking.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on data,
 not flashy graphics. Designed to compliment MyAcuRite and other 3rd party's sites and tools.
@@ -38,21 +38,22 @@ channels below. We'll work with you to grab a capture of the data they send, all
 ## Features
 
 - **Your weather data belongs to you, stored on your OWN server.**
-- Display live camera images, send them to Weather Underground, and link from other sites like Weathercloud.
+- Display live camera images, and link from other sites like Weathercloud.
 - Uploads weather data from your Iris/Atlas and Tower sensors to external providers.
-- Customize barometer readings.
+- Customizable barometer readings.
+- Southern Hemisphere Wind Direction Support.
 - Light and Dark Themes.
 - Display data in both &#8457; and &#8451;. Selectable default.
 - Multiple tower sensors; public or private.
 - Multiple admin or regular user accounts.
     - Regular users can only view private sensor data.
 - Archived data display.
-- Watch data flow using the syslog.
+- Watch RAW data flow using the systems syslog.
 - Stays online even when MyAcuRite is not.
-- Does not require Internet access. Can be deployed independently of MyAcuRite.
-- Export API with JSON and HTML data for use in external applications.
-- Customizable email outage notifications.
-- Google Invisible reCAPTCHA and Analytics support.
+    - Does not require Internet access. Can be deployed independently of MyAcuRite.
+- Export API with JSON and formatted HTML output for use in external applications.
+- Customizable email outage notifications with Mailgun support.
+- Matomo and Google Analytics support as well as Google reCAPTCHA form protection.
 
 ## Installation
 

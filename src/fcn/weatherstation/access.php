@@ -84,10 +84,21 @@ if ($_GET['mt'] === '5N1' || $_GET['mt'] === 'Iris') {
             filter_input(INPUT_GET, 'windspeedavgmph', FILTER_SANITIZE_STRING));
 
         // Wind Direction
-        $windDirection = (int)mysqli_real_escape_string($conn,
-            filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
-        $windGustDirection = (int)mysqli_real_escape_string($conn,
-            filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING));
+
+        // Check for reversal
+        if ($config->sensor->reverse_wind === true) {
+            require(APP_BASE_PATH . '/fcn/weather/inc/reverseWindDirection.php');
+            $windDirection = (int)mysqli_real_escape_string($conn,
+                reverseWindDirection(filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING)));
+
+            $windGustDirection = (int)mysqli_real_escape_string($conn,
+                reverseWindDirection(filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING)));
+        } else {
+            $windDirection = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
+            $windGustDirection = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING));
+        }
 
         // Rainfall
         $rainIN = (float)mysqli_real_escape_string($conn,
@@ -182,11 +193,20 @@ elseif ($_GET['mt'] === 'Atlas') {
         $windGustMPH = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'windgustmph', FILTER_SANITIZE_STRING));
 
-        // Wind Direction
-        $windDirection = (int)mysqli_real_escape_string($conn,
-            filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
-        $windGustDirection = (int)mysqli_real_escape_string($conn,
-            filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING));
+        // Check for reversal
+        if ($config->sensor->reverse_wind === true) {
+            require(APP_BASE_PATH . '/fcn/weather/inc/reverseWindDirection.php');
+            $windDirection = (int)mysqli_real_escape_string($conn,
+                reverseWindDirection(filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING)));
+
+            $windGustDirection = (int)mysqli_real_escape_string($conn,
+                reverseWindDirection(filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING)));
+        } else {
+            $windDirection = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'winddir', FILTER_SANITIZE_STRING));
+            $windGustDirection = (int)mysqli_real_escape_string($conn,
+                filter_input(INPUT_GET, 'windgustdir', FILTER_SANITIZE_STRING));
+        }
 
         // Rainfall
         $rainIN = (float)mysqli_real_escape_string($conn,

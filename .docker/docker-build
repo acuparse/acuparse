@@ -26,6 +26,11 @@
 # Setup Acuparse Docker Container
 ##
 
+function _setFlags() {
+  echo "DOCKER=1" >>/etc/os-release
+  echo "DOCKER=1" >>/etc/environment
+}
+
 function _permissions() {
   echo "Modifying start-up script PERMISSIONS"
   chmod +x /usr/local/bin/docker-entrypoint
@@ -46,10 +51,10 @@ function _logging() {
 function _http() {
   echo "Setting up HTTPD"
   openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
-  -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
-  -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
-  -subj "/C=US/ST=Denver/L=Denver/O=Security/OU=Production/CN=acuparse" \
-  -addext "subjectAltName=DNS:acuparse,DNS:localhost,IP:127.0.0.1"
+    -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
+    -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
+    -subj "/C=US/ST=Denver/L=Denver/O=Security/OU=Production/CN=acuparse" \
+    -addext "subjectAltName=DNS:acuparse,DNS:localhost,IP:127.0.0.1"
   chown -R www-data:www-data /var/log/apache2
   chown -R www-data:www-data "${ACUPARSE_DIR}"/src/pub
   a2dissite 000-default.conf
@@ -73,8 +78,7 @@ function _openSSL() {
 }
 
 echo "START: Acuparse Docker BUILD ..."
-echo "DOCKER=1" >>/etc/os-release
-echo "DOCKER=1" >>/etc/environment
+_setFlags
 _permissions
 _logging
 _http

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.7.0]](https://www.acuparse.com/releases/v3-7-0/) - 2021-10-09
+
+### Changed
+
+- Bootstrap to v5.1.3.
+
+### Added
+
+- Southern Hemisphere settings to reverse Wind Direction.
+- Matomo Analytics integration.
+- Legacy Buster Docker container for backward compatability.
+    - Some older Kernels do not support Apache on Bullseye.
+    - Tags are `acuparse/acuparse:buster` and `acuparse/acuparse:<VERSION>-buster`.
+
+### Removed
+
+- Weather Underground webcam uploader from cam scripts.
+    - WU deprecating camera uploads again, and it never really worked.
+
+### Fixed
+
+- Unable to complete update in UI if update checking disabled.
+
 ## [[3.6.1]](https://www.acuparse.com/releases/v3-6-1/) - 2021-10-03
 
 ### Changed

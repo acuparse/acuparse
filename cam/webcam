@@ -82,16 +82,6 @@ function _watermark() {
     image.jpg
 }
 
-function _wuUpload() {
-  ftp -nv webcam.wunderground.com <<EOF >/opt/acuparse/logs/wu_upload.log 2>&1
-quote USER $WU_CAM_DEVICE
-quote PASS $WU_CAM_KEY
-binary
-put image.jpg
-quit
-EOF
-}
-
 function _moveImage() {
   cp image.jpg "${WEBDIR}"/latest.jpg
   mkdir -p "${WEBDIR}"/"${ARCHIVE_DATE}"
@@ -137,11 +127,6 @@ if [ "$MODE" == 'combined' ] || [ "$MODE" == 'remote' ]; then
 
   echo "Applying Weather Info Watermark"
   _watermark
-
-  if [ "$WU_UPLOAD" == 1 ]; then
-    echo "Sending image to Weather Underground"
-    _wuUpload
-  fi
 
   echo "Moving image to webserver and updating animation"
   _moveImage

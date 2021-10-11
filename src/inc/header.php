@@ -129,6 +129,8 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
         }
 
 
+
+
             </script>
         <?php } ?>
     </head>
@@ -151,16 +153,17 @@ if (isset($_SESSION['messages'])) {
 // Logged in admin
 if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
 
-    // Check for updates
-    if ($config->site->updates === true) {
-        if ($_SERVER['PHP_SELF'] === '/index.php' || $_SERVER['PHP_SELF'] === '/admin/index.php') {
-            $result = mysqli_fetch_assoc(mysqli_query($conn,
-                "SELECT `value` FROM `system` WHERE `name`='schema'"));
-            $schema = $result['value'];
-            if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
-                header("Location: /admin/install/?update");
-                die();
-            } else {
+    // Check if code updated
+    if ($_SERVER['PHP_SELF'] === '/index.php' || $_SERVER['PHP_SELF'] === '/admin/index.php') {
+        $result = mysqli_fetch_assoc(mysqli_query($conn,
+            "SELECT `value` FROM `system` WHERE `name`='schema'"));
+        $schema = $result['value'];
+        if ((version_compare($schema, $appInfo->schema, '>')) || (version_compare($appInfo->version, $config->version->app, '>'))) {
+            header("Location: /admin/install/?update");
+            die();
+        } else {
+            // Check database and notify if update available
+            if ($config->site->updates === true) {
                 $result = mysqli_fetch_assoc(mysqli_query($conn,
                     "SELECT `value` FROM `system` WHERE `name`='latestRelease'"));
                 $latestRelease = $result['value'];
