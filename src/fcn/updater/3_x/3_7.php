@@ -42,4 +42,9 @@ switch ($config->version->app) {
         @$config->matomo->site = null;
         @$config->matomo->domain = null;
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Add Wind Direction reversal, Matomo Analytics. Remove WU webcam upload.';
+
+    // Update from 3.7.0 to 3.7.1
+    case '3.7.0':
+        $config->version->app = '3.7.1';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Fix Wind Direction bug.';
 }

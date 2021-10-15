@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.7.1]](https://www.acuparse.com/releases/v3-7-1/) - 2021-10-17
+
+### Fixed
+
+- Wind Direction reversal not working as expected.
+
 ## [[3.7.0]](https://www.acuparse.com/releases/v3-7-0/) - 2021-10-09
 
 ### Changed
