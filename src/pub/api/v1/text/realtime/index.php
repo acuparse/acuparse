@@ -35,7 +35,7 @@
 // Calculate the trending value
 function calculateTrend($unit, $table): string
 {
-    require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
+    require(dirname(__DIR__, 5) . '/inc/loader.php');
     /** @var mysqli $conn Global MYSQL Connection */
 
     $result = mysqli_fetch_assoc(mysqli_query($conn,
@@ -52,7 +52,7 @@ function calculateTrend($unit, $table): string
 function realtime(): string
 {
     // Get the loader
-    require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
+    require(dirname(__DIR__, 5) . '/inc/loader.php');
 
     /** @var mysqli $conn Global MYSQL Connection */
     /**

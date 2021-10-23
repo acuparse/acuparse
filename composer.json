@@ -104,7 +104,8 @@
     "instantpage/instant.page": "~5",
     "ext-mysqli": "*",
     "ext-json": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "bluerhinos/phpmqtt": "@dev"
   },
   "require-dev": {
     "dprevite/lint": "~1"
@@ -141,7 +142,9 @@
       "cp -R ./vendor/erikflowers/weather-icons/css ./src/pub/lib/mit/weather_icons",
       "cp -R ./vendor/erikflowers/weather-icons/font ./src/pub/lib/mit/weather_icons",
       "rm -rf ./src/pub/lib/mit/instantpage/*",
-      "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/"
+      "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/",
+      "rm -rf ./src/fcn/lib/phpmqtt/*",
+      "cp ./vendor/bluerhinos/phpmqtt/phpMQTT.php ./src/fcn/lib/phpmqtt/"
     ],
     "post-install-cmd": [
       "rm -rf ./src/pub/lib/mit/bootstrap/css",
@@ -180,7 +183,10 @@
       "cp -R ./vendor/erikflowers/weather-icons/font ./src/pub/lib/mit/weather_icons",
       "rm -rf ./src/pub/lib/mit/instantpage",
       "mkdir -p ./src/pub/lib/mit/instantpage",
-      "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/"
+      "cp ./vendor/instantpage/instant.page/instantpage.js ./src/pub/lib/mit/instantpage/",
+      "rm -rf ./src/fcn/lib/phpmqtt",
+      "mkdir -p ./src/fcn/lib/phpmqtt",
+      "cp ./vendor/bluerhinos/phpmqtt/phpMQTT.php ./src/fcn/lib/phpmqtt/"
     ],
     "test": [
       "php ./vendor/bin/lint ./src"

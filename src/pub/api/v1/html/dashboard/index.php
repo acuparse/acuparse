@@ -26,7 +26,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
+require(dirname(__DIR__, 5) . '/inc/loader.php');
 
 // Access Token
 include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');

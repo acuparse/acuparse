@@ -26,7 +26,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
+require(dirname(__DIR__, 5) . '/inc/loader.php');
 
 /**
  * @var mysqli $conn Global MYSQL Connection
@@ -35,67 +35,18 @@ require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php'
 
 header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
 
-function getMainWeatherData()
-{
-    global $config;
-    require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
-    $getData = new getCurrentWeatherData(false, true);
-    $jsonExportMain = array("main" => $getData->getJSONConditions());
-
-    if ($config->station->device === 0) {
-        if ($config->station->primary_sensor === 0) {
-            require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
-            $getAtlasData = new getCurrentAtlasData();
-            $jsonExportAtlas = array("atlas" => $getAtlasData->getJSONData());
-
-            // Load Lightning Data:
-            if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
-                require(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
-                $getLightningData = new atlas\getCurrentLightningData('json');
-                $jsonExportLightning = array("lightning" => $getLightningData->getJSONData());
-                $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportLightning);
-            } // Load Tower Lightning Data:
-            elseif ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
-                require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                $getTowerLightningData = new tower\getCurrentLightningData('json');
-                $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getJSONData());
-                $result = array_merge($jsonExportMain, $jsonExportAtlas, $jsonExportTowerLightning);
-            } else {
-                $result = array_merge($jsonExportMain, $jsonExportAtlas);
-            }
-        } else if ($config->station->primary_sensor === 1) {
-            if ($config->station->lightning_source === 2) {
-                require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
-                $getTowerLightningData = new tower\getCurrentLightningData('json');
-                $jsonExportTowerLightning = array("towerLightning" => $getTowerLightningData->getJSONData());
-                $result = array_merge($jsonExportMain, $jsonExportTowerLightning);
-            } else {
-                $result = $jsonExportMain;
-            }
-        }
-    } else {
-        $result = $jsonExportMain;
-    }
-    if (empty($result)) {
-        header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
-        echo json_encode(['Error' => "Weather Data Unavailable"]);
-        exit();
-    } else {
-        return json_encode($result);
-    }
-}
+include(APP_BASE_PATH . '/fcn/weather/getCurrentJSONData.php');
 
 // Access Token
 include(APP_BASE_PATH . '/fcn/api/auth/getToken.php');
 
 // Get main JSON
+$mainData = getJSONWeatherData();
 if (isset($_GET['main'])) {
-    $mainData = getMainWeatherData();
     echo $mainData;
     exit();
 } // Get Dashboard JSON
 else {
-    $mainData = getMainWeatherData();
     echo "[$mainData";
     if ($config->station->towers === true) {
         // Can we display private data?

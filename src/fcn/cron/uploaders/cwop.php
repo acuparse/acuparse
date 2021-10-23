@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/cwop.php
+ * File: src/fcn/cron/uploaders/cwop.php
  * CWOP Updater
  */
 
@@ -32,6 +32,10 @@
  * @var object $data Weather Data
  * @var object $appInfo Global Application Info
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Starting Update ...");
+}
 
 $sql = "SELECT `timestamp` FROM `cwop_updates` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
@@ -78,7 +82,7 @@ if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->in
     // Log
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Query = $cwopQuery");
+        syslog(LOG_INFO, "(EXTERNAL){CWOP}: Query = $cwopQuery");
     }
 } // No new update to send
 else {

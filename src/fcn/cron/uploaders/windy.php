@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/windy.php
+ * File: src/fcn/cron/uploaders/windy.php
  * Windy Updater
  */
 
@@ -31,6 +31,10 @@
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Starting Update ...");
+}
 
 $sql = "SELECT `timestamp` FROM `windy_updates` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
@@ -50,7 +54,7 @@ if ((strtotime($result['timestamp']) < strtotime('-5 minutes')) or ($count == 0)
         "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
+        syslog(LOG_INFO, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
     }
 } // No new update to send
 else {

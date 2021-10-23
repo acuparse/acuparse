@@ -36,9 +36,9 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
     if (isset($_GET['do'])) {
         $notes = '';
         if (version_compare($config->version->app, '2.10.0-release', '>=')) {
-            $updatePattern = dirname(dirname(__DIR__)) . '/fcn/updater/3_x/*.php';
+            $updatePattern = dirname(__DIR__, 2) . '/fcn/updater/3_x/*.php';
         } else {
-            $updatePattern = dirname(dirname(__DIR__)) . '/fcn/updater/*/*.php';
+            $updatePattern = dirname(__DIR__, 2) . '/fcn/updater/*/*.php';
         }
         set_time_limit(0);
         foreach (glob($updatePattern) as $filename) {

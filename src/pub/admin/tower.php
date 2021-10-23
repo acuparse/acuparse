@@ -26,7 +26,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+require(dirname(__DIR__, 2) . '/inc/loader.php');
 
 /**
  * @var object $config Global Config

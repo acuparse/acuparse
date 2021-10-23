@@ -25,7 +25,7 @@
  * Install/Update Script
  */
 
-require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
+require(dirname(__DIR__, 3) . '/inc/loader.php');
 
 // Process an update
 /**

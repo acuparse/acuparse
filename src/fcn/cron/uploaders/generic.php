@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/weatherunderground.php
+ * File: src/fcn/cron/uploaders/weatherunderground.php
  * Weather Underground Updater
  */
 
@@ -33,6 +33,10 @@
  * @var object $appInfo Global Application Info
  * @var string $utcDate Date
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){GENERIC}: Starting Update ...");
+}
 
 // Build and send update
 $genericQueryUrl = $config->upload->generic->url . '?ID=' . $config->upload->generic->id . '&PASSWORD=' . $config->upload->generic->password;
@@ -51,5 +55,5 @@ mysqli_query($conn,
     "INSERT INTO `generic_updates` (`query`,`result`) VALUES ('$genericQuery', '$genericQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL){GENERIC}: Query = $genericQuery | Response = $genericQueryResult");
+    syslog(LOG_INFO, "(EXTERNAL){GENERIC}: Query = $genericQuery | Response = $genericQueryResult");
 }

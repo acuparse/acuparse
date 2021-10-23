@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/weatherunderground.php
+ * File: src/fcn/cron/uploaders/weatherunderground.php
  * Weather Underground Updater
  */
 
@@ -33,6 +33,10 @@
  * @var object $appInfo Global Application Info
  * @var string $utcDate Date
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){WU}: Starting Update ...");
+}
 
 // Build and send update
 $wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
@@ -49,5 +53,5 @@ $wuQueryResult = file_get_contents(htmlentities($wuQueryUrl . $wuQuery . $wuQuer
 mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wuQuery', '$wuQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL){WU}: Query = $wuQuery | Response = $wuQueryResult");
+    syslog(LOG_INFO, "(EXTERNAL){WU}: Query = $wuQuery | Response = $wuQueryResult");
 }

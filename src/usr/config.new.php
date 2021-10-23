@@ -201,6 +201,17 @@ return (object)array(
             'url' => '', // Server URL
         ),
 
+        // MQTT Settings
+        'mqtt' => (object)array(
+            'enabled' => false, // true or false
+            'client' => 'acuparse', // Client ID
+            'server' => '', // Server URL
+            'port' => '1883', // Port
+            'topic' => 'acuparse', // Topic
+            'username' => '', // Username
+            'password' => '', // Password
+        ),
+
         // MyAcuRite
         'myacurite' => (object)array(
             'access_enabled' => true, // true or false
@@ -239,7 +250,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.7.1',
+        'app' => '3.8.0',
         'schema' => '3.3',
         'installHash' => null,
     ),

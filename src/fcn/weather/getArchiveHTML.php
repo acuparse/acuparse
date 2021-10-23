@@ -27,7 +27,7 @@
 
 function getArchiveHTML()
 {
-    require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+    require(dirname(__DIR__, 2) . '/inc/loader.php');
     require(APP_BASE_PATH . '/fcn/weather/getArchiveWeatherData.php');
 
     /**

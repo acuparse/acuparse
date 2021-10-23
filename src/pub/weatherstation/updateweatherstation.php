@@ -26,7 +26,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+require(dirname(__DIR__, 2) . '/inc/loader.php');
 
 /**
  * @var mysqli $conn Global MYSQL Connection
@@ -50,11 +50,11 @@ ini_set('default_socket_timeout', 1);
 // Process Access Update
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && $_GET['id'] === $config->station->access_mac) {
     $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?&', '', $_SERVER['REQUEST_URI']);
-    require(dirname(dirname(__DIR__)) . '/fcn/weatherstation/access.php');
+    require(dirname(__DIR__, 2) . '/fcn/weatherstation/access.php');
 } // Process smartHUB Update
 elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->station->hub_mac) {
     $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?', '', $_SERVER['REQUEST_URI']);
-    require(dirname(dirname(__DIR__)) . '/fcn/weatherstation/hub.php');
+    require(dirname(__DIR__, 2) . '/fcn/weatherstation/hub.php');
 } // This MAC is not configured
 else {
     $mac = $_GET['id'];
