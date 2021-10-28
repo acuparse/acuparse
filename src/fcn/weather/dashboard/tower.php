@@ -52,6 +52,14 @@
 <!-- BEGIN: Tower <?= ltrim($sensor, '0'); ?> -->
 <section class="col">
     <h1><?= $sensorName; ?></h1>
+
+    <?php if ($tempF === NULL) {
+        ?>
+        <h2><i class="fas fa-exclamation-triangle"></i> OFFLINE!</h2>
+
+    <?php
+    } else {
+    ?>
     <h2><i class="fas <?= tempIcon($tempC); ?>" aria-hidden="true"></i> Temperature</h2>
     <h3><?php
         if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
@@ -79,5 +87,8 @@
     <?php } ?>
     <h2><i class="wi wi-humidity" aria-hidden="true"></i> Humidity</h2>
     <h3><?= "$relH% $relH_trend"; ?></h3>
+    <?php
+    }
+    ?>
 </section>
 <!-- END: Tower <?= ltrim($sensor, '0'); ?> -->

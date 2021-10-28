@@ -27,7 +27,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
+require(dirname(__DIR__, 3) . '/inc/loader.php');
 
 // Access Token
 if (isset($_GET['token'])) {

@@ -21,18 +21,30 @@
  */
 
 /**
- * File: src/api/system/time.php
- * Time API
+ * File: src/fcn/updater/3_x/3_8.php
+ * 3.8 Site Update Tasks
  */
 
-// Get the config
-$config = require(dirname(__DIR__, 3) . '/usr/config.php');
+/**
+ * @var mysqli $conn Global MYSQL Connection
+ * @var object $config Global Config
+ * @var string $notes
+ */
 
-// Set timezone
-if (date_default_timezone_get() != $config->site->timezone) {
-    date_default_timezone_set($config->site->timezone);
+switch ($config->version->app) {
+
+    // Update from 3.7.1 to 3.8.0
+    case '3.7.1':
+        $config->version->app = '3.8.0';
+        @$config->upload->mqtt = (object)array();
+        @$config->upload->mqtt->enabled = false;
+        @$config->upload->mqtt->client = "acuparse";
+        @$config->upload->mqtt->server = null;
+        @$config->upload->mqtt->port = 1883;
+        @$config->upload->mqtt->topic = "acuparse";
+        @$config->upload->mqtt->username = null;
+        @$config->upload->mqtt->password = null;
+
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Add MQTT Publishing. Minor Fixes.';
+
 }
-
-// System Time
-$date = date($config->site->display_date);
-echo $date;

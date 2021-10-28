@@ -3,10 +3,9 @@
 This is a **community provided** guide moved into the docs from the Wiki. It was designed to help you with installing
 Acuparse on a RaspberryPi when using an Access or SmartHUB directly connected to the Pi.
 
-!!! warning If you are not connecting to your Access or SmartHUB directly, use the
-Raspbian [Light](https://downloads.raspberrypi.org/raspbian_lite_latest)
-image for your install. Then follow
-the [Automated Installation Guide](https://docs.acuparse.com/INSTALL/#bare-metal-or-virtual).
+!!! warning
+    If you are not connecting to your Access or SmartHUB directly, use the Raspbian [Light](https://downloads.raspberrypi.org/raspbian_lite_latest)
+    image for your installation. Then follow the [Automated Installation Guide](https://docs.acuparse.com/INSTALL/#bare-metal-or-virtual).
 
 ## What is a RaspberryPi
 
@@ -58,6 +57,9 @@ router using a USB Ethernet adapter. The RPi3 will be "headless" (i.e. no monito
 setup.
 
 ## Installation
+
+!!! Notice
+    See [Additional Information](#additional-information) below for important details you may need to complete you install.
 
 ### Install Raspbian Buster onto the MicroSD
 
@@ -211,3 +213,37 @@ wget https://gitlab.com/acuparse/installer/raw/master/install && sudo bash insta
 You will be prompted through the installation for passwords and such. As long as there are no errors after the
 installation completes, you will need to open a browser to point to your Pi's address (example: `http://192.168.1.70`).
 Then follow the prompts to complete the setup of your Acuparse environment.
+
+## Additional Information
+
+This doc is somewhat outdated and needs to be tested/updated with newer OS releases. As such, the details provided below should **SUPERSEDE**
+any configuration above. This doc will be updated in a future release with the correct process.
+
+For `eth0`, you need to edit the `/etc/dhcpcd.conf` file and put an entry in like the following (Replace the `192.168.86.1` address with your router
+address):
+
+```bash
+interface eth0
+static ip_address=192.168.6.1/24
+static domain_name_servers=192.168.86.1 8.8.8.8
+```
+
+And the second is to modify the kernel parameters:
+
+In the `/etc/sysctl.conf` file uncomment the `ip_forward` line for ipv4 to make it persistent across reboots:
+
+`net.ipv4.ip_forward=1`
+
+You can change that and either run `echo 1 > /proc/sys/net/ipv4/ip_forward` or `sudo sysctl -p` to enable it.
+
+If you're using bullseye, the legacy `eth0` or `eth1` names will go away and you'll see interface names starting with `enx##########` where the ## is
+replaced with the mac address. Those names can be used, or you can put in a link file in `/etc/systemc/network` with a number prefix such as
+`10-network.link` that looks like:
+
+```bash
+[Match]
+MACAddress=XX:XX:XX:XX:XX:XX
+
+[Link]
+Name=eth0
+```

@@ -41,7 +41,7 @@ if (!isset($config)) {
 }
 
 if (!isset($appInfo)) {
-    $appInfo = json_decode(file_get_contents(dirname(dirname(__DIR__)) . '/.version'), true);
+    $appInfo = json_decode(file_get_contents(dirname(__DIR__, 2) . '/.version'), true);
     $appInfo = array_change_key_case($appInfo, CASE_LOWER);
     $appInfo = (object)$appInfo;
 }

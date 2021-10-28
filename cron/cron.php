@@ -45,7 +45,7 @@ if ($installed === true) {
     else {
         // Load weather Data
         if (!class_exists('getCurrentWeatherData')) {
-            require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
+            require_once(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
             $get_data = new getCurrentWeatherData(true);
             $data = $get_data->getCRONConditions();
         }
@@ -54,7 +54,7 @@ if ($installed === true) {
         // Load Atlas/Lightning Data
         if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
             if (!class_exists('getCurrentAtlasData')) {
-                require(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
+                require_once(APP_BASE_PATH . '/fcn/weather/getCurrentAtlasData.php');
                 $getAtlasData = new getCurrentAtlasData(true);
                 $atlas = $getAtlasData->getCRONData();
             }
@@ -62,7 +62,7 @@ if ($installed === true) {
             if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
                 // Load Lightning Data
                 if (!class_exists('atlas\getCurrentLightningData')) {
-                    require(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
+                    require_once(APP_BASE_PATH . '/fcn/weather/getCurrentLightningData.php');
                     $getLightningData = new atlas\getCurrentLightningData(NULL, true);
                     $lightning = $getLightningData->getCRONData();
                 }
@@ -71,7 +71,7 @@ if ($installed === true) {
             // Load Tower Lightning
             if ($config->station->lightning_source === 2) {
                 if (!class_exists('tower\getCurrentLightningData')) {
-                    require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
+                    require_once(APP_BASE_PATH . '/fcn/weather/getCurrentTowerLightningData.php');
                     $getLightningData = new tower\getCurrentLightningData(NULL, true);
                     $lightning = $getLightningData->getCRONData();
                 }
@@ -93,13 +93,17 @@ if ($installed === true) {
         $utcDate = gmdate("Y-m-d+H:i:s");
 
         if ($config->debug->logging === true) {
-            syslog(LOG_INFO, "(SYSTEM){CRON}: Processing Archive ...");
+            syslog(LOG_DEBUG, "(SYSTEM){CRON}: Processing Archive ...");
         }
 
         // Make sure new data is being sent
         $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `archive` ORDER BY `reported` DESC LIMIT 1"));
         if ((($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) || empty($result)) {
             // New Data, proceed
+
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG, "(SYSTEM){CRON}: Updating Archive ...");
+            }
 
             // Access Update
             if ($config->station->device === 0) {
@@ -126,7 +130,6 @@ if ($installed === true) {
             } else {
                 syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ")");
             }
-
 
             // Check if this is the first update after an outage
             $status = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
@@ -164,6 +167,10 @@ if ($installed === true) {
                 require(APP_BASE_PATH . '/fcn/cron/towerData.php');
                 /* @var string $sensor */
                 syslog(LOG_DEBUG, "(SYSTEM){CRON}: Using Tower $sensor for Uploads");
+            }
+
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG, "(SYSTEM){CRON}: Updating External Providers ...");
             }
 
             ini_set('default_socket_timeout', 1);
@@ -208,11 +215,20 @@ if ($installed === true) {
                 require(APP_BASE_PATH . '/fcn/cron/uploaders/generic.php');
             }
 
+            // Build MQTT Update
+            if ($config->upload->mqtt->enabled === true) {
+                require(APP_BASE_PATH . '/fcn/cron/uploaders/mqtt.php');
+            }
+
+            if ($config->debug->logging === true) {
+                syslog(LOG_DEBUG, "(SYSTEM){CRON}: DONE Updating External Providers");
+            }
+
         } // Nothing has changed
         else {
             if ($config->debug->logging === true) {
                 // Log it
-                syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Update Skipped");
+                syslog(LOG_INFO, "(SYSTEM){CRON}: No Change, Skip Archiving");
             }
             require(APP_BASE_PATH . '/fcn/cron/noChange.php');
         }

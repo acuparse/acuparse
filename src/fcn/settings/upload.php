@@ -800,8 +800,8 @@
                                                 <?= ($config->upload->windguru->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                    value="<?= $config->upload->windguru->password; ?>">
                                             <small id="windguru-updates-password-help"
-                                                   class="form-text text-muted">Your
-                                                Password</small>
+                                                   class="form-text text-muted">Your Password
+                                            </small>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -902,9 +902,8 @@
                                                 <?= ($config->upload->openweather->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                    value="<?= $config->upload->openweather->key; ?>">
                                             <small id="openweather-updates-key-help"
-                                                   class="form-text text-muted">Your
-                                                API
-                                                Key</small>
+                                                   class="form-text text-muted">Your API Key
+                                            </small>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -929,7 +928,7 @@
                                 <div class="col">
                                     <div class="row">
                                         <div class="col">
-                                            <h4 class="panel-heading">Generic Update Server</h4>
+                                            <h4>Generic Update Server</h4>
                                             <p>Sends data in wunderground format to any compatible provider.</p>
                                         </div>
                                     </div>
@@ -986,8 +985,7 @@
                                                 <?= ($config->upload->generic->enabled === false) ? 'disabled="disabled"' : false; ?>
                                                    value="<?= $config->upload->generic->password; ?>">
                                             <small id="generic-updates-password-help"
-                                                   class="form-text text-muted">Your
-                                                Password, if required.
+                                                   class="form-text text-muted">Your Password, if required.
                                             </small>
                                         </div>
                                     </div>
@@ -1021,6 +1019,147 @@
                     </div>
                 </div>
             </div>
+
+            <hr>
+            <!-- MQTT -->
+            <div class="row">
+                <div class="col mx-auto alert alert-secondary">
+                    <div class="row">
+                        <div class="col">
+                            <h3>MQTT</h3>
+                            <p>Lightweight publish/subscribe messaging protocol for machine to machine
+                                telemetry.<br>See <a href="https://docs.acuparse.com/external/MQTT">docs</a> for
+                                details.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="upload[mqtt][enabled]"
+                                       id="mqtt-upload-enabled-0" value="0"
+                                       onclick='document.getElementById("mqtt-upload-client").disabled=true;document.getElementById("mqtt-upload-port").disabled=true;document.getElementById("mqtt-upload-server").disabled=true;document.getElementById("mqtt-upload-topic").disabled=true;document.getElementById("mqtt-upload-username").disabled=true;document.getElementById("mqtt-upload-password").disabled=true;'
+                                    <?= ($config->upload->mqtt->enabled === false) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-danger"
+                                       for="mqtt-upload-enabled-0">Disabled</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       name="upload[mqtt][enabled]"
+                                       id="mqtt-upload-enabled-1" value="1"
+                                       onclick='document.getElementById("mqtt-upload-client").disabled=false;document.getElementById("mqtt-upload-port").disabled=false;document.getElementById("mqtt-upload-server").disabled=false;document.getElementById("mqtt-upload-topic").disabled=false;document.getElementById("mqtt-upload-username").disabled=false;document.getElementById("mqtt-upload-password").disabled=false;'
+                                    <?= ($config->upload->mqtt->enabled === true) ? 'checked="checked"' : false; ?>>
+                                <label class="form-check-label btn btn-success"
+                                       for="mqtt-upload-enabled-1">Enabled</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- col a -->
+                        <div class="col-6">
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="mqtt-upload-server">Server</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control"
+                                           name="upload[mqtt][server]"
+                                           id="mqtt-upload-server"
+                                           placeholder="mqtt.example.com"
+                                           required="required"
+                                        <?= ($config->upload->mqtt->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                           value="<?= $config->upload->mqtt->server; ?>">
+                                    <small id="mqtt-upload-server-help" class="form-text text-muted">Your MQTT Server
+                                        Hostname/IP. (Required)
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="mqtt-upload-ussername">Username</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control"
+                                           name="upload[mqtt][username]"
+                                           id="mqtt-upload-username"
+                                        <?= ($config->upload->mqtt->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                           value="<?= $config->upload->mqtt->username; ?>">
+                                    <small id="mqtt-upload-username-help" class="form-text text-muted">Your MQTT Server
+                                        Username. (Optional)
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="mqtt-upload-password">Password</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control"
+                                           name="upload[mqtt][password]"
+                                           id="mqtt-upload-password"
+                                        <?= ($config->upload->mqtt->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                           value="<?= $config->upload->mqtt->password; ?>">
+                                    <small id="mqtt-upload-password-help" class="form-text text-muted">Your MQTT Server
+                                        Password. (Optional)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row mt-2">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="mqtt-upload-port">Port</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control"
+                                           name="upload[mqtt][port]"
+                                           id="mqtt-upload-port"
+                                           placeholder="1883"
+                                           maxlength="32"
+                                        <?= ($config->upload->mqtt->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                           value="<?= $config->upload->mqtt->port; ?>">
+                                    <small id="mqtt-upload-port-help"
+                                           class="form-text text-muted">MQTT Server Port.<br>Default = <code>1883</code>.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="mqtt-upload-client">Client ID</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control"
+                                           name="upload[mqtt][client]"
+                                           id="mqtt-upload-client"
+                                           maxlength="24"
+                                           placeholder="acuparse"
+                                        <?= ($config->upload->mqtt->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                           value="<?= $config->upload->mqtt->client; ?>">
+                                    <small id="mqtt-upload-client-help" class="form-text text-muted">ClientID used to
+                                        connect to your server. (Optional)
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-3">
+                                    <label class="col-form-label" for="mqtt-upload-topic">Main Topic</label>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control"
+                                           name="upload[mqtt][topic]"
+                                           id="mqtt-upload-topic"
+                                           placeholder="acuparse"
+                                        <?= ($config->upload->mqtt->enabled === false) ? 'disabled="disabled"' : false; ?>
+                                           value="<?= $config->upload->mqtt->topic; ?>">
+                                    <small id="mqtt-upload-topic-help" class="form-text text-muted">The main topic data
+                                        will be published to.<br>Default = <code>acuparse</code>.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 </section>

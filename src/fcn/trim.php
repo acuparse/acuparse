@@ -37,9 +37,9 @@ if ($config->mysql->trim !== 0) {
     $scheduler = $result['Value'];
     if ($scheduler === 'OFF') {
         if ($config->mysql->trim === 1) {
-            $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable.sql';
+            $schema = dirname(__DIR__, 2) . '/sql/trim/enable.sql';
         } elseif ($config->mysql->trim === 2) {
-            $schema = dirname(dirname(__DIR__)) . '/sql/trim/enable_xtower.sql';
+            $schema = dirname(__DIR__, 2) . '/sql/trim/enable_xtower.sql';
         }
         $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
         $schema = exec($schema, $schemaOutput, $schemaReturn);

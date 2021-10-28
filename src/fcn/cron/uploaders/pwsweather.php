@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/pwsweather.php
+ * File: src/fcn/cron/uploaders/pwsweather.php
  * PWS Weather Updater
  */
 
@@ -33,6 +33,10 @@
  * @var object $appInfo Global Application Info
  * @var string $utcDate Date
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){PWS}: Starting Update ...");
+}
 
 // Build and send update
 $pwsQueryUrl = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->key;
@@ -49,5 +53,5 @@ $pwsQueryResult = file_get_contents($pwsQueryUrl . $pwsQuery . $pwsQueryStatic);
 mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pwsQuery', '$pwsQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL){PWS}: Query = $pwsQuery | Response = $pwsQueryResult");
+    syslog(LOG_INFO, "(EXTERNAL){PWS}: Query = $pwsQuery | Response = $pwsQueryResult");
 }

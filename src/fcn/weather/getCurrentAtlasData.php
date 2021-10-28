@@ -36,7 +36,7 @@ class getCurrentAtlasData
     function __construct($cron = false)
     {
         // Get the loader
-        require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        require(dirname(__DIR__, 2) . '/inc/loader.php');
         /**
          * @var mysqli $conn Global MYSQL Connection
          * @var object $config Global Config

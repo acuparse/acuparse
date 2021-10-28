@@ -89,7 +89,7 @@ class getCurrentWeatherData
     function __construct($cron = false, $json = false)
     {
         // Get the loader
-        require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        require(dirname(__DIR__, 2) . '/inc/loader.php');
 
         /** @var mysqli $conn Global MYSQL Connection */
         /**
@@ -335,7 +335,7 @@ class getCurrentWeatherData
 
 // Private Functions
 
-// Calculate human readable wind direction from a range of values:
+// Calculate human-readable wind direction from a range of values:
     private
     function windDirection($windDEG): string
     {
@@ -496,7 +496,7 @@ class getCurrentWeatherData
     public
     function calculateTrend($unit, $table, $sensor = null): string
     {
-        require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        require(dirname(__DIR__, 2) . '/inc/loader.php');
         /**
          * @var mysqli $conn Global MYSQL Connection
          */

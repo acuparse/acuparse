@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/windguru.php
+ * File: src/fcn/cron/uploaders/windguru.php
  * Wind Guru Updater
  */
 
@@ -31,6 +31,10 @@
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Starting Update ...");
+}
 
 // Build and send update
 $windguruSalt = date('YmdHis');
@@ -46,5 +50,5 @@ mysqli_query($conn,
     "INSERT INTO `windguru_updates` (`query`,`result`) VALUES ('$windguruQuery', '$windguruQueryResult')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL){Windguru}: Query = $windguruQuery | Response = $windguruQueryResult");
+    syslog(LOG_INFO, "(EXTERNAL){Windguru}: Query = $windguruQuery | Response = $windguruQueryResult");
 }

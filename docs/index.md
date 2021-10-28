@@ -23,7 +23,7 @@ data to
 [Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com)
 , [Weathercloud](https://weathercloud.net),
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
-and [OpenWeather](https://openweathermap.org/). It also processes and stores images from a local network camera for
+[OpenWeather](https://openweathermap.org/), and [MQTT](https://mqtt.org/) Brokers. It also processes and stores images from a local network camera for
 display and linking to external websites.
 
 Built for weather geeks and designed to be clean, simple, and mobile friendly. It uses a minimal UI with a focus on
@@ -88,6 +88,7 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 - [WINDY](external/WINDY)
 - [Windguru](external/WINDGURU)
 - [Open Weather Map](external/OPENWEATHER)
+- [MQTT](external/MQTT)
 
 ### Generic
 

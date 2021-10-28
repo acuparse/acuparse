@@ -46,7 +46,7 @@ class getCurrentTowerData
     function __construct($sensor)
     {
         // Get the loader
-        require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        require(dirname(__DIR__, 2) . '/inc/loader.php');
         /**
          * @var mysqli $conn Global MYSQL Connection
          * @var object $config Global Config
@@ -65,41 +65,50 @@ class getCurrentTowerData
         //Process Temp
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT * FROM `tower_data` WHERE `sensor` = '$this->id' ORDER BY `timestamp` DESC LIMIT 1"));
-        $this->tempF = round($result['tempF'], 1); // Fahrenheit
-        $this->tempC = round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
-
-        //Process Humidity:
-        $this->relH = $result['relH']; // Percentage
 
         // Additional Data
         $sensorName = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `name` FROM `towers` WHERE `sensor` = '$sensor'"));
         $this->name = $sensorName['name'];
-        $this->lastUpdate = $result['timestamp'];
-        $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['timestamp']));
 
-        // High Temp:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MAX(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
-              AND DATE(`timestamp`) = CURDATE()"));
-        $this->high_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
-        $this->high_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
-        $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+        if (empty($result['tempF'])) {
+            $this->tempF = NULL;
+            $this->lastUpdate = 'OFFLINE';
+            $this->lastUpdate_json = $this->lastUpdate;
+        } else {
+            $this->tempF = round($result['tempF'], 1); // Fahrenheit
+            $this->tempC = round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
 
-        // Low Temp:
-        $result = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MIN(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
+            // Process Humidity
+            $this->relH = $result['relH']; // Percentage
+
+            // Process Timestamps
+            $this->lastUpdate = $result['timestamp'];
+            $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['timestamp']));
+
+            // High Temp:
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MAX(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
               AND DATE(`timestamp`) = CURDATE()"));
-        $this->low_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
-        $this->low_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
-        $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
-        $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+            $this->high_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
+            $this->high_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
+            $this->tempF_high = (float)round($result['tempF'], 1); // Fahrenheit
+            $this->tempC_high = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+
+            // Low Temp:
+            $result = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp`, `tempF` FROM `tower_data` WHERE `sensor` = '$sensor' AND `tempF` = (SELECT MIN(tempF) FROM `tower_data` WHERE `sensor` = '$sensor' AND DATE(`timestamp`) = CURDATE())
+              AND DATE(`timestamp`) = CURDATE()"));
+            $this->low_temp_recorded = date($config->site->dashboard_display_time, strtotime($result['timestamp'])); // Recorded at
+            $this->low_temp_recorded_json = date($config->site->date_api_json, strtotime($result['timestamp'])); // Recorded at
+            $this->tempF_low = (float)round($result['tempF'], 1); // Fahrenheit
+            $this->tempC_low = (float)round(($result['tempF'] - 32) * 5 / 9, 1); // Convert to Celsius
+        }
     }
 
     // Calculate the trending value
     private function calculateTrend($unit, $sensor = null): string
     {
-        require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+        require(dirname(__DIR__, 2) . '/inc/loader.php');
         /** @var mysqli $conn Global MYSQL Connection */
 
         if ($sensor !== null) {

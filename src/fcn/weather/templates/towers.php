@@ -29,7 +29,7 @@
  * @return array
  * @var object $config Global Config
  */
-/** @var string $result */
+/** @var mysqli_result $result */
 
 // Is there data to show? If yes, show it.
 if (mysqli_num_rows($result) >= 1) {

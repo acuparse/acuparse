@@ -6,7 +6,7 @@ AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 
 ## Live Example Station
 
-***See Acuparse in action via [ghwx.ca](https://www.ghwx.ca)***
+***See Acuparse in action via [ghwx.ca](https://dev.ghwx.ca)***
 
 ## How it Works
 
@@ -14,7 +14,7 @@ AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
 Iris (5-in-1) or Atlas (7-in-1) weather station and tower sensors, via your Access/smartHUB. It uploads weather data to
 [Weather Underground](https://https://www.wunderground.com), [CWOP](http://www.wxqa.com), [Weathercloud](https://weathercloud.net),
 [PWS Weather](https://www.pwsweather.com), [Windy](https://www.windy.com), [Windguru](https://www.windguru.cz),
-and [OpenWeather](https://openweathermap.org/).
+[OpenWeather](https://openweathermap.org/), and [MQTT](https://mqtt.org/) Brokers.
 
 It also processes and stores images from a local network camera for display and external linking.
 
@@ -40,6 +40,7 @@ channels below. We'll work with you to grab a capture of the data they send, all
 - **Your weather data belongs to you, stored on your OWN server.**
 - Display live camera images, and link from other sites like Weathercloud.
 - Uploads weather data from your Iris/Atlas and Tower sensors to external providers.
+- Publish weather data to an MQTT Broker Server.
 - Customizable barometer readings.
 - Southern Hemisphere Wind Direction Support.
 - Light and Dark Themes.

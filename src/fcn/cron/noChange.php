@@ -94,5 +94,5 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
 } // Not offline long enough
 else {
     // Log it
-    syslog(LOG_INFO, "(SYSTEM){CRON}: *ONLINE* Waiting for Updates ...");
+    syslog(LOG_INFO, "(SYSTEM){CRON}: *ONLINE* Waiting for Readings ...");
 }

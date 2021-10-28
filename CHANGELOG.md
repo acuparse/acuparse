@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.8.0](https://www.acuparse.com/releases/v3-8-0/) - 2021-10-27
+
+### Added
+
+- Ability to publish to an external MQTT Broker.
+
+### Changed
+
+- Offline Towers fail gracefully and will show as offline.
+    - API will return `NULL` readings for the offline sensor and `"lastUpdated":"OFFLINE"`.
+
+### Fixed
+
+- Minor changes to lightning logic.
+- Small bug fixes and minor code refactoring.
+
 ## [[3.7.1]](https://www.acuparse.com/releases/v3-7-1/) - 2021-10-17
 
 ### Fixed

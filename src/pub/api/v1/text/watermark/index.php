@@ -28,7 +28,7 @@
 function camWmark(): string
 {
     // Get the loader
-    require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
+    require(dirname(__DIR__, 5) . '/inc/loader.php');
 
     /**
      * @return array
@@ -39,10 +39,9 @@ function camWmark(): string
     if (!class_exists('getCurrentWeatherData')) {
         require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
         $getData = new getCurrentWeatherData();
-        $wx = $getData->getConditions();
-        $output = ($config->site->imperial === true) ? 'Baro: ' . $wx->pressure_inHg . ' inHg | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempF . '°F | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSpeedMPH . ' mph | Accum: ' . $wx->rainTotalIN_today . ' in' : 'Baro: ' . $wx->pressure_kPa . ' kPa | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempC . '°C | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSpeedKMH . ' km/h | Accum: ' . $wx->rainTotalMM_today . ' mm';
     }
-    return $output;
+    $wx = $getData->getConditions();
+    return ($config->site->imperial === true) ? 'Baro: ' . $wx->pressure_inHg . ' inHg | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempF . '°F | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSpeedMPH . ' mph | Accum: ' . $wx->rainTotalIN_today . ' in' : 'Baro: ' . $wx->pressure_kPa . ' kPa | RelH: ' . $wx->relH . '% | Temp: ' . $wx->tempC . '°C | Wind: ' . $wx->windDIR . ' @ ' . $wx->windSpeedKMH . ' km/h | Accum: ' . $wx->rainTotalMM_today . ' mm';
 }
 
 header('Content-Type: text/plain; charset=UTF-8');

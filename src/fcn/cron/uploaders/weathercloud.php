@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/weathercloud.php
+ * File: src/fcn/cron/uploaders/weathercloud.php
  * Weathercloud Updater
  */
 
@@ -32,6 +32,10 @@
  * @var object $atlas Atlas Data
  * @var object $appInfo Global Application Info
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){WeatherCloud}: Starting Update ...");
+}
 
 $sql = "SELECT `timestamp` FROM `wc_updates` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
@@ -51,12 +55,12 @@ if ((strtotime($result['timestamp']) < strtotime('-10 minutes')) or ($count == 0
     mysqli_query($conn, "INSERT INTO `wc_updates` (`query`,`result`) VALUES ('$wcQuery', '$wcQueryResult')");
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL){WC}: Query = $wcQuery | Response = $wcQueryResult");
+        syslog(LOG_INFO, "(EXTERNAL){WeatherCloud}: Query = $wcQuery | Response = $wcQueryResult");
     }
 } // No new update to send
 else {
     if ($config->debug->logging === true) {
         // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL){WC}: Update not sent. Not enough time has passed");
+        syslog(LOG_DEBUG, "(EXTERNAL){WeatherCloud}: Update not sent. Not enough time has passed");
     }
 }

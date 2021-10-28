@@ -21,7 +21,7 @@
  */
 
 /**
- * File: src/fcn/cron/openweather.php
+ * File: src/fcn/cron/uploaders/openweather.php
  * Open Weather Updater
  */
 
@@ -31,6 +31,10 @@
  * @var object $data Weather Data
  * @var object $atlas Atlas Data
  */
+
+if ($config->debug->logging === true) {
+    syslog(LOG_DEBUG, "(EXTERNAL){OpenWeather}: Starting Update ...");
+}
 
 // Build and send update
 if ($config->station->device === 0) {
@@ -60,5 +64,5 @@ mysqli_query($conn,
     "INSERT INTO `openweather_updates` (`query`,`result`) VALUES ('$openweatherQuery', '$openweatherQueryResponse')");
 if ($config->debug->logging === true) {
     // Log it
-    syslog(LOG_DEBUG, "(EXTERNAL){OpenWeather}: Query = $openweatherQuery | Response = $openweatherQueryResponse");
+    syslog(LOG_INFO, "(EXTERNAL){OpenWeather}: Query = $openweatherQuery | Response = $openweatherQueryResponse");
 }

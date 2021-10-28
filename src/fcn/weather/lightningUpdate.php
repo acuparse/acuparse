@@ -149,6 +149,14 @@ function updateLightning(int $strikecount, int $interference, ?string $last_stri
             while (mysqli_next_result($conn)) {
                 null;
             }
+        } elseif ($lastStrikeTime < $timestampDate) {
+            $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
+            INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
+            mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
+                "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
+            while (mysqli_next_result($conn)) {
+                null;
+            }
         }
         if ($config->debug->logging === true) {
             syslog(LOG_DEBUG,

@@ -36,7 +36,7 @@ switch ($config->version->app) {
     // Update from 2.10.0 to 3.0.0-beta
     case '2.10.0-release':
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Starting upgrade from" . $config->version->app . " to 3.0.0-beta");
-        $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/updates/v3.0/beta.sql';
+        $schema = dirname(__DIR__, 4) . '/sql/updates/v3.0/beta.sql';
         $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
         $schema = shell_exec($schema);
         $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name`='schema'"));
@@ -58,7 +58,7 @@ switch ($config->version->app) {
 
         // Update the Database
         syslog(LOG_INFO, "(SYSTEM){UPDATER}: Updating Database schema");
-        $schema = dirname(dirname(dirname(dirname(__DIR__)))) . '/sql/updates/v3.0/beta1.sql';
+        $schema = dirname(__DIR__, 4) . '/sql/updates/v3.0/beta1.sql';
         $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < {$schema} > /dev/null 2>&1";
         $schema = shell_exec($schema);
         $result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `value` FROM `system` WHERE `name`='schema'"));

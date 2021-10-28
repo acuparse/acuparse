@@ -26,7 +26,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/inc/loader.php');
+require(dirname(__DIR__, 5) . '/inc/loader.php');
 
 // Get Archive HTML
 require(APP_BASE_PATH . '/fcn/weather/getArchiveHTML.php');

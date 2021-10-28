@@ -13,9 +13,6 @@ theme:
   icon:
     repo: fontawesome/brands/github
 site_dir: public
-google_analytics:
-  - 'UA-93235303-2'
-  - 'auto'
 nav:
   - Home: 'index.md'
   - Installing:
@@ -41,6 +38,7 @@ nav:
       - Windy: 'external/WINDY.md'
       - Windguru: 'external/WINDGURU.md'
       - Open Weather Map: 'external/OPENWEATHER.md'
+      - MQTT: 'external/MQTT.md'
       - Generic:
           - WeatherPoly: 'external/generic/WEATHERPOLY.md'
 copyright: "Copyright © 2015-2021 <a href='https://www.acuparse.com'>Acuparse Project</a><br />Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3</a>"
@@ -77,3 +75,5 @@ plugins:
       lang: en
   - minify:
       minify_html: true
+extra_javascript:
+  - assets/js/matomo.js

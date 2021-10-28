@@ -34,6 +34,7 @@
 $sensor = $config->upload->sensor->id;
 $result = mysqli_fetch_assoc(mysqli_query($conn,
     "SELECT * FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+
 $data->tempF = round($result['tempF'], 1);
 $data->tempC = round(($result['tempF'] - 32) * 5 / 9, 1);
 $data->relH = $result['relH'];

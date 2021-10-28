@@ -75,7 +75,7 @@ $export = var_export($config, true);
 $export = str_ireplace('stdClass::__set_state', '(object)', $export);
 $saveConfig = file_put_contents($configFilePath, '<?php return ' . $export . ';');
 if ($saveConfig) {
-    $sqlPath = dirname(dirname(dirname(__DIR__))) . '/sql';
+    $sqlPath = dirname(__DIR__, 3) . '/sql';
     $testDB = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} --batch --skip-column-names -e \"SHOW DATABASES LIKE 'acuparse'\" | grep acuparse";
     $testDB = exec($testDB, $testDBOutput, $testDBReturn);
     if ($testDBReturn === 0) {
@@ -96,9 +96,9 @@ if ($saveConfig) {
         } else {
             if ($config->mysql->trim !== 0) {
                 if ($config->mysql->trim === 1) {
-                    $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable.sql';
+                    $schema = dirname(__DIR__, 3) . '/sql/trim/enable.sql';
                 } elseif ($config->mysql->trim === 2) {
-                    $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable_xtower.sql';
+                    $schema = dirname(__DIR__, 3) . '/sql/trim/enable_xtower.sql';
                 }
                 $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
                 $schema = exec($schema, $schemaOutput, $schemaReturn);

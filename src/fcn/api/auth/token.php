@@ -33,7 +33,7 @@ $authToken = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'token', F
 
 function checkToken($authToken): bool
 {
-    require(dirname(dirname(dirname(__DIR__))) . '/inc/loader.php');
+    require(dirname(__DIR__, 3) . '/inc/loader.php');
     /**
      * @var mysqli $conn Global MYSQL Connection
      */

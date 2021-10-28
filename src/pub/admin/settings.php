@@ -26,7 +26,7 @@
  */
 
 // Get the loader
-require(dirname(dirname(__DIR__)) . '/inc/loader.php');
+require(dirname(__DIR__, 2) . '/inc/loader.php');
 
 /**
  * @var object $config Global Config
@@ -58,11 +58,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Check and adjust database trim level
         if ($config->mysql->trim != $_POST['mysql']['trim']) {
             if ($_POST['mysql']['trim'] === '1') {
-                $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable.sql';
+                $schema = dirname(__DIR__, 3) . '/sql/trim/enable.sql';
             } elseif ($_POST['mysql']['trim'] === '2') {
-                $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/enable_xtower.sql';
+                $schema = dirname(__DIR__, 3) . '/sql/trim/enable_xtower.sql';
             } else {
-                $schema = dirname(dirname(dirname(__DIR__))) . '/sql/trim/disable.sql';
+                $schema = dirname(__DIR__, 3) . '/sql/trim/disable.sql';
             }
             $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
             $schema = exec($schema, $schemaOutput, $schemaReturn);
@@ -207,6 +207,15 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->upload->myacurite->access_url = $_POST['upload']['myacurite']['access_url'];
         $config->upload->myacurite->pass_unknown = (bool)$_POST['upload']['myacurite']['pass_unknown'];
 
+        // MQTT
+        $config->upload->mqtt->enabled = (bool)$_POST['upload']['mqtt']['enabled'];
+        $config->upload->mqtt->client = (isset($_POST['upload']['mqtt']['client'])) ? $_POST['upload']['mqtt']['client'] : "acuparse";
+        $config->upload->mqtt->server = (isset($_POST['upload']['mqtt']['server'])) ? $_POST['upload']['mqtt']['server'] : null;
+        $config->upload->mqtt->port = (isset($_POST['upload']['mqtt']['port'])) ? $_POST['upload']['mqtt']['port'] : 1883;
+        $config->upload->mqtt->topic = (isset($_POST['upload']['mqtt']['topic'])) ? $_POST['upload']['mqtt']['topic'] : "acuparse";
+        $config->upload->mqtt->username = (isset($_POST['upload']['mqtt']['username'])) ? $_POST['upload']['mqtt']['username'] : null;
+        $config->upload->mqtt->password = (isset($_POST['upload']['mqtt']['password'])) ? $_POST['upload']['mqtt']['password'] : null;
+
         // Debug
         $config->debug->logging = (bool)$_POST['debug']['logging'];
         $config->debug->server->enabled = (bool)(isset($_POST['debug']['server']['enabled'])) ? (bool)$_POST['debug']['server']['enabled'] : 0;
@@ -246,25 +255,25 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                 <nav>
                     <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link active" id="nav-site-tab" data-bs-toggle="tab" href="#nav-site"
-                                role="tab" aria-controls="nav-site" aria-selected="true">Site
+                           role="tab" aria-controls="nav-site" aria-selected="true">Site
                         </a>
                         <a class="nav-item nav-link" id="nav-sensor-tab" data-bs-toggle="tab" href="#nav-sensor"
-                                role="tab" aria-controls="nav-sensor" aria-selected="false">Sensor
+                           role="tab" aria-controls="nav-sensor" aria-selected="false">Sensor
                         </a>
                         <a class="nav-item nav-link" id="nav-features-tab" data-bs-toggle="tab"
-                                href="#nav-features" role="tab" aria-controls="nav-features" aria-selected="false">
+                           href="#nav-features" role="tab" aria-controls="nav-features" aria-selected="false">
                             Features
                         </a>
                         <a class="nav-item nav-link" id="nav-upload-tab" data-bs-toggle="tab" href="#nav-upload"
-                                role="tab" aria-controls="nav-upload" aria-selected="false">Upload
+                           role="tab" aria-controls="nav-upload" aria-selected="false">Upload
                         </a>
                         <a class="nav-item nav-link" id="nav-database-tab" data-bs-toggle="tab"
-                                href="#nav-database"
-                                role="tab" aria-controls="nav-database" aria-selected="false">Database
+                           href="#nav-database"
+                           role="tab" aria-controls="nav-database" aria-selected="false">Database
                         </a>
                         <?php if ($config->debug->server->show === true) { ?>
                             <a class="nav-item nav-link" id="nav-debug-tab" data-bs-toggle="tab" href="#nav-debug"
-                                    role="tab" aria-controls="nav-debug" aria-selected="false">Debug
+                               role="tab" aria-controls="nav-debug" aria-selected="false">Debug
                             </a>
                         <?php } ?>
                     </div>
