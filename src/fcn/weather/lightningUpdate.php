@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2021 Maxwell Power
+ * @copyright Copyright (C) 2015-2022 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -142,7 +142,7 @@ function updateLightning(int $strikecount, int $interference, ?string $last_stri
 
         // If there is no existing data, let's start with this one
         if (empty($lastStrikeTime)) {
-            $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
+            $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate') ON DUPLICATE KEY UPDATE `last_update` = '$timestamp';
             INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
             mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
                 "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
@@ -150,10 +150,10 @@ function updateLightning(int $strikecount, int $interference, ?string $last_stri
                 null;
             }
         } elseif ($lastStrikeTime < $timestampDate) {
-            $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate');
+            $sql = "INSERT INTO `$dbsource` (`dailystrikes`, `currentstrikes`, `last_update`, `date`) VALUES(0, 0, '$timestamp', '$timestampDate') ON DUPLICATE KEY UPDATE `last_update` = '$timestamp';
             INSERT INTO `lightningData` (`strikecount`, `interference`, `last_strike_ts`, `last_strike_distance`, `source`) VALUES('$strikecount', '$interference', '$last_strike_ts', '$last_strike_distance', '$source');";
             mysqli_multi_query($conn, $sql) or syslog(LOG_ERR,
-                "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting with no existing data. Details: " . mysqli_error($conn));
+                "(ACCESS){LIGHTNING}<$device>[SQL ERROR]: Failed inserting Zero Strike Count. Details: " . mysqli_error($conn));
             while (mysqli_next_result($conn)) {
                 null;
             }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2021 Maxwell Power
+ * @copyright Copyright (C) 2015-2022 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -31,7 +31,7 @@
  */
 ?>
 <section class="row">
-    <div class="col">
+    <div id="live-temp" class="col">
         <!-- BEGIN: Current -->
         <h1><i class="fas <?= tempIcon($wx->tempC); ?>" aria-hidden="true"></i> Temperature</h1>
         <h2><?php

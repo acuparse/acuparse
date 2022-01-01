@@ -201,13 +201,13 @@ Run the following commands:
 
 ```bash
 cd ~  
-curl -O https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log`  
+curl -O https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
 ```
 
 If that fails, try:
 
 ```bash
-wget https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log`
+wget https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
 ```
 
 You will be prompted through the installation for passwords and such. As long as there are no errors after the

@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2021 Maxwell Power
+ * @copyright Copyright (C) 2015-2022 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -164,8 +164,8 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
 
 // Check if this tower exists
     $sql = "SELECT * FROM `towers` WHERE `sensor` = '$towerID';";
-    $count = mysqli_num_rows(mysqli_query($conn, $sql)) or syslog(LOG_ERR,
-        "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
+    $count = mysqli_num_rows(mysqli_query($conn, $sql)) or syslog(LOG_WARNING, "(HUB){TOWER}[WARNING]: Tower Does Not Exist!");
+
     if ($count === 1) {
         $result = mysqli_fetch_assoc(mysqli_query($conn, $sql)) or syslog(LOG_ERR,
             "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
