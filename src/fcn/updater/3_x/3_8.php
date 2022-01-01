@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2021 Maxwell Power
+ * @copyright Copyright (C) 2015-2022 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -47,4 +47,8 @@ switch ($config->version->app) {
 
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Add MQTT Publishing. Minor Fixes.';
 
+    // Update from 3.8.0 to 3.8.1
+    case '3.8.0':
+        $config->version->app = '3.8.1';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor Lightning fixes.';
 }

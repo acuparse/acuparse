@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2021 Maxwell Power
+ * @copyright Copyright (C) 2015-2022 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -35,7 +35,7 @@
         <a class="navbar-brand" href="/"><?= $config->site->name; ?><br>
             <small><?= $config->site->location; ?></small>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav-dropdown"
+        <button id="navbar-nav-dropdown-button" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav-dropdown"
                 aria-controls="navbar-nav-dropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -137,7 +137,7 @@
                     $userActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') || ($_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php');
                     ?>
                     <li class="<?= ($userActive === true) ? 'nav-item dropdown active' : 'nav-item dropdown'; ?>">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        <a id="user-menu-dropdown" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                            aria-haspopup="true" aria-expanded="false"><i
                                     class="fas <?= ($_SESSION['admin'] === true) ? 'fa-user-tie admin-authenticated' : 'fa-user user-authenticated'; ?>"
                                     aria-hidden="true"></i> <?= ($_SESSION['admin'] === true) ? '<span class="admin-authenticated">' . $_SESSION['username'] . '</span>' : '<span class="user-authenticated">' . $_SESSION['username'] . '</span>'; ?>
@@ -146,7 +146,7 @@
                             <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === true) {
                                 $adminActive = $_SERVER['PHP_SELF'] === '/admin/index.php' || $_SERVER['PHP_SELF'] === '/admin/tower.php' || $_SERVER['PHP_SELF'] === '/admin/access.php' || $_SERVER['PHP_SELF'] === '/admin/status.php' || $_SERVER['PHP_SELF'] === '/admin/settings.php' || ($_SERVER['PHP_SELF'] === '/admin/account.php' && ((isset($_GET['edit'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || ((isset($_GET['password'])) && ((isset($_GET['uid'])) && (int)$_GET['uid'] !== $_SESSION['uid'])) || (isset($_GET['add'])) || (isset($_GET['view'])));
                                 ?>
-                                <a class="<?= ($adminActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
+                                <a id="user-menu-admin" class="<?= ($adminActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
                                    href="/admin"><i
                                             class="<?= ($adminActive === true) ? 'fas fa-cog fa-spin' : 'fas fa-cog'; ?>"
                                             aria-hidden="true"></i>
@@ -163,7 +163,7 @@
                                href="/admin/account?password" data-instant><i class="fas fa-user-secret"
                                                                               aria-hidden="true"></i> Change
                                 Password</a>
-                            <a class="dropdown-item" href="/admin/account?deauth" data-no-instant><i
+                            <a class="dropdown-item" id="nav-sign-out" href="/admin/account?deauth" data-no-instant><i
                                         class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign Out</a>
                         </div>
                     </li>
@@ -174,7 +174,7 @@
                 if (!isset($_SESSION['authenticated'])) {
                     ?>
                     <li class="<?= ($_SERVER['PHP_SELF'] === '/admin/account.php') ? 'nav-item active' : 'nav-item'; ?>">
-                        <a class="nav-link" href="/admin/account"><i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                        <a class="nav-link" id="nav-sign-in" href="/admin/account"><i class="fas fa-sign-in-alt" aria-hidden="true"></i>
                             Sign In</a>
                     </li>
                     <?php

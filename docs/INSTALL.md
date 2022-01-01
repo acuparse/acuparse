@@ -279,18 +279,6 @@ receives from your Access/smartHUB.
 Check the syslog and watch for your changes. Once your Access/smartHUB is reporting updated readings, modify the
 Acuparse config with your required offset.
 
-### Barometer Source
-
-If you are using an Access and a smartHUB at the same time, it can cause trouble with barometer readings. Since they can
-be slightly different.
-
-- Default:
-    - Saves all Barometer readings.
-- Hub:
-    - Saves only the smartHUB Barometer readings.
-- Access:
-    - Saves only the Access Barometer readings.
-
 ## Uploading Data
 
 Detailed instructions for each available in docs/external.

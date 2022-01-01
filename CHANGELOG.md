@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.8.1](https://www.acuparse.com/releases/v3-8-1/) - 2022-01-01
+
+### Fixed
+
+- Minor changes to lightning logic.
+
+### Added
+
+- Minor changes to better facilitate future testing.
+
 ## [[3.8.0](https://www.acuparse.com/releases/v3-8-0/) - 2021-10-27
 
 ### Added
