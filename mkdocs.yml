@@ -18,7 +18,8 @@ nav:
   - Installing:
       - Main Install Guide: 'INSTALL.md'
       - Docker Install Guide: 'DOCKER.md'
-      - Suplimental Guides:
+      - Realtime Install Guide: 'REALTIME.md'
+      - Supplemental Guides:
           - DNS Redirect: 'other/DNS.md'
           - NGINX Proxy: 'other/NGINX.md'
           - RaspberryPi Direct Connect: 'other/RPI_DIRECT_CONNECT.md'
@@ -41,7 +42,7 @@ nav:
       - MQTT: 'external/MQTT.md'
       - Generic:
           - WeatherPoly: 'external/generic/WEATHERPOLY.md'
-copyright: "Copyright © 2015-2022 <a href='https://www.acuparse.com'>Acuparse Project</a><br />Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/raw/master/LICENSE'>GNU AGPLv3</a>"
+copyright: "Copyright © 2015-2022 <a href='https://www.acuparse.com'>Acuparse Project</a><br />Acuparse is licensed under the <a href='https://gitlab.com/acuparse/acuparse/-/raw/stable/LICENSE'>GNU AGPLv3</a>"
 extra:
   social:
     - type: 'slack'

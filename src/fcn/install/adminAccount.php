@@ -83,5 +83,5 @@ if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) === 0) {
 else {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /");
-    exit(syslog(LOG_WARNING, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
+    exit(syslog(LOG_EMERG, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
 }

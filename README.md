@@ -56,6 +56,16 @@ channels below. We'll work with you to grab a capture of the data they send, all
 - Customizable email outage notifications with Mailgun support.
 - Matomo and Google Analytics support as well as Google reCAPTCHA form protection.
 
+## What's Missing
+
+- Advanced Data Reporting.
+    - Reports can be run against the database. Open issues for custom report requests and tag them with the reports tag.
+        - phpMyAdmin is an excellent tool for advanced manual reporting on your station.
+- Charts and Graphing.
+    - Since this is available at most external weather sites.
+- Multiple Access/smartHUB/Iris/Atlas sensors.
+    - The current framework built around a single Access/smartHUB and Iris/Atlas sensor.
+
 ## Installation
 
 > **Note:** If you are not using an Access, you will need to setup a DNS redirect using a DNS server on your local network.
@@ -66,16 +76,12 @@ channels below. We'll work with you to grab a capture of the data they send, all
 
 See [docs/INSTALL.md](https://docs.acuparse.com/INSTALL) for detailed installation instructions.
 
-Installing on a fresh instance of a Debian/Rasbian Buster(10)/Bullseye(11) or Ubuntu 18.04/20.04 are the only officially
-supported and tested install method.
+Installing on a fresh instance of a Debian/Rasbian Bullseye (11)/Buster (10) or Ubuntu Jammy (22.04)/Focal (20.04) or
+using Docker are the only officially supported and tested install methods.
 
-After installing and adding your sensors, you will may receive a "No Data Received!" message on your dashboard.
+After installing and adding your sensors, you may receive a "No Data Received!" message on your dashboard.
 Acuparse will need to receive readings from your Access/Hub before weather data can be displayed.
 See [Initial Readings](https://docs.acuparse.com/INSTALL/#initial-readings) for more details.
-
-### UPDATING TO VERSION 3
-
-See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detailed instructions.
 
 ### Quick Install
 
@@ -83,7 +89,7 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detai
 - Download and run the installer.
 
     ```bash
-    curl -O https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
+    curl -O https://gitlab.com/acuparse/installer/-/raw/master/install && sudo bash install | tee ~/acuparse.log
     ```
 
 #### Docker Compose
@@ -96,17 +102,17 @@ On a newly installed Debian/Ubuntu System
     - If you already have Docker installed, see the Docker guide.
 
     ```bash
-    curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && \
+    curl -O https://gitlab.com/acuparse/installer/-/raw/master/install_docker && \
     sudo bash install_docker full | tee ~/acuparse.log
     ```
 
-#### Updating
+## Updating
 
-To update Docker Compose, run
+See [docs/UPDATING.md](https://docs.acuparse.com/UPDATING) for detailed update instructions.
 
-```bash
-sudo acuparse update && sudo acuparse update_compose
-```
+### Release Notes
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
 
 ## Additional Outputs
 
@@ -124,21 +130,11 @@ Additionally, you can request Bootstrap 5 formatted HTML, JSON array(s), or plai
 
 ## Troubleshooting
 
-See [docs/TROUBLESHOOTING.md](https://docs.acuparse.com/TROUBLESHOOTING).
-
-## What's Missing
-
-- Advanced Data Reporting.
-    - Reports can be run against the database. Open issues for custom report requests and tag them with the reports tag.
-        - phpMyAdmin is an excellent tool for advanced manual reporting on your station.
-- Charts and Graphing.
-    - Since this is available at most external weather sites.
-- Multiple Access/smartHUB/Iris/Atlas sensors.
-    - The current framework built around a single Access/smartHUB and Iris/Atlas sensor.
+See [docs/TROUBLESHOOTING.md](https://docs.acuparse.com/TROUBLESHOOTING) for common troubleshooting steps.
 
 ## Donations
 
-If you like Acuparse, please support the project by buying me a coffee!
+If you like Acuparse, please consider supporting the project with a donation.
 
 [![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/maxp)
 
@@ -147,7 +143,7 @@ If you like Acuparse, please support the project by buying me a coffee!
 Acuparse is open-source software. Released with an AGPL-3.0+ license. It also uses several other open source scripts.
 Their licences included where available.
 
-3rd party scripts located in `src/pub/lib`.
+Included 3rd party scripts are located in `src/pub/lib`.
 
 See [LICENSE](LICENSE) for more details.
 
@@ -160,10 +156,6 @@ See [LICENSE](LICENSE) for more details.
 - Community support is also provided via the [Users Mailing List](https://groups.google.com/a/lists.acuparse.com/forum/#!forum/users).
 
 If you require advanced or commercial support, send mail to [hello@acuparse.com](mailto:hello@acuparse.com).
-
-## Release Notes
-
-See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
 
 ## Contributing
 

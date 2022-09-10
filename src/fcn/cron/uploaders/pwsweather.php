@@ -34,9 +34,7 @@
  * @var string $utcDate Date
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){PWS}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){PWS}: Starting Update ...");
 
 // Build and send update
 $pwsQueryUrl = $config->upload->pws->url . '?ID=' . $config->upload->pws->id . '&PASSWORD=' . $config->upload->pws->key;
@@ -51,7 +49,6 @@ $pwsQueryStatic = '&softwaretype=' . $appInfo->name . '_v' . $config->version->a
 $pwsQueryResult = file_get_contents($pwsQueryUrl . $pwsQuery . $pwsQueryStatic);
 // Save to DB
 mysqli_query($conn, "INSERT INTO `pws_updates` (`query`,`result`) VALUES ('$pwsQuery', '$pwsQueryResult')");
-if ($config->debug->logging === true) {
-    // Log it
-    syslog(LOG_INFO, "(EXTERNAL){PWS}: Query = $pwsQuery | Response = $pwsQueryResult");
-}
+
+// Log it
+syslog(LOG_NOTICE, "(EXTERNAL){PWS}: Query = $pwsQuery | Response = $pwsQueryResult");

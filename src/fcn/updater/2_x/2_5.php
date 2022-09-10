@@ -64,7 +64,7 @@ switch ($config->version->app) {
             40);
         $token = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', mt_rand(1, 10))),
             1, 40);
-        $tokenHash = (string)md5($token);
+        $tokenHash = md5($token);
         $userAgent = (string)$_SERVER['HTTP_USER_AGENT'];
         $uid = $_SESSION['uid'];
         mysqli_query($conn,

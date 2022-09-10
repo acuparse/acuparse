@@ -25,7 +25,7 @@
 ##
 
 ARG OS_VERSION=bullseye
-FROM php:apache-${OS_VERSION}
+FROM php:7.4-apache-${OS_VERSION}
 
 ARG BUILD_DATE
 ARG VCS_REF

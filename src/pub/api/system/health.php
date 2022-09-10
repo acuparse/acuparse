@@ -31,6 +31,7 @@ require(dirname(__DIR__, 3) . '/inc/loader.php');
 /**
  * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
+ * @var object $installed Is Acuparse Installed?
  */
 
 header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
@@ -39,15 +40,60 @@ if (isset($installed) && $installed === true) {
     header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
     if (($conn) && (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `users`")) >= 1)) {
         $sqlStats = $conn->stat();
-        $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
-            "SELECT `timestamp` FROM `last_update`"));
-        $lastUpdate = $lastUpdate['timestamp'];
-        $status = [
-            "status" => "OK",
-            "installed" => "true",
-            "updated" => "$lastUpdate",
-            "stats" => "$sqlStats"
-        ];
+
+        if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
+            $authenticatedUser = true;
+            if ($_SESSION['admin'] === true) {
+                $adminUser = true;
+            }
+        }
+
+        if ($config->station->realtime === true) {
+
+            $lastRealtimeUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp` FROM `windspeed` WHERE device='R' ORDER BY `timestamp` DESC LIMIT 1"));
+
+            $lastRealtimeUpdate = strtotime($lastRealtimeUpdate['timestamp']);
+            $timeDifference = strtotime('-2 minutes');
+
+            if ($timeDifference <= $lastRealtimeUpdate) {
+                $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                    "SELECT `timestamp` FROM `windspeed` ORDER BY `timestamp` DESC LIMIT 1"));
+                $status = [
+                    "status" => "OK",
+                    "installed" => "true",
+                    "realtime" => "online",
+                    "updated" => $lastUpdate['timestamp'],
+                    "authenticated" => $authenticatedUser ?? false,
+                    "admin" => $adminUser ?? false,
+                    "database" => "$sqlStats"
+                ];
+            } else {
+                $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                    "SELECT `timestamp` FROM `last_update`"));
+                $status = [
+                    "status" => "OK",
+                    "installed" => "true",
+                    "realtime" => "offline",
+                    "updated" => $lastUpdate['timestamp'],
+                    "authenticated" => $authenticatedUser ?? false,
+                    "admin" => $adminUser ?? false,
+                    "database" => "$sqlStats"
+                ];
+            }
+        } else {
+            $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp` FROM `last_update`"));
+            $status = [
+                "status" => "OK",
+                "installed" => "true",
+                "realtime" => "disabled",
+                "updated" => $lastUpdate['timestamp'],
+                "authenticated" => $authenticatedUser ?? false,
+                "admin" => $adminUser ?? false,
+                "database" => "$sqlStats"
+            ];
+        }
     } else {
         header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
         $status = [
@@ -55,15 +101,20 @@ if (isset($installed) && $installed === true) {
             "installed" => "Partial"
         ];
     }
-    echo json_encode($status);
 } elseif (isset($installed) && $installed === false) {
     header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
     $status = [
         "status" => "OK",
         "installed" => "false"
     ];
-    echo json_encode($status);
 } else {
     header($_SERVER["SERVER_PROTOCOL"] . " 503 Service Unavailable");
-    echo '{"error":"Unavailable"}';
+    $status = [
+        "status" => "error",
+        "details" => [
+            "code" => "503",
+            "message" => "Service Unavailable"
+        ]
+    ];
 }
+echo json_encode($status);

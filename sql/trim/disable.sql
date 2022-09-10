@@ -72,8 +72,6 @@ DROP EVENT IF EXISTS `rebuild_archive`;
 
 DROP EVENT IF EXISTS `rebuild_dailyrain`;
 
-DROP EVENT IF EXISTS `flush_query_cache`;
-
 DROP EVENT IF EXISTS `trim_tower_data`;
 DROP EVENT IF EXISTS `rebuild_tower_data`;
 

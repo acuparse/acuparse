@@ -29,25 +29,29 @@
  * @var object $config Global Config
  * @var object $wx Weather Values
  */
-?>
-<section class="row">
-    <div class="col">
-        <h1><i class="wi wi-raindrops" aria-hidden="true"></i> Rain</h1>
-        <ul class="list-unstyled">
-            <li><h3>Fall Rate:</h3> <?php
-                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                    $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr ($wx->rainMM mm/hr)" : "$wx->rainMM mm/hr ($wx->rainIN in/hr)";
-                } else {
-                    $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr" : "$wx->rainMM mm/hr";
-                }
-                echo $rain; ?></li>
-            <li><h3>Daily Total:</h3> <?php
-                if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
-                    $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in ($wx->rainTotalMM_today mm)" : "$wx->rainTotalMM_today mm ($wx->rainTotalIN_today in)";
-                } else {
-                    $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in" : "$wx->rainTotalMM_today mm";
-                }
-                echo $rain_today; ?></li>
-        </ul>
-    </div>
-</section>
+
+if ($wx->rainIN !== null) {
+    ?>
+    <section class="row">
+        <div class="col">
+            <h1><i class="wi wi-raindrops" aria-hidden="true"></i> Rain</h1>
+            <ul class="list-unstyled">
+                <li><h3>Fall Rate:</h3> <?php
+                    if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                        $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr ($wx->rainMM mm/hr)" : "$wx->rainMM mm/hr ($wx->rainIN in/hr)";
+                    } else {
+                        $rain = ($config->site->imperial === true) ? "$wx->rainIN in/hr" : "$wx->rainMM mm/hr";
+                    }
+                    echo $rain; ?></li>
+                <li><h3>Daily Total:</h3> <?php
+                    if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate === 'archive') {
+                        $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in ($wx->rainTotalMM_today mm)" : "$wx->rainTotalMM_today mm ($wx->rainTotalIN_today in)";
+                    } else {
+                        $rain_today = ($config->site->imperial === true) ? "$wx->rainTotalIN_today in" : "$wx->rainTotalMM_today mm";
+                    }
+                    echo $rain_today; ?></li>
+            </ul>
+        </div>
+    </section>
+    <?php
+}

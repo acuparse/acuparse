@@ -34,5 +34,7 @@ if (date_default_timezone_get() != $config->site->timezone) {
 }
 
 // System Time
-$date = date($config->site->display_date);
-echo $date;
+header_remove();
+header('Content-Type: text/plain; charset=UTF-8');
+header('Cache-Control: no-cache');
+echo date($config->site->display_date);

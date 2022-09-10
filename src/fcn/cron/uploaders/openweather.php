@@ -32,9 +32,7 @@
  * @var object $atlas Atlas Data
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){OpenWeather}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){OpenWeather}: Starting Update ...");
 
 // Build and send update
 if ($config->station->device === 0) {
@@ -62,7 +60,6 @@ $openweatherQueryResponse = (empty($openweatherQueryResult)) ? '{"SUCCESS": "HTT
 // Save to DB
 mysqli_query($conn,
     "INSERT INTO `openweather_updates` (`query`,`result`) VALUES ('$openweatherQuery', '$openweatherQueryResponse')");
-if ($config->debug->logging === true) {
-    // Log it
-    syslog(LOG_INFO, "(EXTERNAL){OpenWeather}: Query = $openweatherQuery | Response = $openweatherQueryResponse");
-}
+
+// Log it
+syslog(LOG_NOTICE, "(EXTERNAL){OpenWeather}: Query = $openweatherQuery | Response = $openweatherQueryResponse");

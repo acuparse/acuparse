@@ -15,7 +15,7 @@ workflow:
 
 #### Templates ####
 .TEMPLATE:PHP:CLI:
-  image: php:8.0-cli
+  image: php:7.3-cli
   stage: lint
   script:
     - find . -name \*.php -exec php -l "{}" \;
@@ -46,21 +46,6 @@ workflow:
     - shellcheck -x cam/webcam .docker/* cron/backup
   dependencies: [ ]
 
-.TEMPLATE:PHP:noverify:
-  image: golang:alpine
-  stage: lint
-  artifacts:
-    when: on_failure
-    paths:
-      - noverify.txt
-    expire_in: 2 weeks
-  before_script:
-    - apk add --no-cache git
-    - go get -u github.com/VKCOM/noverify
-  script:
-    - noverify check -exclude-checks undefined,caseBreak src/ | tee noverify.txt
-  dependencies: [ ]
-
 .TEMPLATE:DOCKER:lint:
   image: node:latest
   stage: lint
@@ -72,11 +57,9 @@ workflow:
 
 .TEMPLATE:DOCS:mkdocs:
   stage: docs
-  image: python:3.8-alpine
-  before_script:
-    - apk add --no-cache --virtual .build gcc musl-dev
-    - pip install mkdocs-material
-    - pip install mkdocs-minify-plugin
+  image:
+    name: squidfunk/mkdocs-material
+    entrypoint: [ "" ]
   dependencies: [ ]
 
 ### Docker Image Templates ###
@@ -91,8 +74,10 @@ workflow:
     - mkdir -p $HOME/.docker/cli-plugins/
     - wget -O $HOME/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v$BUILDX_VERSION/buildx-v$BUILDX_VERSION.linux-amd64
     - chmod a+x $HOME/.docker/cli-plugins/docker-buildx
+    - docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-*
     - docker run --privileged --rm tonistiigi/binfmt --install $BUILDX_PLATFORM
     - docker buildx create --use --driver docker-container --name binfmt --platform=$BUILDX_PLATFORM
+    - docker buildx inspect --bootstrap
     - docker login -u $CI_REGISTRY_USER -p ${CI_REGISTRY_PASSWORD} $CI_REGISTRY
   script:
     - >
@@ -125,7 +110,7 @@ workflow:
         --build-arg BUILD_BRANCH=$CI_COMMIT_REF_SLUG \
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA \
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:latest \
-        --platform $BUILDX_PLATFORM_DEV \
+        --platform $BUILDX_PLATFORM \
         --push \
         .
       fi
@@ -170,7 +155,7 @@ workflow:
         --build-arg BUILD_BRANCH=$CI_COMMIT_REF_SLUG \
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA-$OS_VERSION \
         --tag $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$OS_VERSION \
-        --platform $BUILDX_PLATFORM_DEV \
+        --platform $BUILDX_PLATFORM \
         --push \
         .
       fi
@@ -200,6 +185,17 @@ DEV:PHP:CLI:
     - if: '$CI_COMMIT_BRANCH != "stable"'
   allow_failure: true
 
+DEV:PHP:CLI:LATEST:
+  extends: .TEMPLATE:PHP:CLI
+  image: php:8.1-cli
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "stable"'
+  allow_failure: true
+
 #### phpstan ####
 
 DEV:PHP:phpstan:
@@ -211,18 +207,6 @@ DEV:PHP:phpstan:
     paths:
       - phpstan.txt
     expire_in: 2 weeks
-  allow_failure: true
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH != "stable"'
-
-#### noverify ####
-
-DEV:PHP:noverify:
-  extends: .TEMPLATE:PHP:noverify
   allow_failure: true
   rules:
     - if: $CI_COMMIT_TAG

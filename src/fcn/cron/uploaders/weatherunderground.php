@@ -34,9 +34,7 @@
  * @var string $utcDate Date
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){WU}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){WU}: Starting Update ...");
 
 // Build and send update
 $wuQueryUrl = $config->upload->wu->url . '?ID=' . $config->upload->wu->id . '&PASSWORD=' . $config->upload->wu->password;
@@ -51,7 +49,6 @@ $wuQueryStatic = '&softwaretype=' . ucfirst($appInfo->name) . '&action=updateraw
 $wuQueryResult = file_get_contents(htmlentities($wuQueryUrl . $wuQuery . $wuQueryStatic));
 // Save to DB
 mysqli_query($conn, "INSERT INTO `wu_updates` (`query`,`result`) VALUES ('$wuQuery', '$wuQueryResult')");
-if ($config->debug->logging === true) {
-    // Log it
-    syslog(LOG_INFO, "(EXTERNAL){WU}: Query = $wuQuery | Response = $wuQueryResult");
-}
+
+// Log it
+syslog(LOG_NOTICE, "(EXTERNAL){WU}: Query = $wuQuery | Response = $wuQueryResult");

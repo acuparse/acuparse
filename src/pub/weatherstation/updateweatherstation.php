@@ -33,12 +33,6 @@ require(dirname(__DIR__, 2) . '/inc/loader.php');
  * @var object $config Global Config
  */
 
-
-if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
-    $mac = $_GET['id'];
-    exit(syslog(LOG_ERR, "(SYSTEM)[ERROR]: Device $mac is not configured"));
-}
-
 function last_updated_at()
 {
     global $conn;
@@ -47,21 +41,54 @@ function last_updated_at()
 }
 
 ini_set('default_socket_timeout', 1);
-// Process Access Update
-if (($_SERVER['REQUEST_METHOD'] === 'POST') && $_GET['id'] === $config->station->access_mac) {
-    $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?&', '', $_SERVER['REQUEST_URI']);
-    require(dirname(__DIR__, 2) . '/fcn/weatherstation/access.php');
-} // Process smartHUB Update
-elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && $_GET['id'] === $config->station->hub_mac) {
-    $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?', '', $_SERVER['REQUEST_URI']);
-    require(dirname(__DIR__, 2) . '/fcn/weatherstation/hub.php');
-} // This MAC is not configured
-else {
-    $mac = $_GET['id'];
-    // Log it
-    syslog(LOG_WARNING, "(SYSTEM)[WARNING]: Unknown Device $mac");
 
+if ((isset($_GET['id']))) {
+
+    $mac = filter_var($_GET['id'], FILTER_SANITIZE_STRING);
+
+    if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
+        exit(syslog(LOG_EMERG, "(SYSTEM)[ERROR]: Device $mac is not configured"));
+    }
+
+    if ($mac === $config->station->access_mac || $mac === $config->station->hub_mac) {
+        // Process Access Update
+        if (($_SERVER['REQUEST_METHOD'] === 'POST')) {
+            if (isset($_GET['softwaretype']) && $_GET['softwaretype'] === 'rtl_433') {
+                if ($config->station->realtime !== true) {
+                    header('Content-Type: application/json');
+                    echo json_encode(array('status' => 'error', 'message' => 'Realtime is not enabled'));
+                    exit(syslog(LOG_ALERT, "(SYSTEM)[ERROR]: Realtime is not enabled"));
+                } else {
+                    $relayQuery = str_replace('/weatherstation/updateweatherstation?', '', $_SERVER['REQUEST_URI']);
+                    require(dirname(__DIR__, 2) . '/fcn/weatherstation/rtl.php');
+                }
+            } else {
+                $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?&', '', $_SERVER['REQUEST_URI']);
+                require(dirname(__DIR__, 2) . '/fcn/weatherstation/access.php');
+            }
+        } // Process smartHUB Update
+        elseif (($_SERVER['REQUEST_METHOD'] === 'GET')) {
+            $myacuriteQuery = str_replace('/weatherstation/updateweatherstation?', '', $_SERVER['REQUEST_URI']);
+            require(dirname(__DIR__, 2) . '/fcn/weatherstation/hub.php');
+        } else {
+            header_remove();
+            header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error', true, 500);
+            echo json_encode(array('status' => 'error', 'message' => "Device $mac is not configured"));
+            exit(syslog(LOG_EMERG, "(SYSTEM)[ERROR]: Device $mac is not configured"));
+        }
+    } else {
+        header_remove();
+        header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error', true, 500);
+        echo json_encode(array('status' => 'error', 'message' => "Device $mac is not configured"));
+        if ($_GET['softwaretype'] === 'rtl_433') {
+            exit(syslog(LOG_ALERT, "(SYSTEM){RTL}[ERROR]: Invalid PRIMARY_MAC_ADDRESS $mac"));
+        } else {
+            exit(syslog(LOG_EMERG, "(SYSTEM)[ERROR]: Invalid Device $mac"));
+        }
+    }
+} else {
     header_remove();
     header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error', true, 500);
-    echo 'Unrecognized Device';
+    echo json_encode(array('status' => 'error', 'message' => 'No MAC Address Provided'));
+    exit(syslog(LOG_EMERG, "(SYSTEM)[ERROR]: No MAC Address Provided"));
 }

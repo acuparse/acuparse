@@ -30,7 +30,7 @@
  * @var object $config Global Config
  */
 
-syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Checking Database Trimming ...");
+syslog(LOG_NOTICE, "(SYSTEM){TRIM}: Checking Database Trimming ...");
 
 if ($config->mysql->trim !== 0) {
     $result = mysqli_fetch_assoc(mysqli_query($conn, "SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
@@ -40,17 +40,22 @@ if ($config->mysql->trim !== 0) {
             $schema = dirname(__DIR__, 2) . '/sql/trim/enable.sql';
         } elseif ($config->mysql->trim === 2) {
             $schema = dirname(__DIR__, 2) . '/sql/trim/enable_xtower.sql';
+        } else {
+            syslog(LOG_ERR, "(SYSTEM){TRIM}[ERROR]: Trim Configuration Error");
         }
+        /**
+         * @var $schema
+         */
         $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
         $schema = exec($schema, $schemaOutput, $schemaReturn);
         if ($schemaReturn !== 0) {
             syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming");
         } else {
-            syslog(LOG_INFO, "(SYSTEM){TRIM}: Successfully Enabled Database Trimming");
+            syslog(LOG_NOTICE, "(SYSTEM){TRIM}: Successfully Enabled Database Trimming");
         }
     } else {
-        syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Database Trimming OK");
+        syslog(LOG_NOTICE, "(SYSTEM){TRIM}: Database Trimming OK");
     }
 } else {
-    syslog(LOG_DEBUG, "(SYSTEM){TRIM}: Database Trimming Disabled");
+    syslog(LOG_NOTICE, "(SYSTEM){TRIM}: Database Trimming Disabled");
 }

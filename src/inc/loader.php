@@ -25,6 +25,8 @@
  * Loads the config, sets up database connection and session
  */
 
+ini_set('display_errors', 0);
+
 if (!defined('APP_BASE_PATH')) {
     define('APP_BASE_PATH', dirname(__DIR__));
 }
@@ -34,6 +36,11 @@ if (!isset($config)) {
     if (file_exists(APP_BASE_PATH . '/usr/config.php')) {
         $config = require(APP_BASE_PATH . '/usr/config.php');
         $installed = true;
+        if ($config->debug->logging === true) {
+            error_reporting(E_ALL);
+        } else {
+            error_reporting(0);
+        }
     } else {
         $config = require(APP_BASE_PATH . '/usr/config.new.php');
         $installed = false;
@@ -42,7 +49,7 @@ if (!isset($config)) {
 
 if (!isset($appInfo)) {
     $appInfo = json_decode(file_get_contents(dirname(__DIR__, 2) . '/.version'), true);
-    $appInfo = array_change_key_case($appInfo, CASE_LOWER);
+    $appInfo = array_change_key_case($appInfo);
     $appInfo = (object)$appInfo;
 }
 
@@ -57,6 +64,9 @@ if (!isset($conn)) {
      * @var boolean $installed
      */
     if ($installed === true) {
+        ini_set('mysqlnd_qc.enable_qc', 1);
+        ini_set('mysqlnd_qc.cache_by_default', 1);
+
         $conn = mysqli_connect($config->mysql->host, $config->mysql->username, $config->mysql->password,
             $config->mysql->database);
         if (!$conn) {
@@ -65,8 +75,6 @@ if (!isset($conn)) {
             syslog(LOG_ERR, "(SYSTEM){LOADER}[ERROR]: MySQL Connection failed: " . mysqli_connect_error());
             exit();
         }
-        ini_set('mysqlnd_qc.enable_qc', 1);
-        ini_set('mysqlnd_qc.cache_by_default', 1);
     }
 }
 
@@ -78,15 +86,14 @@ if (!isset($openlog)) {
 
 // Start the session
 if (!isset($_SESSION)) {
-    if ((isset($_SERVER["HTTP_X_PURPOSE"]) and (strtolower($_SERVER["HTTP_X_PURPOSE"]) == "preview")) or
-        (isset($_SERVER["HTTP_X_MOZ"]) and (strtolower($_SERVER["HTTP_X_MOZ"]) == "prefetch"))) {
-        syslog(LOG_INFO, "(SYSTEM){LOADER}[INFO]: Prefetch Detected");
-    } else {
-        include(APP_BASE_PATH . '/inc/session.php');
-    }
+    include(APP_BASE_PATH . '/inc/session.php');
 }
 
 // Output buffering
 if (!isset($obStart)) {
     $obStart = ob_start();
+    header('Cache-Control: no-cache');
+    header('Content-Type-Options: nosniff');
+    header_remove('Pragma');
+    header_remove('Expires');
 }

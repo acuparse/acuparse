@@ -48,7 +48,7 @@ if (!isset($_SESSION)) {
                 mysqli_query($conn, "DELETE FROM `sessions` WHERE `device_key`= '$deviceKey'");
                 $row = mysqli_fetch_assoc($result);
                 $presentedToken = (string)$_COOKIE['token'];
-                $actualToken = (string)md5($row['token']);
+                $actualToken = md5($row['token']);
                 $uid = (int)$row['uid'];
 
                 // Good token presented

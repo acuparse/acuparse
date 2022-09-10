@@ -125,6 +125,6 @@ if (!$result) {
         // Bailout
         header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
         header("Location: /");
-        exit(syslog(LOG_WARNING, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
+        exit(syslog(LOG_ALERT, "(SYSTEM){INSTALLER}[WARNING]: ATTEMPTED TO ADD ADMIN WHEN ONE EXISTS"));
     }
 }

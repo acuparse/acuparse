@@ -43,7 +43,7 @@ function getTowerLightningData()
 
     if (empty($result)) {
         header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
-        return json_encode(['Error' => "Lightning Data Unavailable"]);
+        return json_encode(array('error' => array('message' => 'Lightning Data Unavailable'),), JSON_PRETTY_PRINT);
     } else {
         return json_encode($result);
     }
@@ -70,7 +70,7 @@ if (isset($_GET['lightning'])) {
     } else {
         not_enabled:
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-        echo json_encode(array("message" => "Bad Request - Tower lightning not enabled"));
+        echo json_encode(array('error' => array('message' => 'Bad Request', 'details' => 'Tower lightning not enabled'),), JSON_PRETTY_PRINT);
     }
 } elseif ($config->station->towers === true) {
     if (isset($_GET['id'])) {
@@ -90,7 +90,7 @@ if (isset($_GET['lightning'])) {
             echo "}}";
         } else {
             header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-            echo json_encode(["message" => "Bad Request - Invalid Tower ID or Unauthorized"]);
+            echo json_encode(array('error' => array('message' => 'Bad Request', 'details' => 'Invalid Tower ID or Unauthorized'),), JSON_PRETTY_PRINT);
         }
     } else {
         // Can we display private data?
@@ -108,7 +108,7 @@ if (isset($_GET['lightning'])) {
     }
 } else {
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-    echo json_encode(["message" => "Bad Request"]);
+    echo json_encode(array('error' => array('message' => 'Bad Request', 'details' => 'Towers not enabled'),), JSON_PRETTY_PRINT);
 }
 
 // End Token

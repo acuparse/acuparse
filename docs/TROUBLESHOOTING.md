@@ -1,8 +1,7 @@
 # Acuparse Troubleshooting Guide
 
 This guide is meant to assist troubleshooting common issues with Installing and using Acuparse. It is not a complete
-guide. If you need assistance, please reach out to the project
-via [Community Support](https://docs.acuparse.com/#community-support)
+guide. If you require assistance, please reach out to the project via [Community Support](/#community-support).
 
 ## Initial Readings
 
@@ -11,9 +10,9 @@ Acuparse needs to receive and process it's initial updates from your sensors, be
 
 After your initial readings are received, Cron will process them into `archive` readings. If you see a
 `No Archive Data!` message, there may be a problem archiving your readings. Some dashboard features require Archive
-data. It's critical that your Cron is running the Archive job. Look for the
-message `(SYSTEM){CRON}: Archive Updated` in your [syslog](#syslog). When the Archive job has not yet completed
-successfully, you'll see an error on your dashboard and no data will be displayed.
+data. It's critical that your Cron is running the Archive job. Look for the message `(SYSTEM){CRON}: Archive Updated`
+in your [syslog](#syslog). When the Archive job has not yet completed successfully, you'll see an error on your dashboard
+and no data will be displayed.
 
 If your dashboard does not update after 5-10 minutes, check your [syslog](#syslog) to ensure data is flowing.
 Additionally, check and ensure your DNS is redirected, OR you have set your hostname on the Access directly. See
@@ -69,11 +68,11 @@ readings.
 Sensor ID's/MAC addresses are located on the sensors themselves. If you can't locate them, the syslog will report all
 sensors and MAC addresses it does not recognize.
 
-You can search the syslog for the unknown messages.
-
 ```bash
-cat /var/log/syslog | grep "Unknown"
+cat /var/log/syslog | grep '(SYSTEM)\[ERROR\]'"
 ```
+
+for sensor ID's the log format is `(ACCESS/HUB){ATLAS/IRIS/TOWER}[ERROR]:`
 
 ## Cron Job
 
@@ -115,7 +114,11 @@ and [reinitialize the Acuparse database](https://docs.acuparse.com/INSTALL/#setu
 
 If you're not receiving data from your Access, ensure you have a DNS resolvable hostname set for the upload server and/or
 a DNS redirect in place. Then, reboot your Access. The Access can at times require multiple reboots to begin sending
-data.
+data. The Access also needs to communicate with Acuparse using TLS1.1. When using LetsEncrypt, this can be an issue as
+certbot can sometimes overwrite the apache config and remove TLS1.1 support. If you're having issues with your Access,
+check your `/etc/apache2/sites-available/acuparse-ssl.conf` file to ensure TLS1.1 is enabled. If you have LetsEncrypt
+ensure `#Include /etc/letsencrypt/options-ssl-apache.conf` is commented out. The default configuration is stored in
+`/config` in your Acuparse directory.
 
 ### MyAcuRite Offline
 
@@ -125,7 +128,13 @@ with Acuparse, the Access will continue to think MyAcuRite was online and the re
 
 You will receive a warning in your `syslog` when this happens.
 
-### NTP
+### Extended Outages
+
+When your Access stops sending data for an extended period of time, your Acuparse data will become stale. This creates
+errors in your dashboard and api. Once your Access comes back online, you will need to wait for enough data to be received
+before some calculations can be made. This can take up to 24 hours.
+
+## NTP
 
 The date and time are critical to Acuparse operations. Both on the server and on your Access device.
 
@@ -135,25 +144,7 @@ for `pool.ntp.org` to a local NTP server.
 If the installer was not able to configure NTP for you, review your OS documentation for the proper way to configure NTP
 on your system.
 
-### Hardcoded DNS Servers
-
-The Access device appears to be configured to resolve DNS through `8.8.8.8` by default. This is becoming more and more
-popular with IoT device makers, to prevent local filtering and also to ease technical support costs. Currently, testing
-has shown that the Access will query your local DNS for a while, but for currently unknown reasons, can switch and lock
-onto `8.8.8.8`. Connecting to the Access TTY output confirms this hardcode on boot.
-
-There is a great article on how to resolve
-this [Your Smart TV is probably ignoring your PiHole](https://labzilla.io/blog/force-dns-pihole)
-and some great discussion on this article, hardcoding, and DoH over
-at [Hacker News](https://news.ycombinator.com/item?id=25313776).
-
-To resolve, you need to redirect DNS requests from your Access destined for `8.8.8.8` to your local DNS server using
-your local firewall rules.
-
-If your Acuparse install is **NOT** local, that is, installed in the cloud, you should ensure your Acuparse
-hostname\FQDN is publicly resolvable through `8.8.8.8`.
-
-### Cisco Switches
+## Cisco Switches
 
 If your Access constantly reboots/reconnects when connected to a Cisco switch, enable Portfast.
 
@@ -234,4 +225,4 @@ acuparse_1  | The Apache error log may have more information.
 
 If you receive this error, update your docker files to use the legacy Buster image.
 
-- `acuparse\acuparse:buster` or `acuparse\acuparse:<VERSION>-buster`
+- `acuparse/acuparse:buster` or `acuparse/acuparse:<VERSION>-buster`

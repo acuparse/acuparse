@@ -88,7 +88,7 @@ class moonDate
      * Takes t and returns the geocentric ra and dec in an array moonEQ claimed good to 5' (angle) in ra and 1' in dec
      * tallies with another approximate method and with ICE for a couple of dates
      */
-    private static function moonEQ($t)
+    private static function moonEQ($t): array
     {
         $p2 = 6.283185307;
         $arc = 206264.8062;

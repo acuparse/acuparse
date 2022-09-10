@@ -32,6 +32,8 @@ require(dirname(__DIR__) . '/inc/loader.php');
  * @var object $config Global Config
  */
 
+header('Cache-Control: max-age=180, immutable');
+
 // Check that camera is enabled
 if ($config->camera->enabled === true) {
 
@@ -84,11 +86,11 @@ if ($config->camera->enabled === true) {
                         false; // Don't display backward button
                     } elseif ($backward_date > $today) {
                         ?>
-                        <a href="/camera?archive&date=<?= $last_dir; ?>"><h3><i class="fas fa-backward"
+                        <a href="/camera?archive&date=<?= $last_dir; ?>" title="backward"><h3><i class="fas fa-backward"
                                                                                 aria-hidden="true"></i></h3></a>
                         <?php
                     } else { ?>
-                        <a href="/camera?archive&date=<?= $backward_date; ?>"><h3><i class="fas fa-backward"
+                        <a href="/camera?archive&date=<?= $backward_date; ?>" title="backward"><h3><i class="fas fa-backward"
                                                                                      aria-hidden="true"></i></h3>
                         </a>
                     <?php } ?>
@@ -113,13 +115,13 @@ if ($config->camera->enabled === true) {
                     } else {
                         if ($forward_date < $cam_dir) {
                             ?>
-                            <a href="/camera?archive&date=<?= $cam_dir; ?>"><h3><i class="fas fa-forward"
+                            <a href="/camera?archive&date=<?= $cam_dir; ?>" title="forward"><h3><i class="fas fa-forward"
                                                                                    aria-hidden="true"></i></h3>
                             </a>
                             <?php
                         } else {
                             ?>
-                            <a href="/camera?archive&date=<?= $forward_date; ?>"><h3><i class="fas fa-forward"
+                            <a href="/camera?archive&date=<?= $forward_date; ?>" title="forward"><h3><i class="fas fa-forward"
                                                                                         aria-hidden="true"></i></h3>
                             </a>
                             <?php

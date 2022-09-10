@@ -126,7 +126,11 @@ function getArchiveHTML()
                                     echo $rain_total_yesterday; ?></li>
                             </ul>
                         <?php }
-                        if ($config->station->primary_sensor === 0) { ?>
+                        if ($config->station->primary_sensor === 0) {
+                            /**
+                             * @var $atlasYesterday
+                             */
+                            ?>
                             <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
@@ -226,7 +230,11 @@ function getArchiveHTML()
                                 echo $rain_total_week; ?></li>
                         </ul>
                     <?php }
-                    if ($config->station->primary_sensor === 0) { ?>
+                    if ($config->station->primary_sensor === 0) {
+                        /**
+                         * @var $atlasWeek
+                         */
+                        ?>
                         <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
@@ -323,7 +331,12 @@ function getArchiveHTML()
                                 echo $rain_total_month; ?></li>
                         </ul>
                     <?php }
-                    if ($config->station->primary_sensor === 0) { ?>
+                    if ($config->station->primary_sensor === 0) {
+                        /**
+                         * @var $atlasMonth
+                         * @var $atlasWeek
+                         */
+                        ?>
                         <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
@@ -430,7 +443,12 @@ function getArchiveHTML()
                                     echo $rain_total_last_month; ?></li>
                             </ul>
                         <?php }
-                        if ($config->station->primary_sensor === 0) { ?>
+                        if ($config->station->primary_sensor === 0) {
+                            /**
+                             * @var $atlasLastMonth
+                             * @var $atlasWeek
+                             */
+                            ?>
                             <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                             <ul class="list-unstyled">
                                 <li><h4>
@@ -530,7 +548,12 @@ function getArchiveHTML()
                                 echo $rain_total_year; ?></li>
                         </ul>
                     <?php }
-                    if ($config->station->primary_sensor === 0) { ?>
+                    if ($config->station->primary_sensor === 0) {
+                        /**
+                         * @var $atlasWeek
+                         * @var $atlasYear
+                         */
+                        ?>
                         <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>
@@ -627,7 +650,11 @@ function getArchiveHTML()
                                 echo $rain_total_ever; ?></li>
                         </ul>
                     <?php }
-                    if ($config->station->primary_sensor === 0) { ?>
+                    if ($config->station->primary_sensor === 0) {
+                        /**
+                         * @var $atlasEver
+                         */
+                        ?>
                         <h3><i class="wi wi-hot" aria-hidden="true"></i> UV Index</h3>
                         <ul class="list-unstyled">
                             <li><h4>

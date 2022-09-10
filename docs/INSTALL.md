@@ -3,10 +3,10 @@
 This guide is designed to walk through the steps required to install Acuparse on a freshly installed Debian based
 server.
 
-You can install Acuparse locally on bare-metal or a VM, or you can use a Docker Containter based installation.
+You can install Acuparse locally on bare-metal or a VM, or you can use a Docker Container based installation.
 
 !!! note
-    Installation only supported on Debian/Rasbian Buster(10)/Bullseye(11) and Ubuntu 18.04/20.04.
+    Installation only supported on Debian/Raspbian Bullseye (11)/Buster (10) or Ubuntu Jammy (22.04)/Focal (20.04).
 
 ## RaspberryPi
 
@@ -17,7 +17,7 @@ You can install Acuparse locally on bare-metal or a VM, or you can use a Docker 
 - If you're connecting an Access/SmartHub **directly** to your PI, see the community provided
   [RaspberryPi Direct Connect](https://docs.acuparse.com/other/RPI_DIRECT_CONNECT) installation guide.
     - This guide is not yet officially supported by the Acuparse project but was moved to the main docs for ease of use.
-      It may be out of date and has not yet been re-vailidated. If you have success/problems with this guide, please
+      It may be out of date and has not yet been re-validated. If you have success/problems with this guide, please
       report them on the users mailing list or, in Slack.
     - See also: [Troubleshooting](https://docs.acuparse.com/TROUBLESHOOTING/#raspberrypis)
 
@@ -29,13 +29,13 @@ You can install Acuparse locally on bare-metal or a VM, or you can use a Docker 
 - Then run the installer.
 
 ```bash
-curl -O https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log
+curl -O https://gitlab.com/acuparse/installer/-/raw/master/install && sudo bash install | tee ~/acuparse.log
 ```
 
 ### Docker Container Based
 
 ```bash
-curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
+curl -O https://gitlab.com/acuparse/installer/-/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
 ```
 
 - See the [Docker Install Guide](https://docs.acuparse.com/DOCKER) for more details
@@ -62,22 +62,28 @@ curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 
 - Install the required packages:
 
-    - Debian/Rasbian Buster(10)/Bullseye(11):
+    - Debian/Raspbian Bullseye(11):
+
+      ```bash
+      apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.4 libapache2-mod-php7.4 php7.4-mysql php7.4-gd php7.4-curl php7.4-json php7.4-cli php7.4-common -y
+      ```
+
+    - Debian/Raspbian Buster(10):
 
       ```bash
       apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-gd php7.3-curl php7.3-json php7.3-cli php7.3-common -y
+      ```
+
+    - Ubuntu 22.04 LTS:
+
+      ```bash
+      apt install git ntp imagemagick exim4 apache2 default-mysql-server php8.1 libapache2-mod-php8.1 php8.1-mysql php8.1-gd php8.1-curl php8.1-cli php8.1-common -y
       ```
 
     - Ubuntu 20.04 LTS:
 
       ```bash
       apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.4 libapache2-mod-php7.4 php7.4-mysql php7.4-gd php7.4-curl php7.4-json php7.4-cli php7.4-common -y
-      ```
-
-    - Ubuntu 18.04 LTS:
-
-      ```bash
-      apt install git ntp imagemagick exim4 apache2 default-mysql-server php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-gd php7.2-curl php7.2-json php7.2-cli php7.2-common -y
       ```
 
 - Secure your MySQL install:
@@ -153,7 +159,7 @@ By Default Apache will use the snake oil cert to serve over HTTPS. For most user
 a hostname, install a certificate!
 
 ```bash
-wget https://gitlab.com/acuparse/installer/raw/master/resources/le && sudo bash le
+wget https://gitlab.com/acuparse/installer/-/raw/master/resources/le && sudo bash le
 ```
 
 ### Setup Database
@@ -212,9 +218,9 @@ tail -f /var/log/syslog
 
 ## DNS Redirect
 
-> **Note:** Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS.
->
-> See [/admin/access](/admin/access) once logged into your site.
+!!! note
+    Access users can use the included script to modify the Access upload server instead of, or as well as, redirecting DNS.
+    See `/admin/access` once logged into your site.
 
 If you are connecting your Access/smartHUB directly to Acuparse, you can install Bind9 and redirect the DNS locally.
 Otherwise, you will need a DNS server installed on your network. See the
@@ -236,11 +242,11 @@ curl -d 'ser=atlasapi.myacurite.com' http://<ACCESS IP>/config.cgi
 
 ### smartHUB
 
-- Setup a local DNS override for `hubapi.myacurite.com` pointing to the external IP address of your Acuparse server.
+- Set up a local DNS override for `hubapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 
 ### Access
 
-- Setup a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
+- Set up a local DNS override for `atlasapi.myacurite.com` pointing to the external IP address of your Acuparse server.
 
 ### Troubleshooting
 
@@ -261,7 +267,7 @@ When the external updater runs, it archives the most recent readings to the arch
 - Recommend enabling trimming, unless you need the additional data.
     - When enabled tower data is also trimmed. Should you wish to keep tower data, use that option instead.
 
-If you find that the event scheduler is not behaving, ensure MySQL is up to date. Some upgrades from Debian 8 will not
+If you find that the event scheduler is not behaving, ensure MySQL is up-to-date. Some upgrades from Debian 8 will not
 upgrade the database properly.
 
 ```bash
@@ -287,20 +293,28 @@ Detailed instructions for each available in docs/external.
   required.
     - Data only sent to external sites when there is new data to send and enough time has passed for CWOP updates.
 
-> **Notice:** Disable updating of Weather Underground from your Access/smartHUB/MyAcuRite. Watch your syslog for the response
-> from MyAcuRite.
+!!! info
+    It's recommended to disable the updating of Weather Underground from your Access/smartHUB/MyAcuRite when using Acuparse.
 
 ### Master Sensor
 
-By default Acuparse will use the Iris/Atlas sensor to upload data to external sites. To upload data from a tower, change
+By default, Acuparse will use the Iris/Atlas sensor to upload data to external sites. To upload data from a tower, change
 the Master Temp/Humidity Sensor.
 
 Changing the sensor sends those readings externally instead of the Iris/Atlas data. You can also choose to use the tower
 readings for the data archive or use the readings from the Iris/Atlas.
 
-## MyAcuRite Responses
+### Realtime Updates
 
-### Access
+Acuparse supports the use of an RTL dongle along with a special relay service to facilitate realtime updates to weather data.
+See the [RTL docs](https://docs.acuparse.com/REALTIME/) for more details on how to set this up.
+
+### MyAcuRite Responses
+
+#### Access
+
+!!! note
+    The Access sends data using TLS1.1 encryption. A certificate is required to receive data from the Access.
 
 When MyAcuRite receives your readings, it responds with a JSON response in the following format:
 
@@ -314,13 +328,13 @@ When MyAcuRite receives your readings, it responds with a JSON response in the f
 }
 ```
 
-Variable | Description
---- | ---
-timezone | Local timezone offset of the Access.
-ID1 | Weather Underground Station ID.
-PASSWORD1 | Weather Underground Station Password.
-sensor1 | Sensor used to send data to Weather Underground.
-elevation | Elevation of the Access in feet.
+| Variable  | Description                                      |
+|-----------|--------------------------------------------------|
+| timezone  | Local timezone offset of the Access.             |
+| ID1       | Weather Underground Station ID.                  |
+| PASSWORD1 | Weather Underground Station Password.            |
+| sensor1   | Sensor used to send data to Weather Underground. |
+| elevation | Elevation of the Access in feet.                 |
 
 - A typical response:
 
@@ -328,12 +342,24 @@ elevation | Elevation of the Access in feet.
     {"timezone":"00:00""}
     ```
 
-### smartHUB
+#### smartHUB
 
-> **Notice:** To prevent firmware updates, the smartHUB response is now being generated by Acuparse. The response generated
-> by MyAcuRite is no longer sent back to the smartHUB.
->
-> **smartHUB settings modified using the MyAcuRite site will not be reflected by the smartHUB.**
+!!! Warning
+    The smartHUB is now obsolete and no longer supported by Acurite. Acurite Access is the recommended replacement.
+
+Acurite is no longer accepting updates from the smartHUB. The smartHUB will continue to work with Acuparse, but will not
+send updates to Acurite. To continue to support the smartHUB Acuparse will now always respond with the below JSON response.
+
+```json
+{
+  "localtime": "00:00:00",
+  "checkversion": "224"
+}
+```
+
+Setting localtime to the local time of your Acuparse install.
+
+##### Legacy smartHUB MyAcurite Response (Archive Purposes Only)
 
 When MyAcuRite receives your readings, it responds with a JSON response in the following format:
 
@@ -348,25 +374,14 @@ When MyAcuRite receives your readings, it responds with a JSON response in the f
 }
 ```
 
-Variable | Description
---- | ---
-localtime | Local time the reading was received. Keeps time on the Access/smartHUB and is used mainly for rainfall readings.
-checkversion | The current firmware version available. Currently 224.
-ID1 | Weather Underground Station ID.
-PASSWORD1 | Weather Underground Station Password.
-sensor1 | Sensor used to send data to Weather Underground.
-elevation | Elevation of the smartHUB in feet.
-
-Acuparse will now always respond with:
-
-```json
-{
-  "localtime": "00:00:00",
-  "checkversion": "224"
-}
-```
-
-Setting localtime to the local time of your Acuparse install.
+| Variable     | Description                                                                                                      |
+|--------------|------------------------------------------------------------------------------------------------------------------|
+| localtime    | Local time the reading was received. Keeps time on the Access/smartHUB and is used mainly for rainfall readings. |
+| checkversion | The current firmware version available. Currently 224.                                                           |
+| ID1          | Weather Underground Station ID.                                                                                  |
+| PASSWORD1    | Weather Underground Station Password.                                                                            |
+| sensor1      | Sensor used to send data to Weather Underground.                                                                 |
+| elevation    | Elevation of the smartHUB in feet.                                                                               |
 
 ## Email and Mailgun Settings
 
@@ -448,11 +463,11 @@ longer needs to be updated between releases. You will still need to manually upd
 
 The `webcam` script operates in three modes:
 
-Script Mode | Description
---- | ---
-`local` | Runs on a host local to the camera (such as an NVR) and sends the image to the Acuparse server.
-`remote` | Processes an image on the Acuparse server.
-`combined` | Processes an image when the camera and Acuparse are both available locally.
+| Script Mode | Description                                                                                     |
+|-------------|-------------------------------------------------------------------------------------------------|
+| `local`     | Runs on a host local to the camera (such as an NVR) and sends the image to the Acuparse server. |
+| `remote`    | Processes an image on the Acuparse server.                                                      |
+| `combined`  | Processes an image when the camera and Acuparse are both available locally.                     |
 
 The `combined` mode is the default and should be used when you can access your camera from your Acuparse system.
 For installs where your camera is not on the same local network as your Acuparse system, use the `local` and `remote` modes.
@@ -484,7 +499,7 @@ For installs where your camera is not on the same local network as your Acuparse
   cp cam/templates cam/
   ```
 
-- Setup a cron job to process the image:
+- Set up a cron job to process the image:
 
   ```bash
   crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/webcam > /dev/null 2>&1
@@ -512,7 +527,7 @@ For installs where your camera is not on the same local network as your Acuparse
   cp /opt/acuparse/cam/templates/config.env cam/
   ```
 
-- Setup a cron job to process the image:
+- Set up a cron job to process the image:
 
   ```bash
   crontab -e`, `0,15,30,45 * * * * /bin/bash /opt/acuparse/cam/webcam > /dev/null 2>&1
@@ -520,6 +535,24 @@ For installs where your camera is not on the same local network as your Acuparse
 
 !!! info
     Ensure ImageMagick is installed and available. Otherwise, images will not get processed.
+
+## Backup/Restore
+
+A script is included in `cron` to run daily backups. It will run automatically on Docker installs, but local installs
+will need to enable this manually.
+
+- See the [Backup Guide](https://docs.acuparse.com/other/BACKUPS) for details.
+
+## Southern Hemisphere Support
+
+Users in the Southern Hemisphere generally install their stations pointing North and not South for the solar panels to operate properly. This leads
+to an incorrect (opposite) wind direction reading. Acuparse includes a feature to switch your wind direction readings to support installations in the
+Southern Hemisphere.
+
+The raw wind degrees readings received by Acuparse will be reversed and used for all external uploaders and system readings.
+**Raw data forwarded to MyAcurite will not be modified**.
+
+- Available under Southern Hemisphere Support on the System Settings, Sensor tab.
 
 ## Google Settings
 
@@ -550,21 +583,3 @@ You can send MyAcuRite readings to an external debug server. To enable, manually
 - Find `debug->server->show` and change it to true.
 
 The debug tab will now appear in your system settings.
-
-## Backup/Restore
-
-A script is included in `cron` to run daily backups. It will run automatically on Docker installs, but local installs
-will need to enable this manually.
-
-- See the [Backup Guide](https://docs.acuparse.com/other/BACKUPS) for details.
-
-## Southern Hemisphere Support
-
-Users in the Southern Hemisphere generally install their stations pointing North and not South for the solar panels to operate properly. This leads
-to an incorrect (opposite) wind direction reading. Acuparse includes a feature to switch your wind direction readings to support installations in the
-Southern Hemisphere.
-
-The raw wind degrees readings received by Acuparse will be reversed and used for all external uploaders and system readings.
-**Raw data forwarded to MyAcurite will not be modified**.
-
-- Available under Southern Hemisphere Settings on the system settings, sensor tab.

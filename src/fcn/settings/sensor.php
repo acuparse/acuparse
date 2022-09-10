@@ -337,7 +337,9 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col">
-                                    <h3>Southern Hemisphere Settings</h3>
+                                    <h3>Southern Hemisphere Support</h3>
+                                    <p><a href="https://docs.acuparse.com/INSTALL/#southern-hemisphere-support">See the
+                                            docs</a> for more details.</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -359,6 +361,52 @@
                                                        name="station[reverse_wind]"
                                                        id="station-reverse-wind-1" value="1"
                                                     <?= ($config->station->reverse_wind === true) ? 'checked="checked"' : false; ?>
+                                                >
+                                                <label class="form-check-label btn btn-success"
+                                                       for="station-reverse-wind-1">Enabled</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RTL Relay -->
+            <section class="row alert alert-secondary">
+                <div class="col mt-2 mb-2">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <h3>Realtime Updates</h3>
+                                    <p><small><strong>(RTL Dongle and Acuparse Relay Service Required)</strong></small>
+                                    </p>
+                                    <p><a href="https://docs.acuparse.com/REALTIME/">See the docs</a> for more information
+                                        on enabling realtime updates.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <p><strong>Enable RTL Relay and Realtime Updates?</strong></p>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="station[realtime]"
+                                                       id="station-realtime-0" value="0"
+                                                    <?= ($config->station->realtime === false) ? 'checked="checked"' : false; ?>
+                                                >
+                                                <label class="form-check-label btn btn-danger"
+                                                       for="station-realtime-0"><strong>Disabled</strong></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="station[realtime]"
+                                                       id="station-realtime-1" value="1"
+                                                    <?= ($config->station->realtime === true) ? 'checked="checked"' : false; ?>
                                                 >
                                                 <label class="form-check-label btn btn-success"
                                                        for="station-reverse-wind-1">Enabled</label>

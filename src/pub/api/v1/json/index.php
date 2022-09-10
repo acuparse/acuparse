@@ -27,4 +27,10 @@
 
 header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
 header('Content-Type: application/json; charset=UTF-8'); // Set the header for JSON output
-echo '{"error":{"message":"Bad Request","details":"Missing endpoint. Try `/dashboard`, `/tower`, or /archive`"}}';
+echo json_encode(array(
+    'error' =>
+        array(
+            'message' => 'Bad Request',
+            'details' => 'Missing endpoint. Try dashboard, tower, or archive',
+        ),
+), JSON_PRETTY_PRINT);

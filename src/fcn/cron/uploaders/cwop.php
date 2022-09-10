@@ -33,9 +33,7 @@
  * @var object $appInfo Global Application Info
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){CWOP}: Starting Update ...");
 
 $sql = "SELECT `timestamp` FROM `cwop_updates` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
@@ -79,15 +77,11 @@ if ((strtotime($result['timestamp']) < strtotime("-" . $config->upload->cwop->in
 
     // Save to DB
     mysqli_query($conn, "INSERT INTO `cwop_updates` (`query`) VALUES ('$cwopQuery')");
-    // Log
-    if ($config->debug->logging === true) {
-        // Log it
-        syslog(LOG_INFO, "(EXTERNAL){CWOP}: Query = $cwopQuery");
-    }
+
+    // Log it
+    syslog(LOG_NOTICE, "(EXTERNAL){CWOP}: Query = $cwopQuery");
 } // No new update to send
 else {
-    if ($config->debug->logging === true) {
-        // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Update not sent. Not enough time has passed");
-    }
+    // Log it
+    syslog(LOG_NOTICE, "(EXTERNAL){CWOP}: Update not sent. Not enough time has passed");
 }

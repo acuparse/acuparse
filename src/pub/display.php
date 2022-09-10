@@ -33,7 +33,7 @@ require(dirname(__DIR__) . '/inc/loader.php');
  * @var string $installed
  */
 
-if ($installed == false) {
+if (!$installed) {
     header("Location: /admin/install");
     exit();
 } elseif ((empty($config->station->access_mac) && empty($config->station->hub_mac)) && (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true)) {
@@ -60,8 +60,6 @@ if ($installed == false) {
     }
 
     include(APP_BASE_PATH . '/inc/header.php');
-
-// Get Forcast Data
     ?>
     <!-- Modify CSS for Display Mode -->
     <style>
@@ -83,71 +81,12 @@ if ($installed == false) {
             overflow: hidden;
         }
     </style>
-
-    <!-- Time Section -->
-    <section id="local-time" class="local-time">
-        <div class="row">
-            <div class="col-auto mx-auto">
-                <div>
-                    <p id="local-time-display"></p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Live Weather Section -->
-    <section id="live-weather">
-        <div class="row">
-            <div class="col mx-auto text-center">
-                <img src="/img/loading/<?= ($config->site->theme === 'twilight') ? 'live-dark' : 'live'; ?>.gif"
-                     alt="Loading Data">
-                <h3>Crunching numbers ...</h3>
-            </div>
-        </div>
-    </section>
     <?php
-    if ($config->station->primary_sensor === 0) {
-        $weatherRefreshTime = 150000;
-    } else {
-        $weatherRefreshTime = 80000;
-    }
-// Set the footer to include scripts required for this page
-    $page_footer = '
-    <!-- Refresh Weather Data -->
-    <script>
-        $(document).ready(function () {
-            async function updateWeather() {
-                $.ajax({
-                    url: \'/api/v1/html/dashboard/\',
-                    success: function (data) {
-                        $("#live-weather").html(data);
-                        setTimeout(updateWeather, ' . $weatherRefreshTime . ')
-                    },
-                    error: function (request) {
-                        console.log("Weather Data Error:\n" + request.responseText);
-                    }
-                })
-            }
-            async function updateTime() {
-                $.ajax({
-                    url: \'/api/system/ping\',
-                    startTime: new Date().getTime(),
-                    success: async function(data) {
-                        $.ajax({
-                            url: \'/api/system/time\',
-                            startTime: this.startTime,
-                            success: async function (data) {
-                                $("#local-time-display").html(data);
-                                let rtt = new Date().getTime() - this.startTime;
-                                setTimeout(updateTime, 1000 - rtt);
-                            }
-                        });
-                    }
-                });
-            }
-            updateWeather();
-            updateTime();
-        });
-    </script>
-';
+    require_once APP_BASE_PATH . '/fcn/dashboard/index.php';
+    require_once APP_BASE_PATH . '/fcn/dashboard/refreshTime.php';
+
+    // Set the footer to include scripts required for this page
+    $page_footer = dashboardRefreshScripts();
+
     include(APP_BASE_PATH . '/inc/footer.php');
 }

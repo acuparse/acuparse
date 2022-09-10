@@ -35,7 +35,7 @@ require(dirname(__DIR__) . '/inc/loader.php');
 
 if (isset($_GET['do'])) {
 
-    // Check for google recaptcha
+    // Check for Google recaptcha
     if ($config->google->recaptcha->enabled === true && !isset($_SESSION['authenticated'])) {
         // Check that Google captcha is correct
         $captcha = $_POST['g-recaptcha-response'];

@@ -1,10 +1,10 @@
 # [Acuparse Documentation](https://docs.acuparse.com)
 
-## Project Pipeline Status
+## Project Services Status
 
-| Acuparse Main | Installer | Website | DNS Sync |
-| --- | --- | --- | --- |
-| [![Acuparse Status](https://gitlab.com/acuparse/acuparse/badges/stable/pipeline.svg "Acuparse Pipeline")](https://gitlab.com/acuparse/acuparse/pipelines) | [![Installer Status](https://gitlab.com/acuparse/installer/badges/master/pipeline.svg "Installer Pipeline")](https://gitlab.com/acuparse/installer/pipelines) | [![Website Status](https://gitlab.com/acuparse/website/badges/master/pipeline.svg "Website Pipeline")](https://gitlab.com/acuparse/website/pipelines) | [![DNS Status](https://gitlab.com/acuparse/dns_sync/badges/master/pipeline.svg "DNS Pipeline")](https://gitlab.com/acuparse/dns_sync/pipelines) |
+|                                                                           Core                                                                            | Installer                                                                                                                                                     | RTL Relay                                                                                                                                                   | Website                                                                                                                                                                                                                                                | DNS Sync                                                                                                                                        | Release Service                                                                                                                                                                                                                                           |
+|:---------------------------------------------------------------------------------------------------------------------------------------------------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [![Acuparse Status](https://gitlab.com/acuparse/acuparse/badges/stable/pipeline.svg "Acuparse Pipeline")](https://gitlab.com/acuparse/acuparse/pipelines) | [![Installer Status](https://gitlab.com/acuparse/installer/badges/master/pipeline.svg "Installer Pipeline")](https://gitlab.com/acuparse/installer/pipelines) | [![RTL-Relay Status](https://gitlab.com/acuparse/rtl-relay/badges/main/pipeline.svg "RTL Relay Pipeline")](https://gitlab.com/acuparse/rtl-relay/pipelines) | [![Website Status](https://gitlab.com/acuparse/website/badges/master/pipeline.svg "Website Pipeline")](https://gitlab.com/acuparse/website/pipelines) ![Website Status](https://img.shields.io/uptimerobot/status/m787016706-5967cac56e544c773094fc78) | [![DNS Status](https://gitlab.com/acuparse/dns_sync/badges/master/pipeline.svg "DNS Pipeline")](https://gitlab.com/acuparse/dns_sync/pipelines) | [![DNS Status](https://gitlab.com/acuparse/rms/badges/master/pipeline.svg "RMS Pipeline")](https://gitlab.com/acuparse/rms/pipelines) ![Release Management Service Status](https://img.shields.io/uptimerobot/status/m787016696-3d8a19d46b2014c8daa8d9d6) |
 
 Welcome to the [Acuparse](https://www.acuparse.com) Documentation. Use the resources below to assist in your
 installation and configuration of Acuparse.
@@ -36,7 +36,8 @@ Acuparse creates the response.
 
 ## Main Installation Guides
 
-> **Info:** Installation supported on Debian/Rasbian Buster(10)/Bullseye(11) or Ubuntu 18.04/20.04.
+!!! info
+    Installation supported on Debian/Rasbian Bullseye (11)/Buster (10) or Ubuntu Jammy (22.04)/Focal (20.04).
 
 - ***[Main Install Guide](INSTALL)***
 - ***[Docker Install Guide](DOCKER)***
@@ -48,13 +49,13 @@ Acuparse creates the response.
 - Download and run the installer.
 
     ```bash
-    curl -o https://gitlab.com/acuparse/installer/raw/master/install && sudo bash install | tee ~/acuparse.log`
+    curl -o https://gitlab.com/acuparse/installer/-/raw/master/install && sudo bash install | tee ~/acuparse.log`
     ```
 
 #### Docker Compose
 
 ```bash
-curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
+curl -o https://gitlab.com/acuparse/installer/-/raw/master/install_docker && sudo bash install_docker | tee ~/acuparse.log
 ```
 
 - See the [DOCKER Install Guide](DOCKER) for more details.
@@ -78,6 +79,7 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 - [NGINX Configuration](other/NGINX)
 - [Backups](other/BACKUPS)
 - [Telemetry](other/TELEMETRY)
+- [RTL Dongle / Realtime Guide](REALTIME.md)
 
 ## External Updater Configuration
 
@@ -109,7 +111,12 @@ curl -o https://gitlab.com/acuparse/installer/raw/master/install_docker && sudo 
 
 ## Git Repositories
 
-- [GitLab Repo (Primary)](https://gitlab.com/acuparse/acuparse)
-- [GitHub Repo (Mirror)](https://github.com/acuparse/acuparse)
-- [BitBucket Repo (Mirror)](https://bitbucket.org/acuparse/acuparse)
-- [Azure Repo](https://dev.azure.com/acuparse/acuparse)
+### Primary
+
+- [GitLab](https://gitlab.com/acuparse/acuparse)
+
+### Public Mirrors
+
+- [GitHub](https://github.com/acuparse/acuparse)
+- [BitBucket](https://bitbucket.org/acuparse/acuparse)
+- [Azure](https://dev.azure.com/acuparse/acuparse)

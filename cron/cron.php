@@ -35,12 +35,12 @@ require(dirname(__DIR__) . '/src/inc/loader.php');
  * @var boolean $installed
  */
 
-syslog(LOG_DEBUG, "(SYSTEM){CRON}: Running System Tasks ...");
+syslog(LOG_NOTICE, "(SYSTEM){CRON}: Running System Tasks ...");
 
 if ($installed === true) {
     // Not Configured
     if (empty($config->station->access_mac) && empty($config->station->hub_mac)) {
-        syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: No Device MAC Configured");
+        exit(syslog(LOG_EMERG, "(SYSTEM){CRON}[ERROR]: No System MAC Address Configured!"));
     } // Run Tasks
     else {
         // Load weather Data
@@ -86,14 +86,23 @@ if ($installed === true) {
             // Load Tower Data
             require(APP_BASE_PATH . '/fcn/cron/towerData.php');
             /* @var string $sensor */
-            syslog(LOG_DEBUG, "(SYSTEM){CRON}: Using Tower $sensor for Archive & Uploads");
+            syslog(LOG_INFO, "(SYSTEM){CRON}: Using Tower $sensor for Archive & Uploads");
         }
 
         // Set the UTC date for the update
         $utcDate = gmdate("Y-m-d+H:i:s");
 
-        if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "(SYSTEM){CRON}: Processing Archive ...");
+        syslog(LOG_NOTICE, "(SYSTEM){CRON}: Processing Archive ...");
+
+        if ($config->station->realtime === true) {
+            $lastUpdate = mysqli_fetch_assoc(mysqli_query($conn,
+                "SELECT `timestamp` FROM `last_update`"));
+            $lastUpdate = $lastUpdate['timestamp'];
+            if ((strtotime($lastUpdate) < strtotime('-12 minutes'))) {
+                syslog(LOG_WARNING,
+                    "(SYSTEM){CRON}[WARNING]: Primary device has not updated in over 12 minutes");
+                goto CHECK_FOR_OUTAGE;
+            }
         }
 
         // Make sure new data is being sent
@@ -101,9 +110,7 @@ if ($installed === true) {
         if ((($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) || empty($result)) {
             // New Data, proceed
 
-            if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG, "(SYSTEM){CRON}: Updating Archive ...");
-            }
+            syslog(LOG_INFO, "(SYSTEM){CRON}: Updating Archive ...");
 
             // Access Update
             if ($config->station->device === 0) {
@@ -124,54 +131,19 @@ if ($installed === true) {
             // Save to DB
             $result = mysqli_query($conn, $archiveQuery);
             if (mysqli_affected_rows($conn) === 1) {
-                if ($config->debug->logging === true) {
-                    syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Updated Successfully");
-                }
+                syslog(LOG_INFO, "(SYSTEM){CRON}: Archive Updated Successfully");
             } else {
-                syslog(LOG_ERR, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ")");
-            }
-
-            // Check if this is the first update after an outage
-            $status = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
-            if ($status['status'] === '0') {
-                require(APP_BASE_PATH . '/fcn/mailer.php');
-                $subject = $config->site->hostname . ' ONLINE';
-                $message = '<p><strong>' . $config->site->hostname . ' is receiving weather updates.</strong></p>';
-                $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
-                while ($row = mysqli_fetch_assoc($sql)) {
-                    $admin_email[] = $row['email'];
-                }
-                if ($config->outage_alert->enabled === true) {
-                    // Mail it
-                    foreach ($admin_email as $to) {
-                        mailer($to, $subject, $message);
-                    }
-                    // Log it
-                    syslog(LOG_INFO, "(SYSTEM){CRON}: *ONLINE* Now Receiving Updates (Notification Sent))");
-
-                    // Update the time the email was sent
-                    $lastSent = date("Y-m-d H:i:s");
-                    mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$lastSent', `status` = '1'");
-
-                } else {
-                    // Log it
-                    syslog(LOG_INFO,
-                        "(SYSTEM){CRON}: *ONLINE* Now Receiving Updates (Notifications Disabled)");
-                    // Update the status
-                    mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '1'");
-                }
+                syslog(LOG_CRIT, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ") - " . $archiveQuery);
             }
 
             // Using Tower Data
             if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === false) {
                 require(APP_BASE_PATH . '/fcn/cron/towerData.php');
                 /* @var string $sensor */
-                syslog(LOG_DEBUG, "(SYSTEM){CRON}: Using Tower $sensor for Uploads");
+                syslog(LOG_INFO, "(SYSTEM){CRON}: Using Tower $sensor for Uploads");
             }
 
-            if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG, "(SYSTEM){CRON}: Updating External Providers ...");
-            }
+            syslog(LOG_NOTICE, "(SYSTEM){CRON}: Updating External Providers ...");
 
             ini_set('default_socket_timeout', 1);
 
@@ -220,22 +192,51 @@ if ($installed === true) {
                 require(APP_BASE_PATH . '/fcn/cron/uploaders/mqtt.php');
             }
 
-            if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG, "(SYSTEM){CRON}: DONE Updating External Providers");
-            }
+            syslog(LOG_NOTICE, "(SYSTEM){CRON}: DONE Updating External Providers");
 
+            // Check if this is the first update after an outage
+            $status = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `status` FROM `outage_alert`"));
+            if ($status['status'] === '0') {
+                require(APP_BASE_PATH . '/fcn/mailer.php');
+                $subject = $config->site->hostname . ' ONLINE';
+                $message = '<p><strong>' . $config->site->hostname . ' is receiving weather updates.</strong></p>';
+                $sql = mysqli_query($conn, "SELECT `email` FROM `users` WHERE `admin` = '1'");
+                while ($row = mysqli_fetch_assoc($sql)) {
+                    $admin_email[] = $row['email'];
+                }
+                if ($config->outage_alert->enabled === true) {
+                    // Mail it
+                    /**
+                     * @var array $admin_email Array of Admin Emails
+                     */
+                    foreach ($admin_email as $to) {
+                        mailer($to, $subject, $message);
+                    }
+                    // Log it
+                    syslog(LOG_ALERT, "(SYSTEM){CRON}: *ONLINE* Now Receiving Updates (Notification Sent))");
+
+                    // Update the time the email was sent
+                    $lastSent = date("Y-m-d H:i:s");
+                    mysqli_query($conn, "UPDATE `outage_alert` SET `last_sent` = '$lastSent', `status` = '1'");
+
+                } else {
+                    // Log it
+                    syslog(LOG_ALERT,
+                        "(SYSTEM){CRON}: *ONLINE* Now Receiving Updates (Notifications Disabled)");
+                    // Update the status
+                    mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '1'");
+                }
+            }
         } // Nothing has changed
         else {
-            if ($config->debug->logging === true) {
-                // Log it
-                syslog(LOG_INFO, "(SYSTEM){CRON}: No Change, Skip Archiving");
-            }
+            // Log it
+            syslog(LOG_INFO, "(SYSTEM){CRON}: No Change, Skip Archiving");
+            CHECK_FOR_OUTAGE:
             require(APP_BASE_PATH . '/fcn/cron/noChange.php');
         }
-
     }
 } else {
-    exit(syslog(LOG_WARNING, "(SYSTEM){CRON}[WARNING]: Not Installed. Run installer"));
+    exit(syslog(LOG_EMERG, "(SYSTEM){CRON}[ERROR]: Not Installed. Run installer"));
 }
 
 // Check the event scheduler
@@ -246,4 +247,4 @@ if ($config->site->updates === true) {
     require(APP_BASE_PATH . '/fcn/cron/checkUpdates.php');
 }
 
-syslog(LOG_DEBUG, "(SYSTEM){CRON}: DONE Running System Tasks");
+syslog(LOG_NOTICE, "(SYSTEM){CRON}: DONE Running System Tasks");

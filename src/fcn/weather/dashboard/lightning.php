@@ -29,6 +29,7 @@
  * @var object $config Global Config
  * @var object $lightning Lightning Values
  */
+
 ?>
 <section class="row">
     <div class="col">
