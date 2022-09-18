@@ -166,7 +166,7 @@ class getArchiveAtlasWeatherData
         $this->uvindex_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->uvindex_high_recorded_year_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->uvindex_high_year = (int)$result['uvindex']; // Percent
-        // All Time High
+        // All-Time High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `uvindex` FROM `archive` WHERE `uvindex` = (SELECT MAX(`uvindex`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->uvindex_high_recorded_ever = date($config->site->dashboard_display_date_full, strtotime($result['reported'])); // Recorded at
@@ -204,7 +204,7 @@ class getArchiveAtlasWeatherData
         $this->light_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->light_high_recorded_year_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->light_high_year = (int)$result['light']; // Percent
-        // All Time High
+        // All-Time High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `light` FROM `archive` WHERE `light` = (SELECT MAX(`light`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->light_high_recorded_ever = date($config->site->dashboard_display_date_full, strtotime($result['reported'])); // Recorded at
@@ -242,7 +242,7 @@ class getArchiveAtlasWeatherData
         $this->lightSeconds_high_recorded_year = date($config->site->dashboard_display_date, strtotime($result['reported'])); // Recorded at
         $this->lightSeconds_high_recorded_year_JSON = date($config->site->date_api_json, strtotime($result['reported'])); // Recorded at
         $this->lightSeconds_high_year = (int)$result['lightSeconds']; // Seconds
-        // All Time High
+        // All-Time High
         $result = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `reported`, `lightSeconds` FROM `archive` WHERE `lightSeconds` = (SELECT MAX(`lightSeconds`) FROM `archive`) ORDER BY `reported` DESC LIMIT 1"));
         $this->lightSeconds_high_recorded_ever = date($config->site->dashboard_display_date_full, strtotime($result['reported'])); // Recorded at
@@ -327,7 +327,7 @@ class getArchiveAtlasWeatherData
         );
     }
 
-    // This Weeks Archive Data
+    // This Week's Archive Data
     public function getWeek(): object
     {
         return (object)array(
@@ -342,7 +342,7 @@ class getArchiveAtlasWeatherData
         );
     }
 
-    // This Weeks JSON Archive Data
+    // This Week's JSON Archive Data
     public function getJSONWeek(): object
     {
         return (object)array(
@@ -357,7 +357,7 @@ class getArchiveAtlasWeatherData
         );
     }
 
-    // This Months Archive Data
+    // This Month's Archive Data
     public function getMonth(): object
     {
         return (object)array(
@@ -372,7 +372,7 @@ class getArchiveAtlasWeatherData
         );
     }
 
-    // This Months JSON Archive Data
+    // This Month's JSON Archive Data
     public function getJSONMonth(): object
     {
         return (object)array(
@@ -447,7 +447,7 @@ class getArchiveAtlasWeatherData
         );
     }
 
-    // All Time Records
+    // All-Time Records
     public function getAllTime(): object
     {
         return (object)array(
@@ -462,7 +462,7 @@ class getArchiveAtlasWeatherData
         );
     }
 
-    // All Time Records
+    // All-Time Records
     public function getJSONAllTime(): object
     {
         return (object)array(

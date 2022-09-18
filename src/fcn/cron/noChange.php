@@ -69,11 +69,14 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
             }
 
             // Mail it
+            /**
+             * @var array $admin_email Array of Admin Emails
+             */
             foreach ($admin_email as $to) {
                 mailer($to, $subject, $message);
             }
             // Log it
-            syslog(LOG_ERR,
+            syslog(LOG_ALERT,
                 "(SYSTEM){CRON}[ERROR]: *OFFLINE* Not Receiving Updates (Notification Sent)");
             // Update the time the email was sent
             $lastSent = date("Y-m-d H:i:s");
@@ -81,14 +84,14 @@ if ((strtotime($lastUpdate['timestamp']) < strtotime("-" . $config->outage_alert
 
         } else {
             // Log it
-            syslog(LOG_ERR,
+            syslog(LOG_ALERT,
                 "(SYSTEM){CRON}[ERROR]: *OFFLINE* Not Receiving Updates (Notifications Disabled)");
             // Update the status
             mysqli_query($conn, "UPDATE `outage_alert` SET `status` = '0'");
         }
     } else {
         // Log it
-        syslog(LOG_ERR,
+        syslog(LOG_ALERT,
             "(SYSTEM){CRON}[ERROR]: *OFFLINE* Not Receiving Updates (Notification Skipped)");
     }
 } // Not offline long enough

@@ -44,7 +44,7 @@ if (!isset($_SESSION['authenticated'])) {
 // If we are submitting a recovery request
     if (isset($_GET['start'])) {
 
-        // Check for google recaptcha
+        // Check for Google recaptcha
         if ($config->google->recaptcha->enabled === true) {
             // Check that Google captcha is correct
             $captcha = $_POST['g-recaptcha-response'];
@@ -193,7 +193,6 @@ if (!isset($_SESSION['authenticated'])) {
             syslog(LOG_ERR, "(SYSTEM){USER}: Password recovery for UID $uid failed");
             $_SESSION['messages'] = '<div class="alert alert-warning alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Seems like you entered your current password. Try logging in with that password.</div>';
             header("Location: /admin/account");
-            exit();
 
         } else {
             mysqli_query($conn, "UPDATE `users` SET `password`='$password' WHERE `uid`='$uid'");
@@ -221,8 +220,8 @@ if (!isset($_SESSION['authenticated'])) {
                 $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Something went wrong while completing your request. Please try again.</div>';
                 header("Location: /recover&do?hash=$hash");
             }
-            exit();
         }
+        exit();
 
     } // Display the initial request form
     else {

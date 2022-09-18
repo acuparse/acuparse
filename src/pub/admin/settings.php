@@ -42,7 +42,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             $patterns = array();
             $patterns[0] = '/:/';
             $patterns[1] = '/-/';
-            $patterns[1] = '/ /';
+            $patterns[2] = '/ /';
             $replacement = '';
             return preg_replace($patterns, $replacement, $MAC);
         }
@@ -81,10 +81,11 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
             $_POST['station']['sensor_atlas']) : null;
         $config->station->baro_offset = (isset($_POST['station']['baro_offset'])) ? (float)$_POST['station']['baro_offset'] : 0;
         $config->station->towers = (bool)$_POST['station']['towers'];
-        $config->station->towers_additional = isset($_POST['station']['towers_additional']) && (bool)$_POST['station']['towers_additional'];
+        $config->station->towers_additional = isset($_POST['station']['towers_additional']) && $_POST['station']['towers_additional'];
         $config->station->lightning_source = (int)$_POST['station']['lightning_source'];
-        $config->station->filter_access = isset($_POST['station']['filter_access']) && (bool)$_POST['station']['filter_access'];
+        $config->station->filter_access = isset($_POST['station']['filter_access']) && $_POST['station']['filter_access'];
         $config->station->reverse_wind = (bool)$_POST['station']['reverse_wind'];
+        $config->station->realtime = (bool)$_POST['station']['realtime'];
 
         // Site
         $config->site->name = $_POST['site']['name'];
@@ -148,7 +149,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         // Master Sensor
         $config->upload->sensor->external = $_POST['upload']['sensor']['external'];
         $config->upload->sensor->id = (isset($_POST['upload']['sensor']['id'])) ? $_POST['upload']['sensor']['id'] : null;
-        $config->upload->sensor->archive = isset($_POST['upload']['sensor']['archive']) && (bool)$_POST['upload']['sensor']['archive'];
+        $config->upload->sensor->archive = isset($_POST['upload']['sensor']['archive']) && $_POST['upload']['sensor']['archive'];
 
         // WU
         $config->upload->wu->enabled = (bool)$_POST['upload']['wu']['enabled'];
@@ -218,7 +219,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
 
         // Debug
         $config->debug->logging = (bool)$_POST['debug']['logging'];
-        $config->debug->server->enabled = (bool)(isset($_POST['debug']['server']['enabled'])) ? (bool)$_POST['debug']['server']['enabled'] : 0;
+        $config->debug->server->enabled = (isset($_POST['debug']['server']['enabled'])) ? (bool)$_POST['debug']['server']['enabled'] : 0;
         $config->debug->server->url = (isset($_POST['debug']['server']['url'])) ? $_POST['debug']['server']['url'] : null;
 
         // Save the config file

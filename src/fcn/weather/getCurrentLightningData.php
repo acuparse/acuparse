@@ -71,6 +71,7 @@ class getCurrentLightningData
 
         $this->source = $source;
         $this->json_date = $config->site->date_api_json;
+
         //Process Strike Count
         $currentData = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT `dailystrikes`, `currentstrikes` FROM `atlasLightning` WHERE `date`='$todaysDate'"));
@@ -97,26 +98,30 @@ class getCurrentLightningData
     }
 
     // Calculate Last Update
-    private function lastUpdate($last_strike_ts, $last_strike_display, $source, $json_date = 'c'): string
+    private function lastUpdate($last_strike_ts, $last_strike_display, $source, $json_date = 'c'): ?string
     {
 
-        function between($number, $from, $to): bool
-        {
-            return $number > $from && $number < $to;
-        }
+        if ($last_strike_ts !== null) {
 
-        if ($source === 'json') {
-            $output = date($json_date, strtotime($last_strike_ts));
-        } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 1800,
-            strtotime(date('Y-m-d H:i:s')) + 1800)) {
-            $output = '<i title="Reported within last 30 Minutes" class="fas fa-exclamation-triangle lightningDanger"></i><strong> ' . $last_strike_display . '</strong>';
-        } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 7200,
-            strtotime(date('Y-m-d H:i:s')) + 7200)) {
-            $output = '<i title="Reported within last 2 Hours" class="fas fa-exclamation-circle lightningWarning"></i> ' . $last_strike_display;
+            function between($number, $from, $to): bool
+            {
+                return $number > $from && $number < $to;
+            }
+
+            if ($source === 'json') {
+                $output = date($json_date, strtotime($last_strike_ts));
+            } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 1800,
+                strtotime(date('Y-m-d H:i:s')) + 1800)) {
+                $output = '<i title="Reported within last 30 Minutes" class="fas fa-exclamation-triangle lightningDanger"></i><strong> ' . $last_strike_display . '</strong>';
+            } elseif (between(strtotime($last_strike_ts), strtotime(date('Y-m-d H:i:s')) - 7200,
+                strtotime(date('Y-m-d H:i:s')) + 7200)) {
+                $output = '<i title="Reported within last 2 Hours" class="fas fa-exclamation-circle lightningWarning"></i> ' . $last_strike_display;
+            } else {
+                $output = $last_strike_display;
+            }
         } else {
-            $output = $last_strike_display;
+            $output = null;
         }
-
         return $output;
     }
 

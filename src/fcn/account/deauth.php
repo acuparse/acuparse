@@ -37,12 +37,11 @@ if (isset($_COOKIE['device'])) {
     unset($_COOKIE['token']);
     setcookie('device', '', time() - 3600, '/');
     setcookie('token', '', time() - 3600, '/');
+    // Log it
+    syslog(LOG_INFO, "(SYSTEM){USER}: $username logged out successfully");
 }
 $_SESSION = array();
 session_regenerate_id(true);
-
-// Log it
-syslog(LOG_INFO, "(SYSTEM){USER}: $username logged out successfully");
 
 header("Location: /");
 exit();

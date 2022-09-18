@@ -41,8 +41,8 @@ if ($systemStatus['status'] === '0') {
     <!-- Offline -->
     <section id="offline" class="row live-weather-offline">
         <div class="col-md-8 col-12 mx-auto text-center">
-            <p class="alert alert-warning">Live data is temporarily unavailable!<br>Last
-                update: <?= $lastUpdate['timestamp']; ?></p>
+            <p class="alert alert-warning"><?= ($config->station->realtime === true) ? 'Some live' : 'Live'; ?> data is temporarily unavailable!<br>Last
+                <?= ($config->station->realtime === true) ? 'complete update' : 'update'; ?>: <?= $lastUpdate['timestamp']; ?></p>
         </div>
     </section>
     <?php
@@ -53,6 +53,10 @@ if (!class_exists('getCurrentWeatherData')) {
     require(APP_BASE_PATH . '/fcn/weather/getCurrentWeatherData.php');
     $getData = new getCurrentWeatherData();
 }
+
+/**
+ * @var object $getData Weather Data
+ */
 
 $wx = $getData->getConditions();
 

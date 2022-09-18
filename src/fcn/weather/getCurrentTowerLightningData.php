@@ -85,8 +85,8 @@ class getCurrentLightningData
             $this->last_strike_ts = $atlasData['last_strike_ts'];
             $this->last_strike_ts_json = date($this->json_date, strtotime($atlasData['last_strike_ts']));
             $this->last_strike_display = date($config->site->dashboard_display_date, strtotime($this->last_strike_ts));
-            $this->last_strike_distance_KM = (float)round($atlasData['last_strike_distance'] / 1.609, 1);
-            $this->last_strike_distance_M = (float)round($atlasData['last_strike_distance'], 1);
+            $this->last_strike_distance_KM = round($atlasData['last_strike_distance'] / 1.609, 1);
+            $this->last_strike_distance_M = round($atlasData['last_strike_distance'], 1);
         }
     }
 

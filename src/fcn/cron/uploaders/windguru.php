@@ -32,9 +32,7 @@
  * @var object $atlas Atlas Data
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){CWOP}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){CWOP}: Starting Update ...");
 
 // Build and send update
 $windguruSalt = date('YmdHis');
@@ -48,7 +46,6 @@ $windguruQueryResult = file_get_contents($windguruQueryUrl . $windguruQuery);
 // Save to DB
 mysqli_query($conn,
     "INSERT INTO `windguru_updates` (`query`,`result`) VALUES ('$windguruQuery', '$windguruQueryResult')");
-if ($config->debug->logging === true) {
-    // Log it
-    syslog(LOG_INFO, "(EXTERNAL){Windguru}: Query = $windguruQuery | Response = $windguruQueryResult");
-}
+
+// Log it
+syslog(LOG_NOTICE, "(EXTERNAL){Windguru}: Query = $windguruQuery | Response = $windguruQueryResult");

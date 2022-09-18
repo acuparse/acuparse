@@ -29,7 +29,15 @@
  * @var mysqli $conn Global MYSQL Connection
  * @var object $config Global Config
  * @var object $appInfo Global Application Info
+ * @var boolean $installed Is Acuparse Installed?
  */
+
+if ($installed === true && (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true)) {
+    $authenticatedUser = true;
+    if ($_SESSION['admin'] === true) {
+        $adminUser = true;
+    }
+}
 ?>
 <!-- Page Footer -->
 <hr>
@@ -40,16 +48,15 @@
             <p>Powered by <a href="<?= $appInfo->homepage; ?>"
                              target='_blank'><strong><?= ucfirst($appInfo->name); ?></strong></a>
                 <?php
-                /**
-                 * @var boolean $installed
-                 */
-                if ($installed === true) {
-                    if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true && $_SESSION['admin'] === true) {
-                        ?>
-                        <span class="small">(Version <a target="_blank"
-                                                        href="https://www.acuparse.com/releases/v<?= str_replace('.', '-', $config->version->app); ?>"><?= $config->version->app; ?></a>)</span>
-                    <?php }
-                } ?>
+                if (isset($adminUser) && $adminUser === true) {
+                    ?>
+                    <span class="small">(Version <a target="_blank"
+                                                    href="https://www.acuparse.com/releases/v<?= str_replace('.', '-', $config->version->app); ?>"><?= $config->version->app; ?></a>)</span>
+                    <?php
+                }
+                ?>
+            </p>
+            <?= (isset($authenticatedUser) && $authenticatedUser === true && ($_SERVER['PHP_SELF'] === '/index.php' && empty($_GET))) ? '<p class="small text-muted"><span id="last-updated-timestamp"></span></p>' : NULL; ?>
         </div>
     </div>
 </footer>
@@ -59,7 +66,7 @@
 <!-- JS -->
 <script src="/lib/mit/jquery/js/jquery.min.js"></script>
 <script async src="/lib/mit/fontawesome/js/all.min.js"></script>
-<script defer src="/lib/mit/bootstrap/js/bootstrap.min.js"></script>
+<script defer src="/lib/mit/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script defer src="/lib/mit/instantpage/instantpage.js" type="module"></script>
 <?php
 if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/recover.php' || $_SERVER['PHP_SELF'] === '/contact.php' || $_SERVER['PHP_SELF'] === '/admin/account.php')) {
@@ -74,7 +81,8 @@ if ($config->google->recaptcha->enabled === true && ($_SERVER['PHP_SELF'] === '/
 <?php }
 if ($config->google->analytics->enabled === true) { ?>
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config->google->analytics->id; ?>"></script>
+    <script async
+            src="https://www.googletagmanager.com/gtag/js?id=<?= $config->google->analytics->id; ?>"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -89,14 +97,14 @@ if ($config->google->analytics->enabled === true) { ?>
 if ($config->matomo->enabled === true) { ?>
     <!-- Matomo -->
     <script>
-        var _paq = window._paq = window._paq || [];
+        let _paq = window._paq = window._paq || [];
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function () {
-            var u = "//<?= $config->matomo->domain; ?>/";
+            let u = "//<?= $config->matomo->domain; ?>/";
             _paq.push(['setTrackerUrl', u + 'matomo.php']);
             _paq.push(['setSiteId', '<?= $config->matomo->site; ?>']);
-            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            let d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
             g.async = true;
             g.src = u + 'matomo.js';
             s.parentNode.insertBefore(g, s);
@@ -104,12 +112,10 @@ if ($config->matomo->enabled === true) { ?>
     </script>
 <?php } ?>
 
-<!-- Page Specific Scripts -->
+<!-- Page Specific Resources -->
 <?php
 if (isset($page_footer)) {
     echo $page_footer;
-}
-?>
-
+} ?>
 </body>
 </html>

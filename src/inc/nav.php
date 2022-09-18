@@ -153,8 +153,8 @@
                                     Admin</a>
                                 <?php
                             }
-                            $userEditActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']));
-                            $userPasswordActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && ((!isset($_GET['uid'])) || ((isset($_GET['uid'])) && (int)$_GET['uid'] === $_SESSION['uid']));
+                            $userEditActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['edit'])) && ((!isset($_GET['uid'])) || ((int)$_GET['uid'] === $_SESSION['uid']));
+                            $userPasswordActive = ($_SERVER['PHP_SELF'] === '/admin/account.php') && (isset($_GET['password'])) && ((!isset($_GET['uid'])) || ((int)$_GET['uid'] === $_SESSION['uid']));
                             ?>
                             <a class="<?= ($userEditActive === true) ? 'dropdown-item active' : 'dropdown-item'; ?>"
                                href="/admin/account?edit" data-instant><i class="fas fa-user-edit"

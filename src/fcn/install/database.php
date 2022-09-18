@@ -50,16 +50,18 @@ if (isset($_GET['ci'])) {
     $config->station->primary_sensor = 0;
     $config->station->access_mac = $_POST['station']['access_mac'];
     $config->station->sensor_atlas = sprintf('%08d', $_POST['station']['sensor_atlas']);
+    $config->station->lightning_source = 1;
     $config->upload->myacurite->access_enabled = false;
     $config->site->updates = false;
     $config->site->imperial = true;
+    $config->debug->logging = true;
 }
 
 // Set the default timezone
 $systemTimezone = getenv('TZ');
 $config->site->timezone = (!empty($systemTimezone)) ? $systemTimezone : 'Etc/UTC';
 
-// Generate the install hash
+// Generate the installation hash
 $installHash1 = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     mt_rand(1, 10))), 0,
     32);
@@ -85,13 +87,13 @@ if ($saveConfig) {
         $schema = exec($schema, $schemaOutput, $schemaReturn);
         if ($schemaReturn !== 0) {
             if (!unlink($configFilePath)) {
-                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Writing to Database. Could not remove config file. Please remove and try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
+                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Writing to Database. Could not remove config file. Please remove and try again. Return: ' . $schemaReturn . '</div>';
                 header("Location: /admin/install");
-                exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Could not remove config file. Please remove and try again."));
+                exit(syslog(LOG_EMERG, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Could not remove config file. Please remove and try again."));
             } else {
-                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Writing to Database. Please try again. Return: ' . $schemaReturn . ' ' . $schemaOutput . '</div>';
+                $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Writing to Database. Please try again. Return: ' . $schemaReturn . '</div>';
                 header("Location: /admin/install");
-                exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Please try again."));
+                exit(syslog(LOG_EMERG, "(SYSTEM){INSTALLER}[ERROR]: Error Writing to Database. Please try again."));
             }
         } else {
             if ($config->mysql->trim !== 0) {
@@ -103,7 +105,7 @@ if ($saveConfig) {
                 $schema = "mysql -h{$config->mysql->host} -u{$config->mysql->username} -p{$config->mysql->password} {$config->mysql->database} < $schema";
                 $schema = exec($schema, $schemaOutput, $schemaReturn);
                 if ($schemaReturn !== 0) {
-                    syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming | Result: $schemaReturn  | SQL: " . printf($schemaOutput));
+                    syslog(LOG_WARNING, "(SYSTEM){TRIM}[WARNING]: Failed Enabling Database Trimming | Result: $schemaReturn");
                 } else {
                     syslog(LOG_INFO, "(SYSTEM){TRIM}: Successfully Enabled Database Trimming");
                 }
@@ -113,16 +115,16 @@ if ($saveConfig) {
         $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Error Connecting to Database!</div>';
         unlink(APP_BASE_PATH . '/usr/config.php');
         header("Location: /admin/install");
-        exit(syslog(LOG_ERR, "(SYSTEM){INSTALLER}[ERROR]: Database Ping Failed"));
+        exit(syslog(LOG_EMERG, "(SYSTEM){INSTALLER}[ERROR]: Database Ping Failed"));
     }
     // Log it
     $_SESSION['messages'] = '<div class="alert alert-success alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Database Configuration Saved Successfully!</div>';
     header("Location: /admin/install/?account");
-    exit(syslog(LOG_INFO, "(SYSTEM){INSTALLER}: Database configuration saved successfully"));
+    exit(syslog(LOG_NOTICE, "(SYSTEM){INSTALLER}: Database configuration saved successfully"));
 } else {
     // Log it
     $_SESSION['messages'] = '<div class="alert alert-danger alert-dismissible"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>Saving Config File Failed!</div>';
     unlink(APP_BASE_PATH . '/usr/config.php');
     header("Location: /admin/install");
-    exit(syslog(LOG_ERR, "(SYSTEM){INSTALLER}: Saving Config File Failed"));
+    exit(syslog(LOG_EMERG, "(SYSTEM){INSTALLER}: Saving Config File Failed"));
 }

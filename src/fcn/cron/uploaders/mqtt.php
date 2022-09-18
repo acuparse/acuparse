@@ -27,11 +27,10 @@
 
 /**
  * @var object $config Global Config
+ * @var mysqli $conn Global MYSQL Connection
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){MQTT}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){MQTT}: Starting Update ...");
 
 require(APP_BASE_PATH . '/fcn/lib/phpmqtt/phpMQTT.php');
 
@@ -47,12 +46,12 @@ if ($mqtt_connect) {
 // Send JSON readings
     $MQTT_topic = $config->upload->mqtt->topic;
 
-    $mqtt->publish($MQTT_topic, $MQTT_JSON, 0);
+    $mqtt->publish($MQTT_topic, $MQTT_JSON);
 
 // Send Main Readings
     $MQTT_topic = $config->upload->mqtt->topic . "/main/";
     foreach ($MQTT_data->main as $topic => $value) {
-        $mqtt->publish($MQTT_topic . $topic, $value, 0);
+        $mqtt->publish($MQTT_topic . $topic, $value);
     }
 
     if ($config->station->device === 0) {
@@ -60,7 +59,7 @@ if ($mqtt_connect) {
         if ($config->station->primary_sensor === 0) {
             $MQTT_topic = $config->upload->mqtt->topic . "/atlas/";
             foreach ($MQTT_data->atlas as $topic => $value) {
-                $mqtt->publish($MQTT_topic . $topic, $value, 0);
+                $mqtt->publish($MQTT_topic . $topic, $value);
             }
         }
         // Lightning Readings
@@ -68,15 +67,33 @@ if ($mqtt_connect) {
             $MQTT_topic = $config->upload->mqtt->topic . "/lightning/";
 
             foreach ($MQTT_data->lightning as $topic => $value) {
-                $mqtt->publish($MQTT_topic . $topic, $value, 0);
+                $mqtt->publish($MQTT_topic . $topic, $value);
+            }
+        }
+    }
+
+    // Tower Readings
+    if ($config->station->towers === true) {
+        $result = mysqli_query($conn, "SELECT * FROM `towers` ORDER BY `arrange`");
+        $towerCount = mysqli_num_rows($result);
+
+        if ($towerCount >= 1) {
+            require(APP_BASE_PATH . '/fcn/weather/getCurrentTowerData.php');
+
+            while ($row = mysqli_fetch_assoc($result)) {
+                $MQTT_topic = $config->upload->mqtt->topic . "/towers/" . $row['sensor'] . "/";
+                $getTowerData = new getCurrentTowerData($row['sensor']);
+                $MQTT_Tower_JSON = $getTowerData->getJSONConditions();
+                $mqtt->publish($MQTT_topic, json_encode($MQTT_Tower_JSON));
+                foreach ($MQTT_Tower_JSON as $topic => $value) {
+                    $mqtt->publish($MQTT_topic . $topic, $value);
+                }
             }
         }
     }
 
     $mqtt->disconnect();
-    if ($config->debug->logging === true) {
-        syslog(LOG_INFO, "(EXTERNAL){MQTT}: Published to Broker");
-    }
+    syslog(LOG_NOTICE, "(EXTERNAL){MQTT}: Published to Broker");
 } else {
     syslog(LOG_ERR, "(EXTERNAL){MQTT}: Connection Failed");
 }

@@ -1,11 +1,17 @@
 # Acuparse Update Guide
 
-Detailed upgrade instructions for significant releases will be published in the [docs/updates](https://docs.acuparse.com/#version-updates) folder,
-when required.
+Detailed upgrade instructions for significant releases will be published in the [docs/updates](/#version-specific-guides) folder,
+when required and are listed below.
 
-## UPDATING TO VERSION 3
+## Updating from below version 3
 
-See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for detailed instructions.
+If you are running a version less than 3, follow the Version 3 Update Guide.
+
+- [Update to Version 3](updates/v3)
+
+### Updating from below version 2.3
+
+- [Update to Version 2.3](updates/v2_3)
 
 ## Local Install
 

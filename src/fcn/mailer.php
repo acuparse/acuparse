@@ -90,6 +90,9 @@ function mailer($sendTo, $subject, $message, $replyTo = false, $replyToName = fa
         :
         $messageHeader . $message . $messageDisclaimer . $messageFooter;
 
+    if ($config->debug->logging === true) {
+        syslog(LOG_DEBUG, "(SYSTEM){MAILER}: Sent mail $subject");
+    }
     // Send
     return ($config->mailgun->enabled === true) ?
         sendViaMailgun($sendTo, $subject, $message, $config->site->name, $config->site->email, $config->mailgun->domain,

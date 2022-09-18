@@ -41,3 +41,9 @@ mysql -p<MYSQL_ROOT_PASSWORD> acuparse < mysql.sql
 ```
 
 Copy your config file back `cp config.php /opt/acuparse/src/usr/config.php`
+
+### Updates
+
+The backup script will not automatically update the script in your home directory when you are locally installed. You
+will need to manually update your backup script when new changes are deployed. Updates to the script are noted in the
+Changelog and release notes.

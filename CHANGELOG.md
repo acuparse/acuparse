@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.9.0](https://www.acuparse.com/releases/v3-9-0/) - 2022-09-18
+
+### Added
+
+- Beta RTL Dongle Support via the Acuparse Syslog Relay.
+- Tower data is now sent during MQTT updates.
+
+### Changed
+
+- FontAwesome to 6.2.0.
+- Bootstrap to 5.2.1.
+- instant.page to 5.1.1.
+- Ongoing changes to lightning update logic.
+- Database queries better prepared for occasional duplicated readings.
+- Other minor bug fixes and code cleanup.
+- Logging levels/debug logging updated.
+
+### Fixed
+
+- Cron Backup script not creating archive as expected (Issue 166).
+- Humidity & Pressure Trend not calculated correctly.
+- More lightning logic tweaks (Issue 165).
+
 ## [[3.8.1](https://www.acuparse.com/releases/v3-8-1/) - 2022-01-01
 
 ### Fixed

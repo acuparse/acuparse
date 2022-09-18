@@ -32,9 +32,7 @@
  * @var object $atlas Atlas Data
  */
 
-if ($config->debug->logging === true) {
-    syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Starting Update ...");
-}
+syslog(LOG_NOTICE, "(EXTERNAL){Windy}: Starting Update ...");
 
 $sql = "SELECT `timestamp` FROM `windy_updates` ORDER BY `timestamp` DESC LIMIT 1";
 $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
@@ -49,17 +47,15 @@ if ((strtotime($result['timestamp']) < strtotime('-5 minutes')) or ($count == 0)
         $windyQuery = $windyQuery . '&uv=' . $atlas->uvIndex;
     }
     $windyQueryResult = file_get_contents($windyQueryUrl . $windyQuery);
-// Save to DB
+
+    // Save to DB
     mysqli_query($conn,
         "INSERT INTO `windy_updates` (`query`,`result`) VALUES ('$windyQuery', '$windyQueryResult')");
-    if ($config->debug->logging === true) {
-        // Log it
-        syslog(LOG_INFO, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
-    }
+
+    // Log it
+    syslog(LOG_NOTICE, "(EXTERNAL){Windy}: Query = $windyQuery | Response = $windyQueryResult");
 } // No new update to send
 else {
-    if ($config->debug->logging === true) {
-        // Log it
-        syslog(LOG_DEBUG, "(EXTERNAL){Windy}: Update not sent. Not enough time has passed");
-    }
+    // Log it
+    syslog(LOG_NOTICE, "(EXTERNAL){Windy}: Update not sent. Not enough time has passed");
 }

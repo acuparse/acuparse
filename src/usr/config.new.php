@@ -50,6 +50,7 @@ return (object)array(
         'lightning_source' => 0, // Lightning (0-none/1-atlas/2-tower/3-both)
         'filter_access' => true, // Filter out of range Access readings
         'reverse_wind' => false, // Reverse Wind direction readings for Southern Hemisphere
+        'realtime' => false, // Enable Realtime RTL Data
     ),
 
     // Site specific config variables
@@ -229,7 +230,7 @@ return (object)array(
 
     // Debug Settings
     'debug' => (object)array(
-        'logging' => true, // Debug logging to Syslog. True/False
+        'logging' => false, // Debug logging to Syslog. True/False
         'server' => (object)array(
             'show' => false, // Show the debug server tab
             'enabled' => false, //true or false
@@ -250,7 +251,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.8.1',
+        'app' => '3.9.0',
         'schema' => '3.3',
         'installHash' => null,
     ),

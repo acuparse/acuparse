@@ -33,11 +33,12 @@
  * @var string $pageTitle Page Title
  */
 $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . ' | ' . $config->site->location : $pageTitle;
+header('Content-Type: text/html; charset=UTF-8');
 ?>
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
         <meta name="handheldfriendly" content="true">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="<?= $config->site->desc; ?>">
@@ -127,6 +128,8 @@ $pageTitle = ($installed === true) ? $pageTitle . ' | ' . $config->site->name . 
             "description": "<?= $config->site->desc; ?>",
             "url": "https://<?= $config->site->hostname; ?>/"
         }
+
+
             </script>
         <?php } ?>
     </head>

@@ -25,4 +25,5 @@
  * Ping
  */
 
-// This file intentionally blank
+header_remove();
+header('Cache-Control: no-cache');

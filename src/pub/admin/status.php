@@ -140,7 +140,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
                             $name = $row['name'];
                             $sensor = $row['sensor'];
                             $result2 = mysqli_fetch_assoc(mysqli_query($conn,
-                                "SELECT `battery`, `rssi`, `timestamp` FROM `tower_data` WHERE `sensor` = '$sensor' ORDER BY `timestamp` DESC LIMIT 1"));
+                                "SELECT `battery`, `rssi`, `timestamp` FROM `tower_data` WHERE `sensor` = '$sensor' AND `device` != 'R' ORDER BY `timestamp` DESC LIMIT 1"));
                             $rssi = rssiConvert($result2['rssi']);
                             $batteryBackground = ($result2['battery'] === 'normal') ? 'limegreen' : 'orangered';
                             $batteryText = (!is_null($result2['battery'])) ? ucfirst($result2['battery']) : 'ERROR!';

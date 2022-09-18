@@ -1,5 +1,7 @@
 # Acuparse Docker Installation Guide
 
+![Docker Pulls](https://img.shields.io/docker/pulls/acuparse/acuparse)
+
 **The Acuparse container itself does NOT contain a local database.**
 Use `acuparse/mariadb` for best compatibility.
 
@@ -25,7 +27,7 @@ Use Docker Compose to run Acuparse in production. A script is available to set u
 - Download the installer.
 
     ```bash
-    curl -O https://gitlab.com/acuparse/installer/raw/master/install_docker
+    curl -O https://gitlab.com/acuparse/installer/-/raw/master/install_docker
     ```
 
 - Run the installer

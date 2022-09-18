@@ -46,7 +46,7 @@
         }
         echo '<h2>from <i class="wi wi-wind wi-from-' . strtolower($wx->windDIR) . '" aria-hidden="true"></i> ' . $windSpeed . '</h2>'; ?>
         <ul class="list-unstyled">
-            <?php if ($config->station->device === 0) {
+            <?php if ($config->station->device === 0 && $wx->windGustKMH !== null) {
                 if ($wx->windGustMPH !== $wx->windSpeedMPH) {
                     if ($config->site->hide_alternate === 'false' || $config->site->hide_alternate ===
                         'archive') {

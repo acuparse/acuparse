@@ -120,12 +120,12 @@ img {
 
 /* Local Time */
 
-.local-time p {
+.system-time p {
     font-weight: bolder;
 }
 
 @media (max-width: 375px) {
-    .local-time p {
+    .system-time p {
         font-size: .9em;
     }
 }

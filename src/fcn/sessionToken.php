@@ -37,7 +37,7 @@ $deviceKey = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqr
 $token = (string)substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     mt_rand(1, 10))),
     0, 40);
-$tokenHash = (string)md5($token);
+$tokenHash = md5($token);
 $userAgent = (string)$_SERVER['HTTP_USER_AGENT'];
 
 // Save the session to the database

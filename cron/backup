@@ -68,7 +68,9 @@ function _backup() {
 
   # Combine Backup Files to Daily Package
   echo "Packaging and Compressing Archive"
-  tar -cvzf "$BACKUP_DIR"/"$DATE".tar.gz -C "$BACKUP_TMP_DIR" "$(find "$BACKUP_TMP_DIR" -maxdepth 1 -type f -printf '%P\n')"
+  BACKUP_FILES=$(find "$BACKUP_TMP_DIR" -maxdepth 1 -type f -printf "%P " | sed 's/[[:space:]]*$//')
+  tar -cvzf "$BACKUP_DIR"/"$DATE".tar.gz -C "$BACKUP_TMP_DIR" "$(echo "$BACKUP_FILES" | xargs)"
+
   if [ "$BACKUP_CAM_IMAGES" == 1 ]; then
     echo "Backing up Webcam Images"
     tar -uvf "$BACKUP_DIR"/webcam.tar -C "$ACUPARSE_DIR"/src/pub/img/cam .
@@ -81,7 +83,7 @@ function _backup() {
 }
 
 function _restore() {
-  TAR_FILE=$(find . -maxdepth 1 -name '*.tar.gz' -type f -printf '%P\n' | sort -r | head -n 1 | cut -d' ' -f2)
+  TAR_FILE=$(find . -maxdepth 1 -name '*.tar.gz' -type f -printf %P | sort -r | head -n 1 | cut -d' ' -f2)
   mkdir -p "$BACKUP_TMP_DIR"
   tar -zxf "$BACKUP_DIR"/"$TAR_FILE" --directory "$BACKUP_TMP_DIR" >/dev/null 2>&1
   echo "Restoring SQL data"

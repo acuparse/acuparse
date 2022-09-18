@@ -22,7 +22,7 @@
 
 /**
  * File: src/fcn/updates/hub.php
- * Processes an update from a smartHUB
+ * Processes weather readings from an Acurite smartHUB
  */
 
 /**
@@ -39,10 +39,11 @@ $todaysDate = date('Y-m-d');
 
 // Process Iris Update
 if ($_GET['sensor'] === $config->station->sensor_iris) {
+    $source = 'I';
 
     // Process Hub Pressure, Wind Speed, Wind Direction, and Rainfall
     if ($_GET['mt'] === '5N1x31') {
-        $source = 'I';
+
         //Barometer
         $baromin = (float)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'baromin', FILTER_SANITIZE_STRING));
@@ -73,7 +74,7 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
             filter_input(INPUT_GET, 'dailyrainin', FILTER_SANITIZE_STRING));
 
         //Other
-        $battery = (string)mysqli_real_escape_string($conn,
+        $battery = mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'battery', FILTER_SANITIZE_STRING));
         $rssi = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
@@ -91,12 +92,10 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
         }
 
         // Log it
-        if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "(HUB): Pressure = $baromin");
-            syslog(LOG_DEBUG,
-                "(HUB){IRIS}: Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
-            syslog(LOG_DEBUG, "(HUB){IRIS}: Battery: $battery | Signal: $rssi");
-        }
+        syslog(LOG_INFO, "(HUB): Pressure = $baromin");
+        syslog(LOG_INFO,
+            "(HUB){IRIS}: Wind = $windDirection @ $windSpeedMPH | Rain = $rainIN | DailyRain = $dailyRainIN");
+        syslog(LOG_INFO, "(HUB){IRIS}: Battery: $battery | Signal: $rssi");
 
         // Update the time the data was received
         last_updated_at();
@@ -105,7 +104,6 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
 
     // Process Wind Speed, Temperature, Humidity
     elseif ($_GET['mt'] === '5N1x38') {
-        $source = 'I';
 
         //Barometer
         $baromin = (float)mysqli_real_escape_string($conn,
@@ -126,7 +124,7 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
             filter_input(INPUT_GET, 'humidity', FILTER_SANITIZE_STRING));
 
         //Other
-        $battery = (string)mysqli_real_escape_string($conn,
+        $battery = mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'battery', FILTER_SANITIZE_STRING));
         $rssi = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
@@ -143,13 +141,10 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
         }
 
         // Log it
-        if ($config->debug->logging === true) {
-            // Log it
-            syslog(LOG_DEBUG, "(HUB): Pressure = $baromin");
-            syslog(LOG_DEBUG,
-                "(HUB){IRIS}: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH");
-            syslog(LOG_DEBUG, "(HUB){IRIS}: Battery: $battery | Signal: $rssi");
-        }
+        syslog(LOG_INFO, "(HUB): Pressure = $baromin");
+        syslog(LOG_INFO,
+            "(HUB){IRIS}: TempF = $tempF | relH = $humidity | Windspeed = $windSpeedMPH");
+        syslog(LOG_INFO, "(HUB){IRIS}: Battery: $battery | Signal: $rssi");
 
         // Update the time the data was received
         last_updated_at();
@@ -158,11 +153,12 @@ if ($_GET['sensor'] === $config->station->sensor_iris) {
 
 // Process Tower Sensors
 elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['mt'] === 'ProOut' || $_GET['mt'] === 'ProIn' || $_GET['mt'] === 'light')) {
+    $source = 'T';
 
     // Tower ID
     $towerID = mysqli_real_escape_string($conn, filter_input(INPUT_GET, 'sensor', FILTER_SANITIZE_NUMBER_INT));
 
-// Check if this tower exists
+    // Check if this tower exists
     $sql = "SELECT * FROM `towers` WHERE `sensor` = '$towerID';";
     $count = mysqli_num_rows(mysqli_query($conn, $sql)) or syslog(LOG_WARNING, "(HUB){TOWER}[WARNING]: Tower Does Not Exist!");
 
@@ -188,7 +184,7 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
         }
 
         //Other
-        $battery = (string)mysqli_real_escape_string($conn,
+        $battery = mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'battery', FILTER_SANITIZE_STRING));
         $rssi = (int)mysqli_real_escape_string($conn,
             filter_input(INPUT_GET, 'rssi', FILTER_SANITIZE_STRING));
@@ -200,7 +196,6 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
             $baromin = (float)mysqli_real_escape_string($conn,
                 filter_input(INPUT_GET, 'baromin', FILTER_SANITIZE_STRING));
             if ($config->station->baro_offset !== 0) {
-                $source = 'T';
                 $baromin = $baromin + $config->station->baro_offset;
             }
 
@@ -210,9 +205,7 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
                 "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
 
             // Log it
-            if ($config->debug->logging === true) {
-                syslog(LOG_DEBUG, "(HUB): Pressure = $baromin");
-            }
+            syslog(LOG_INFO, "(HUB): Pressure = $baromin");
         }
 
         // Insert Tower data into DB
@@ -220,10 +213,8 @@ elseif ($config->station->towers === true && ($_GET['mt'] === 'tower' || $_GET['
         $result = mysqli_query($conn, $sql) or syslog(LOG_ERR, "(HUB){TOWER}[SQL ERROR]:" . mysqli_error($conn));
 
         // Log it
-        if ($config->debug->logging === true) {
-            syslog(LOG_DEBUG, "(HUB){TOWER}<$towerName>: tempF = $tempF | relH = $humidity");
-            syslog(LOG_DEBUG, "(HUB){TOWER}<$towerName>: Battery = $battery | Signal = $rssi");
-        }
+        syslog(LOG_INFO, "(HUB){TOWER}<$towerName>: tempF = $tempF | relH = $humidity");
+        syslog(LOG_INFO, "(HUB){TOWER}<$towerName>: Battery = $battery | Signal = $rssi");
 
         // Update the time the data was received
         last_updated_at();
@@ -250,11 +241,6 @@ else {
 
 // Finish Update
 
-// Send data to debug server
-if ($config->debug->server->enabled === true) {
-    file_get_contents('http://' . $config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
-}
-
 $responseTimestamp = date('H:i:s');
 $hubResponse = json_encode(["localtime" => "$responseTimestamp"]);
 
@@ -269,3 +255,11 @@ header_remove();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 echo $hubResponse;
+
+// Send data to debug server
+if ($config->debug->server->enabled === true) {
+    file_get_contents('http://' . $config->debug->server->url . '/weatherstation/updateweatherstation?' . $myacuriteQuery);
+    if ($config->debug->logging === true) {
+        syslog(LOG_DEBUG, '(HUB){DEBUG_SERVER}: Data sent to debug server ' . $config->debug->server->url);
+    }
+}
