@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.9.1](https://www.acuparse.com/releases/v3-9-1/) - 2022-11-20
+
+### Fixed
+
+- UV Index via RTL was not being processed correctly.
+
+### Changed
+
+- Set retained flag on MQTT messages (Issue 171).
+- Update CRON to check for `0` readings before uploading and archiving.
+    - When using tower sensors and trimming, readings will zero out when the month rolls over.
+
 ## [[3.9.0](https://www.acuparse.com/releases/v3-9-0/) - 2022-09-18
 
 ### Added
@@ -103,7 +115,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - Move container image to and add installer support for Debian Bullseye.
-    - A [Buster to Bullseye update script](https://docs.acuparse.com/UPDATING/#update-debian-buster-to-bullseye) is available.
+    - A [Buster to Bullseye update script](https://docs.acuparse.com/UPDATING/#update-debian-buster-to-bullseye) is
+      available.
     - MariaDB container updated to Bullseye and MariaDB v10.5.
 - Bootstrap to v5.1.0.
 - FontAwesome to v5.15.4.
@@ -699,7 +712,8 @@ See the [Version 3 Update Guide](https://docs.acuparse.com/updates/v3) for instr
 
 ### Added
 
-- Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the roadmap.)
+- Added Event Scheduler check in cron since it's off by default. (A better way to cleanup database tables is on the
+  roadmap.)
 - Google Captcha added to contact form.
 - MyAcuRite is terrible keeping time. They send the hour for the min and sec in their response.
     - Modify the response to the HUB and send server time instead.

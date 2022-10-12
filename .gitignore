@@ -14,3 +14,4 @@ logs/*
 !logs/.gitkeep
 site
 vendor
+.DS_Store

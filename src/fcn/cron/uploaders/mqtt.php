@@ -51,7 +51,7 @@ if ($mqtt_connect) {
 // Send Main Readings
     $MQTT_topic = $config->upload->mqtt->topic . "/main/";
     foreach ($MQTT_data->main as $topic => $value) {
-        $mqtt->publish($MQTT_topic . $topic, $value);
+        $mqtt->publish($MQTT_topic . $topic, $value, 0, 1);
     }
 
     if ($config->station->device === 0) {
@@ -59,7 +59,7 @@ if ($mqtt_connect) {
         if ($config->station->primary_sensor === 0) {
             $MQTT_topic = $config->upload->mqtt->topic . "/atlas/";
             foreach ($MQTT_data->atlas as $topic => $value) {
-                $mqtt->publish($MQTT_topic . $topic, $value);
+                $mqtt->publish($MQTT_topic . $topic, $value, 0 ,1);
             }
         }
         // Lightning Readings
@@ -67,7 +67,7 @@ if ($mqtt_connect) {
             $MQTT_topic = $config->upload->mqtt->topic . "/lightning/";
 
             foreach ($MQTT_data->lightning as $topic => $value) {
-                $mqtt->publish($MQTT_topic . $topic, $value);
+                $mqtt->publish($MQTT_topic . $topic, $value, 0 ,1);
             }
         }
     }
@@ -86,7 +86,7 @@ if ($mqtt_connect) {
                 $MQTT_Tower_JSON = $getTowerData->getJSONConditions();
                 $mqtt->publish($MQTT_topic, json_encode($MQTT_Tower_JSON));
                 foreach ($MQTT_Tower_JSON as $topic => $value) {
-                    $mqtt->publish($MQTT_topic . $topic, $value);
+                    $mqtt->publish($MQTT_topic . $topic, $value, 0 , 1);
                 }
             }
         }
