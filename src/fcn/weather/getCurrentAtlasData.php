@@ -30,8 +30,8 @@ class getCurrentAtlasData
     private $uvIndex;
     private $lightIntensity;
     private $lightSeconds;
-    private $lastUpdate;
-    private $lastUpdate_json;
+    private $lastUpdated;
+    private $lastUpdated_json;
 
     function __construct($cron = false)
     {
@@ -65,8 +65,8 @@ class getCurrentAtlasData
             // Get last Update
             $result = mysqli_fetch_assoc(mysqli_query($conn,
                 "SELECT `last_update` FROM `atlas_status` LIMIT 1"));
-            $this->lastUpdate = $result['last_update'];
-            $this->lastUpdate_json = date($config->site->date_api_json, strtotime($result['last_update']));
+            $this->lastUpdated = $result['last_update'];
+            $this->lastUpdated_json = date($config->site->date_api_json, strtotime($result['last_update']));
         }
     }
 
@@ -126,7 +126,7 @@ class getCurrentAtlasData
             'lightHours' => $this->calculateLightHours($this->lightSeconds),
             'uvIndex' => $this->uvIndex,
             'uvIndex_text' => $this->calculateUV($this->uvIndex),
-            'lastUpdate' => $this->lastUpdate,
+            'lastUpdated' => $this->lastUpdated,
         );
     }
 
@@ -140,7 +140,7 @@ class getCurrentAtlasData
             'lightHours' => $this->calculateLightHours($this->lightSeconds),
             'uvIndex' => $this->uvIndex,
             'uvIndex_text' => $this->calculateUV($this->uvIndex),
-            'lastUpdate' => $this->lastUpdate_json,
+            'lastUpdated' => $this->lastUpdated_json,
         );
     }
 

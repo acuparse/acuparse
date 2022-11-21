@@ -164,7 +164,7 @@ if ($data->model === 'Acurite-Atlas') {
                 // Enter readings into DB
                 $sql = "INSERT INTO `windspeed` (`speedMPH`, `timestamp`, `device`, `source`) VALUES ('$windSpeedMPH' , '$timestamp', '$device', '$source') ON DUPLICATE KEY UPDATE `speedMPH`='$windSpeedMPH', `timestamp`='$timestamp', `device`='$device', `source`='$source';
                         INSERT INTO `light` (`lightintensity`, `measured_light_seconds`, `timestamp`) VALUES ('$lightIntensity', '$lightSeconds', '$timestamp') ON DUPLICATE KEY UPDATE `lightintensity`='$lightIntensity', `measured_light_seconds`='$lightSeconds', `timestamp`='$timestamp';
-                        INSERT INTO `uvindex` (`uvindex`, `timestamp`) VALUES ('$uvindex', '$timestamp') ON DUPLICATE KEY UPDATE `uvindex`='$uvindex', `timestamp`=$timestamp;";
+                        INSERT INTO `uvindex` (`uvindex`, `timestamp`) VALUES ('$uvindex', '$timestamp') ON DUPLICATE KEY UPDATE `uvindex`='$uvindex', `timestamp`='$timestamp';";
 
                 $result = mysqli_multi_query($conn, $sql) or syslog(LOG_ERR, "(RTL){ATLAS}[SQL ERROR]:" . mysqli_error($conn));
                 while (mysqli_next_result($conn)) {

@@ -45,8 +45,9 @@ org.label-schema.version=${BUILD_VERSION} \
 org.label-schema.usage="https://docs.acuparse.com/DOCKER" \
 org.label-schema.vendor="Acuparse"
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN echo "Install and Configure PACKAGES" \
-&& export DEBIAN_FRONTEND=noninteractive \
 && apt-get update -qq && apt-get install -yqq --no-install-recommends \
 mariadb-client \
 rsyslog \
@@ -56,8 +57,7 @@ cron \
 && docker-php-ext-enable mysqli \
 && apt-get autoremove --purge -yqq \
 && apt-get clean \
-&& rm -rf /var/lib/apt/lists/* \
-&& unset DEBIAN_FRONTEND
+&& rm -rf /var/lib/apt/lists/*
 
 COPY .. "${ACUPARSE_DIR}"
 WORKDIR "${ACUPARSE_DIR}"

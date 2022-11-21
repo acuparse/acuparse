@@ -1,5 +1,13 @@
 # Acuparse RTL Realtime Update Guide
 
+Acuparse can now take data from your RTL-SDR dongle and update your data in real time.
+
+The AcuRite Access device is limited to sending updates to MyAcuRite and Acuparse every five minutes. Since the sensors
+like the Atlas and Iris are actually capable of sending data much more frequently, this guide will show you how to
+take advantage of the raw data that your sensors broadcast to the Access device.
+
+This guide will walk you through the process of setting up your RTL-SDR dongle and getting it working with Acuparse.
+
 !!! danger
     This feature is currently in a minimally tested `beta` state and may not work as expected. Please report any bugs
     on the [Issue Tracker](https://gitlab.com/acuparse/acuparse/-/issues/new?issuable_template=Bug).
@@ -119,6 +127,11 @@ processing. You will still need to run the Acuparse RTL Relay container using Do
 ```bash
 -F syslog:<ACUPARSE_RELAY_SERVER_IP>:514
 ```
+
+### Enable Realtime Updates
+
+Once you have the RTL Relay service up and running, you can enable realtime updates in your Acuparse settings.
+Realtime updates is located in the Sensor tab.
 
 ## Updating
 

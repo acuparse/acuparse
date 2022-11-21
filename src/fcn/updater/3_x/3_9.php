@@ -41,4 +41,10 @@ switch ($config->version->app) {
             "DROP EVENT IF EXISTS `flush_query_cache`;"); // Remove old event
 
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Beta RTL Support and bug fixes';
+
+    // Update from 3.90 to 3.9.1
+    case '3.9.0':
+        $config->version->app = '3.9.1';
+
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor bug fixes';
 }

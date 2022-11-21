@@ -149,7 +149,7 @@ $uvIndex = $weather->atlas->uvIndex;
 $uvIndex_text = $weather->atlas->uvIndex_text;
 $battery = $weather->atlas->battery;
 $signal = $weather->atlas->signal;
-$lastUpdate = $weather->atlas->lastUpdate;
+$lastUpdate = $weather->atlas->lastUpdated;
 
 // Lightning
 $strikecount = $weather->lightning->strikecount;
