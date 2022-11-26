@@ -42,9 +42,15 @@ switch ($config->version->app) {
 
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Beta RTL Support and bug fixes';
 
-    // Update from 3.90 to 3.9.1
+    // Update from 3.9.0 to 3.9.1
     case '3.9.0':
         $config->version->app = '3.9.1';
 
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor bug fixes';
+
+    // Update from 3.9.1 to 3.9.2
+    case '3.9.1':
+        $config->version->app = '3.9.2';
+        @$config->station->realtimeUTC = true;
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor bug fixes. RTL Updates, see changelog for details';
 }

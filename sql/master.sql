@@ -501,6 +501,6 @@ INSERT INTO `system` (`name`, `value`)
 VALUES ('schema', '3.3');
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('latestRelease', '3.9.1');
+VALUES ('latestRelease', '3.9.2');
 
 COMMIT;

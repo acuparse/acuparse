@@ -107,16 +107,16 @@
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "6.2.0",
+            "version": "6.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "d3a7818c253fcbafff9ebd1d4abb2866c192e1d7"
+                "reference": "96cafbd73ec4339b8c73c36673ce1518db82cc5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/d3a7818c253fcbafff9ebd1d4abb2866c192e1d7",
-                "reference": "d3a7818c253fcbafff9ebd1d4abb2866c192e1d7",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/96cafbd73ec4339b8c73c36673ce1518db82cc5c",
+                "reference": "96cafbd73ec4339b8c73c36673ce1518db82cc5c",
                 "shasum": ""
             },
             "type": "library",
@@ -148,7 +148,7 @@
                 "issues": "https://github.com/FortAwesome/Font-Awesome/issues",
                 "source": "https://github.com/FortAwesome/Font-Awesome"
             },
-            "time": "2022-08-31T21:02:43+00:00"
+            "time": "2022-11-15T18:34:54+00:00"
         },
         {
             "name": "instantpage/instant.page",
@@ -170,16 +170,16 @@
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v5.2.1",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "23e50829f958ea1d741d63e2781716be037e4644"
+                "reference": "cb021439c683d9805e2864c58095b92d405e9b11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/23e50829f958ea1d741d63e2781716be037e4644",
-                "reference": "23e50829f958ea1d741d63e2781716be037e4644",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/cb021439c683d9805e2864c58095b92d405e9b11",
+                "reference": "cb021439c683d9805e2864c58095b92d405e9b11",
                 "shasum": ""
             },
             "replace": {
@@ -214,9 +214,9 @@
             ],
             "support": {
                 "issues": "https://github.com/twbs/bootstrap/issues",
-                "source": "https://github.com/twbs/bootstrap/tree/v5.2.1"
+                "source": "https://github.com/twbs/bootstrap/tree/v5.2.3"
             },
-            "time": "2022-09-07T15:31:39+00:00"
+            "time": "2022-11-21T18:19:01+00:00"
         }
     ],
     "packages-dev": [

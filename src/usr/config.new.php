@@ -51,6 +51,7 @@ return (object)array(
         'filter_access' => true, // Filter out of range Access readings
         'reverse_wind' => false, // Reverse Wind direction readings for Southern Hemisphere
         'realtime' => false, // Enable Realtime RTL Data
+        'realtimeUTC' => true, // UTC or Local timezones for Realtime RTL Data
     ),
 
     // Site specific config variables
@@ -251,7 +252,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.9.1',
+        'app' => '3.9.2',
         'schema' => '3.3',
         'installHash' => null,
     ),

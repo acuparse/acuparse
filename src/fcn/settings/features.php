@@ -185,7 +185,7 @@
                                         <input class="form-check-input" type="radio"
                                                name="contact[enabled]"
                                                id="contact-enabled-1" value="1"
-                                            <?= ($config->archive->enabled === true) ? 'checked="checked"' : false; ?>>
+                                            <?= ($config->contact->enabled === true) ? 'checked="checked"' : false; ?>>
                                         <label class="form-check-label btn btn-success"
                                                for="contact-enabled-1">Enabled</label>
                                     </div>
