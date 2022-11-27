@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [[3.9.2](https://www.acuparse.com/releases/v3-9-2/) - 2022-11-26
+
+### Fixed
+
+- Contact form always enabled when saving system settings.
+- Previous cron updates to handle `0` readings with tower data broke external uploads.
+- Tower Lightning data not appearing in the API/MQTT (Issue 172).
+
+### Changed
+
+- Bootstrap to 5.2.3.
+- FontAwesome to 6.2.1.
+- RTL Relay Server to 1.1.0 (Issue 168 & 169).
+    - Syslog port changed to `10514` to avoid conflicts, update your compose files if you are using the RTL relay server.
+    - `command: -F syslog:relay:514` to `command: -F syslog:relay:10514`
+    - Run `docker-compose pull && docker-compose up -d` to update.
+
+### Added
+
+- Option to use the system timezone for RTL readings (Issue 170).
+
 ## [[3.9.1](https://www.acuparse.com/releases/v3-9-1/) - 2022-11-20
 
 ### Fixed

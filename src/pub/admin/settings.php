@@ -86,6 +86,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['admin'] === true) {
         $config->station->filter_access = isset($_POST['station']['filter_access']) && $_POST['station']['filter_access'];
         $config->station->reverse_wind = (bool)$_POST['station']['reverse_wind'];
         $config->station->realtime = (bool)$_POST['station']['realtime'];
+        $config->station->realtimeUTC = (bool)$_POST['station']['realtimeUTC'];
 
         // Site
         $config->site->name = $_POST['site']['name'];

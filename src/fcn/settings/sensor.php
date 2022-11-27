@@ -384,7 +384,8 @@
                                     <h3>Realtime Updates</h3>
                                     <p><small><strong>(RTL Dongle and Acuparse Relay Service Required)</strong></small>
                                     </p>
-                                    <p><a href="https://docs.acuparse.com/REALTIME/">See the docs</a> for more information
+                                    <p><a href="https://docs.acuparse.com/REALTIME/">See the docs</a> for more
+                                        information
                                         on enabling realtime updates.</p>
                                 </div>
                             </div>
@@ -409,7 +410,30 @@
                                                     <?= ($config->station->realtime === true) ? 'checked="checked"' : false; ?>
                                                 >
                                                 <label class="form-check-label btn btn-success"
-                                                       for="station-reverse-wind-1">Enabled</label>
+                                                       for="station-realtime-1">Enabled</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <p class="small"><strong>Use System Timezone?</strong></p>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="station[realtimeUTC]"
+                                                       id="station-realtimeUTC-0" value="0"
+                                                    <?= ($config->station->realtimeUTC === true) ? 'checked="checked"' : false; ?>
+                                                >
+                                                <label class="form-check-label btn btn-danger btn-sm"
+                                                       for="station-realtimeUTC-0"><strong>Disabled</strong></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                       name="station[realtimeUTC]"
+                                                       id="station-realtimeUTC-1" value="1"
+                                                    <?= ($config->station->realtimeUTC === false) ? 'checked="checked"' : false; ?>
+                                                >
+                                                <label class="form-check-label btn btn-success btn-sm"
+                                                       for="station-realtimeUTC-1">Enabled</label>
                                             </div>
                                         </div>
                                     </div>

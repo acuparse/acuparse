@@ -57,9 +57,10 @@ $opts = array(
 );
 $context = stream_context_create($opts);
 
-// Process UTC timestamp
+// Process Timestamp
+$updateTimezone = ($config->station->realtimeUTC === true) ? 'UTC' : $config->site->timezone;
 $updateTimestamp = $data->time;
-$updateTimestamp = strtotime($updateTimestamp . ' UTC');
+$updateTimestamp = strtotime($updateTimestamp . ' ' . $updateTimezone);
 $date = date('Y-m-d', $updateTimestamp);
 $timestamp = date("Y-m-d H:i:s", $updateTimestamp);
 

@@ -59,15 +59,15 @@ if ($mqtt_connect) {
         if ($config->station->primary_sensor === 0) {
             $MQTT_topic = $config->upload->mqtt->topic . "/atlas/";
             foreach ($MQTT_data->atlas as $topic => $value) {
-                $mqtt->publish($MQTT_topic . $topic, $value, 0 ,1);
+                $mqtt->publish($MQTT_topic . $topic, $value, 0, 1);
             }
         }
         // Lightning Readings
-        if ($config->station->lightning_source !== 0) {
+        if ($config->station->lightning_source === 1 || $config->station->lightning_source === 3) {
             $MQTT_topic = $config->upload->mqtt->topic . "/lightning/";
 
             foreach ($MQTT_data->lightning as $topic => $value) {
-                $mqtt->publish($MQTT_topic . $topic, $value, 0 ,1);
+                $mqtt->publish($MQTT_topic . $topic, $value, 0, 1);
             }
         }
     }
@@ -86,7 +86,15 @@ if ($mqtt_connect) {
                 $MQTT_Tower_JSON = $getTowerData->getJSONConditions();
                 $mqtt->publish($MQTT_topic, json_encode($MQTT_Tower_JSON));
                 foreach ($MQTT_Tower_JSON as $topic => $value) {
-                    $mqtt->publish($MQTT_topic . $topic, $value, 0 , 1);
+                    $mqtt->publish($MQTT_topic . $topic, $value, 0, 1);
+                }
+            }
+
+            // Get Lightning Data
+            if ($config->station->lightning_source === 2 || $config->station->lightning_source === 3) {
+                $MQTT_topic = $config->upload->mqtt->topic . "towerLightning/";
+                foreach ($MQTT_data->towerLightning as $topic => $value) {
+                    $mqtt->publish($MQTT_topic . $topic, $value, 0, 1);
                 }
             }
         }

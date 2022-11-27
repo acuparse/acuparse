@@ -87,6 +87,7 @@ if ($installed === true) {
             require(APP_BASE_PATH . '/fcn/cron/towerData.php');
             /* @var string $sensor */
             syslog(LOG_INFO, "(SYSTEM){CRON}: Using Tower $sensor for Archive & Uploads");
+            $towerDataLoaded = true;
         }
 
         // Set the UTC date for the update
@@ -110,7 +111,7 @@ if ($installed === true) {
         if ((($result['tempF'] != $data->tempF) || ($result['windSpeedMPH'] != $data->windSpeedMPH) || ($result['windDEG'] != $data->windDEG) || ($result['relH'] != $data->relH) || ($result['pressureinHg'] != $data->pressure_inHg) && (($data->pressure_inHg != 0) && ($data->tempF != 0))) || empty($result)) {
             // New Data, proceed
 
-            if ($data->tempF !== 0 && $data->relH !== 0 && $data->windSpeedMPH !== 0) {
+            if ($data->tempF !== 0 && $data->relH !== 0) {
                 syslog(LOG_INFO, "(SYSTEM){CRON}: Updating Archive ...");
 
                 // Access Update
@@ -137,18 +138,20 @@ if ($installed === true) {
                     syslog(LOG_CRIT, "(SYSTEM){CRON}[ERROR]: Failed to Update Archive (" . mysqli_error($conn) . ") - " . $archiveQuery);
                 }
             } else {
-                syslog(LOG_WARNING, "(SYSTEM){CRON}[WARNING]: Data is not valid, not updating archive");
+                syslog(LOG_WARNING, "(SYSTEM){CRON}[WARNING]: Data may not be valid, skipping archive update");
             }
 
             // Using Tower Data
             if ($config->upload->sensor->external === 'tower' && $config->upload->sensor->archive === false) {
-                require(APP_BASE_PATH . '/fcn/cron/towerData.php');
-                /* @var string $sensor */
-                syslog(LOG_INFO, "(SYSTEM){CRON}: Using Tower $sensor for Uploads");
+                if (!isset($towerDataLoaded)) {
+                    require(APP_BASE_PATH . '/fcn/cron/towerData.php');
+                    /* @var string $sensor */
+                    syslog(LOG_INFO, "(SYSTEM){CRON}: Using Tower $sensor for External Uploads");
+                }
             }
 
             // Check the readings to ensure we are not uploading 0's.
-            if ($data->tempF !== 0 && $data->relH !== 0 && $data->windSpeedMPH !== 0) {
+            if ($data->tempF !== 0 && $data->relH !== 0) {
 
                 syslog(LOG_NOTICE, "(SYSTEM){CRON}: Updating External Providers ...");
 
