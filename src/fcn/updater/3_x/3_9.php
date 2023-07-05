@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2022 Maxwell Power
+ * @copyright Copyright (C) 2015-2023 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -45,7 +45,6 @@ switch ($config->version->app) {
     // Update from 3.9.0 to 3.9.1
     case '3.9.0':
         $config->version->app = '3.9.1';
-
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor bug fixes';
 
     // Update from 3.9.1 to 3.9.2
@@ -53,4 +52,10 @@ switch ($config->version->app) {
         $config->version->app = '3.9.2';
         @$config->station->realtimeUTC = true;
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor bug fixes. RTL Updates, see changelog for details';
+
+    // Update from 3.9.2 to 3.9.3
+    case '3.9.2':
+        $config->version->app = '3.9.3';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor updates and bug fixes';
+
 }

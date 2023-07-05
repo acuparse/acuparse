@@ -138,13 +138,14 @@ docker run -d --rm --name rtl-relay \
     -e PRIMARY_MAC_ADDRESS=000000000000 \
     -e ACUPARSE_HOSTNAME=acuparse.example.com \
     -p 10514:10514 \
+    -p 10514:10514/udp \
     acuparse/rtl-relay
 ```
 
 The relay listen on any local port by changing the `-p` flag. You will need to update the `command:` in your
 rtl_433 config to match the port you are using.
 
-`-p <LOCAL_PORT>:10514`
+`-p <LOCAL_PORT>:10514`, `-p <LOCAL_PORT>:10514/udp`
 
 ```bash
 -F syslog:<ACUPARSE_RELAY_SERVER_IP>:<PORT>
