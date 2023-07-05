@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2022 Maxwell Power
+ * @copyright Copyright (C) 2015-2023 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -45,7 +45,7 @@ if ((strtotime($result['timestamp']) < strtotime('-10 minutes')) or ($count == 0
     $wcQueryUrl = $config->upload->wc->url . '?wid=' . $config->upload->wc->id . '&key=' . $config->upload->wc->key;
     $wcQuery = '&temp=' . ($data->tempC * 10) . '&wdir=' . $data->windDEG . '&wspd=' . (($data->windSpeedKMH * 0.277778) * 10) . '&bar=' . ($data->pressure_kPa * 100) . '&hum=' . $data->relH . '&dew=' . ($data->dewptC * 10) . '&rainrate=' . ($data->rainMM * 10) . '&rain=' . ($data->rainTotalMM_today * 10);
     if ($config->station->device === 0 && $config->station->primary_sensor === 0) {
-        $wcQuery = $wcQuery . '&uvi=' . $atlas->uvIndex;
+        $wcQuery = $wcQuery . '&uvi=' . ($atlas->uvIndex * 10);
     }
     $wcQueryStatic = '&softwareid=555e1df0d6eb' . '&software=' . $appInfo->name . '_v' . $config->version->app;
     $wcQueryResult = file_get_contents($wcQueryUrl . $wcQuery . $wcQueryStatic);

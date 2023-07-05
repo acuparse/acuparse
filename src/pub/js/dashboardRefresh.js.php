@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2022 Maxwell Power
+ * @copyright Copyright (C) 2015-2023 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -54,21 +54,32 @@ $(document).ready(function () {
     }
 
     // Ping the server and use the RTT to update the Dashboard time
-    async function updateTime() {
-        $.ajax({
-            url: '/api/system/ping', pingStart: new Date().getTime(), success: async function () {
-                $.ajax({
-                    url: '/api/system/time', pingResult: this.pingStart, success: async function (data) {
-                        $("#system-time-display").html(data);
-                        let rtt = new Date().getTime() - this.pingResult;
-                        setTimeout(updateTime, 1000 - rtt);
-                    }, error: function (request) {
-                        console.log("Time Data Error:\n" + request.responseText);
-                    }
+    $(document).ready(async function () {
+        async function updateTime() {
+            const start_time = new Date().getTime();
+
+            try {
+                await $.ajax({
+                    url: '/api/system/ping',
+                    start_time: start_time
                 });
+
+                const timeData = await $.ajax({
+                    url: '/api/system/time',
+                    start_time: start_time
+                });
+
+                $("#time-display").html(timeData);
+            } catch (error) {
+                console.error('Error updating time:', error);
+            } finally {
+                const rtt = new Date().getTime() - start_time;
+                setTimeout(updateTime, 1000 - rtt);
             }
-        });
-    }
+        }
+
+        await updateTime();
+    });
 
     <?php if ($authenticatedUser === true) { ?>
 

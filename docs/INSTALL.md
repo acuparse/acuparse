@@ -173,8 +173,10 @@ Db='test' OR Db='test\\_%'; FLUSH PRIVILEGES;"
 ```
 
 ```bash
-mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS acuparse; GRANT ALL PRIVILEGES ON acuparse.*
-TO 'acuparse' IDENTIFIED BY '$ACUPARSE_DATABASE_PASSWORD'; GRANT EVENT ON acuparse.* TO 'acuparse'; GRANT RELOAD ON *.* TO 'acuparse'; GRANT SUPER ON *.* TO 'acuparse'; FLUSH PRIVILEGES;"
+mysql -u root -p {MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS acuparse;
+CREATE USER 'acuparse' IDENTIFIED BY 'STRONGPASSWORD';
+GRANT ALL ON acuparse.* TO 'acuparse'; GRANT EVENT ON acuparse.* TO 'acuparse';
+GRANT RELOAD ON *.* TO 'acuparse'; GRANT SUPER ON *.* TO 'acuparse'; FLUSH PRIVILEGES;"
 ```
 
 ### Finish Up

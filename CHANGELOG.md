@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.9.3](https://www.acuparse.com/releases/v3-9-3/) - 2023-07-05
+
+### Changed
+
+- Bootstrap to 5.3.0.
+- FontAwesome to 6.4.0.
+
+### Fixed
+
+- WeatherCloud UV Index to integer (Issue 176).
+
 ## [[3.9.2](https://www.acuparse.com/releases/v3-9-2/) - 2022-11-26
 
 ### Fixed
