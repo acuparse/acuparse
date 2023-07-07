@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.9.4](https://www.acuparse.com/releases/v3-9-4/) - 2023-07-12
+
+### Fixed
+
+- Updates to the dashboard time logic caused the time not to display.
+
 ## [3.9.3](https://www.acuparse.com/releases/v3-9-3/) - 2023-07-05
 
 ### Changed

@@ -36,7 +36,7 @@ if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
 // Set the header for javascript
 header('Content-Type: text/javascript; charset=UTF-8');
 ?>
-$(document).ready(function () {
+$(document).ready(async function () {
     /**
      * @var weatherRefreshTime Weather Refresh Time
      */
@@ -53,66 +53,65 @@ $(document).ready(function () {
         });
     }
 
-    // Ping the server and use the RTT to update the Dashboard time
-    $(document).ready(async function () {
-        async function updateTime() {
-            const start_time = new Date().getTime();
+    await updateWeather();
+});
 
-            try {
-                await $.ajax({
-                    url: '/api/system/ping',
-                    start_time: start_time
-                });
+// Ping the server and use the RTT to update the Dashboard time
+$(document).ready(async function () {
+    async function updateTime() {
+        const start_time = new Date().getTime();
 
-                const timeData = await $.ajax({
-                    url: '/api/system/time',
-                    start_time: start_time
-                });
+        try {
+            await $.ajax({
+                url: '/api/system/ping',
+                start_time: start_time
+            });
 
-                $("#time-display").html(timeData);
-            } catch (error) {
-                console.error('Error updating time:', error);
-            } finally {
-                const rtt = new Date().getTime() - start_time;
-                setTimeout(updateTime, 1000 - rtt);
-            }
+            const timeData = await $.ajax({
+                url: '/api/system/time',
+                start_time: start_time
+            });
+
+            $("#system-time-display").html(timeData);
+        } catch (error) {
+            console.error('Error updating time:', error);
+        } finally {
+            const rtt = new Date().getTime() - start_time;
+            setTimeout(updateTime, 1000 - rtt);
         }
-
-        await updateTime();
-    });
-
-    <?php if ($authenticatedUser === true) { ?>
-
-    // Update the footer with the last updated timestamp
-    async function lastUpdate() {
-        $.ajax({
-            url: '/api/system/health', success: function (data) {
-                /**
-                 * @var authenticated
-                 */
-                if (data.authenticated === true) {
-                    /**
-                     * @var realtime
-                     */
-                    if (data.realtime === 'online') {
-                        /**
-                         * @var updated
-                         */
-                        $("#last-updated-timestamp").html('Updated ' + data.updated + ' (Realtime)');
-                    } else {
-                        $("#last-updated-timestamp").html('Updated ' + data.updated);
-                    }
-                    setTimeout(lastUpdate, weatherRefreshTime)
-                }
-            }, error: function (request) {
-                console.log("Health Data Error:\n" + request.responseText);
-            }
-        });
     }
 
-    lastUpdate();
-    <?php } ?>
-
-    updateWeather();
-    updateTime();
+    await updateTime();
 });
+
+<?php if ($authenticatedUser === true) { ?>
+
+// Update the footer with the last updated timestamp
+async function lastUpdate() {
+    $.ajax({
+        url: '/api/system/health', success: function (data) {
+            /**
+             * @var authenticated
+             */
+            if (data.authenticated === true) {
+                /**
+                 * @var realtime
+                 */
+                if (data.realtime === 'online') {
+                    /**
+                     * @var updated
+                     */
+                    $("#last-updated-timestamp").html('Updated ' + data.updated + ' (Realtime)');
+                } else {
+                    $("#last-updated-timestamp").html('Updated ' + data.updated);
+                }
+                setTimeout(lastUpdate, weatherRefreshTime)
+            }
+        }, error: function (request) {
+            console.log("Health Data Error:\n" + request.responseText);
+        }
+    });
+}
+
+lastUpdate();
+<?php } ?>
