@@ -58,4 +58,9 @@ switch ($config->version->app) {
         $config->version->app = '3.9.3';
         $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Minor updates and bug fixes';
 
+    // Update from 3.9.3 to 3.9.4
+    case '3.9.3':
+        $config->version->app = '3.9.4';
+        $notes .= '<li><strong>' . $config->version->app . '</strong> - ' . 'Bug fixes';
+
 }

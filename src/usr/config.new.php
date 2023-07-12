@@ -252,7 +252,7 @@ return (object)array(
 
     // Application/Database Version
     'version' => (object)array(
-        'app' => '3.9.3',
+        'app' => '3.9.4',
         'schema' => '3.3',
         'installHash' => null,
     ),
