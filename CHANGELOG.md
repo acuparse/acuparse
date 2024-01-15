@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.9.5](https://www.acuparse.com/releases/v3-9-5/) - 2023-01-15
+
+### Fixed
+
+- Help text too dark and can't be seen when using twilight theme.
+- Update WeatherUnderground API call to remove formatting.
+- PWS API key field stays disabled when enabling PWS upload.
+
+### Changed
+
+- JQuery to 3.7.1.
+- Font Awesome to 6.5.1.
+- Bootstrap to 5.3.2.
+
 ## [3.9.4](https://www.acuparse.com/releases/v3-9-4/) - 2023-07-12
 
 ### Fixed

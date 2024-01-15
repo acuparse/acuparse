@@ -1,7 +1,7 @@
 <?php
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2023 Maxwell Power
+ * @copyright Copyright (C) 2015-2024 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -359,7 +359,7 @@
                                                 <input class="form-check-input" type="radio"
                                                        name="upload[pws][enabled]"
                                                        id="pws-updates-enabled-0" value="0"
-                                                       onclick='document.getElementById("pws-updates-id").disabled=true;document.getElementById("pws-updates-password").disabled=true;'
+                                                       onclick='document.getElementById("pws-updates-id").disabled=true;document.getElementById("pws-updates-key").disabled=true;'
                                                     <?= ($config->upload->pws->enabled === false) ? 'checked="checked"' : false; ?>>
                                                 <label class="form-check-label btn btn-danger"
                                                        for="pws-updates-enabled-0">Disabled</label>
@@ -368,7 +368,7 @@
                                                 <input class="form-check-input" type="radio"
                                                        name="upload[pws][enabled]"
                                                        id="pws-updates-enabled-1" value="1"
-                                                       onclick='document.getElementById("pws-updates-id").disabled=false;document.getElementById("pws-updates-password").disabled=false;'
+                                                       onclick='document.getElementById("pws-updates-id").disabled=false;document.getElementById("pws-updates-key").disabled=false;'
                                                     <?= ($config->upload->pws->enabled === true) ? 'checked="checked"' : false; ?>>
                                                 <label class="form-check-label btn btn-success"
                                                        for="pws-updates-enabled-1">Enabled</label>

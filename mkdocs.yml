@@ -63,6 +63,9 @@ extra:
   manifest: 'manifest.webmanifest'
   search:
     language: 'en'
+  analytics:
+    provider: google
+    property: G-FZHKZ4WJZS
 markdown_extensions:
   - toc:
       permalink: true
@@ -76,5 +79,5 @@ plugins:
       lang: en
   - minify:
       minify_html: true
-extra_javascript:
-  - assets/js/matomo.js
+      minify_css: true
+      minify_js: true

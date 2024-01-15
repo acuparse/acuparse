@@ -2,7 +2,7 @@
 
 ##
 # Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
-# @copyright Copyright (C) 2015-2023 Maxwell Power
+# @copyright Copyright (C) 2015-2024 Maxwell Power
 # @author Maxwell Power <max@acuparse.com>
 # @link http://www.acuparse.com
 # @license AGPL-3.0+
@@ -44,7 +44,9 @@ function _logging() {
   ln -sf /proc/1/fd/1 /var/log/syslog
   rm /var/log/apache2/error.log && touch /var/log/apache2/error.log
   rm /var/log/apache2/access.log && touch /var/log/apache2/access.log
+  chown -R www-data:www-data /var/log/apache2
   touch /opt/acuparse/logs/cron.log
+  chown -R www-data:www-data /opt/acuparse/logs/cron.log
   echo "END: LOGGING"
 }
 
@@ -55,7 +57,6 @@ function _http() {
     -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
     -subj "/C=US/ST=Denver/L=Denver/O=Security/OU=Production/CN=acuparse" \
     -addext "subjectAltName=DNS:acuparse,DNS:localhost,IP:127.0.0.1"
-  chown -R www-data:www-data /var/log/apache2
   chown -R www-data:www-data "${ACUPARSE_DIR}"/src/pub
   a2dissite 000-default.conf
   rm /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf

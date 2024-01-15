@@ -1,6 +1,6 @@
 /**
  * Acuparse - AcuRite Access/smartHUB and IP Camera Data Processing, Display, and Upload.
- * @copyright Copyright (C) 2015-2023 Maxwell Power
+ * @copyright Copyright (C) 2015-2024 Maxwell Power
  * @author Maxwell Power <max@acuparse.com>
  * @link http://www.acuparse.com
  * @license AGPL-3.0+
@@ -501,6 +501,6 @@ INSERT INTO `system` (`name`, `value`)
 VALUES ('schema', '3.3');
 
 INSERT INTO `system` (`name`, `value`)
-VALUES ('latestRelease', '3.9.4');
+VALUES ('latestRelease', '3.9.5');
 
 COMMIT;
